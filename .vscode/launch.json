@@ -1,0 +1,51 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "pursenal Run (Staging)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "--flavor", "staging",
+                "--target", "lib/main.dart"
+            ],
+            "internalConsoleOptions": "neverOpen",
+            "noDebug": true,
+        },
+        {
+            "name": "pursenal Run (Profile)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": [
+                "--flavor", "staging",
+                "--target", "lib/main.dart"
+            ],
+            "internalConsoleOptions": "neverOpen",
+            "noDebug": true
+        },
+
+        {
+            "name": "pursenal Debug (Staging)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "--flavor", "staging",
+                "--target", "lib/main.dart"
+            ]
+        },
+
+        {
+            "name": "Pursenal Release (Production)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": [
+                "--flavor", "production",
+                "--target", "lib/main.dart"
+            ]
+        }
+    ]
+}

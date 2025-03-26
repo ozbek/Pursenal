@@ -1,0 +1,118 @@
+import 'package:flutter/material.dart';
+import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/enums/loading_status.dart';
+import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/profiles_drift_repository.dart';
+import 'package:pursenal/utils/app_logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class MainViewmodel extends ChangeNotifier {
+  final ProfilesDriftRepository _profilesDriftRepository;
+  final AccountsDriftRepository _accountsDriftRepository;
+
+  MainViewmodel({required selectedProfile, required MyDatabase db})
+      : _selectedProfile = selectedProfile,
+        _profilesDriftRepository = ProfilesDriftRepository(db),
+        _accountsDriftRepository = AccountsDriftRepository(db);
+
+  List<Profile> _profiles = [];
+
+  List<Profile> get profiles => _profiles;
+
+  Profile _selectedProfile;
+
+  Profile get selectedProfile => _selectedProfile;
+
+  LoadingStatus loadingStatus = LoadingStatus.idle;
+  String errorText = "";
+
+  int _currentIndex = 0;
+  final PageController _pageController = PageController();
+
+  int get currentIndex => _currentIndex;
+  PageController get pageController => _pageController;
+
+  int cashCountinProfile = 0;
+  int bankCountinProfile = 0;
+
+  void setIndex(int index) {
+    if (index != _currentIndex) {
+      _currentIndex = index;
+      _pageController.jumpToPage(
+        index,
+      );
+      notifyListeners();
+    }
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  set selectedProfile(Profile value) {
+    _selectedProfile = value;
+    _profilesDriftRepository.setSelectedProfile(value.id);
+    notifyListeners();
+  }
+
+  SharedPreferences? _prefs;
+
+  Future<void> init() async {
+    try {
+      loadingStatus = LoadingStatus.loading;
+
+      _prefs = await SharedPreferences.getInstance();
+      notifyListeners();
+      _profiles = await _profilesDriftRepository.getAll();
+      try {
+        _selectedProfile =
+            _profiles.firstWhere((p) => p.id == _selectedProfile.id);
+      } catch (e) {
+        AppLogger.instance.error("Failed to set profile");
+        errorText = "Failed to set profile";
+      }
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_pageController.hasClients) {
+          _pageController.jumpToPage(0);
+        }
+      });
+      loadingStatus = LoadingStatus.completed;
+
+      notifyListeners();
+      _getAccCounts();
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: Failed to initialise main page.';
+      loadingStatus = LoadingStatus.error;
+      notifyListeners();
+    }
+  }
+
+  _getAccCounts() async {
+    cashCountinProfile = (await _accountsDriftRepository.getAccountsByAccType(
+            _selectedProfile.id, 0))
+        .length;
+    bankCountinProfile = (await _accountsDriftRepository.getAccountsByAccType(
+            _selectedProfile.id, 1))
+        .length;
+    notifyListeners();
+  }
+
+  void resetErrorText() {
+    errorText = "";
+    notifyListeners();
+  }
+
+  Future<void> setLastUpdatedTimeStamp() async {
+    try {
+      final timeStamp = DateTime.now();
+      _prefs?.setInt('lastUpdated', timeStamp.millisecondsSinceEpoch);
+    } catch (e) {
+      AppLogger.instance
+          .error("Error setting Last updated timestamp ${e.toString()}");
+    }
+  }
+}

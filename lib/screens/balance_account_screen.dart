@@ -1,0 +1,437 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
+import 'package:pursenal/app/global/dimensions.dart';
+import 'package:pursenal/app/global/values.dart';
+import 'package:pursenal/app/extensions/currency.dart';
+import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/enums/app_date_format.dart';
+import 'package:pursenal/screens/account_entry_screen.dart';
+import 'package:pursenal/viewmodels/app_viewmodel.dart';
+import 'package:pursenal/viewmodels/balance_account_viewmodel.dart';
+import 'package:pursenal/widgets/shared/transaction_options_dialog.dart';
+import 'package:pursenal/widgets/shared/acc_type_icon.dart';
+import 'package:pursenal/widgets/shared/export_button.dart';
+import 'package:pursenal/widgets/shared/loading_body.dart';
+import 'package:pursenal/widgets/shared/search_field.dart';
+import 'package:pursenal/widgets/shared/the_date_picker.dart';
+import 'package:pursenal/widgets/shared/the_divider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pursenal/widgets/shared/transactions_list.dart';
+import 'package:pursenal/widgets/shared/transactions_list_wide.dart';
+
+class BalanceAccountScreen extends StatelessWidget {
+  const BalanceAccountScreen({
+    super.key,
+    required this.profile,
+    required this.account,
+  });
+  final Profile profile;
+  final Account account;
+
+  @override
+  Widget build(BuildContext context) {
+    final db = Provider.of<MyDatabase>(context);
+    final appViewmodel = Provider.of<AppViewmodel>(context);
+    return ChangeNotifierProvider<BalanceAccountViewmodel>(
+      create: (context) =>
+          BalanceAccountViewmodel(db: db, profile: profile, account: account)
+            ..init(),
+      builder: (context, child) => Consumer<BalanceAccountViewmodel>(
+        builder: (context, viewmodel, child) => Scaffold(
+          appBar: AppBar(
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AccountEntryScreen(
+                              profile: profile,
+                              account: account,
+                            ),
+                          )).then((_) {
+                        viewmodel.init();
+                      });
+                    },
+                    icon: const Icon(Icons.edit)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: IconButton(
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => TransactionOptionsDialog(
+                          currency: profile.currency,
+                          ledgers: viewmodel.allLedgers,
+                          profile: profile,
+                          oAcc: (account.accType == peopleTypeID ||
+                                  account.accType == advanceTypeID)
+                              ? account
+                              : null,
+                          fAcc: fundingAccountIDs.contains(account.accType)
+                              ? account
+                              : null,
+                          reloadFn: () async {
+                            await viewmodel.init();
+                          },
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.add)),
+              ),
+              const SizedBox(
+                width: 12,
+              ),
+            ],
+          ),
+          body: LoadingBody(
+            feedbackText: viewmodel.feedbackText,
+            loadingStatus: viewmodel.loadingStatus,
+            errorText: viewmodel.errorText,
+            resetErrorTextFn: () {
+              viewmodel.resetErrorText();
+            },
+            widget: LayoutBuilder(builder: (context, constraints) {
+              bool isWide = constraints.maxWidth > 800;
+
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Visibility(
+                      visible: isWide,
+                      child: SizedBox(
+                        width: 300,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              spacing: 5,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: createFilterMenu(
+                                  viewmodel,
+                                  context,
+                                  appViewmodel.dateFormat.pattern ??
+                                      AppDateFormat.date1.pattern),
+                            ),
+                          ),
+                        ),
+                      )),
+                  Visibility(
+                      visible: isWide,
+                      child: const VerticalDivider(
+                        thickness: .10,
+                        width: .10,
+                      )),
+                  Expanded(
+                    child: TransactionsSection(
+                      viewmodel: viewmodel,
+                      isWide: isWide,
+                      constraints: constraints,
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ),
+          endDrawer: Drawer(
+            shape: const RoundedRectangleBorder(),
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                width: double.maxFinite,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: createFilterMenu(
+                      viewmodel,
+                      context,
+                      appViewmodel.dateFormat.pattern ??
+                          AppDateFormat.date1.pattern),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+List<Widget> createFilterMenu(BalanceAccountViewmodel viewmodel,
+    BuildContext context, String datePattern) {
+  return [
+    Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      child: Text(
+        AppLocalizations.of(context)!.filters,
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
+    ),
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Text(
+            AppLocalizations.of(context)!.dates,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const Expanded(child: TheDivider()),
+        ],
+      ),
+    ),
+    Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+          child: TheDatePicker(
+            initialDate: viewmodel.startDate,
+            onChanged: (d) {
+              viewmodel.addToFilter(sDate: d);
+            },
+            label: AppLocalizations.of(context)!.startDate,
+            needTime: false,
+            datePattern: datePattern,
+          )
+              .animate()
+              .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
+              .fade(curve: Curves.easeInOut, duration: 100.ms),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+          child: TheDatePicker(
+            initialDate: viewmodel.endDate,
+            onChanged: (d) {
+              viewmodel.addToFilter(eDate: d);
+            },
+            label: AppLocalizations.of(context)!.endDate,
+            datePattern: datePattern,
+            needTime: false,
+          )
+              .animate()
+              .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
+              .fade(curve: Curves.easeInOut, duration: 100.ms),
+        ),
+      ],
+    ),
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Text(
+            AppLocalizations.of(context)!.transactionTypes,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const Expanded(child: TheDivider()),
+        ],
+      ),
+    ),
+    Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      children: [
+        ...viewmodel.voucherTypes.toList().map((v) => FilterChip(
+            selected: !viewmodel.voucherTypeFilters.contains(v),
+            label: Text(v.label),
+            onSelected: (s) {
+              viewmodel.addToFilter(voucherType: v);
+            }))
+      ],
+    )
+        .animate(delay: 50.ms)
+        .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
+        .fade(curve: Curves.easeInOut, duration: 100.ms),
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Text(
+            AppLocalizations.of(context)!.accounts,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const Expanded(child: TheDivider()),
+        ],
+      ),
+    ),
+    Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      children: [
+        ...viewmodel.otherAccounts.toList().map((v) => FilterChip(
+            selected: !viewmodel.otherAccountFilters.contains(v.id),
+            label: Text(v.name),
+            onSelected: (s) {
+              viewmodel.addToFilter(oAcc: v);
+            }))
+      ],
+    )
+        .animate(delay: 100.ms)
+        .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
+        .fade(curve: Curves.easeInOut, duration: 100.ms),
+  ];
+}
+
+class TransactionsSection extends StatelessWidget {
+  const TransactionsSection({
+    super.key,
+    required this.viewmodel,
+    required this.isWide,
+    required this.constraints,
+  });
+
+  final BalanceAccountViewmodel viewmodel;
+  final bool isWide;
+  final BoxConstraints constraints;
+
+  @override
+  Widget build(BuildContext context) {
+    final appViewmodel = Provider.of<AppViewmodel>(context);
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+            maxWidth: appViewmodel.isPhone ? smallWidth : double.maxFinite),
+        child: Column(
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              height: viewmodel.headerHeight,
+              curve: Curves.easeInOut,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              viewmodel.account.name,
+                              style: Theme.of(context).textTheme.headlineMedium,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Icon(
+                              getAccTypeIcon(viewmodel.account.accType),
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium
+                                  ?.color,
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: ExportButton(
+                            pdfExportFn: () async {
+                              await viewmodel.exportPDF();
+                            },
+                            xlsxExportFn: () async {
+                              await viewmodel.exportXLSX();
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        child: Text(
+                          AppLocalizations.of(context)!.fromToDate(
+                              appViewmodel.dateFormat
+                                  .format(viewmodel.startDate),
+                              appViewmodel.dateFormat
+                                  .format(viewmodel.endDate)),
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                        onTap: () {
+                          if (!isWide) {
+                            Scaffold.of(context).openEndDrawer();
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SearchField(searchFn: (term) {
+                          viewmodel.searchTerm = term;
+                        }),
+                      ),
+                      Visibility(
+                        visible: !isWide,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: IconButton(
+                            onPressed: () {
+                              Scaffold.of(context).openEndDrawer();
+                            },
+                            icon: const Icon(Icons.filter_list),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              title: Text(
+                AppLocalizations.of(context)!.openingBalance,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              trailing: Text(
+                viewmodel.openBal.toCurrencyString(viewmodel.profile.currency),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            Expanded(
+              child: Builder(builder: (_) {
+                if (!appViewmodel.isPhone) {
+                  return TransactionsListWide(
+                      scrollController: viewmodel.scrollController,
+                      account: viewmodel.account,
+                      fTransactions: viewmodel.fTransactions,
+                      profile: viewmodel.profile,
+                      initFn: () {
+                        viewmodel.init();
+                      });
+                }
+                return TransactionsList(
+                    scrollController: viewmodel.scrollController,
+                    fDates: viewmodel.fDates,
+                    account: viewmodel.account,
+                    fTransactions: viewmodel.fTransactions,
+                    profile: viewmodel.profile,
+                    initFn: () {
+                      viewmodel.init();
+                    });
+              }),
+            ),
+            ListTile(
+              shape: Border(
+                  top: BorderSide(
+                      color: Theme.of(context).shadowColor, width: 0.10)),
+              title: Text(
+                AppLocalizations.of(context)!.closingBalance,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              trailing: Text(
+                viewmodel.closeBal.toCurrencyString(viewmodel.profile.currency),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
