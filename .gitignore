@@ -44,9 +44,25 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Ignore generated Flutter platform files
+linux/flutter
+macos/Flutter
+windows/flutter
 
 /lib/temp.dart
 android/keystore
 android/key.properties
 
 /debug-info
+
+build_appimage.sh
+/AppDir
+.env
+*.AppImage
+
+
+**/flutter/generated_*
+**/flutter/Generated*
+
+windows-setup-script.iss
+installers
