@@ -50,3 +50,8 @@ android/keystore
 android/key.properties
 
 /debug-info
+
+build_appimage.sh
+/AppDir
+.env
+*.AppImage
