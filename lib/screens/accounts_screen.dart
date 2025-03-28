@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/global/values.dart';
@@ -239,7 +240,10 @@ class AccountsList extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleMedium),
                     );
                   },
-                );
+                )
+                    .animate(delay: 100.ms)
+                    .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
+                    .fade(curve: Curves.easeInOut, duration: 100.ms);
               } else {
                 return const Center(
                   child: CircularProgressIndicator(),

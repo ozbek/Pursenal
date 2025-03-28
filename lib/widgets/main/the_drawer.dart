@@ -243,40 +243,6 @@ class TheDrawer extends StatelessWidget {
             Material(
               color: Colors.transparent,
               child: ListTile(
-                  title: Text(AppLocalizations.of(context)!.myBudgets),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BudgetsScreen(
-                            profile: viewmodel.selectedProfile,
-                          ),
-                        ));
-                  },
-                  trailing: const Icon(Icons.calculate)),
-            ),
-            Material(
-              color: Colors.transparent,
-              child: ListTile(
-                  title: Text(AppLocalizations.of(context)!.accounts),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AccountsScreen(
-                            profile: viewmodel.selectedProfile,
-                          ),
-                        ));
-                  },
-                  trailing: const Icon(
-                    Icons.table_chart_outlined,
-                  )),
-            ),
-            Material(
-              color: Colors.transparent,
-              child: ListTile(
                   title: Text(AppLocalizations.of(context)!.settings),
                   onTap: () {
                     Navigator.pop(context);
