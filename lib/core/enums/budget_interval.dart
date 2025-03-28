@@ -1,10 +1,12 @@
 // Time Interval for a budget to be based on.
 enum BudgetInterval {
-  weekly('Weekly'),
-  monthly('Monthly'),
-  annual('Annual'),
+  weekly(label: 'Weekly', singular: "Week"),
+  monthly(label: 'Monthly', singular: "Month"),
+  annual(label: 'Annual', singular: "Year"),
   ;
 
-  const BudgetInterval(this.label);
   final String label;
+  final String singular;
+
+  const BudgetInterval({required this.label, required this.singular});
 }

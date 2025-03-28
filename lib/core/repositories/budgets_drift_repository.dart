@@ -160,6 +160,15 @@ class BudgetsDriftRepository
     }
   }
 
+  Future<BudgetPlan> getBudgetPlanByID(int id) async {
+    try {
+      return await db.getBudgetPlanByID(id);
+    } catch (e) {
+      AppLogger.instance.error("Failed to get Budget plan. ${e.toString()}");
+      rethrow;
+    }
+  }
+
   Future<List<BudgetAccount>> getAllBudgetAccounts() async {
     try {
       return await db.getBudgetAccounts();

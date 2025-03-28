@@ -8,7 +8,6 @@ import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/insights_viewmodel.dart';
 import 'package:pursenal/widgets/insights/average_transactions_bar_chart_card.dart';
-import 'package:pursenal/widgets/insights/budget_bar_chart_card.dart';
 import 'package:pursenal/widgets/insights/daily_tranactions_bar_chart_card.dart';
 import 'package:pursenal/widgets/insights/expenses_split_pie_chart_card.dart';
 import 'package:pursenal/widgets/insights/fund_balances_line_chart_card.dart';
@@ -198,10 +197,6 @@ class InsightsList extends StatelessWidget {
                               viewmodel.dailyTotalTransactions.length > 14,
                           child: AverageTransactionsBarChartCard(
                               viewmodel: viewmodel),
-                        ),
-                        Visibility(
-                          visible: viewmodel.budgetPlans.isNotEmpty,
-                          child: BudgetBarChartCard(viewmodel: viewmodel),
                         ),
                       ],
                     )

@@ -7,6 +7,7 @@ import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/screens/budget_entry_screen.dart';
+import 'package:pursenal/screens/budget_screen.dart';
 import 'package:pursenal/viewmodels/budgets_viewmodel.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
 import 'package:pursenal/widgets/shared/search_field.dart';
@@ -133,16 +134,16 @@ class BudgetsList extends StatelessWidget {
                     final b = viewmodel.fBudgetPlans[index];
                     final difference = b.expenses.values.toList().sum +
                         b.incomes.values.toList().sum;
-                    return ConstrainedBox(
-                      constraints: const BoxConstraints(
-                          maxWidth: cardWidth, minWidth: 300, minHeight: 200),
+                    return SizedBox(
+                      width: cardWidth,
                       child: Card(
-                        child: GestureDetector(
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(14),
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => BudgetEntryScreen(
+                                  builder: (context) => BudgetScreen(
                                     profile: viewmodel.profile,
                                     budgetPlan: b,
                                   ),
@@ -173,63 +174,79 @@ class BudgetsList extends StatelessWidget {
                                     ))
                                   ],
                                 ),
-                                Text(
-                                  b.budget.details,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                Visibility(
+                                  visible: b.budget.details.isNotEmpty,
+                                  child: Text(
+                                    b.budget.details,
+                                    overflow: TextOverflow.ellipsis,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
                                 ),
-                                Text(
-                                  AppLocalizations.of(context)!.incomes,
-                                  overflow: TextOverflow.ellipsis,
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                const TheDivider(
-                                  indent: 0,
-                                ),
-                                ...b.incomes.keys.map((i) => ListTile(
-                                      title: Text(
-                                        i.name,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      trailing: Text(
-                                        b.incomes[i]?.toCurrencyString(
-                                              viewmodel.profile.currency,
-                                            ) ??
-                                            "",
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    )),
                                 const SizedBox(
-                                  height: 16,
+                                  height: 4,
                                 ),
-                                Text(
-                                  AppLocalizations.of(context)!.expenses,
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const TheDivider(
-                                  indent: 0,
-                                ),
-                                ...b.expenses.keys.map((i) => ListTile(
-                                      title: Text(i.name),
-                                      trailing: Text(
-                                        b.expenses[i]?.toCurrencyString(
-                                                viewmodel.profile.currency) ??
-                                            "",
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    )),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      AppLocalizations.of(context)!.balance,
+                                      AppLocalizations.of(context)!.incomes,
+                                      overflow: TextOverflow.ellipsis,
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                    ),
+                                    Text(
+                                      b.incomes.values.sum.toCurrencyString(
+                                          viewmodel.profile.currency),
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                                const TheDivider(
+                                  indent: 0,
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.expenses,
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Text(
+                                      b.expenses.values.sum.toCurrencyString(
+                                          viewmodel.profile.currency),
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                                const TheDivider(
+                                  indent: 0,
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.savings,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .titleMedium,
+                                          .bodyLarge
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.bold),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Text(
@@ -237,11 +254,20 @@ class BudgetsList extends StatelessWidget {
                                           viewmodel.profile.currency),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .titleMedium,
+                                          .bodyLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: difference < 0
+                                                ? Colors.red
+                                                : null,
+                                          ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
                                 ),
+                                const SizedBox(
+                                  height: 4,
+                                )
                               ],
                             ),
                           ),

@@ -1,8 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
-
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
@@ -35,42 +33,47 @@ class BudgetEntryScreen extends StatelessWidget {
               Visibility(
                   visible: budgetPlan != null,
                   child: IconButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            content: Text(AppLocalizations.of(context)!
-                                .deleteBudgetWarning),
-                            actions: [
-                              TextButton(
-                                  onPressed: () async {
-                                    final hasDeleted =
-                                        await viewmodel.deleteBudget();
-                                    if (hasDeleted && context.mounted) {
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
-                                    }
-                                  },
-                                  child: Text(
-                                    AppLocalizations.of(context)!.delete,
-                                    style: const TextStyle(
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                              TextButton(
-                                  onPressed: () {
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          content: Text(AppLocalizations.of(context)!
+                              .deleteBudgetWarning),
+                          actions: [
+                            TextButton(
+                                onPressed: () async {
+                                  final hasDeleted =
+                                      await viewmodel.deleteBudget();
+                                  if (hasDeleted && context.mounted) {
                                     Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                      AppLocalizations.of(context)!.cancel))
-                            ],
-                            title: Text(AppLocalizations.of(context)!
-                                .deleteThisAccountQn),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.delete))),
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  }
+                                },
+                                child: Text(
+                                  AppLocalizations.of(context)!.delete,
+                                  style: const TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child:
+                                    Text(AppLocalizations.of(context)!.cancel))
+                          ],
+                          title: Text(
+                              AppLocalizations.of(context)!.deleteThisBudgetQn),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.delete),
+                    color: Colors.red,
+                  )),
+              const SizedBox(
+                width: 12,
+              ),
             ],
           ),
           body: LoadingBody(
@@ -266,7 +269,7 @@ class BudgetForm extends StatelessWidget {
             ),
             ListTile(
               leading: Text(
-                AppLocalizations.of(context)!.balance,
+                AppLocalizations.of(context)!.savings,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               trailing: Text(

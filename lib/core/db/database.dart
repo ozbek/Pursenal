@@ -1014,4 +1014,44 @@ class MyDatabase extends _$MyDatabase {
 
     return plans;
   }
+
+  Future<BudgetPlan> getBudgetPlanByID(int id) async {
+    final budget =
+        await (select(budgets)..where((b) => b.id.equals(id))).getSingle();
+
+    final funds = await (select(accounts)
+          ..where((a) => a.id.isInQuery(selectOnly(budgetFunds)
+            ..addColumns([budgetFunds.account])
+            ..where(budgetFunds.budget.equals(budget.id)))))
+        .get();
+
+    final budgetAccountsList = await (select(budgetAccounts)
+          ..where((ba) => ba.budget.equals(budget.id)))
+        .get();
+
+    Map<Account, int> incomes = {};
+    Map<Account, int> expenses = {};
+
+    for (var ba in budgetAccountsList) {
+      final account = await (select(accounts)
+            ..where((a) => a.id.equals(ba.account)))
+          .getSingleOrNull();
+      if (account != null) {
+        if (ba.amount > 0) {
+          incomes[account] = ba.amount;
+        } else {
+          expenses[account] = ba.amount;
+        }
+      }
+    }
+
+    BudgetPlan plan = BudgetPlan(
+      incomes,
+      expenses,
+      budget: budget,
+      funds: funds,
+    );
+
+    return plan;
+  }
 }

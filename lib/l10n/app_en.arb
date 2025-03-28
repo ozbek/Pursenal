@@ -383,6 +383,10 @@
   "@deleteAccountWarning": {
     "description": "Account deletion warning"
   },
+  "deleteThisBudgetQn": "Delete this Budget?",
+  "@deleteThisBudgetQn": {
+    "description": "Query to confirm deletion of current budget."
+  },
   "deleteBudgetWarning": "WARNING: This action will delete this budget and related entries",
   "@deleteBudgetWarning": {
     "description": "Budget deletion warning"
@@ -594,6 +598,26 @@
   "reminder": "Reminder",
   "@reminder": {
     "description": "Reminder section in settings"
+  },
+  "expected": "Expected",
+  "@expected": {
+    "description": "Expected - values for budget"
+  },
+  "budgeted": "Budgeted",
+  "@budgeted": {
+    "description": "Budgeted - values for budget"
+  },
+  "actual": "Actual",
+  "@actual": {
+    "description": "Actual - values for budget"
+  },
+  "savings": "Savings",
+  "@savings": {
+    "description": "Savings - for budget"
+  },
+  "budgetPerformance": "Budget Performance",
+  "@budgetPerformance": {
+    "description": "Budget performance"
   },
   "reminderSetTime": "Reminder set time : {time}",
   "@reminderSetTime": {
