@@ -10,6 +10,7 @@ import 'package:pursenal/core/models/ledger.dart';
 import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
 import 'package:pursenal/core/repositories/transactions_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TransactionsViewmodel extends ChangeNotifier with Exporter {
   final TransactionsDriftRepository _transactionsDriftRepository;
@@ -66,10 +67,16 @@ class TransactionsViewmodel extends ChangeNotifier with Exporter {
 
   Set<DateTime> fDates = {};
 
+  SharedPreferences? _prefs;
+
   init() async {
     try {
       loadingStatus = LoadingStatus.loading;
       notifyListeners();
+      _prefs = await SharedPreferences.getInstance();
+
+      _startDate = await _getFilterStartDate() ??
+          DateTime.now().subtract(const Duration(days: 30));
 
       scrollController.addListener(updateHeaderVisibility);
 
@@ -157,6 +164,7 @@ class TransactionsViewmodel extends ChangeNotifier with Exporter {
 
     notifyListeners();
     _filterTransactions();
+    await _setFilterStartDate();
   }
 
   _filterTransactions() {
@@ -300,6 +308,35 @@ class TransactionsViewmodel extends ChangeNotifier with Exporter {
         notifyListeners();
       }
     }
+  }
+
+  Future<void> _setFilterStartDate() async {
+    try {
+      _prefs?.setInt(
+          'filterStartDate',
+          _startDate
+              .copyWith(hour: 0, minute: 0, second: 0)
+              .millisecondsSinceEpoch);
+    } catch (e) {
+      AppLogger.instance
+          .error("Error setting Last updated timestamp ${e.toString()}");
+    }
+  }
+
+  Future<DateTime?> _getFilterStartDate() async {
+    try {
+      int? timeStamp = _prefs?.getInt(
+        'filterStartDate',
+      );
+
+      if (timeStamp != null) {
+        return DateTime.fromMillisecondsSinceEpoch(timeStamp);
+      }
+    } catch (e) {
+      AppLogger.instance
+          .error("Error setting Last updated timestamp ${e.toString()}");
+    }
+    return null;
   }
 
   @override
