@@ -4,11 +4,13 @@ import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/core/enums/primary_type.dart';
+import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
 import 'package:pursenal/core/models/budget_plan.dart';
 import 'package:pursenal/core/models/double_entry.dart';
 import 'package:pursenal/core/models/drift_models.dart';
 import 'package:pursenal/core/models/ledger.dart';
+import 'package:pursenal/core/models/project_plan.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:pursenal/utils/db_utils.dart';
 import 'package:uuid/uuid.dart';
@@ -30,6 +32,9 @@ part 'database.g.dart';
   Budgets,
   BudgetAccounts,
   BudgetFunds,
+  Projects,
+  ProjectPhotos,
+  Subscriptions,
 ])
 class MyDatabase extends _$MyDatabase {
   // we tell the database where to store the data with this constructor
@@ -241,6 +246,11 @@ class MyDatabase extends _$MyDatabase {
     }
 
     return await (delete(transactions)..where((tbl) => tbl.id.equals(id))).go();
+  }
+
+  Future<int> deleteTransactionsByProject(int id) async {
+    return await (delete(transactions)..where((tbl) => tbl.project.equals(id)))
+        .go();
   }
 
   Future<List<Transaction>> getTransactionsByProfile(int id) async {
@@ -1053,5 +1063,136 @@ class MyDatabase extends _$MyDatabase {
     );
 
     return plan;
+  }
+
+  Future<int> insertProject(ProjectsCompanion project) =>
+      into(projects).insert(project);
+  Future<bool> updateProject(ProjectsCompanion project) =>
+      update(projects).replace(project);
+  Future<int> deleteProject(int id, {bool deleteTransactions = false}) async {
+    if (deleteTransactions) {
+      final fps = await (select(projectPhotos)
+            ..where((tbl) => tbl.project.equals(id)))
+          .get();
+
+      // Delete files from FilePaths before deleting the project
+      for (final filePath in fps) {
+        try {
+          final file = File(filePath.path);
+          if (await file.exists()) {
+            await file.delete();
+          }
+        } catch (e) {
+          AppLogger.instance.error("Cannot delete project image");
+        }
+      }
+    }
+    return (delete(projects)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<Project> getProjectById(int id) =>
+      (select(projects)..where((t) => t.id.equals(id))).getSingle();
+  Future<List<Project>> getProjectsByProfile(int id) =>
+      (select(projects)..where((t) => t.profile.equals(id))).get();
+
+  Future<int> insertProjectPhoto(ProjectPhotosCompanion projectPhoto) =>
+      into(projectPhotos).insert(projectPhoto);
+  Future<bool> updateProjectPhoto(ProjectPhotosCompanion projectPhoto) =>
+      update(projectPhotos).replace(projectPhoto);
+  Future<int> deleteProjectPhoto(int id) =>
+      (delete(projectPhotos)..where((t) => t.id.equals(id))).go();
+  Future<ProjectPhoto> getProjectPhotoById(int id) =>
+      (select(projectPhotos)..where((t) => t.id.equals(id))).getSingle();
+
+  Future<int> deleteProjectPhotobyProject(int id) =>
+      (delete(projectPhotos)..where((t) => t.project.equals(id))).go();
+  Future<List<ProjectPhoto>> getProjectPhotosByProject(int id) =>
+      (select(projectPhotos)..where((t) => t.project.equals(id))).get();
+
+  Future<int> insertSubscription(SubscriptionsCompanion subscription) =>
+      into(subscriptions).insert(subscription);
+  Future<bool> updateSubscription(SubscriptionsCompanion subscription) =>
+      update(subscriptions).replace(subscription);
+  Future<int> deleteSubscription(int id) =>
+      (delete(subscriptions)..where((t) => t.id.equals(id))).go();
+  Future<Subscription> getSubscriptionById(int id) =>
+      (select(subscriptions)..where((t) => t.id.equals(id))).getSingle();
+
+  Future<ProjectPlan?> getProjectPlan(int projectId) async {
+    // Fetch the project
+    final projectQuery = await (select(projects)
+          ..where((tbl) => tbl.id.equals(projectId)))
+        .getSingleOrNull();
+
+    if (projectQuery == null) {
+      return null; // Project not found
+    }
+
+    // Fetch all related photos
+    final photos = await (select(projectPhotos)
+          ..where((tbl) => tbl.project.equals(projectId)))
+        .get();
+
+    // Fetch the associated budget (if exists)
+
+    // Construct and return the ProjectPlan
+    return ProjectPlan(
+      project: projectQuery,
+      photos: photos,
+    );
+  }
+
+  Future<List<DoubleEntry>> getDoubleEntriesbyProject(
+      {required int profileID, required int projectID, reversed = true}) async {
+    // Define aliases for accounts table to handle 'dr' and 'cr'
+    final drAccounts = alias(accounts, 'drAccounts');
+    final crAccounts = alias(accounts, 'crAccounts');
+
+    // Query to fetch transactions and their related accounts
+    final query = select(transactions).join([
+      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(transactions.dr)),
+      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(transactions.cr)),
+    ])
+      ..where(transactions.profile.equals(profileID) &
+          transactions.project.equals(projectID))
+      ..orderBy([
+        reversed
+            ? OrderingTerm.desc(transactions.vchDate)
+            : OrderingTerm.asc(transactions.vchDate)
+      ]);
+
+    // Get transaction results
+    final transactionResults = await query.get();
+
+    // Extract transaction IDs to fetch related file paths
+    final transactionIds = transactionResults.map((row) {
+      final transaction = row.readTable(transactions);
+      return transaction.id;
+    }).toList();
+
+    // Query to fetch all file paths related to the transaction IDs
+    final filePathResults = await (select(filePaths)
+          ..where((filePath) => filePath.transaction.isIn(transactionIds)))
+        .get();
+
+    // Map transaction ID to its related file paths
+    final filePathMap = <int, List<FilePath>>{};
+    for (final filePath in filePathResults) {
+      filePathMap.putIfAbsent(filePath.transaction, () => []).add(filePath);
+    }
+
+    // Map the results to the DoubleEntry model
+    return transactionResults.map((row) {
+      final transaction = row.readTable(transactions);
+      final drAccount = row.readTable(drAccounts);
+      final crAccount = row.readTable(crAccounts);
+
+      return DoubleEntry(
+        transaction: transaction,
+        drAccount: drAccount,
+        crAccount: crAccount,
+        filePaths: filePathMap[transaction.id] ?? [],
+      );
+    }).toList();
   }
 }

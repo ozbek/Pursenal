@@ -667,6 +667,33 @@ class TransactionForm extends StatelessWidget {
                                 begin: const Offset(1.02, 1.02),
                                 duration: 100.ms)
                             .fade(curve: Curves.easeInOut, duration: 100.ms),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: DropdownMenu<Project>(
+                            width: smallWidth,
+                            label: Text(
+                              AppLocalizations.of(context)!.project,
+                            ),
+                            initialSelection: viewmodel.selectedProject,
+                            dropdownMenuEntries: [
+                              ...viewmodel.projects.map(
+                                (p) => DropdownMenuEntry<Project>(
+                                    value: p,
+                                    label: p.name,
+                                    trailingIcon: Text(p.status.label)),
+                              )
+                            ],
+                            onSelected: (p) {
+                              viewmodel.selectedProject = p;
+                            },
+                          ),
+                        )
+                            .animate(delay: 120.ms)
+                            .scale(
+                                begin: const Offset(1.02, 1.02),
+                                duration: 100.ms)
+                            .fade(curve: Curves.easeInOut, duration: 100.ms),
                       ],
                     ),
                   ),

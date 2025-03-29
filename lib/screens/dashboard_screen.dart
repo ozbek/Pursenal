@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/screens/accounts_screen.dart';
 import 'package:pursenal/screens/budgets_screen.dart';
+import 'package:pursenal/screens/projects_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/dashboard_viewmodel.dart';
 import 'package:pursenal/widgets/dashboard/add_new_account_card.dart';
@@ -51,12 +52,13 @@ class DashboardScreen extends StatelessWidget {
                         viewmodel: viewmodel,
                       ),
                       Visibility(
-                          visible: viewmodel.canAddTransaction,
-                          child: AddTransactionCard(
-                            appViewmodel: appViewmodel,
-                            profile: profile,
-                            viewmodel: viewmodel,
-                          )),
+                        visible: viewmodel.canAddTransaction,
+                        child: AddTransactionCard(
+                          appViewmodel: appViewmodel,
+                          profile: profile,
+                          viewmodel: viewmodel,
+                        ),
+                      ),
                       Container(
                         padding: const EdgeInsets.all(8),
                         width: double.infinity,
@@ -88,7 +90,7 @@ class DashboardScreen extends StatelessWidget {
                                           ));
                                     },
                                     child: Container(
-                                      padding: EdgeInsets.all(16),
+                                      padding: const EdgeInsets.all(16),
                                       height: double.maxFinite,
                                       child: Row(
                                         mainAxisAlignment:
@@ -131,6 +133,55 @@ class DashboardScreen extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
+                                                ProjectsScreen(
+                                              profile:
+                                                  viewmodel.selectedProfile,
+                                            ),
+                                          ));
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(16),
+                                      height: double.maxFinite,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text(
+                                            "Projects",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge
+                                                ?.copyWith(fontSize: 18),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Icon(
+                                            Icons.assignment,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge
+                                                ?.color,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Card(
+                                  elevation: 1,
+                                  shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      borderRadius: BorderRadius.circular(14)),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(14),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
                                                 AccountsScreen(
                                               profile:
                                                   viewmodel.selectedProfile,
@@ -138,7 +189,7 @@ class DashboardScreen extends StatelessWidget {
                                           ));
                                     },
                                     child: Container(
-                                      padding: EdgeInsets.all(16),
+                                      padding: const EdgeInsets.all(16),
                                       height: double.maxFinite,
                                       child: Row(
                                         mainAxisAlignment:

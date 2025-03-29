@@ -254,13 +254,43 @@ class TransactionScreen extends StatelessWidget {
                                   const SizedBox(
                                     height: 6,
                                   ),
-                                  Text(
-                                    transaction.vchType == VoucherType.payment
-                                        ? viewmodel.doubleEntry.drAccount.name
-                                        : viewmodel.doubleEntry.crAccount.name,
-                                    overflow: TextOverflow.ellipsis,
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          transaction.vchType ==
+                                                  VoucherType.payment
+                                              ? viewmodel
+                                                  .doubleEntry.drAccount.name
+                                              : viewmodel
+                                                  .doubleEntry.crAccount.name,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge,
+                                        ),
+                                      ),
+                                      if (viewmodel.project != null)
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Chip(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(0)),
+                                              avatar: const Icon(
+                                                Icons.assignment,
+                                                color: Colors.white,
+                                              ),
+                                              color: WidgetStatePropertyAll(
+                                                  Theme.of(context)
+                                                      .primaryColor),
+                                              padding: const EdgeInsets.all(0),
+                                              label: Text(
+                                                viewmodel.project!.name,
+                                                overflow: TextOverflow.ellipsis,
+                                              )),
+                                        ),
+                                    ],
                                   ),
                                   const SizedBox(
                                     height: 12,

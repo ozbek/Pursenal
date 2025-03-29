@@ -1488,6 +1488,983 @@ class AccountsCompanion extends UpdateCompanion<Account> {
   }
 }
 
+class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BudgetsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 128),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  @override
+  late final GeneratedColumnWithTypeConverter<BudgetInterval, int> interval =
+      GeneratedColumn<int>('interval', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<BudgetInterval>($BudgetsTable.$converterinterval);
+  static const VerificationMeta _detailsMeta =
+      const VerificationMeta('details');
+  @override
+  late final GeneratedColumn<String> details = GeneratedColumn<String>(
+      'details', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 128),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _startDayMeta =
+      const VerificationMeta('startDay');
+  @override
+  late final GeneratedColumn<int> startDay = GeneratedColumn<int>(
+      'start_day', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  static const VerificationMeta _startDateMeta =
+      const VerificationMeta('startDate');
+  @override
+  late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
+      'start_date', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
+  static const VerificationMeta _profileMeta =
+      const VerificationMeta('profile');
+  @override
+  late final GeneratedColumn<int> profile = GeneratedColumn<int>(
+      'profile', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES profiles (id) ON DELETE CASCADE'));
+  static const VerificationMeta _addedDateMeta =
+      const VerificationMeta('addedDate');
+  @override
+  late final GeneratedColumn<DateTime> addedDate = GeneratedColumn<DateTime>(
+      'added_date', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
+  static const VerificationMeta _updateDateMeta =
+      const VerificationMeta('updateDate');
+  @override
+  late final GeneratedColumn<DateTime> updateDate = GeneratedColumn<DateTime>(
+      'update_date', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        interval,
+        details,
+        startDay,
+        startDate,
+        profile,
+        addedDate,
+        updateDate
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'budgets';
+  @override
+  VerificationContext validateIntegrity(Insertable<Budget> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('details')) {
+      context.handle(_detailsMeta,
+          details.isAcceptableOrUnknown(data['details']!, _detailsMeta));
+    } else if (isInserting) {
+      context.missing(_detailsMeta);
+    }
+    if (data.containsKey('start_day')) {
+      context.handle(_startDayMeta,
+          startDay.isAcceptableOrUnknown(data['start_day']!, _startDayMeta));
+    }
+    if (data.containsKey('start_date')) {
+      context.handle(_startDateMeta,
+          startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta));
+    }
+    if (data.containsKey('profile')) {
+      context.handle(_profileMeta,
+          profile.isAcceptableOrUnknown(data['profile']!, _profileMeta));
+    } else if (isInserting) {
+      context.missing(_profileMeta);
+    }
+    if (data.containsKey('added_date')) {
+      context.handle(_addedDateMeta,
+          addedDate.isAcceptableOrUnknown(data['added_date']!, _addedDateMeta));
+    }
+    if (data.containsKey('update_date')) {
+      context.handle(
+          _updateDateMeta,
+          updateDate.isAcceptableOrUnknown(
+              data['update_date']!, _updateDateMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Budget map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Budget(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      interval: $BudgetsTable.$converterinterval.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}interval'])!),
+      details: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}details'])!,
+      startDay: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}start_day'])!,
+      startDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}start_date'])!,
+      profile: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}profile'])!,
+      addedDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}added_date'])!,
+      updateDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_date'])!,
+    );
+  }
+
+  @override
+  $BudgetsTable createAlias(String alias) {
+    return $BudgetsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<BudgetInterval, int, int> $converterinterval =
+      const EnumIndexConverter<BudgetInterval>(BudgetInterval.values);
+}
+
+class Budget extends DataClass implements Insertable<Budget> {
+  final int id;
+  final String name;
+  final BudgetInterval interval;
+  final String details;
+  final int startDay;
+  final DateTime startDate;
+  final int profile;
+  final DateTime addedDate;
+  final DateTime updateDate;
+  const Budget(
+      {required this.id,
+      required this.name,
+      required this.interval,
+      required this.details,
+      required this.startDay,
+      required this.startDate,
+      required this.profile,
+      required this.addedDate,
+      required this.updateDate});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    {
+      map['interval'] =
+          Variable<int>($BudgetsTable.$converterinterval.toSql(interval));
+    }
+    map['details'] = Variable<String>(details);
+    map['start_day'] = Variable<int>(startDay);
+    map['start_date'] = Variable<DateTime>(startDate);
+    map['profile'] = Variable<int>(profile);
+    map['added_date'] = Variable<DateTime>(addedDate);
+    map['update_date'] = Variable<DateTime>(updateDate);
+    return map;
+  }
+
+  BudgetsCompanion toCompanion(bool nullToAbsent) {
+    return BudgetsCompanion(
+      id: Value(id),
+      name: Value(name),
+      interval: Value(interval),
+      details: Value(details),
+      startDay: Value(startDay),
+      startDate: Value(startDate),
+      profile: Value(profile),
+      addedDate: Value(addedDate),
+      updateDate: Value(updateDate),
+    );
+  }
+
+  factory Budget.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Budget(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      interval: $BudgetsTable.$converterinterval
+          .fromJson(serializer.fromJson<int>(json['interval'])),
+      details: serializer.fromJson<String>(json['details']),
+      startDay: serializer.fromJson<int>(json['startDay']),
+      startDate: serializer.fromJson<DateTime>(json['startDate']),
+      profile: serializer.fromJson<int>(json['profile']),
+      addedDate: serializer.fromJson<DateTime>(json['addedDate']),
+      updateDate: serializer.fromJson<DateTime>(json['updateDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'interval': serializer
+          .toJson<int>($BudgetsTable.$converterinterval.toJson(interval)),
+      'details': serializer.toJson<String>(details),
+      'startDay': serializer.toJson<int>(startDay),
+      'startDate': serializer.toJson<DateTime>(startDate),
+      'profile': serializer.toJson<int>(profile),
+      'addedDate': serializer.toJson<DateTime>(addedDate),
+      'updateDate': serializer.toJson<DateTime>(updateDate),
+    };
+  }
+
+  Budget copyWith(
+          {int? id,
+          String? name,
+          BudgetInterval? interval,
+          String? details,
+          int? startDay,
+          DateTime? startDate,
+          int? profile,
+          DateTime? addedDate,
+          DateTime? updateDate}) =>
+      Budget(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        interval: interval ?? this.interval,
+        details: details ?? this.details,
+        startDay: startDay ?? this.startDay,
+        startDate: startDate ?? this.startDate,
+        profile: profile ?? this.profile,
+        addedDate: addedDate ?? this.addedDate,
+        updateDate: updateDate ?? this.updateDate,
+      );
+  Budget copyWithCompanion(BudgetsCompanion data) {
+    return Budget(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      interval: data.interval.present ? data.interval.value : this.interval,
+      details: data.details.present ? data.details.value : this.details,
+      startDay: data.startDay.present ? data.startDay.value : this.startDay,
+      startDate: data.startDate.present ? data.startDate.value : this.startDate,
+      profile: data.profile.present ? data.profile.value : this.profile,
+      addedDate: data.addedDate.present ? data.addedDate.value : this.addedDate,
+      updateDate:
+          data.updateDate.present ? data.updateDate.value : this.updateDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Budget(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('interval: $interval, ')
+          ..write('details: $details, ')
+          ..write('startDay: $startDay, ')
+          ..write('startDate: $startDate, ')
+          ..write('profile: $profile, ')
+          ..write('addedDate: $addedDate, ')
+          ..write('updateDate: $updateDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, interval, details, startDay,
+      startDate, profile, addedDate, updateDate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Budget &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.interval == this.interval &&
+          other.details == this.details &&
+          other.startDay == this.startDay &&
+          other.startDate == this.startDate &&
+          other.profile == this.profile &&
+          other.addedDate == this.addedDate &&
+          other.updateDate == this.updateDate);
+}
+
+class BudgetsCompanion extends UpdateCompanion<Budget> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<BudgetInterval> interval;
+  final Value<String> details;
+  final Value<int> startDay;
+  final Value<DateTime> startDate;
+  final Value<int> profile;
+  final Value<DateTime> addedDate;
+  final Value<DateTime> updateDate;
+  const BudgetsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.interval = const Value.absent(),
+    this.details = const Value.absent(),
+    this.startDay = const Value.absent(),
+    this.startDate = const Value.absent(),
+    this.profile = const Value.absent(),
+    this.addedDate = const Value.absent(),
+    this.updateDate = const Value.absent(),
+  });
+  BudgetsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required BudgetInterval interval,
+    required String details,
+    this.startDay = const Value.absent(),
+    this.startDate = const Value.absent(),
+    required int profile,
+    this.addedDate = const Value.absent(),
+    this.updateDate = const Value.absent(),
+  })  : name = Value(name),
+        interval = Value(interval),
+        details = Value(details),
+        profile = Value(profile);
+  static Insertable<Budget> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? interval,
+    Expression<String>? details,
+    Expression<int>? startDay,
+    Expression<DateTime>? startDate,
+    Expression<int>? profile,
+    Expression<DateTime>? addedDate,
+    Expression<DateTime>? updateDate,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (interval != null) 'interval': interval,
+      if (details != null) 'details': details,
+      if (startDay != null) 'start_day': startDay,
+      if (startDate != null) 'start_date': startDate,
+      if (profile != null) 'profile': profile,
+      if (addedDate != null) 'added_date': addedDate,
+      if (updateDate != null) 'update_date': updateDate,
+    });
+  }
+
+  BudgetsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<BudgetInterval>? interval,
+      Value<String>? details,
+      Value<int>? startDay,
+      Value<DateTime>? startDate,
+      Value<int>? profile,
+      Value<DateTime>? addedDate,
+      Value<DateTime>? updateDate}) {
+    return BudgetsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      interval: interval ?? this.interval,
+      details: details ?? this.details,
+      startDay: startDay ?? this.startDay,
+      startDate: startDate ?? this.startDate,
+      profile: profile ?? this.profile,
+      addedDate: addedDate ?? this.addedDate,
+      updateDate: updateDate ?? this.updateDate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (interval.present) {
+      map['interval'] =
+          Variable<int>($BudgetsTable.$converterinterval.toSql(interval.value));
+    }
+    if (details.present) {
+      map['details'] = Variable<String>(details.value);
+    }
+    if (startDay.present) {
+      map['start_day'] = Variable<int>(startDay.value);
+    }
+    if (startDate.present) {
+      map['start_date'] = Variable<DateTime>(startDate.value);
+    }
+    if (profile.present) {
+      map['profile'] = Variable<int>(profile.value);
+    }
+    if (addedDate.present) {
+      map['added_date'] = Variable<DateTime>(addedDate.value);
+    }
+    if (updateDate.present) {
+      map['update_date'] = Variable<DateTime>(updateDate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BudgetsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('interval: $interval, ')
+          ..write('details: $details, ')
+          ..write('startDay: $startDay, ')
+          ..write('startDate: $startDate, ')
+          ..write('profile: $profile, ')
+          ..write('addedDate: $addedDate, ')
+          ..write('updateDate: $updateDate')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProjectsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 128),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _startDateMeta =
+      const VerificationMeta('startDate');
+  @override
+  late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
+      'start_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _profileMeta =
+      const VerificationMeta('profile');
+  @override
+  late final GeneratedColumn<int> profile = GeneratedColumn<int>(
+      'profile', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES profiles (id) ON DELETE CASCADE'));
+  static const VerificationMeta _endDateMeta =
+      const VerificationMeta('endDate');
+  @override
+  late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>(
+      'end_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumnWithTypeConverter<ProjectStatus, int> status =
+      GeneratedColumn<int>('status', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<ProjectStatus>($ProjectsTable.$converterstatus);
+  static const VerificationMeta _budgetMeta = const VerificationMeta('budget');
+  @override
+  late final GeneratedColumn<int> budget = GeneratedColumn<int>(
+      'budget', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES budgets (id) ON DELETE SET NULL'));
+  static const VerificationMeta _addedDateMeta =
+      const VerificationMeta('addedDate');
+  @override
+  late final GeneratedColumn<DateTime> addedDate = GeneratedColumn<DateTime>(
+      'added_date', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
+  static const VerificationMeta _updateDateMeta =
+      const VerificationMeta('updateDate');
+  @override
+  late final GeneratedColumn<DateTime> updateDate = GeneratedColumn<DateTime>(
+      'update_date', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        description,
+        startDate,
+        profile,
+        endDate,
+        status,
+        budget,
+        addedDate,
+        updateDate
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'projects';
+  @override
+  VerificationContext validateIntegrity(Insertable<Project> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('start_date')) {
+      context.handle(_startDateMeta,
+          startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta));
+    }
+    if (data.containsKey('profile')) {
+      context.handle(_profileMeta,
+          profile.isAcceptableOrUnknown(data['profile']!, _profileMeta));
+    } else if (isInserting) {
+      context.missing(_profileMeta);
+    }
+    if (data.containsKey('end_date')) {
+      context.handle(_endDateMeta,
+          endDate.isAcceptableOrUnknown(data['end_date']!, _endDateMeta));
+    }
+    if (data.containsKey('budget')) {
+      context.handle(_budgetMeta,
+          budget.isAcceptableOrUnknown(data['budget']!, _budgetMeta));
+    }
+    if (data.containsKey('added_date')) {
+      context.handle(_addedDateMeta,
+          addedDate.isAcceptableOrUnknown(data['added_date']!, _addedDateMeta));
+    }
+    if (data.containsKey('update_date')) {
+      context.handle(
+          _updateDateMeta,
+          updateDate.isAcceptableOrUnknown(
+              data['update_date']!, _updateDateMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Project map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Project(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+      startDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}start_date']),
+      profile: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}profile'])!,
+      endDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}end_date']),
+      status: $ProjectsTable.$converterstatus.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}status'])!),
+      budget: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}budget']),
+      addedDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}added_date'])!,
+      updateDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_date'])!,
+    );
+  }
+
+  @override
+  $ProjectsTable createAlias(String alias) {
+    return $ProjectsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ProjectStatus, int, int> $converterstatus =
+      const EnumIndexConverter<ProjectStatus>(ProjectStatus.values);
+}
+
+class Project extends DataClass implements Insertable<Project> {
+  final int id;
+  final String name;
+  final String? description;
+  final DateTime? startDate;
+  final int profile;
+  final DateTime? endDate;
+  final ProjectStatus status;
+  final int? budget;
+  final DateTime addedDate;
+  final DateTime updateDate;
+  const Project(
+      {required this.id,
+      required this.name,
+      this.description,
+      this.startDate,
+      required this.profile,
+      this.endDate,
+      required this.status,
+      this.budget,
+      required this.addedDate,
+      required this.updateDate});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || startDate != null) {
+      map['start_date'] = Variable<DateTime>(startDate);
+    }
+    map['profile'] = Variable<int>(profile);
+    if (!nullToAbsent || endDate != null) {
+      map['end_date'] = Variable<DateTime>(endDate);
+    }
+    {
+      map['status'] =
+          Variable<int>($ProjectsTable.$converterstatus.toSql(status));
+    }
+    if (!nullToAbsent || budget != null) {
+      map['budget'] = Variable<int>(budget);
+    }
+    map['added_date'] = Variable<DateTime>(addedDate);
+    map['update_date'] = Variable<DateTime>(updateDate);
+    return map;
+  }
+
+  ProjectsCompanion toCompanion(bool nullToAbsent) {
+    return ProjectsCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      startDate: startDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startDate),
+      profile: Value(profile),
+      endDate: endDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endDate),
+      status: Value(status),
+      budget:
+          budget == null && nullToAbsent ? const Value.absent() : Value(budget),
+      addedDate: Value(addedDate),
+      updateDate: Value(updateDate),
+    );
+  }
+
+  factory Project.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Project(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String?>(json['description']),
+      startDate: serializer.fromJson<DateTime?>(json['startDate']),
+      profile: serializer.fromJson<int>(json['profile']),
+      endDate: serializer.fromJson<DateTime?>(json['endDate']),
+      status: $ProjectsTable.$converterstatus
+          .fromJson(serializer.fromJson<int>(json['status'])),
+      budget: serializer.fromJson<int?>(json['budget']),
+      addedDate: serializer.fromJson<DateTime>(json['addedDate']),
+      updateDate: serializer.fromJson<DateTime>(json['updateDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String?>(description),
+      'startDate': serializer.toJson<DateTime?>(startDate),
+      'profile': serializer.toJson<int>(profile),
+      'endDate': serializer.toJson<DateTime?>(endDate),
+      'status': serializer
+          .toJson<int>($ProjectsTable.$converterstatus.toJson(status)),
+      'budget': serializer.toJson<int?>(budget),
+      'addedDate': serializer.toJson<DateTime>(addedDate),
+      'updateDate': serializer.toJson<DateTime>(updateDate),
+    };
+  }
+
+  Project copyWith(
+          {int? id,
+          String? name,
+          Value<String?> description = const Value.absent(),
+          Value<DateTime?> startDate = const Value.absent(),
+          int? profile,
+          Value<DateTime?> endDate = const Value.absent(),
+          ProjectStatus? status,
+          Value<int?> budget = const Value.absent(),
+          DateTime? addedDate,
+          DateTime? updateDate}) =>
+      Project(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description.present ? description.value : this.description,
+        startDate: startDate.present ? startDate.value : this.startDate,
+        profile: profile ?? this.profile,
+        endDate: endDate.present ? endDate.value : this.endDate,
+        status: status ?? this.status,
+        budget: budget.present ? budget.value : this.budget,
+        addedDate: addedDate ?? this.addedDate,
+        updateDate: updateDate ?? this.updateDate,
+      );
+  Project copyWithCompanion(ProjectsCompanion data) {
+    return Project(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      startDate: data.startDate.present ? data.startDate.value : this.startDate,
+      profile: data.profile.present ? data.profile.value : this.profile,
+      endDate: data.endDate.present ? data.endDate.value : this.endDate,
+      status: data.status.present ? data.status.value : this.status,
+      budget: data.budget.present ? data.budget.value : this.budget,
+      addedDate: data.addedDate.present ? data.addedDate.value : this.addedDate,
+      updateDate:
+          data.updateDate.present ? data.updateDate.value : this.updateDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Project(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('startDate: $startDate, ')
+          ..write('profile: $profile, ')
+          ..write('endDate: $endDate, ')
+          ..write('status: $status, ')
+          ..write('budget: $budget, ')
+          ..write('addedDate: $addedDate, ')
+          ..write('updateDate: $updateDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, description, startDate, profile,
+      endDate, status, budget, addedDate, updateDate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Project &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.startDate == this.startDate &&
+          other.profile == this.profile &&
+          other.endDate == this.endDate &&
+          other.status == this.status &&
+          other.budget == this.budget &&
+          other.addedDate == this.addedDate &&
+          other.updateDate == this.updateDate);
+}
+
+class ProjectsCompanion extends UpdateCompanion<Project> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String?> description;
+  final Value<DateTime?> startDate;
+  final Value<int> profile;
+  final Value<DateTime?> endDate;
+  final Value<ProjectStatus> status;
+  final Value<int?> budget;
+  final Value<DateTime> addedDate;
+  final Value<DateTime> updateDate;
+  const ProjectsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.startDate = const Value.absent(),
+    this.profile = const Value.absent(),
+    this.endDate = const Value.absent(),
+    this.status = const Value.absent(),
+    this.budget = const Value.absent(),
+    this.addedDate = const Value.absent(),
+    this.updateDate = const Value.absent(),
+  });
+  ProjectsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.description = const Value.absent(),
+    this.startDate = const Value.absent(),
+    required int profile,
+    this.endDate = const Value.absent(),
+    required ProjectStatus status,
+    this.budget = const Value.absent(),
+    this.addedDate = const Value.absent(),
+    this.updateDate = const Value.absent(),
+  })  : name = Value(name),
+        profile = Value(profile),
+        status = Value(status);
+  static Insertable<Project> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<DateTime>? startDate,
+    Expression<int>? profile,
+    Expression<DateTime>? endDate,
+    Expression<int>? status,
+    Expression<int>? budget,
+    Expression<DateTime>? addedDate,
+    Expression<DateTime>? updateDate,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (startDate != null) 'start_date': startDate,
+      if (profile != null) 'profile': profile,
+      if (endDate != null) 'end_date': endDate,
+      if (status != null) 'status': status,
+      if (budget != null) 'budget': budget,
+      if (addedDate != null) 'added_date': addedDate,
+      if (updateDate != null) 'update_date': updateDate,
+    });
+  }
+
+  ProjectsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String?>? description,
+      Value<DateTime?>? startDate,
+      Value<int>? profile,
+      Value<DateTime?>? endDate,
+      Value<ProjectStatus>? status,
+      Value<int?>? budget,
+      Value<DateTime>? addedDate,
+      Value<DateTime>? updateDate}) {
+    return ProjectsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      startDate: startDate ?? this.startDate,
+      profile: profile ?? this.profile,
+      endDate: endDate ?? this.endDate,
+      status: status ?? this.status,
+      budget: budget ?? this.budget,
+      addedDate: addedDate ?? this.addedDate,
+      updateDate: updateDate ?? this.updateDate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (startDate.present) {
+      map['start_date'] = Variable<DateTime>(startDate.value);
+    }
+    if (profile.present) {
+      map['profile'] = Variable<int>(profile.value);
+    }
+    if (endDate.present) {
+      map['end_date'] = Variable<DateTime>(endDate.value);
+    }
+    if (status.present) {
+      map['status'] =
+          Variable<int>($ProjectsTable.$converterstatus.toSql(status.value));
+    }
+    if (budget.present) {
+      map['budget'] = Variable<int>(budget.value);
+    }
+    if (addedDate.present) {
+      map['added_date'] = Variable<DateTime>(addedDate.value);
+    }
+    if (updateDate.present) {
+      map['update_date'] = Variable<DateTime>(updateDate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('startDate: $startDate, ')
+          ..write('profile: $profile, ')
+          ..write('endDate: $endDate, ')
+          ..write('status: $status, ')
+          ..write('budget: $budget, ')
+          ..write('addedDate: $addedDate, ')
+          ..write('updateDate: $updateDate')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TransactionsTable extends Transactions
     with TableInfo<$TransactionsTable, Transaction> {
   @override
@@ -1562,6 +2539,15 @@ class $TransactionsTable extends Transactions
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES profiles (id) ON DELETE CASCADE'));
+  static const VerificationMeta _projectMeta =
+      const VerificationMeta('project');
+  @override
+  late final GeneratedColumn<int> project = GeneratedColumn<int>(
+      'project', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES projects (id) ON DELETE SET NULL'));
   static const VerificationMeta _addedDateMeta =
       const VerificationMeta('addedDate');
   @override
@@ -1589,6 +2575,7 @@ class $TransactionsTable extends Transactions
         cr,
         amount,
         profile,
+        project,
         addedDate,
         updateDate
       ];
@@ -1643,6 +2630,10 @@ class $TransactionsTable extends Transactions
     } else if (isInserting) {
       context.missing(_profileMeta);
     }
+    if (data.containsKey('project')) {
+      context.handle(_projectMeta,
+          project.isAcceptableOrUnknown(data['project']!, _projectMeta));
+    }
     if (data.containsKey('added_date')) {
       context.handle(_addedDateMeta,
           addedDate.isAcceptableOrUnknown(data['added_date']!, _addedDateMeta));
@@ -1681,6 +2672,8 @@ class $TransactionsTable extends Transactions
           .read(DriftSqlType.int, data['${effectivePrefix}amount'])!,
       profile: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}profile'])!,
+      project: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}project']),
       addedDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}added_date'])!,
       updateDate: attachedDatabase.typeMapping
@@ -1707,6 +2700,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final int cr;
   final int amount;
   final int profile;
+  final int? project;
   final DateTime addedDate;
   final DateTime updateDate;
   const Transaction(
@@ -1719,6 +2713,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       required this.cr,
       required this.amount,
       required this.profile,
+      this.project,
       required this.addedDate,
       required this.updateDate});
   @override
@@ -1736,6 +2731,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     map['cr'] = Variable<int>(cr);
     map['amount'] = Variable<int>(amount);
     map['profile'] = Variable<int>(profile);
+    if (!nullToAbsent || project != null) {
+      map['project'] = Variable<int>(project);
+    }
     map['added_date'] = Variable<DateTime>(addedDate);
     map['update_date'] = Variable<DateTime>(updateDate);
     return map;
@@ -1752,6 +2750,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       cr: Value(cr),
       amount: Value(amount),
       profile: Value(profile),
+      project: project == null && nullToAbsent
+          ? const Value.absent()
+          : Value(project),
       addedDate: Value(addedDate),
       updateDate: Value(updateDate),
     );
@@ -1771,6 +2772,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       cr: serializer.fromJson<int>(json['cr']),
       amount: serializer.fromJson<int>(json['amount']),
       profile: serializer.fromJson<int>(json['profile']),
+      project: serializer.fromJson<int?>(json['project']),
       addedDate: serializer.fromJson<DateTime>(json['addedDate']),
       updateDate: serializer.fromJson<DateTime>(json['updateDate']),
     );
@@ -1789,6 +2791,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'cr': serializer.toJson<int>(cr),
       'amount': serializer.toJson<int>(amount),
       'profile': serializer.toJson<int>(profile),
+      'project': serializer.toJson<int?>(project),
       'addedDate': serializer.toJson<DateTime>(addedDate),
       'updateDate': serializer.toJson<DateTime>(updateDate),
     };
@@ -1804,6 +2807,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           int? cr,
           int? amount,
           int? profile,
+          Value<int?> project = const Value.absent(),
           DateTime? addedDate,
           DateTime? updateDate}) =>
       Transaction(
@@ -1816,6 +2820,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
         cr: cr ?? this.cr,
         amount: amount ?? this.amount,
         profile: profile ?? this.profile,
+        project: project.present ? project.value : this.project,
         addedDate: addedDate ?? this.addedDate,
         updateDate: updateDate ?? this.updateDate,
       );
@@ -1830,6 +2835,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       cr: data.cr.present ? data.cr.value : this.cr,
       amount: data.amount.present ? data.amount.value : this.amount,
       profile: data.profile.present ? data.profile.value : this.profile,
+      project: data.project.present ? data.project.value : this.project,
       addedDate: data.addedDate.present ? data.addedDate.value : this.addedDate,
       updateDate:
           data.updateDate.present ? data.updateDate.value : this.updateDate,
@@ -1848,6 +2854,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('cr: $cr, ')
           ..write('amount: $amount, ')
           ..write('profile: $profile, ')
+          ..write('project: $project, ')
           ..write('addedDate: $addedDate, ')
           ..write('updateDate: $updateDate')
           ..write(')'))
@@ -1856,7 +2863,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
 
   @override
   int get hashCode => Object.hash(id, vchDate, narr, refNo, vchType, dr, cr,
-      amount, profile, addedDate, updateDate);
+      amount, profile, project, addedDate, updateDate);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1870,6 +2877,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.cr == this.cr &&
           other.amount == this.amount &&
           other.profile == this.profile &&
+          other.project == this.project &&
           other.addedDate == this.addedDate &&
           other.updateDate == this.updateDate);
 }
@@ -1884,6 +2892,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<int> cr;
   final Value<int> amount;
   final Value<int> profile;
+  final Value<int?> project;
   final Value<DateTime> addedDate;
   final Value<DateTime> updateDate;
   const TransactionsCompanion({
@@ -1896,6 +2905,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.cr = const Value.absent(),
     this.amount = const Value.absent(),
     this.profile = const Value.absent(),
+    this.project = const Value.absent(),
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
   });
@@ -1909,6 +2919,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     required int cr,
     this.amount = const Value.absent(),
     required int profile,
+    this.project = const Value.absent(),
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
   })  : vchDate = Value(vchDate),
@@ -1928,6 +2939,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Expression<int>? cr,
     Expression<int>? amount,
     Expression<int>? profile,
+    Expression<int>? project,
     Expression<DateTime>? addedDate,
     Expression<DateTime>? updateDate,
   }) {
@@ -1941,6 +2953,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       if (cr != null) 'cr': cr,
       if (amount != null) 'amount': amount,
       if (profile != null) 'profile': profile,
+      if (project != null) 'project': project,
       if (addedDate != null) 'added_date': addedDate,
       if (updateDate != null) 'update_date': updateDate,
     });
@@ -1956,6 +2969,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       Value<int>? cr,
       Value<int>? amount,
       Value<int>? profile,
+      Value<int?>? project,
       Value<DateTime>? addedDate,
       Value<DateTime>? updateDate}) {
     return TransactionsCompanion(
@@ -1968,6 +2982,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       cr: cr ?? this.cr,
       amount: amount ?? this.amount,
       profile: profile ?? this.profile,
+      project: project ?? this.project,
       addedDate: addedDate ?? this.addedDate,
       updateDate: updateDate ?? this.updateDate,
     );
@@ -2004,6 +3019,9 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (profile.present) {
       map['profile'] = Variable<int>(profile.value);
     }
+    if (project.present) {
+      map['project'] = Variable<int>(project.value);
+    }
     if (addedDate.present) {
       map['added_date'] = Variable<DateTime>(addedDate.value);
     }
@@ -2025,6 +3043,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
           ..write('cr: $cr, ')
           ..write('amount: $amount, ')
           ..write('profile: $profile, ')
+          ..write('project: $project, ')
           ..write('addedDate: $addedDate, ')
           ..write('updateDate: $updateDate')
           ..write(')'))
@@ -4171,472 +5190,6 @@ class FilePathsCompanion extends UpdateCompanion<FilePath> {
   }
 }
 
-class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $BudgetsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 128),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  @override
-  late final GeneratedColumnWithTypeConverter<BudgetInterval, int> interval =
-      GeneratedColumn<int>('interval', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<BudgetInterval>($BudgetsTable.$converterinterval);
-  static const VerificationMeta _detailsMeta =
-      const VerificationMeta('details');
-  @override
-  late final GeneratedColumn<String> details = GeneratedColumn<String>(
-      'details', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 128),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _startDayMeta =
-      const VerificationMeta('startDay');
-  @override
-  late final GeneratedColumn<int> startDay = GeneratedColumn<int>(
-      'start_day', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(1));
-  static const VerificationMeta _startDateMeta =
-      const VerificationMeta('startDate');
-  @override
-  late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
-      'start_date', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      clientDefault: () => DateTime.now());
-  static const VerificationMeta _profileMeta =
-      const VerificationMeta('profile');
-  @override
-  late final GeneratedColumn<int> profile = GeneratedColumn<int>(
-      'profile', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES profiles (id) ON DELETE CASCADE'));
-  static const VerificationMeta _addedDateMeta =
-      const VerificationMeta('addedDate');
-  @override
-  late final GeneratedColumn<DateTime> addedDate = GeneratedColumn<DateTime>(
-      'added_date', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      clientDefault: () => DateTime.now());
-  static const VerificationMeta _updateDateMeta =
-      const VerificationMeta('updateDate');
-  @override
-  late final GeneratedColumn<DateTime> updateDate = GeneratedColumn<DateTime>(
-      'update_date', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      clientDefault: () => DateTime.now());
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        name,
-        interval,
-        details,
-        startDay,
-        startDate,
-        profile,
-        addedDate,
-        updateDate
-      ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'budgets';
-  @override
-  VerificationContext validateIntegrity(Insertable<Budget> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('details')) {
-      context.handle(_detailsMeta,
-          details.isAcceptableOrUnknown(data['details']!, _detailsMeta));
-    } else if (isInserting) {
-      context.missing(_detailsMeta);
-    }
-    if (data.containsKey('start_day')) {
-      context.handle(_startDayMeta,
-          startDay.isAcceptableOrUnknown(data['start_day']!, _startDayMeta));
-    }
-    if (data.containsKey('start_date')) {
-      context.handle(_startDateMeta,
-          startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta));
-    }
-    if (data.containsKey('profile')) {
-      context.handle(_profileMeta,
-          profile.isAcceptableOrUnknown(data['profile']!, _profileMeta));
-    } else if (isInserting) {
-      context.missing(_profileMeta);
-    }
-    if (data.containsKey('added_date')) {
-      context.handle(_addedDateMeta,
-          addedDate.isAcceptableOrUnknown(data['added_date']!, _addedDateMeta));
-    }
-    if (data.containsKey('update_date')) {
-      context.handle(
-          _updateDateMeta,
-          updateDate.isAcceptableOrUnknown(
-              data['update_date']!, _updateDateMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Budget map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Budget(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      interval: $BudgetsTable.$converterinterval.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}interval'])!),
-      details: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}details'])!,
-      startDay: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}start_day'])!,
-      startDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}start_date'])!,
-      profile: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}profile'])!,
-      addedDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}added_date'])!,
-      updateDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_date'])!,
-    );
-  }
-
-  @override
-  $BudgetsTable createAlias(String alias) {
-    return $BudgetsTable(attachedDatabase, alias);
-  }
-
-  static JsonTypeConverter2<BudgetInterval, int, int> $converterinterval =
-      const EnumIndexConverter<BudgetInterval>(BudgetInterval.values);
-}
-
-class Budget extends DataClass implements Insertable<Budget> {
-  final int id;
-  final String name;
-  final BudgetInterval interval;
-  final String details;
-  final int startDay;
-  final DateTime startDate;
-  final int profile;
-  final DateTime addedDate;
-  final DateTime updateDate;
-  const Budget(
-      {required this.id,
-      required this.name,
-      required this.interval,
-      required this.details,
-      required this.startDay,
-      required this.startDate,
-      required this.profile,
-      required this.addedDate,
-      required this.updateDate});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
-    {
-      map['interval'] =
-          Variable<int>($BudgetsTable.$converterinterval.toSql(interval));
-    }
-    map['details'] = Variable<String>(details);
-    map['start_day'] = Variable<int>(startDay);
-    map['start_date'] = Variable<DateTime>(startDate);
-    map['profile'] = Variable<int>(profile);
-    map['added_date'] = Variable<DateTime>(addedDate);
-    map['update_date'] = Variable<DateTime>(updateDate);
-    return map;
-  }
-
-  BudgetsCompanion toCompanion(bool nullToAbsent) {
-    return BudgetsCompanion(
-      id: Value(id),
-      name: Value(name),
-      interval: Value(interval),
-      details: Value(details),
-      startDay: Value(startDay),
-      startDate: Value(startDate),
-      profile: Value(profile),
-      addedDate: Value(addedDate),
-      updateDate: Value(updateDate),
-    );
-  }
-
-  factory Budget.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Budget(
-      id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      interval: $BudgetsTable.$converterinterval
-          .fromJson(serializer.fromJson<int>(json['interval'])),
-      details: serializer.fromJson<String>(json['details']),
-      startDay: serializer.fromJson<int>(json['startDay']),
-      startDate: serializer.fromJson<DateTime>(json['startDate']),
-      profile: serializer.fromJson<int>(json['profile']),
-      addedDate: serializer.fromJson<DateTime>(json['addedDate']),
-      updateDate: serializer.fromJson<DateTime>(json['updateDate']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
-      'interval': serializer
-          .toJson<int>($BudgetsTable.$converterinterval.toJson(interval)),
-      'details': serializer.toJson<String>(details),
-      'startDay': serializer.toJson<int>(startDay),
-      'startDate': serializer.toJson<DateTime>(startDate),
-      'profile': serializer.toJson<int>(profile),
-      'addedDate': serializer.toJson<DateTime>(addedDate),
-      'updateDate': serializer.toJson<DateTime>(updateDate),
-    };
-  }
-
-  Budget copyWith(
-          {int? id,
-          String? name,
-          BudgetInterval? interval,
-          String? details,
-          int? startDay,
-          DateTime? startDate,
-          int? profile,
-          DateTime? addedDate,
-          DateTime? updateDate}) =>
-      Budget(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        interval: interval ?? this.interval,
-        details: details ?? this.details,
-        startDay: startDay ?? this.startDay,
-        startDate: startDate ?? this.startDate,
-        profile: profile ?? this.profile,
-        addedDate: addedDate ?? this.addedDate,
-        updateDate: updateDate ?? this.updateDate,
-      );
-  Budget copyWithCompanion(BudgetsCompanion data) {
-    return Budget(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      interval: data.interval.present ? data.interval.value : this.interval,
-      details: data.details.present ? data.details.value : this.details,
-      startDay: data.startDay.present ? data.startDay.value : this.startDay,
-      startDate: data.startDate.present ? data.startDate.value : this.startDate,
-      profile: data.profile.present ? data.profile.value : this.profile,
-      addedDate: data.addedDate.present ? data.addedDate.value : this.addedDate,
-      updateDate:
-          data.updateDate.present ? data.updateDate.value : this.updateDate,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('Budget(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('interval: $interval, ')
-          ..write('details: $details, ')
-          ..write('startDay: $startDay, ')
-          ..write('startDate: $startDate, ')
-          ..write('profile: $profile, ')
-          ..write('addedDate: $addedDate, ')
-          ..write('updateDate: $updateDate')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, name, interval, details, startDay,
-      startDate, profile, addedDate, updateDate);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Budget &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.interval == this.interval &&
-          other.details == this.details &&
-          other.startDay == this.startDay &&
-          other.startDate == this.startDate &&
-          other.profile == this.profile &&
-          other.addedDate == this.addedDate &&
-          other.updateDate == this.updateDate);
-}
-
-class BudgetsCompanion extends UpdateCompanion<Budget> {
-  final Value<int> id;
-  final Value<String> name;
-  final Value<BudgetInterval> interval;
-  final Value<String> details;
-  final Value<int> startDay;
-  final Value<DateTime> startDate;
-  final Value<int> profile;
-  final Value<DateTime> addedDate;
-  final Value<DateTime> updateDate;
-  const BudgetsCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.interval = const Value.absent(),
-    this.details = const Value.absent(),
-    this.startDay = const Value.absent(),
-    this.startDate = const Value.absent(),
-    this.profile = const Value.absent(),
-    this.addedDate = const Value.absent(),
-    this.updateDate = const Value.absent(),
-  });
-  BudgetsCompanion.insert({
-    this.id = const Value.absent(),
-    required String name,
-    required BudgetInterval interval,
-    required String details,
-    this.startDay = const Value.absent(),
-    this.startDate = const Value.absent(),
-    required int profile,
-    this.addedDate = const Value.absent(),
-    this.updateDate = const Value.absent(),
-  })  : name = Value(name),
-        interval = Value(interval),
-        details = Value(details),
-        profile = Value(profile);
-  static Insertable<Budget> custom({
-    Expression<int>? id,
-    Expression<String>? name,
-    Expression<int>? interval,
-    Expression<String>? details,
-    Expression<int>? startDay,
-    Expression<DateTime>? startDate,
-    Expression<int>? profile,
-    Expression<DateTime>? addedDate,
-    Expression<DateTime>? updateDate,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (interval != null) 'interval': interval,
-      if (details != null) 'details': details,
-      if (startDay != null) 'start_day': startDay,
-      if (startDate != null) 'start_date': startDate,
-      if (profile != null) 'profile': profile,
-      if (addedDate != null) 'added_date': addedDate,
-      if (updateDate != null) 'update_date': updateDate,
-    });
-  }
-
-  BudgetsCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? name,
-      Value<BudgetInterval>? interval,
-      Value<String>? details,
-      Value<int>? startDay,
-      Value<DateTime>? startDate,
-      Value<int>? profile,
-      Value<DateTime>? addedDate,
-      Value<DateTime>? updateDate}) {
-    return BudgetsCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      interval: interval ?? this.interval,
-      details: details ?? this.details,
-      startDay: startDay ?? this.startDay,
-      startDate: startDate ?? this.startDate,
-      profile: profile ?? this.profile,
-      addedDate: addedDate ?? this.addedDate,
-      updateDate: updateDate ?? this.updateDate,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (interval.present) {
-      map['interval'] =
-          Variable<int>($BudgetsTable.$converterinterval.toSql(interval.value));
-    }
-    if (details.present) {
-      map['details'] = Variable<String>(details.value);
-    }
-    if (startDay.present) {
-      map['start_day'] = Variable<int>(startDay.value);
-    }
-    if (startDate.present) {
-      map['start_date'] = Variable<DateTime>(startDate.value);
-    }
-    if (profile.present) {
-      map['profile'] = Variable<int>(profile.value);
-    }
-    if (addedDate.present) {
-      map['added_date'] = Variable<DateTime>(addedDate.value);
-    }
-    if (updateDate.present) {
-      map['update_date'] = Variable<DateTime>(updateDate.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('BudgetsCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('interval: $interval, ')
-          ..write('details: $details, ')
-          ..write('startDay: $startDay, ')
-          ..write('startDate: $startDate, ')
-          ..write('profile: $profile, ')
-          ..write('addedDate: $addedDate, ')
-          ..write('updateDate: $updateDate')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $BudgetAccountsTable extends BudgetAccounts
     with TableInfo<$BudgetAccountsTable, BudgetAccount> {
   @override
@@ -5118,12 +5671,653 @@ class BudgetFundsCompanion extends UpdateCompanion<BudgetFund> {
   }
 }
 
+class $ProjectPhotosTable extends ProjectPhotos
+    with TableInfo<$ProjectPhotosTable, ProjectPhoto> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProjectPhotosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _projectMeta =
+      const VerificationMeta('project');
+  @override
+  late final GeneratedColumn<int> project = GeneratedColumn<int>(
+      'project', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES projects (id) ON DELETE CASCADE'));
+  static const VerificationMeta _pathMeta = const VerificationMeta('path');
+  @override
+  late final GeneratedColumn<String> path = GeneratedColumn<String>(
+      'path', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 512),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, project, path];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'project_photos';
+  @override
+  VerificationContext validateIntegrity(Insertable<ProjectPhoto> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('project')) {
+      context.handle(_projectMeta,
+          project.isAcceptableOrUnknown(data['project']!, _projectMeta));
+    } else if (isInserting) {
+      context.missing(_projectMeta);
+    }
+    if (data.containsKey('path')) {
+      context.handle(
+          _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
+    } else if (isInserting) {
+      context.missing(_pathMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProjectPhoto map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProjectPhoto(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      project: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}project'])!,
+      path: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
+    );
+  }
+
+  @override
+  $ProjectPhotosTable createAlias(String alias) {
+    return $ProjectPhotosTable(attachedDatabase, alias);
+  }
+}
+
+class ProjectPhoto extends DataClass implements Insertable<ProjectPhoto> {
+  final int id;
+  final int project;
+  final String path;
+  const ProjectPhoto(
+      {required this.id, required this.project, required this.path});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['project'] = Variable<int>(project);
+    map['path'] = Variable<String>(path);
+    return map;
+  }
+
+  ProjectPhotosCompanion toCompanion(bool nullToAbsent) {
+    return ProjectPhotosCompanion(
+      id: Value(id),
+      project: Value(project),
+      path: Value(path),
+    );
+  }
+
+  factory ProjectPhoto.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProjectPhoto(
+      id: serializer.fromJson<int>(json['id']),
+      project: serializer.fromJson<int>(json['project']),
+      path: serializer.fromJson<String>(json['path']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'project': serializer.toJson<int>(project),
+      'path': serializer.toJson<String>(path),
+    };
+  }
+
+  ProjectPhoto copyWith({int? id, int? project, String? path}) => ProjectPhoto(
+        id: id ?? this.id,
+        project: project ?? this.project,
+        path: path ?? this.path,
+      );
+  ProjectPhoto copyWithCompanion(ProjectPhotosCompanion data) {
+    return ProjectPhoto(
+      id: data.id.present ? data.id.value : this.id,
+      project: data.project.present ? data.project.value : this.project,
+      path: data.path.present ? data.path.value : this.path,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectPhoto(')
+          ..write('id: $id, ')
+          ..write('project: $project, ')
+          ..write('path: $path')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, project, path);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProjectPhoto &&
+          other.id == this.id &&
+          other.project == this.project &&
+          other.path == this.path);
+}
+
+class ProjectPhotosCompanion extends UpdateCompanion<ProjectPhoto> {
+  final Value<int> id;
+  final Value<int> project;
+  final Value<String> path;
+  const ProjectPhotosCompanion({
+    this.id = const Value.absent(),
+    this.project = const Value.absent(),
+    this.path = const Value.absent(),
+  });
+  ProjectPhotosCompanion.insert({
+    this.id = const Value.absent(),
+    required int project,
+    required String path,
+  })  : project = Value(project),
+        path = Value(path);
+  static Insertable<ProjectPhoto> custom({
+    Expression<int>? id,
+    Expression<int>? project,
+    Expression<String>? path,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (project != null) 'project': project,
+      if (path != null) 'path': path,
+    });
+  }
+
+  ProjectPhotosCompanion copyWith(
+      {Value<int>? id, Value<int>? project, Value<String>? path}) {
+    return ProjectPhotosCompanion(
+      id: id ?? this.id,
+      project: project ?? this.project,
+      path: path ?? this.path,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (project.present) {
+      map['project'] = Variable<int>(project.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(path.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectPhotosCompanion(')
+          ..write('id: $id, ')
+          ..write('project: $project, ')
+          ..write('path: $path')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SubscriptionsTable extends Subscriptions
+    with TableInfo<$SubscriptionsTable, Subscription> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SubscriptionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _accountMeta =
+      const VerificationMeta('account');
+  @override
+  late final GeneratedColumn<int> account = GeneratedColumn<int>(
+      'account', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES accounts (id) ON DELETE CASCADE'));
+  static const VerificationMeta _profileMeta =
+      const VerificationMeta('profile');
+  @override
+  late final GeneratedColumn<int> profile = GeneratedColumn<int>(
+      'profile', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES profiles (id) ON DELETE CASCADE'));
+  @override
+  late final GeneratedColumnWithTypeConverter<BudgetInterval, int> interval =
+      GeneratedColumn<int>('interval', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<BudgetInterval>(
+              $SubscriptionsTable.$converterinterval);
+  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  @override
+  late final GeneratedColumn<int> day = GeneratedColumn<int>(
+      'day', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+      'amount', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _addedDateMeta =
+      const VerificationMeta('addedDate');
+  @override
+  late final GeneratedColumn<DateTime> addedDate = GeneratedColumn<DateTime>(
+      'added_date', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
+  static const VerificationMeta _updateDateMeta =
+      const VerificationMeta('updateDate');
+  @override
+  late final GeneratedColumn<DateTime> updateDate = GeneratedColumn<DateTime>(
+      'update_date', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, account, profile, interval, day, amount, addedDate, updateDate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'subscriptions';
+  @override
+  VerificationContext validateIntegrity(Insertable<Subscription> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('account')) {
+      context.handle(_accountMeta,
+          account.isAcceptableOrUnknown(data['account']!, _accountMeta));
+    } else if (isInserting) {
+      context.missing(_accountMeta);
+    }
+    if (data.containsKey('profile')) {
+      context.handle(_profileMeta,
+          profile.isAcceptableOrUnknown(data['profile']!, _profileMeta));
+    } else if (isInserting) {
+      context.missing(_profileMeta);
+    }
+    if (data.containsKey('day')) {
+      context.handle(
+          _dayMeta, day.isAcceptableOrUnknown(data['day']!, _dayMeta));
+    }
+    if (data.containsKey('amount')) {
+      context.handle(_amountMeta,
+          amount.isAcceptableOrUnknown(data['amount']!, _amountMeta));
+    }
+    if (data.containsKey('added_date')) {
+      context.handle(_addedDateMeta,
+          addedDate.isAcceptableOrUnknown(data['added_date']!, _addedDateMeta));
+    }
+    if (data.containsKey('update_date')) {
+      context.handle(
+          _updateDateMeta,
+          updateDate.isAcceptableOrUnknown(
+              data['update_date']!, _updateDateMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Subscription map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Subscription(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      account: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}account'])!,
+      profile: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}profile'])!,
+      interval: $SubscriptionsTable.$converterinterval.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}interval'])!),
+      day: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}day'])!,
+      amount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}amount'])!,
+      addedDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}added_date'])!,
+      updateDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_date'])!,
+    );
+  }
+
+  @override
+  $SubscriptionsTable createAlias(String alias) {
+    return $SubscriptionsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<BudgetInterval, int, int> $converterinterval =
+      const EnumIndexConverter<BudgetInterval>(BudgetInterval.values);
+}
+
+class Subscription extends DataClass implements Insertable<Subscription> {
+  final int id;
+  final int account;
+  final int profile;
+  final BudgetInterval interval;
+  final int day;
+  final int amount;
+  final DateTime addedDate;
+  final DateTime updateDate;
+  const Subscription(
+      {required this.id,
+      required this.account,
+      required this.profile,
+      required this.interval,
+      required this.day,
+      required this.amount,
+      required this.addedDate,
+      required this.updateDate});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['account'] = Variable<int>(account);
+    map['profile'] = Variable<int>(profile);
+    {
+      map['interval'] =
+          Variable<int>($SubscriptionsTable.$converterinterval.toSql(interval));
+    }
+    map['day'] = Variable<int>(day);
+    map['amount'] = Variable<int>(amount);
+    map['added_date'] = Variable<DateTime>(addedDate);
+    map['update_date'] = Variable<DateTime>(updateDate);
+    return map;
+  }
+
+  SubscriptionsCompanion toCompanion(bool nullToAbsent) {
+    return SubscriptionsCompanion(
+      id: Value(id),
+      account: Value(account),
+      profile: Value(profile),
+      interval: Value(interval),
+      day: Value(day),
+      amount: Value(amount),
+      addedDate: Value(addedDate),
+      updateDate: Value(updateDate),
+    );
+  }
+
+  factory Subscription.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Subscription(
+      id: serializer.fromJson<int>(json['id']),
+      account: serializer.fromJson<int>(json['account']),
+      profile: serializer.fromJson<int>(json['profile']),
+      interval: $SubscriptionsTable.$converterinterval
+          .fromJson(serializer.fromJson<int>(json['interval'])),
+      day: serializer.fromJson<int>(json['day']),
+      amount: serializer.fromJson<int>(json['amount']),
+      addedDate: serializer.fromJson<DateTime>(json['addedDate']),
+      updateDate: serializer.fromJson<DateTime>(json['updateDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'account': serializer.toJson<int>(account),
+      'profile': serializer.toJson<int>(profile),
+      'interval': serializer
+          .toJson<int>($SubscriptionsTable.$converterinterval.toJson(interval)),
+      'day': serializer.toJson<int>(day),
+      'amount': serializer.toJson<int>(amount),
+      'addedDate': serializer.toJson<DateTime>(addedDate),
+      'updateDate': serializer.toJson<DateTime>(updateDate),
+    };
+  }
+
+  Subscription copyWith(
+          {int? id,
+          int? account,
+          int? profile,
+          BudgetInterval? interval,
+          int? day,
+          int? amount,
+          DateTime? addedDate,
+          DateTime? updateDate}) =>
+      Subscription(
+        id: id ?? this.id,
+        account: account ?? this.account,
+        profile: profile ?? this.profile,
+        interval: interval ?? this.interval,
+        day: day ?? this.day,
+        amount: amount ?? this.amount,
+        addedDate: addedDate ?? this.addedDate,
+        updateDate: updateDate ?? this.updateDate,
+      );
+  Subscription copyWithCompanion(SubscriptionsCompanion data) {
+    return Subscription(
+      id: data.id.present ? data.id.value : this.id,
+      account: data.account.present ? data.account.value : this.account,
+      profile: data.profile.present ? data.profile.value : this.profile,
+      interval: data.interval.present ? data.interval.value : this.interval,
+      day: data.day.present ? data.day.value : this.day,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      addedDate: data.addedDate.present ? data.addedDate.value : this.addedDate,
+      updateDate:
+          data.updateDate.present ? data.updateDate.value : this.updateDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Subscription(')
+          ..write('id: $id, ')
+          ..write('account: $account, ')
+          ..write('profile: $profile, ')
+          ..write('interval: $interval, ')
+          ..write('day: $day, ')
+          ..write('amount: $amount, ')
+          ..write('addedDate: $addedDate, ')
+          ..write('updateDate: $updateDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, account, profile, interval, day, amount, addedDate, updateDate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Subscription &&
+          other.id == this.id &&
+          other.account == this.account &&
+          other.profile == this.profile &&
+          other.interval == this.interval &&
+          other.day == this.day &&
+          other.amount == this.amount &&
+          other.addedDate == this.addedDate &&
+          other.updateDate == this.updateDate);
+}
+
+class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
+  final Value<int> id;
+  final Value<int> account;
+  final Value<int> profile;
+  final Value<BudgetInterval> interval;
+  final Value<int> day;
+  final Value<int> amount;
+  final Value<DateTime> addedDate;
+  final Value<DateTime> updateDate;
+  const SubscriptionsCompanion({
+    this.id = const Value.absent(),
+    this.account = const Value.absent(),
+    this.profile = const Value.absent(),
+    this.interval = const Value.absent(),
+    this.day = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.addedDate = const Value.absent(),
+    this.updateDate = const Value.absent(),
+  });
+  SubscriptionsCompanion.insert({
+    this.id = const Value.absent(),
+    required int account,
+    required int profile,
+    required BudgetInterval interval,
+    this.day = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.addedDate = const Value.absent(),
+    this.updateDate = const Value.absent(),
+  })  : account = Value(account),
+        profile = Value(profile),
+        interval = Value(interval);
+  static Insertable<Subscription> custom({
+    Expression<int>? id,
+    Expression<int>? account,
+    Expression<int>? profile,
+    Expression<int>? interval,
+    Expression<int>? day,
+    Expression<int>? amount,
+    Expression<DateTime>? addedDate,
+    Expression<DateTime>? updateDate,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (account != null) 'account': account,
+      if (profile != null) 'profile': profile,
+      if (interval != null) 'interval': interval,
+      if (day != null) 'day': day,
+      if (amount != null) 'amount': amount,
+      if (addedDate != null) 'added_date': addedDate,
+      if (updateDate != null) 'update_date': updateDate,
+    });
+  }
+
+  SubscriptionsCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? account,
+      Value<int>? profile,
+      Value<BudgetInterval>? interval,
+      Value<int>? day,
+      Value<int>? amount,
+      Value<DateTime>? addedDate,
+      Value<DateTime>? updateDate}) {
+    return SubscriptionsCompanion(
+      id: id ?? this.id,
+      account: account ?? this.account,
+      profile: profile ?? this.profile,
+      interval: interval ?? this.interval,
+      day: day ?? this.day,
+      amount: amount ?? this.amount,
+      addedDate: addedDate ?? this.addedDate,
+      updateDate: updateDate ?? this.updateDate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (account.present) {
+      map['account'] = Variable<int>(account.value);
+    }
+    if (profile.present) {
+      map['profile'] = Variable<int>(profile.value);
+    }
+    if (interval.present) {
+      map['interval'] = Variable<int>(
+          $SubscriptionsTable.$converterinterval.toSql(interval.value));
+    }
+    if (day.present) {
+      map['day'] = Variable<int>(day.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (addedDate.present) {
+      map['added_date'] = Variable<DateTime>(addedDate.value);
+    }
+    if (updateDate.present) {
+      map['update_date'] = Variable<DateTime>(updateDate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubscriptionsCompanion(')
+          ..write('id: $id, ')
+          ..write('account: $account, ')
+          ..write('profile: $profile, ')
+          ..write('interval: $interval, ')
+          ..write('day: $day, ')
+          ..write('amount: $amount, ')
+          ..write('addedDate: $addedDate, ')
+          ..write('updateDate: $updateDate')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MyDatabase extends GeneratedDatabase {
   _$MyDatabase(QueryExecutor e) : super(e);
   $MyDatabaseManager get managers => $MyDatabaseManager(this);
   late final $AccTypesTable accTypes = $AccTypesTable(this);
   late final $ProfilesTable profiles = $ProfilesTable(this);
   late final $AccountsTable accounts = $AccountsTable(this);
+  late final $BudgetsTable budgets = $BudgetsTable(this);
+  late final $ProjectsTable projects = $ProjectsTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
   late final $UsersTable users = $UsersTable(this);
   late final $BanksTable banks = $BanksTable(this);
@@ -5132,9 +6326,10 @@ abstract class _$MyDatabase extends GeneratedDatabase {
   late final $CCardsTable cCards = $CCardsTable(this);
   late final $BalancesTable balances = $BalancesTable(this);
   late final $FilePathsTable filePaths = $FilePathsTable(this);
-  late final $BudgetsTable budgets = $BudgetsTable(this);
   late final $BudgetAccountsTable budgetAccounts = $BudgetAccountsTable(this);
   late final $BudgetFundsTable budgetFunds = $BudgetFundsTable(this);
+  late final $ProjectPhotosTable projectPhotos = $ProjectPhotosTable(this);
+  late final $SubscriptionsTable subscriptions = $SubscriptionsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5143,6 +6338,8 @@ abstract class _$MyDatabase extends GeneratedDatabase {
         accTypes,
         profiles,
         accounts,
+        budgets,
+        projects,
         transactions,
         users,
         banks,
@@ -5151,9 +6348,10 @@ abstract class _$MyDatabase extends GeneratedDatabase {
         cCards,
         balances,
         filePaths,
-        budgets,
         budgetAccounts,
-        budgetFunds
+        budgetFunds,
+        projectPhotos,
+        subscriptions
       ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
@@ -5173,6 +6371,27 @@ abstract class _$MyDatabase extends GeneratedDatabase {
             ],
           ),
           WritePropagation(
+            on: TableUpdateQuery.onTableName('profiles',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('budgets', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('profiles',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('projects', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('budgets',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('projects', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
             on: TableUpdateQuery.onTableName('accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
@@ -5191,6 +6410,13 @@ abstract class _$MyDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('transactions', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('projects',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('transactions', kind: UpdateKind.update),
             ],
           ),
           WritePropagation(
@@ -5236,38 +6462,52 @@ abstract class _$MyDatabase extends GeneratedDatabase {
             ],
           ),
           WritePropagation(
+            on: TableUpdateQuery.onTableName('accounts',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('budget_accounts', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('budgets',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('budget_accounts', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('accounts',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('budget_funds', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('budgets',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('budget_funds', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('projects',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('project_photos', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('accounts',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('subscriptions', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
             on: TableUpdateQuery.onTableName('profiles',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('budgets', kind: UpdateKind.delete),
-            ],
-          ),
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
-                limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('budget_accounts', kind: UpdateKind.delete),
-            ],
-          ),
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('budgets',
-                limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('budget_accounts', kind: UpdateKind.delete),
-            ],
-          ),
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
-                limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('budget_funds', kind: UpdateKind.delete),
-            ],
-          ),
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('budgets',
-                limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('budget_funds', kind: UpdateKind.delete),
+              TableUpdate('subscriptions', kind: UpdateKind.delete),
             ],
           ),
         ],
@@ -5585,6 +6825,34 @@ final class $$ProfilesTableReferences
         manager.$state.copyWith(prefetchedData: cache));
   }
 
+  static MultiTypedResultKey<$BudgetsTable, List<Budget>> _budgetsRefsTable(
+          _$MyDatabase db) =>
+      MultiTypedResultKey.fromTable(db.budgets,
+          aliasName: $_aliasNameGenerator(db.profiles.id, db.budgets.profile));
+
+  $$BudgetsTableProcessedTableManager get budgetsRefs {
+    final manager = $$BudgetsTableTableManager($_db, $_db.budgets)
+        .filter((f) => f.profile.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_budgetsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$ProjectsTable, List<Project>> _projectsRefsTable(
+          _$MyDatabase db) =>
+      MultiTypedResultKey.fromTable(db.projects,
+          aliasName: $_aliasNameGenerator(db.profiles.id, db.projects.profile));
+
+  $$ProjectsTableProcessedTableManager get projectsRefs {
+    final manager = $$ProjectsTableTableManager($_db, $_db.projects)
+        .filter((f) => f.profile.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_projectsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
   static MultiTypedResultKey<$TransactionsTable, List<Transaction>>
       _transactionsRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
           db.transactions,
@@ -5600,16 +6868,17 @@ final class $$ProfilesTableReferences
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$BudgetsTable, List<Budget>> _budgetsRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.budgets,
-          aliasName: $_aliasNameGenerator(db.profiles.id, db.budgets.profile));
+  static MultiTypedResultKey<$SubscriptionsTable, List<Subscription>>
+      _subscriptionsRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
+          db.subscriptions,
+          aliasName:
+              $_aliasNameGenerator(db.profiles.id, db.subscriptions.profile));
 
-  $$BudgetsTableProcessedTableManager get budgetsRefs {
-    final manager = $$BudgetsTableTableManager($_db, $_db.budgets)
+  $$SubscriptionsTableProcessedTableManager get subscriptionsRefs {
+    final manager = $$SubscriptionsTableTableManager($_db, $_db.subscriptions)
         .filter((f) => f.profile.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_budgetsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_subscriptionsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -5689,6 +6958,48 @@ class $$ProfilesTableFilterComposer
     return f(composer);
   }
 
+  Expression<bool> budgetsRefs(
+      Expression<bool> Function($$BudgetsTableFilterComposer f) f) {
+    final $$BudgetsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.budgets,
+        getReferencedColumn: (t) => t.profile,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BudgetsTableFilterComposer(
+              $db: $db,
+              $table: $db.budgets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> projectsRefs(
+      Expression<bool> Function($$ProjectsTableFilterComposer f) f) {
+    final $$ProjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.projects,
+        getReferencedColumn: (t) => t.profile,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.projects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
   Expression<bool> transactionsRefs(
       Expression<bool> Function($$TransactionsTableFilterComposer f) f) {
     final $$TransactionsTableFilterComposer composer = $composerBuilder(
@@ -5710,19 +7021,19 @@ class $$ProfilesTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> budgetsRefs(
-      Expression<bool> Function($$BudgetsTableFilterComposer f) f) {
-    final $$BudgetsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> subscriptionsRefs(
+      Expression<bool> Function($$SubscriptionsTableFilterComposer f) f) {
+    final $$SubscriptionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgets,
+        referencedTable: $db.subscriptions,
         getReferencedColumn: (t) => t.profile,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableFilterComposer(
+            $$SubscriptionsTableFilterComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.subscriptions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -5856,6 +7167,48 @@ class $$ProfilesTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> budgetsRefs<T extends Object>(
+      Expression<T> Function($$BudgetsTableAnnotationComposer a) f) {
+    final $$BudgetsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.budgets,
+        getReferencedColumn: (t) => t.profile,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BudgetsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.budgets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> projectsRefs<T extends Object>(
+      Expression<T> Function($$ProjectsTableAnnotationComposer a) f) {
+    final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.projects,
+        getReferencedColumn: (t) => t.profile,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.projects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
   Expression<T> transactionsRefs<T extends Object>(
       Expression<T> Function($$TransactionsTableAnnotationComposer a) f) {
     final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
@@ -5877,19 +7230,19 @@ class $$ProfilesTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> budgetsRefs<T extends Object>(
-      Expression<T> Function($$BudgetsTableAnnotationComposer a) f) {
-    final $$BudgetsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> subscriptionsRefs<T extends Object>(
+      Expression<T> Function($$SubscriptionsTableAnnotationComposer a) f) {
+    final $$SubscriptionsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgets,
+        referencedTable: $db.subscriptions,
         getReferencedColumn: (t) => t.profile,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableAnnotationComposer(
+            $$SubscriptionsTableAnnotationComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.subscriptions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -5911,7 +7264,11 @@ class $$ProfilesTableTableManager extends RootTableManager<
     (Profile, $$ProfilesTableReferences),
     Profile,
     PrefetchHooks Function(
-        {bool accountsRefs, bool transactionsRefs, bool budgetsRefs})> {
+        {bool accountsRefs,
+        bool budgetsRefs,
+        bool projectsRefs,
+        bool transactionsRefs,
+        bool subscriptionsRefs})> {
   $$ProfilesTableTableManager(_$MyDatabase db, $ProfilesTable table)
       : super(TableManagerState(
           db: db,
@@ -5992,14 +7349,18 @@ class $$ProfilesTableTableManager extends RootTableManager<
               .toList(),
           prefetchHooksCallback: (
               {accountsRefs = false,
+              budgetsRefs = false,
+              projectsRefs = false,
               transactionsRefs = false,
-              budgetsRefs = false}) {
+              subscriptionsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (accountsRefs) db.accounts,
+                if (budgetsRefs) db.budgets,
+                if (projectsRefs) db.projects,
                 if (transactionsRefs) db.transactions,
-                if (budgetsRefs) db.budgets
+                if (subscriptionsRefs) db.subscriptions
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -6012,6 +7373,30 @@ class $$ProfilesTableTableManager extends RootTableManager<
                         managerFromTypedResult: (p0) =>
                             $$ProfilesTableReferences(db, table, p0)
                                 .accountsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.profile == item.id),
+                        typedResults: items),
+                  if (budgetsRefs)
+                    await $_getPrefetchedData<Profile, $ProfilesTable, Budget>(
+                        currentTable: table,
+                        referencedTable:
+                            $$ProfilesTableReferences._budgetsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$ProfilesTableReferences(db, table, p0)
+                                .budgetsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.profile == item.id),
+                        typedResults: items),
+                  if (projectsRefs)
+                    await $_getPrefetchedData<Profile, $ProfilesTable, Project>(
+                        currentTable: table,
+                        referencedTable:
+                            $$ProfilesTableReferences._projectsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$ProfilesTableReferences(db, table, p0)
+                                .projectsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.profile == item.id),
@@ -6029,14 +7414,15 @@ class $$ProfilesTableTableManager extends RootTableManager<
                                 referencedItems) =>
                             referencedItems.where((e) => e.profile == item.id),
                         typedResults: items),
-                  if (budgetsRefs)
-                    await $_getPrefetchedData<Profile, $ProfilesTable, Budget>(
+                  if (subscriptionsRefs)
+                    await $_getPrefetchedData<Profile, $ProfilesTable,
+                            Subscription>(
                         currentTable: table,
-                        referencedTable:
-                            $$ProfilesTableReferences._budgetsRefsTable(db),
+                        referencedTable: $$ProfilesTableReferences
+                            ._subscriptionsRefsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$ProfilesTableReferences(db, table, p0)
-                                .budgetsRefs,
+                                .subscriptionsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.profile == item.id),
@@ -6060,7 +7446,11 @@ typedef $$ProfilesTableProcessedTableManager = ProcessedTableManager<
     (Profile, $$ProfilesTableReferences),
     Profile,
     PrefetchHooks Function(
-        {bool accountsRefs, bool transactionsRefs, bool budgetsRefs})>;
+        {bool accountsRefs,
+        bool budgetsRefs,
+        bool projectsRefs,
+        bool transactionsRefs,
+        bool subscriptionsRefs})>;
 typedef $$AccountsTableCreateCompanionBuilder = AccountsCompanion Function({
   Value<int> id,
   required String name,
@@ -6240,6 +7630,21 @@ final class $$AccountsTableReferences
         .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_budgetFundsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$SubscriptionsTable, List<Subscription>>
+      _subscriptionsRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
+          db.subscriptions,
+          aliasName:
+              $_aliasNameGenerator(db.accounts.id, db.subscriptions.account));
+
+  $$SubscriptionsTableProcessedTableManager get subscriptionsRefs {
+    final manager = $$SubscriptionsTableTableManager($_db, $_db.subscriptions)
+        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_subscriptionsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -6496,6 +7901,27 @@ class $$AccountsTableFilterComposer
             $$BudgetFundsTableFilterComposer(
               $db: $db,
               $table: $db.budgetFunds,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> subscriptionsRefs(
+      Expression<bool> Function($$SubscriptionsTableFilterComposer f) f) {
+    final $$SubscriptionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.subscriptions,
+        getReferencedColumn: (t) => t.account,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SubscriptionsTableFilterComposer(
+              $db: $db,
+              $table: $db.subscriptions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -6834,6 +8260,27 @@ class $$AccountsTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> subscriptionsRefs<T extends Object>(
+      Expression<T> Function($$SubscriptionsTableAnnotationComposer a) f) {
+    final $$SubscriptionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.subscriptions,
+        getReferencedColumn: (t) => t.account,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SubscriptionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.subscriptions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$AccountsTableTableManager extends RootTableManager<
@@ -6858,7 +8305,8 @@ class $$AccountsTableTableManager extends RootTableManager<
         bool cCardsRefs,
         bool balancesRefs,
         bool budgetAccountsRefs,
-        bool budgetFundsRefs})> {
+        bool budgetFundsRefs,
+        bool subscriptionsRefs})> {
   $$AccountsTableTableManager(_$MyDatabase db, $AccountsTable table)
       : super(TableManagerState(
           db: db,
@@ -6928,7 +8376,8 @@ class $$AccountsTableTableManager extends RootTableManager<
               cCardsRefs = false,
               balancesRefs = false,
               budgetAccountsRefs = false,
-              budgetFundsRefs = false}) {
+              budgetFundsRefs = false,
+              subscriptionsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -6940,7 +8389,8 @@ class $$AccountsTableTableManager extends RootTableManager<
                 if (cCardsRefs) db.cCards,
                 if (balancesRefs) db.balances,
                 if (budgetAccountsRefs) db.budgetAccounts,
-                if (budgetFundsRefs) db.budgetFunds
+                if (budgetFundsRefs) db.budgetFunds,
+                if (subscriptionsRefs) db.subscriptions
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -7086,6 +8536,19 @@ class $$AccountsTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.account == item.id),
+                        typedResults: items),
+                  if (subscriptionsRefs)
+                    await $_getPrefetchedData<Account, $AccountsTable,
+                            Subscription>(
+                        currentTable: table,
+                        referencedTable: $$AccountsTableReferences
+                            ._subscriptionsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$AccountsTableReferences(db, table, p0)
+                                .subscriptionsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.account == item.id),
                         typedResults: items)
                 ];
               },
@@ -7116,7 +8579,1129 @@ typedef $$AccountsTableProcessedTableManager = ProcessedTableManager<
         bool cCardsRefs,
         bool balancesRefs,
         bool budgetAccountsRefs,
+        bool budgetFundsRefs,
+        bool subscriptionsRefs})>;
+typedef $$BudgetsTableCreateCompanionBuilder = BudgetsCompanion Function({
+  Value<int> id,
+  required String name,
+  required BudgetInterval interval,
+  required String details,
+  Value<int> startDay,
+  Value<DateTime> startDate,
+  required int profile,
+  Value<DateTime> addedDate,
+  Value<DateTime> updateDate,
+});
+typedef $$BudgetsTableUpdateCompanionBuilder = BudgetsCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<BudgetInterval> interval,
+  Value<String> details,
+  Value<int> startDay,
+  Value<DateTime> startDate,
+  Value<int> profile,
+  Value<DateTime> addedDate,
+  Value<DateTime> updateDate,
+});
+
+final class $$BudgetsTableReferences
+    extends BaseReferences<_$MyDatabase, $BudgetsTable, Budget> {
+  $$BudgetsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ProfilesTable _profileTable(_$MyDatabase db) => db.profiles
+      .createAlias($_aliasNameGenerator(db.budgets.profile, db.profiles.id));
+
+  $$ProfilesTableProcessedTableManager get profile {
+    final $_column = $_itemColumn<int>('profile')!;
+
+    final manager = $$ProfilesTableTableManager($_db, $_db.profiles)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$ProjectsTable, List<Project>> _projectsRefsTable(
+          _$MyDatabase db) =>
+      MultiTypedResultKey.fromTable(db.projects,
+          aliasName: $_aliasNameGenerator(db.budgets.id, db.projects.budget));
+
+  $$ProjectsTableProcessedTableManager get projectsRefs {
+    final manager = $$ProjectsTableTableManager($_db, $_db.projects)
+        .filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_projectsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$BudgetAccountsTable, List<BudgetAccount>>
+      _budgetAccountsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.budgetAccounts,
+              aliasName: $_aliasNameGenerator(
+                  db.budgets.id, db.budgetAccounts.budget));
+
+  $$BudgetAccountsTableProcessedTableManager get budgetAccountsRefs {
+    final manager = $$BudgetAccountsTableTableManager($_db, $_db.budgetAccounts)
+        .filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_budgetAccountsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$BudgetFundsTable, List<BudgetFund>>
+      _budgetFundsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.budgetFunds,
+              aliasName:
+                  $_aliasNameGenerator(db.budgets.id, db.budgetFunds.budget));
+
+  $$BudgetFundsTableProcessedTableManager get budgetFundsRefs {
+    final manager = $$BudgetFundsTableTableManager($_db, $_db.budgetFunds)
+        .filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_budgetFundsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$BudgetsTableFilterComposer
+    extends Composer<_$MyDatabase, $BudgetsTable> {
+  $$BudgetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<BudgetInterval, BudgetInterval, int>
+      get interval => $composableBuilder(
+          column: $table.interval,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<String> get details => $composableBuilder(
+      column: $table.details, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get startDay => $composableBuilder(
+      column: $table.startDay, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get startDate => $composableBuilder(
+      column: $table.startDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get addedDate => $composableBuilder(
+      column: $table.addedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updateDate => $composableBuilder(
+      column: $table.updateDate, builder: (column) => ColumnFilters(column));
+
+  $$ProfilesTableFilterComposer get profile {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.profile,
+        referencedTable: $db.profiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProfilesTableFilterComposer(
+              $db: $db,
+              $table: $db.profiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<bool> projectsRefs(
+      Expression<bool> Function($$ProjectsTableFilterComposer f) f) {
+    final $$ProjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.projects,
+        getReferencedColumn: (t) => t.budget,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.projects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> budgetAccountsRefs(
+      Expression<bool> Function($$BudgetAccountsTableFilterComposer f) f) {
+    final $$BudgetAccountsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.budgetAccounts,
+        getReferencedColumn: (t) => t.budget,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BudgetAccountsTableFilterComposer(
+              $db: $db,
+              $table: $db.budgetAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> budgetFundsRefs(
+      Expression<bool> Function($$BudgetFundsTableFilterComposer f) f) {
+    final $$BudgetFundsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.budgetFunds,
+        getReferencedColumn: (t) => t.budget,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BudgetFundsTableFilterComposer(
+              $db: $db,
+              $table: $db.budgetFunds,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$BudgetsTableOrderingComposer
+    extends Composer<_$MyDatabase, $BudgetsTable> {
+  $$BudgetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get interval => $composableBuilder(
+      column: $table.interval, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get details => $composableBuilder(
+      column: $table.details, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get startDay => $composableBuilder(
+      column: $table.startDay, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get startDate => $composableBuilder(
+      column: $table.startDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get addedDate => $composableBuilder(
+      column: $table.addedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updateDate => $composableBuilder(
+      column: $table.updateDate, builder: (column) => ColumnOrderings(column));
+
+  $$ProfilesTableOrderingComposer get profile {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.profile,
+        referencedTable: $db.profiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProfilesTableOrderingComposer(
+              $db: $db,
+              $table: $db.profiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$BudgetsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $BudgetsTable> {
+  $$BudgetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<BudgetInterval, int> get interval =>
+      $composableBuilder(column: $table.interval, builder: (column) => column);
+
+  GeneratedColumn<String> get details =>
+      $composableBuilder(column: $table.details, builder: (column) => column);
+
+  GeneratedColumn<int> get startDay =>
+      $composableBuilder(column: $table.startDay, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startDate =>
+      $composableBuilder(column: $table.startDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get addedDate =>
+      $composableBuilder(column: $table.addedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updateDate => $composableBuilder(
+      column: $table.updateDate, builder: (column) => column);
+
+  $$ProfilesTableAnnotationComposer get profile {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.profile,
+        referencedTable: $db.profiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProfilesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.profiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<T> projectsRefs<T extends Object>(
+      Expression<T> Function($$ProjectsTableAnnotationComposer a) f) {
+    final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.projects,
+        getReferencedColumn: (t) => t.budget,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.projects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> budgetAccountsRefs<T extends Object>(
+      Expression<T> Function($$BudgetAccountsTableAnnotationComposer a) f) {
+    final $$BudgetAccountsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.budgetAccounts,
+        getReferencedColumn: (t) => t.budget,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BudgetAccountsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.budgetAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> budgetFundsRefs<T extends Object>(
+      Expression<T> Function($$BudgetFundsTableAnnotationComposer a) f) {
+    final $$BudgetFundsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.budgetFunds,
+        getReferencedColumn: (t) => t.budget,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BudgetFundsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.budgetFunds,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$BudgetsTableTableManager extends RootTableManager<
+    _$MyDatabase,
+    $BudgetsTable,
+    Budget,
+    $$BudgetsTableFilterComposer,
+    $$BudgetsTableOrderingComposer,
+    $$BudgetsTableAnnotationComposer,
+    $$BudgetsTableCreateCompanionBuilder,
+    $$BudgetsTableUpdateCompanionBuilder,
+    (Budget, $$BudgetsTableReferences),
+    Budget,
+    PrefetchHooks Function(
+        {bool profile,
+        bool projectsRefs,
+        bool budgetAccountsRefs,
+        bool budgetFundsRefs})> {
+  $$BudgetsTableTableManager(_$MyDatabase db, $BudgetsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BudgetsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BudgetsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BudgetsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<BudgetInterval> interval = const Value.absent(),
+            Value<String> details = const Value.absent(),
+            Value<int> startDay = const Value.absent(),
+            Value<DateTime> startDate = const Value.absent(),
+            Value<int> profile = const Value.absent(),
+            Value<DateTime> addedDate = const Value.absent(),
+            Value<DateTime> updateDate = const Value.absent(),
+          }) =>
+              BudgetsCompanion(
+            id: id,
+            name: name,
+            interval: interval,
+            details: details,
+            startDay: startDay,
+            startDate: startDate,
+            profile: profile,
+            addedDate: addedDate,
+            updateDate: updateDate,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required BudgetInterval interval,
+            required String details,
+            Value<int> startDay = const Value.absent(),
+            Value<DateTime> startDate = const Value.absent(),
+            required int profile,
+            Value<DateTime> addedDate = const Value.absent(),
+            Value<DateTime> updateDate = const Value.absent(),
+          }) =>
+              BudgetsCompanion.insert(
+            id: id,
+            name: name,
+            interval: interval,
+            details: details,
+            startDay: startDay,
+            startDate: startDate,
+            profile: profile,
+            addedDate: addedDate,
+            updateDate: updateDate,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) =>
+                  (e.readTable(table), $$BudgetsTableReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: (
+              {profile = false,
+              projectsRefs = false,
+              budgetAccountsRefs = false,
+              budgetFundsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (projectsRefs) db.projects,
+                if (budgetAccountsRefs) db.budgetAccounts,
+                if (budgetFundsRefs) db.budgetFunds
+              ],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (profile) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.profile,
+                    referencedTable: $$BudgetsTableReferences._profileTable(db),
+                    referencedColumn:
+                        $$BudgetsTableReferences._profileTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (projectsRefs)
+                    await $_getPrefetchedData<Budget, $BudgetsTable, Project>(
+                        currentTable: table,
+                        referencedTable:
+                            $$BudgetsTableReferences._projectsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$BudgetsTableReferences(db, table, p0)
+                                .projectsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.budget == item.id),
+                        typedResults: items),
+                  if (budgetAccountsRefs)
+                    await $_getPrefetchedData<Budget, $BudgetsTable,
+                            BudgetAccount>(
+                        currentTable: table,
+                        referencedTable: $$BudgetsTableReferences
+                            ._budgetAccountsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$BudgetsTableReferences(db, table, p0)
+                                .budgetAccountsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.budget == item.id),
+                        typedResults: items),
+                  if (budgetFundsRefs)
+                    await $_getPrefetchedData<Budget, $BudgetsTable,
+                            BudgetFund>(
+                        currentTable: table,
+                        referencedTable:
+                            $$BudgetsTableReferences._budgetFundsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$BudgetsTableReferences(db, table, p0)
+                                .budgetFundsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.budget == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$BudgetsTableProcessedTableManager = ProcessedTableManager<
+    _$MyDatabase,
+    $BudgetsTable,
+    Budget,
+    $$BudgetsTableFilterComposer,
+    $$BudgetsTableOrderingComposer,
+    $$BudgetsTableAnnotationComposer,
+    $$BudgetsTableCreateCompanionBuilder,
+    $$BudgetsTableUpdateCompanionBuilder,
+    (Budget, $$BudgetsTableReferences),
+    Budget,
+    PrefetchHooks Function(
+        {bool profile,
+        bool projectsRefs,
+        bool budgetAccountsRefs,
         bool budgetFundsRefs})>;
+typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
+  Value<int> id,
+  required String name,
+  Value<String?> description,
+  Value<DateTime?> startDate,
+  required int profile,
+  Value<DateTime?> endDate,
+  required ProjectStatus status,
+  Value<int?> budget,
+  Value<DateTime> addedDate,
+  Value<DateTime> updateDate,
+});
+typedef $$ProjectsTableUpdateCompanionBuilder = ProjectsCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String?> description,
+  Value<DateTime?> startDate,
+  Value<int> profile,
+  Value<DateTime?> endDate,
+  Value<ProjectStatus> status,
+  Value<int?> budget,
+  Value<DateTime> addedDate,
+  Value<DateTime> updateDate,
+});
+
+final class $$ProjectsTableReferences
+    extends BaseReferences<_$MyDatabase, $ProjectsTable, Project> {
+  $$ProjectsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ProfilesTable _profileTable(_$MyDatabase db) => db.profiles
+      .createAlias($_aliasNameGenerator(db.projects.profile, db.profiles.id));
+
+  $$ProfilesTableProcessedTableManager get profile {
+    final $_column = $_itemColumn<int>('profile')!;
+
+    final manager = $$ProfilesTableTableManager($_db, $_db.profiles)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $BudgetsTable _budgetTable(_$MyDatabase db) => db.budgets
+      .createAlias($_aliasNameGenerator(db.projects.budget, db.budgets.id));
+
+  $$BudgetsTableProcessedTableManager? get budget {
+    final $_column = $_itemColumn<int>('budget');
+    if ($_column == null) return null;
+    final manager = $$BudgetsTableTableManager($_db, $_db.budgets)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_budgetTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$TransactionsTable, List<Transaction>>
+      _transactionsRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
+          db.transactions,
+          aliasName:
+              $_aliasNameGenerator(db.projects.id, db.transactions.project));
+
+  $$TransactionsTableProcessedTableManager get transactionsRefs {
+    final manager = $$TransactionsTableTableManager($_db, $_db.transactions)
+        .filter((f) => f.project.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_transactionsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$ProjectPhotosTable, List<ProjectPhoto>>
+      _projectPhotosRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
+          db.projectPhotos,
+          aliasName:
+              $_aliasNameGenerator(db.projects.id, db.projectPhotos.project));
+
+  $$ProjectPhotosTableProcessedTableManager get projectPhotosRefs {
+    final manager = $$ProjectPhotosTableTableManager($_db, $_db.projectPhotos)
+        .filter((f) => f.project.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_projectPhotosRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$ProjectsTableFilterComposer
+    extends Composer<_$MyDatabase, $ProjectsTable> {
+  $$ProjectsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get startDate => $composableBuilder(
+      column: $table.startDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get endDate => $composableBuilder(
+      column: $table.endDate, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<ProjectStatus, ProjectStatus, int>
+      get status => $composableBuilder(
+          column: $table.status,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<DateTime> get addedDate => $composableBuilder(
+      column: $table.addedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updateDate => $composableBuilder(
+      column: $table.updateDate, builder: (column) => ColumnFilters(column));
+
+  $$ProfilesTableFilterComposer get profile {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.profile,
+        referencedTable: $db.profiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProfilesTableFilterComposer(
+              $db: $db,
+              $table: $db.profiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$BudgetsTableFilterComposer get budget {
+    final $$BudgetsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.budget,
+        referencedTable: $db.budgets,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BudgetsTableFilterComposer(
+              $db: $db,
+              $table: $db.budgets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<bool> transactionsRefs(
+      Expression<bool> Function($$TransactionsTableFilterComposer f) f) {
+    final $$TransactionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.project,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableFilterComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> projectPhotosRefs(
+      Expression<bool> Function($$ProjectPhotosTableFilterComposer f) f) {
+    final $$ProjectPhotosTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.projectPhotos,
+        getReferencedColumn: (t) => t.project,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectPhotosTableFilterComposer(
+              $db: $db,
+              $table: $db.projectPhotos,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$ProjectsTableOrderingComposer
+    extends Composer<_$MyDatabase, $ProjectsTable> {
+  $$ProjectsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get startDate => $composableBuilder(
+      column: $table.startDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get endDate => $composableBuilder(
+      column: $table.endDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get addedDate => $composableBuilder(
+      column: $table.addedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updateDate => $composableBuilder(
+      column: $table.updateDate, builder: (column) => ColumnOrderings(column));
+
+  $$ProfilesTableOrderingComposer get profile {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.profile,
+        referencedTable: $db.profiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProfilesTableOrderingComposer(
+              $db: $db,
+              $table: $db.profiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$BudgetsTableOrderingComposer get budget {
+    final $$BudgetsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.budget,
+        referencedTable: $db.budgets,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BudgetsTableOrderingComposer(
+              $db: $db,
+              $table: $db.budgets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ProjectsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $ProjectsTable> {
+  $$ProjectsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startDate =>
+      $composableBuilder(column: $table.startDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endDate =>
+      $composableBuilder(column: $table.endDate, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ProjectStatus, int> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get addedDate =>
+      $composableBuilder(column: $table.addedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updateDate => $composableBuilder(
+      column: $table.updateDate, builder: (column) => column);
+
+  $$ProfilesTableAnnotationComposer get profile {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.profile,
+        referencedTable: $db.profiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProfilesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.profiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$BudgetsTableAnnotationComposer get budget {
+    final $$BudgetsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.budget,
+        referencedTable: $db.budgets,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BudgetsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.budgets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<T> transactionsRefs<T extends Object>(
+      Expression<T> Function($$TransactionsTableAnnotationComposer a) f) {
+    final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.project,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> projectPhotosRefs<T extends Object>(
+      Expression<T> Function($$ProjectPhotosTableAnnotationComposer a) f) {
+    final $$ProjectPhotosTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.projectPhotos,
+        getReferencedColumn: (t) => t.project,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectPhotosTableAnnotationComposer(
+              $db: $db,
+              $table: $db.projectPhotos,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$ProjectsTableTableManager extends RootTableManager<
+    _$MyDatabase,
+    $ProjectsTable,
+    Project,
+    $$ProjectsTableFilterComposer,
+    $$ProjectsTableOrderingComposer,
+    $$ProjectsTableAnnotationComposer,
+    $$ProjectsTableCreateCompanionBuilder,
+    $$ProjectsTableUpdateCompanionBuilder,
+    (Project, $$ProjectsTableReferences),
+    Project,
+    PrefetchHooks Function(
+        {bool profile,
+        bool budget,
+        bool transactionsRefs,
+        bool projectPhotosRefs})> {
+  $$ProjectsTableTableManager(_$MyDatabase db, $ProjectsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProjectsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProjectsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProjectsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<DateTime?> startDate = const Value.absent(),
+            Value<int> profile = const Value.absent(),
+            Value<DateTime?> endDate = const Value.absent(),
+            Value<ProjectStatus> status = const Value.absent(),
+            Value<int?> budget = const Value.absent(),
+            Value<DateTime> addedDate = const Value.absent(),
+            Value<DateTime> updateDate = const Value.absent(),
+          }) =>
+              ProjectsCompanion(
+            id: id,
+            name: name,
+            description: description,
+            startDate: startDate,
+            profile: profile,
+            endDate: endDate,
+            status: status,
+            budget: budget,
+            addedDate: addedDate,
+            updateDate: updateDate,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            Value<String?> description = const Value.absent(),
+            Value<DateTime?> startDate = const Value.absent(),
+            required int profile,
+            Value<DateTime?> endDate = const Value.absent(),
+            required ProjectStatus status,
+            Value<int?> budget = const Value.absent(),
+            Value<DateTime> addedDate = const Value.absent(),
+            Value<DateTime> updateDate = const Value.absent(),
+          }) =>
+              ProjectsCompanion.insert(
+            id: id,
+            name: name,
+            description: description,
+            startDate: startDate,
+            profile: profile,
+            endDate: endDate,
+            status: status,
+            budget: budget,
+            addedDate: addedDate,
+            updateDate: updateDate,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) =>
+                  (e.readTable(table), $$ProjectsTableReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: (
+              {profile = false,
+              budget = false,
+              transactionsRefs = false,
+              projectPhotosRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (transactionsRefs) db.transactions,
+                if (projectPhotosRefs) db.projectPhotos
+              ],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (profile) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.profile,
+                    referencedTable:
+                        $$ProjectsTableReferences._profileTable(db),
+                    referencedColumn:
+                        $$ProjectsTableReferences._profileTable(db).id,
+                  ) as T;
+                }
+                if (budget) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.budget,
+                    referencedTable: $$ProjectsTableReferences._budgetTable(db),
+                    referencedColumn:
+                        $$ProjectsTableReferences._budgetTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (transactionsRefs)
+                    await $_getPrefetchedData<Project, $ProjectsTable,
+                            Transaction>(
+                        currentTable: table,
+                        referencedTable: $$ProjectsTableReferences
+                            ._transactionsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$ProjectsTableReferences(db, table, p0)
+                                .transactionsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.project == item.id),
+                        typedResults: items),
+                  if (projectPhotosRefs)
+                    await $_getPrefetchedData<Project, $ProjectsTable,
+                            ProjectPhoto>(
+                        currentTable: table,
+                        referencedTable: $$ProjectsTableReferences
+                            ._projectPhotosRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$ProjectsTableReferences(db, table, p0)
+                                .projectPhotosRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.project == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$ProjectsTableProcessedTableManager = ProcessedTableManager<
+    _$MyDatabase,
+    $ProjectsTable,
+    Project,
+    $$ProjectsTableFilterComposer,
+    $$ProjectsTableOrderingComposer,
+    $$ProjectsTableAnnotationComposer,
+    $$ProjectsTableCreateCompanionBuilder,
+    $$ProjectsTableUpdateCompanionBuilder,
+    (Project, $$ProjectsTableReferences),
+    Project,
+    PrefetchHooks Function(
+        {bool profile,
+        bool budget,
+        bool transactionsRefs,
+        bool projectPhotosRefs})>;
 typedef $$TransactionsTableCreateCompanionBuilder = TransactionsCompanion
     Function({
   Value<int> id,
@@ -7128,6 +9713,7 @@ typedef $$TransactionsTableCreateCompanionBuilder = TransactionsCompanion
   required int cr,
   Value<int> amount,
   required int profile,
+  Value<int?> project,
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
 });
@@ -7142,6 +9728,7 @@ typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
   Value<int> cr,
   Value<int> amount,
   Value<int> profile,
+  Value<int?> project,
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
 });
@@ -7188,6 +9775,21 @@ final class $$TransactionsTableReferences
     final manager = $$ProfilesTableTableManager($_db, $_db.profiles)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_profileTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $ProjectsTable _projectTable(_$MyDatabase db) =>
+      db.projects.createAlias(
+          $_aliasNameGenerator(db.transactions.project, db.projects.id));
+
+  $$ProjectsTableProcessedTableManager? get project {
+    final $_column = $_itemColumn<int>('project');
+    if ($_column == null) return null;
+    final manager = $$ProjectsTableTableManager($_db, $_db.projects)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_projectTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -7296,6 +9898,26 @@ class $$TransactionsTableFilterComposer
             $$ProfilesTableFilterComposer(
               $db: $db,
               $table: $db.profiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$ProjectsTableFilterComposer get project {
+    final $$ProjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.project,
+        referencedTable: $db.projects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.projects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7418,6 +10040,26 @@ class $$TransactionsTableOrderingComposer
             ));
     return composer;
   }
+
+  $$ProjectsTableOrderingComposer get project {
+    final $$ProjectsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.project,
+        referencedTable: $db.projects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectsTableOrderingComposer(
+              $db: $db,
+              $table: $db.projects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$TransactionsTableAnnotationComposer
@@ -7513,6 +10155,26 @@ class $$TransactionsTableAnnotationComposer
     return composer;
   }
 
+  $$ProjectsTableAnnotationComposer get project {
+    final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.project,
+        referencedTable: $db.projects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.projects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
   Expression<T> filePathsRefs<T extends Object>(
       Expression<T> Function($$FilePathsTableAnnotationComposer a) f) {
     final $$FilePathsTableAnnotationComposer composer = $composerBuilder(
@@ -7547,7 +10209,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
     (Transaction, $$TransactionsTableReferences),
     Transaction,
     PrefetchHooks Function(
-        {bool dr, bool cr, bool profile, bool filePathsRefs})> {
+        {bool dr, bool cr, bool profile, bool project, bool filePathsRefs})> {
   $$TransactionsTableTableManager(_$MyDatabase db, $TransactionsTable table)
       : super(TableManagerState(
           db: db,
@@ -7568,6 +10230,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
             Value<int> cr = const Value.absent(),
             Value<int> amount = const Value.absent(),
             Value<int> profile = const Value.absent(),
+            Value<int?> project = const Value.absent(),
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
@@ -7581,6 +10244,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
             cr: cr,
             amount: amount,
             profile: profile,
+            project: project,
             addedDate: addedDate,
             updateDate: updateDate,
           ),
@@ -7594,6 +10258,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
             required int cr,
             Value<int> amount = const Value.absent(),
             required int profile,
+            Value<int?> project = const Value.absent(),
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
@@ -7607,6 +10272,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
             cr: cr,
             amount: amount,
             profile: profile,
+            project: project,
             addedDate: addedDate,
             updateDate: updateDate,
           ),
@@ -7620,6 +10286,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
               {dr = false,
               cr = false,
               profile = false,
+              project = false,
               filePathsRefs = false}) {
             return PrefetchHooks(
               db: db,
@@ -7665,6 +10332,16 @@ class $$TransactionsTableTableManager extends RootTableManager<
                         $$TransactionsTableReferences._profileTable(db).id,
                   ) as T;
                 }
+                if (project) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.project,
+                    referencedTable:
+                        $$TransactionsTableReferences._projectTable(db),
+                    referencedColumn:
+                        $$TransactionsTableReferences._projectTable(db).id,
+                  ) as T;
+                }
 
                 return state;
               },
@@ -7702,7 +10379,7 @@ typedef $$TransactionsTableProcessedTableManager = ProcessedTableManager<
     (Transaction, $$TransactionsTableReferences),
     Transaction,
     PrefetchHooks Function(
-        {bool dr, bool cr, bool profile, bool filePathsRefs})>;
+        {bool dr, bool cr, bool profile, bool project, bool filePathsRefs})>;
 typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
   Value<int> id,
   required String name,
@@ -9425,480 +12102,6 @@ typedef $$FilePathsTableProcessedTableManager = ProcessedTableManager<
     (FilePath, $$FilePathsTableReferences),
     FilePath,
     PrefetchHooks Function({bool transaction})>;
-typedef $$BudgetsTableCreateCompanionBuilder = BudgetsCompanion Function({
-  Value<int> id,
-  required String name,
-  required BudgetInterval interval,
-  required String details,
-  Value<int> startDay,
-  Value<DateTime> startDate,
-  required int profile,
-  Value<DateTime> addedDate,
-  Value<DateTime> updateDate,
-});
-typedef $$BudgetsTableUpdateCompanionBuilder = BudgetsCompanion Function({
-  Value<int> id,
-  Value<String> name,
-  Value<BudgetInterval> interval,
-  Value<String> details,
-  Value<int> startDay,
-  Value<DateTime> startDate,
-  Value<int> profile,
-  Value<DateTime> addedDate,
-  Value<DateTime> updateDate,
-});
-
-final class $$BudgetsTableReferences
-    extends BaseReferences<_$MyDatabase, $BudgetsTable, Budget> {
-  $$BudgetsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $ProfilesTable _profileTable(_$MyDatabase db) => db.profiles
-      .createAlias($_aliasNameGenerator(db.budgets.profile, db.profiles.id));
-
-  $$ProfilesTableProcessedTableManager get profile {
-    final $_column = $_itemColumn<int>('profile')!;
-
-    final manager = $$ProfilesTableTableManager($_db, $_db.profiles)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_profileTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-
-  static MultiTypedResultKey<$BudgetAccountsTable, List<BudgetAccount>>
-      _budgetAccountsRefsTable(_$MyDatabase db) =>
-          MultiTypedResultKey.fromTable(db.budgetAccounts,
-              aliasName: $_aliasNameGenerator(
-                  db.budgets.id, db.budgetAccounts.budget));
-
-  $$BudgetAccountsTableProcessedTableManager get budgetAccountsRefs {
-    final manager = $$BudgetAccountsTableTableManager($_db, $_db.budgetAccounts)
-        .filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_budgetAccountsRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$BudgetFundsTable, List<BudgetFund>>
-      _budgetFundsRefsTable(_$MyDatabase db) =>
-          MultiTypedResultKey.fromTable(db.budgetFunds,
-              aliasName:
-                  $_aliasNameGenerator(db.budgets.id, db.budgetFunds.budget));
-
-  $$BudgetFundsTableProcessedTableManager get budgetFundsRefs {
-    final manager = $$BudgetFundsTableTableManager($_db, $_db.budgetFunds)
-        .filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_budgetFundsRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-}
-
-class $$BudgetsTableFilterComposer
-    extends Composer<_$MyDatabase, $BudgetsTable> {
-  $$BudgetsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<BudgetInterval, BudgetInterval, int>
-      get interval => $composableBuilder(
-          column: $table.interval,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnFilters<String> get details => $composableBuilder(
-      column: $table.details, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get startDay => $composableBuilder(
-      column: $table.startDay, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get startDate => $composableBuilder(
-      column: $table.startDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get addedDate => $composableBuilder(
-      column: $table.addedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get updateDate => $composableBuilder(
-      column: $table.updateDate, builder: (column) => ColumnFilters(column));
-
-  $$ProfilesTableFilterComposer get profile {
-    final $$ProfilesTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableFilterComposer(
-              $db: $db,
-              $table: $db.profiles,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  Expression<bool> budgetAccountsRefs(
-      Expression<bool> Function($$BudgetAccountsTableFilterComposer f) f) {
-    final $$BudgetAccountsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetAccounts,
-        getReferencedColumn: (t) => t.budget,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetAccountsTableFilterComposer(
-              $db: $db,
-              $table: $db.budgetAccounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> budgetFundsRefs(
-      Expression<bool> Function($$BudgetFundsTableFilterComposer f) f) {
-    final $$BudgetFundsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetFunds,
-        getReferencedColumn: (t) => t.budget,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetFundsTableFilterComposer(
-              $db: $db,
-              $table: $db.budgetFunds,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-}
-
-class $$BudgetsTableOrderingComposer
-    extends Composer<_$MyDatabase, $BudgetsTable> {
-  $$BudgetsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get interval => $composableBuilder(
-      column: $table.interval, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get details => $composableBuilder(
-      column: $table.details, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get startDay => $composableBuilder(
-      column: $table.startDay, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get startDate => $composableBuilder(
-      column: $table.startDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get addedDate => $composableBuilder(
-      column: $table.addedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get updateDate => $composableBuilder(
-      column: $table.updateDate, builder: (column) => ColumnOrderings(column));
-
-  $$ProfilesTableOrderingComposer get profile {
-    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableOrderingComposer(
-              $db: $db,
-              $table: $db.profiles,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$BudgetsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $BudgetsTable> {
-  $$BudgetsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<BudgetInterval, int> get interval =>
-      $composableBuilder(column: $table.interval, builder: (column) => column);
-
-  GeneratedColumn<String> get details =>
-      $composableBuilder(column: $table.details, builder: (column) => column);
-
-  GeneratedColumn<int> get startDay =>
-      $composableBuilder(column: $table.startDay, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get startDate =>
-      $composableBuilder(column: $table.startDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get addedDate =>
-      $composableBuilder(column: $table.addedDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updateDate => $composableBuilder(
-      column: $table.updateDate, builder: (column) => column);
-
-  $$ProfilesTableAnnotationComposer get profile {
-    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableAnnotationComposer(
-              $db: $db,
-              $table: $db.profiles,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  Expression<T> budgetAccountsRefs<T extends Object>(
-      Expression<T> Function($$BudgetAccountsTableAnnotationComposer a) f) {
-    final $$BudgetAccountsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetAccounts,
-        getReferencedColumn: (t) => t.budget,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetAccountsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.budgetAccounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<T> budgetFundsRefs<T extends Object>(
-      Expression<T> Function($$BudgetFundsTableAnnotationComposer a) f) {
-    final $$BudgetFundsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetFunds,
-        getReferencedColumn: (t) => t.budget,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetFundsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.budgetFunds,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-}
-
-class $$BudgetsTableTableManager extends RootTableManager<
-    _$MyDatabase,
-    $BudgetsTable,
-    Budget,
-    $$BudgetsTableFilterComposer,
-    $$BudgetsTableOrderingComposer,
-    $$BudgetsTableAnnotationComposer,
-    $$BudgetsTableCreateCompanionBuilder,
-    $$BudgetsTableUpdateCompanionBuilder,
-    (Budget, $$BudgetsTableReferences),
-    Budget,
-    PrefetchHooks Function(
-        {bool profile, bool budgetAccountsRefs, bool budgetFundsRefs})> {
-  $$BudgetsTableTableManager(_$MyDatabase db, $BudgetsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$BudgetsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$BudgetsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$BudgetsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<BudgetInterval> interval = const Value.absent(),
-            Value<String> details = const Value.absent(),
-            Value<int> startDay = const Value.absent(),
-            Value<DateTime> startDate = const Value.absent(),
-            Value<int> profile = const Value.absent(),
-            Value<DateTime> addedDate = const Value.absent(),
-            Value<DateTime> updateDate = const Value.absent(),
-          }) =>
-              BudgetsCompanion(
-            id: id,
-            name: name,
-            interval: interval,
-            details: details,
-            startDay: startDay,
-            startDate: startDate,
-            profile: profile,
-            addedDate: addedDate,
-            updateDate: updateDate,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String name,
-            required BudgetInterval interval,
-            required String details,
-            Value<int> startDay = const Value.absent(),
-            Value<DateTime> startDate = const Value.absent(),
-            required int profile,
-            Value<DateTime> addedDate = const Value.absent(),
-            Value<DateTime> updateDate = const Value.absent(),
-          }) =>
-              BudgetsCompanion.insert(
-            id: id,
-            name: name,
-            interval: interval,
-            details: details,
-            startDay: startDay,
-            startDate: startDate,
-            profile: profile,
-            addedDate: addedDate,
-            updateDate: updateDate,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$BudgetsTableReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: (
-              {profile = false,
-              budgetAccountsRefs = false,
-              budgetFundsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (budgetAccountsRefs) db.budgetAccounts,
-                if (budgetFundsRefs) db.budgetFunds
-              ],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (profile) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.profile,
-                    referencedTable: $$BudgetsTableReferences._profileTable(db),
-                    referencedColumn:
-                        $$BudgetsTableReferences._profileTable(db).id,
-                  ) as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (budgetAccountsRefs)
-                    await $_getPrefetchedData<Budget, $BudgetsTable,
-                            BudgetAccount>(
-                        currentTable: table,
-                        referencedTable: $$BudgetsTableReferences
-                            ._budgetAccountsRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$BudgetsTableReferences(db, table, p0)
-                                .budgetAccountsRefs,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.budget == item.id),
-                        typedResults: items),
-                  if (budgetFundsRefs)
-                    await $_getPrefetchedData<Budget, $BudgetsTable,
-                            BudgetFund>(
-                        currentTable: table,
-                        referencedTable:
-                            $$BudgetsTableReferences._budgetFundsRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$BudgetsTableReferences(db, table, p0)
-                                .budgetFundsRefs,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.budget == item.id),
-                        typedResults: items)
-                ];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$BudgetsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
-    $BudgetsTable,
-    Budget,
-    $$BudgetsTableFilterComposer,
-    $$BudgetsTableOrderingComposer,
-    $$BudgetsTableAnnotationComposer,
-    $$BudgetsTableCreateCompanionBuilder,
-    $$BudgetsTableUpdateCompanionBuilder,
-    (Budget, $$BudgetsTableReferences),
-    Budget,
-    PrefetchHooks Function(
-        {bool profile, bool budgetAccountsRefs, bool budgetFundsRefs})>;
 typedef $$BudgetAccountsTableCreateCompanionBuilder = BudgetAccountsCompanion
     Function({
   Value<int> id,
@@ -10543,6 +12746,639 @@ typedef $$BudgetFundsTableProcessedTableManager = ProcessedTableManager<
     (BudgetFund, $$BudgetFundsTableReferences),
     BudgetFund,
     PrefetchHooks Function({bool account, bool budget})>;
+typedef $$ProjectPhotosTableCreateCompanionBuilder = ProjectPhotosCompanion
+    Function({
+  Value<int> id,
+  required int project,
+  required String path,
+});
+typedef $$ProjectPhotosTableUpdateCompanionBuilder = ProjectPhotosCompanion
+    Function({
+  Value<int> id,
+  Value<int> project,
+  Value<String> path,
+});
+
+final class $$ProjectPhotosTableReferences
+    extends BaseReferences<_$MyDatabase, $ProjectPhotosTable, ProjectPhoto> {
+  $$ProjectPhotosTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $ProjectsTable _projectTable(_$MyDatabase db) =>
+      db.projects.createAlias(
+          $_aliasNameGenerator(db.projectPhotos.project, db.projects.id));
+
+  $$ProjectsTableProcessedTableManager get project {
+    final $_column = $_itemColumn<int>('project')!;
+
+    final manager = $$ProjectsTableTableManager($_db, $_db.projects)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_projectTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$ProjectPhotosTableFilterComposer
+    extends Composer<_$MyDatabase, $ProjectPhotosTable> {
+  $$ProjectPhotosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get path => $composableBuilder(
+      column: $table.path, builder: (column) => ColumnFilters(column));
+
+  $$ProjectsTableFilterComposer get project {
+    final $$ProjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.project,
+        referencedTable: $db.projects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.projects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ProjectPhotosTableOrderingComposer
+    extends Composer<_$MyDatabase, $ProjectPhotosTable> {
+  $$ProjectPhotosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get path => $composableBuilder(
+      column: $table.path, builder: (column) => ColumnOrderings(column));
+
+  $$ProjectsTableOrderingComposer get project {
+    final $$ProjectsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.project,
+        referencedTable: $db.projects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectsTableOrderingComposer(
+              $db: $db,
+              $table: $db.projects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ProjectPhotosTableAnnotationComposer
+    extends Composer<_$MyDatabase, $ProjectPhotosTable> {
+  $$ProjectPhotosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get path =>
+      $composableBuilder(column: $table.path, builder: (column) => column);
+
+  $$ProjectsTableAnnotationComposer get project {
+    final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.project,
+        referencedTable: $db.projects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.projects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ProjectPhotosTableTableManager extends RootTableManager<
+    _$MyDatabase,
+    $ProjectPhotosTable,
+    ProjectPhoto,
+    $$ProjectPhotosTableFilterComposer,
+    $$ProjectPhotosTableOrderingComposer,
+    $$ProjectPhotosTableAnnotationComposer,
+    $$ProjectPhotosTableCreateCompanionBuilder,
+    $$ProjectPhotosTableUpdateCompanionBuilder,
+    (ProjectPhoto, $$ProjectPhotosTableReferences),
+    ProjectPhoto,
+    PrefetchHooks Function({bool project})> {
+  $$ProjectPhotosTableTableManager(_$MyDatabase db, $ProjectPhotosTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProjectPhotosTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProjectPhotosTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProjectPhotosTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> project = const Value.absent(),
+            Value<String> path = const Value.absent(),
+          }) =>
+              ProjectPhotosCompanion(
+            id: id,
+            project: project,
+            path: path,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int project,
+            required String path,
+          }) =>
+              ProjectPhotosCompanion.insert(
+            id: id,
+            project: project,
+            path: path,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$ProjectPhotosTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({project = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (project) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.project,
+                    referencedTable:
+                        $$ProjectPhotosTableReferences._projectTable(db),
+                    referencedColumn:
+                        $$ProjectPhotosTableReferences._projectTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$ProjectPhotosTableProcessedTableManager = ProcessedTableManager<
+    _$MyDatabase,
+    $ProjectPhotosTable,
+    ProjectPhoto,
+    $$ProjectPhotosTableFilterComposer,
+    $$ProjectPhotosTableOrderingComposer,
+    $$ProjectPhotosTableAnnotationComposer,
+    $$ProjectPhotosTableCreateCompanionBuilder,
+    $$ProjectPhotosTableUpdateCompanionBuilder,
+    (ProjectPhoto, $$ProjectPhotosTableReferences),
+    ProjectPhoto,
+    PrefetchHooks Function({bool project})>;
+typedef $$SubscriptionsTableCreateCompanionBuilder = SubscriptionsCompanion
+    Function({
+  Value<int> id,
+  required int account,
+  required int profile,
+  required BudgetInterval interval,
+  Value<int> day,
+  Value<int> amount,
+  Value<DateTime> addedDate,
+  Value<DateTime> updateDate,
+});
+typedef $$SubscriptionsTableUpdateCompanionBuilder = SubscriptionsCompanion
+    Function({
+  Value<int> id,
+  Value<int> account,
+  Value<int> profile,
+  Value<BudgetInterval> interval,
+  Value<int> day,
+  Value<int> amount,
+  Value<DateTime> addedDate,
+  Value<DateTime> updateDate,
+});
+
+final class $$SubscriptionsTableReferences
+    extends BaseReferences<_$MyDatabase, $SubscriptionsTable, Subscription> {
+  $$SubscriptionsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $AccountsTable _accountTable(_$MyDatabase db) =>
+      db.accounts.createAlias(
+          $_aliasNameGenerator(db.subscriptions.account, db.accounts.id));
+
+  $$AccountsTableProcessedTableManager get account {
+    final $_column = $_itemColumn<int>('account')!;
+
+    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $ProfilesTable _profileTable(_$MyDatabase db) =>
+      db.profiles.createAlias(
+          $_aliasNameGenerator(db.subscriptions.profile, db.profiles.id));
+
+  $$ProfilesTableProcessedTableManager get profile {
+    final $_column = $_itemColumn<int>('profile')!;
+
+    final manager = $$ProfilesTableTableManager($_db, $_db.profiles)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$SubscriptionsTableFilterComposer
+    extends Composer<_$MyDatabase, $SubscriptionsTable> {
+  $$SubscriptionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<BudgetInterval, BudgetInterval, int>
+      get interval => $composableBuilder(
+          column: $table.interval,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get day => $composableBuilder(
+      column: $table.day, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get amount => $composableBuilder(
+      column: $table.amount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get addedDate => $composableBuilder(
+      column: $table.addedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updateDate => $composableBuilder(
+      column: $table.updateDate, builder: (column) => ColumnFilters(column));
+
+  $$AccountsTableFilterComposer get account {
+    final $$AccountsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.account,
+        referencedTable: $db.accounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AccountsTableFilterComposer(
+              $db: $db,
+              $table: $db.accounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$ProfilesTableFilterComposer get profile {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.profile,
+        referencedTable: $db.profiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProfilesTableFilterComposer(
+              $db: $db,
+              $table: $db.profiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SubscriptionsTableOrderingComposer
+    extends Composer<_$MyDatabase, $SubscriptionsTable> {
+  $$SubscriptionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get interval => $composableBuilder(
+      column: $table.interval, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get day => $composableBuilder(
+      column: $table.day, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+      column: $table.amount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get addedDate => $composableBuilder(
+      column: $table.addedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updateDate => $composableBuilder(
+      column: $table.updateDate, builder: (column) => ColumnOrderings(column));
+
+  $$AccountsTableOrderingComposer get account {
+    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.account,
+        referencedTable: $db.accounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AccountsTableOrderingComposer(
+              $db: $db,
+              $table: $db.accounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$ProfilesTableOrderingComposer get profile {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.profile,
+        referencedTable: $db.profiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProfilesTableOrderingComposer(
+              $db: $db,
+              $table: $db.profiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SubscriptionsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $SubscriptionsTable> {
+  $$SubscriptionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<BudgetInterval, int> get interval =>
+      $composableBuilder(column: $table.interval, builder: (column) => column);
+
+  GeneratedColumn<int> get day =>
+      $composableBuilder(column: $table.day, builder: (column) => column);
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get addedDate =>
+      $composableBuilder(column: $table.addedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updateDate => $composableBuilder(
+      column: $table.updateDate, builder: (column) => column);
+
+  $$AccountsTableAnnotationComposer get account {
+    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.account,
+        referencedTable: $db.accounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AccountsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.accounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$ProfilesTableAnnotationComposer get profile {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.profile,
+        referencedTable: $db.profiles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProfilesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.profiles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$SubscriptionsTableTableManager extends RootTableManager<
+    _$MyDatabase,
+    $SubscriptionsTable,
+    Subscription,
+    $$SubscriptionsTableFilterComposer,
+    $$SubscriptionsTableOrderingComposer,
+    $$SubscriptionsTableAnnotationComposer,
+    $$SubscriptionsTableCreateCompanionBuilder,
+    $$SubscriptionsTableUpdateCompanionBuilder,
+    (Subscription, $$SubscriptionsTableReferences),
+    Subscription,
+    PrefetchHooks Function({bool account, bool profile})> {
+  $$SubscriptionsTableTableManager(_$MyDatabase db, $SubscriptionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SubscriptionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SubscriptionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SubscriptionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> account = const Value.absent(),
+            Value<int> profile = const Value.absent(),
+            Value<BudgetInterval> interval = const Value.absent(),
+            Value<int> day = const Value.absent(),
+            Value<int> amount = const Value.absent(),
+            Value<DateTime> addedDate = const Value.absent(),
+            Value<DateTime> updateDate = const Value.absent(),
+          }) =>
+              SubscriptionsCompanion(
+            id: id,
+            account: account,
+            profile: profile,
+            interval: interval,
+            day: day,
+            amount: amount,
+            addedDate: addedDate,
+            updateDate: updateDate,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int account,
+            required int profile,
+            required BudgetInterval interval,
+            Value<int> day = const Value.absent(),
+            Value<int> amount = const Value.absent(),
+            Value<DateTime> addedDate = const Value.absent(),
+            Value<DateTime> updateDate = const Value.absent(),
+          }) =>
+              SubscriptionsCompanion.insert(
+            id: id,
+            account: account,
+            profile: profile,
+            interval: interval,
+            day: day,
+            amount: amount,
+            addedDate: addedDate,
+            updateDate: updateDate,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$SubscriptionsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({account = false, profile = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (account) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.account,
+                    referencedTable:
+                        $$SubscriptionsTableReferences._accountTable(db),
+                    referencedColumn:
+                        $$SubscriptionsTableReferences._accountTable(db).id,
+                  ) as T;
+                }
+                if (profile) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.profile,
+                    referencedTable:
+                        $$SubscriptionsTableReferences._profileTable(db),
+                    referencedColumn:
+                        $$SubscriptionsTableReferences._profileTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$SubscriptionsTableProcessedTableManager = ProcessedTableManager<
+    _$MyDatabase,
+    $SubscriptionsTable,
+    Subscription,
+    $$SubscriptionsTableFilterComposer,
+    $$SubscriptionsTableOrderingComposer,
+    $$SubscriptionsTableAnnotationComposer,
+    $$SubscriptionsTableCreateCompanionBuilder,
+    $$SubscriptionsTableUpdateCompanionBuilder,
+    (Subscription, $$SubscriptionsTableReferences),
+    Subscription,
+    PrefetchHooks Function({bool account, bool profile})>;
 
 class $MyDatabaseManager {
   final _$MyDatabase _db;
@@ -10553,6 +13389,10 @@ class $MyDatabaseManager {
       $$ProfilesTableTableManager(_db, _db.profiles);
   $$AccountsTableTableManager get accounts =>
       $$AccountsTableTableManager(_db, _db.accounts);
+  $$BudgetsTableTableManager get budgets =>
+      $$BudgetsTableTableManager(_db, _db.budgets);
+  $$ProjectsTableTableManager get projects =>
+      $$ProjectsTableTableManager(_db, _db.projects);
   $$TransactionsTableTableManager get transactions =>
       $$TransactionsTableTableManager(_db, _db.transactions);
   $$UsersTableTableManager get users =>
@@ -10569,10 +13409,12 @@ class $MyDatabaseManager {
       $$BalancesTableTableManager(_db, _db.balances);
   $$FilePathsTableTableManager get filePaths =>
       $$FilePathsTableTableManager(_db, _db.filePaths);
-  $$BudgetsTableTableManager get budgets =>
-      $$BudgetsTableTableManager(_db, _db.budgets);
   $$BudgetAccountsTableTableManager get budgetAccounts =>
       $$BudgetAccountsTableTableManager(_db, _db.budgetAccounts);
   $$BudgetFundsTableTableManager get budgetFunds =>
       $$BudgetFundsTableTableManager(_db, _db.budgetFunds);
+  $$ProjectPhotosTableTableManager get projectPhotos =>
+      $$ProjectPhotosTableTableManager(_db, _db.projectPhotos);
+  $$SubscriptionsTableTableManager get subscriptions =>
+      $$SubscriptionsTableTableManager(_db, _db.subscriptions);
 }

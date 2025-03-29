@@ -17,7 +17,7 @@ class TransactionsListWide extends StatelessWidget {
     this.account,
   });
 
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
   final List<DoubleEntry> fTransactions;
   final Profile profile;
   final Function initFn;

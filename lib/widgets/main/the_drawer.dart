@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/screens/about_us_screen.dart';
-import 'package:pursenal/screens/accounts_screen.dart';
-import 'package:pursenal/screens/budgets_screen.dart';
 import 'package:pursenal/screens/profile_entry_screen.dart';
 import 'package:pursenal/screens/settings_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';

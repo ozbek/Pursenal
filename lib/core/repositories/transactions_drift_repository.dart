@@ -18,7 +18,8 @@ class TransactionsDriftRepository
       required int cr,
       required int amount,
       required VoucherType vchType,
-      required int profile}) async {
+      required int profile,
+      int? project}) async {
     try {
       final transaction = TransactionsCompanion(
           vchDate: Value(vchDate),
@@ -26,6 +27,7 @@ class TransactionsDriftRepository
           refNo: Value(refNo),
           dr: Value(dr),
           cr: Value(cr),
+          project: Value(project),
           amount: Value(amount),
           vchType: Value(vchType),
           profile: Value(profile));
@@ -46,7 +48,8 @@ class TransactionsDriftRepository
       required int cr,
       required int amount,
       required VoucherType vchType,
-      required int profile}) async {
+      required int profile,
+      int? project}) async {
     try {
       final transaction = TransactionsCompanion(
           id: Value(id),
@@ -58,6 +61,7 @@ class TransactionsDriftRepository
           amount: Value(amount),
           vchType: Value(vchType),
           profile: Value(profile),
+          project: Value(project),
           updateDate: Value(DateTime.now()));
       AppLogger.instance.info("Updating transaction id: $id");
       return await db.updateTransaction(transaction);
@@ -157,6 +161,22 @@ class TransactionsDriftRepository
       return await db.getDoubleEntryById(transactionID);
     } catch (e) {
       AppLogger.instance.error("Failed to get transaction. ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  Future<List<DoubleEntry>> getDoubleEntriesbyProject({
+    required int profileID,
+    required int projectID,
+  }) async {
+    try {
+      AppLogger.instance.info("Loading Transactions for project : $projectID");
+
+      return await db.getDoubleEntriesbyProject(
+          profileID: profileID, projectID: projectID);
+    } catch (e) {
+      AppLogger.instance
+          .error("Failed to get transactions list. ${e.toString()}");
       rethrow;
     }
   }

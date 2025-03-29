@@ -3,6 +3,7 @@ import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/double_entry.dart';
 import 'package:pursenal/core/repositories/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/projects_drift_repository.dart';
 import 'package:pursenal/core/repositories/transactions_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class TransactionViewmodel extends ChangeNotifier {
   final TransactionsDriftRepository _transactionsDriftRepository;
   final BalancesDriftRepository _balancesDriftRepository;
+  final ProjectsDriftRepository _projectsDriftRepository;
 
   TransactionViewmodel({
     required Profile profile,
@@ -18,6 +20,7 @@ class TransactionViewmodel extends ChangeNotifier {
   })  : _profile = profile,
         _doubleEntry = doubleEntry,
         _transactionsDriftRepository = TransactionsDriftRepository(db),
+        _projectsDriftRepository = ProjectsDriftRepository(db),
         _balancesDriftRepository = BalancesDriftRepository(db);
 
   DoubleEntry _doubleEntry;
@@ -30,6 +33,7 @@ class TransactionViewmodel extends ChangeNotifier {
   String errorText = "";
 
   SharedPreferences? _prefs;
+  Project? project;
 
   init() async {
     try {
@@ -37,6 +41,7 @@ class TransactionViewmodel extends ChangeNotifier {
       _prefs = await SharedPreferences.getInstance();
       notifyListeners();
       try {
+        await _getProject();
         loadingStatus = LoadingStatus.completed;
       } catch (e) {
         loadingStatus = LoadingStatus.error;
@@ -73,6 +78,19 @@ class TransactionViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
+  _getProject() async {
+    try {
+      if (doubleEntry.transaction.project != null) {
+        project = await _projectsDriftRepository
+            .getById(doubleEntry.transaction.project!);
+      }
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: Cannot load project details ';
+    }
+    notifyListeners();
+  }
+
   Future<void> setLastUpdatedTimeStamp() async {
     try {
       final timeStamp = DateTime.now();
@@ -89,6 +107,7 @@ class TransactionViewmodel extends ChangeNotifier {
       notifyListeners();
       _doubleEntry = await _transactionsDriftRepository.getDoubleEntryById(
           transactionID: doubleEntry.transaction.id);
+      _getProject();
       loadingStatus = LoadingStatus.completed;
     } catch (e) {
       errorText = "Failed to fetch transaction";

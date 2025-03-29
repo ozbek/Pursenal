@@ -23,7 +23,7 @@ class TransactionsList extends StatelessWidget {
       required this.initFn,
       this.account});
 
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
   final Set<DateTime> fDates;
   final List<DoubleEntry> fTransactions;
   final Profile profile;

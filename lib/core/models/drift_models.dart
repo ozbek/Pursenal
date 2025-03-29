@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/core/enums/primary_type.dart';
+import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
 import 'package:uuid/uuid.dart';
 
@@ -96,6 +97,9 @@ class Transactions extends Table {
       integer().withDefault(const Constant(0))(); // Transaction amount
   IntColumn get profile => integer().references(Profiles, #id,
       onDelete: KeyAction.cascade)(); // Profile association
+  IntColumn get project => integer()
+      .nullable()
+      .references(Projects, #id, onDelete: KeyAction.setNull)();
   DateTimeColumn get addedDate =>
       dateTime().clientDefault(() => DateTime.now())();
   DateTimeColumn get updateDate =>
@@ -217,4 +221,47 @@ class BudgetAccounts extends Table {
   IntColumn get budget =>
       integer().references(Budgets, #id, onDelete: KeyAction.cascade)();
   IntColumn get amount => integer().withDefault(const Constant(0))();
+}
+
+/// Project that has asssociated transactions.
+class Projects extends Table {
+  IntColumn get id => integer().autoIncrement()(); // Unique project ID
+  TextColumn get name => text().withLength(min: 1, max: 128)(); // Project name
+  TextColumn get description => text().nullable()(); // Project description
+  DateTimeColumn get startDate => dateTime().nullable()(); // Start date
+  IntColumn get profile => integer().references(Profiles, #id,
+      onDelete: KeyAction.cascade)(); // Profile association
+  DateTimeColumn get endDate => dateTime().nullable()(); // End date
+  IntColumn get status => intEnum<ProjectStatus>()();
+  IntColumn get budget => integer()
+      .nullable()
+      .references(Budgets, #id, onDelete: KeyAction.setNull)(); // Linked budget
+  DateTimeColumn get addedDate =>
+      dateTime().clientDefault(() => DateTime.now())(); // Date added
+  DateTimeColumn get updateDate =>
+      dateTime().clientDefault(() => DateTime.now())(); // Last update date
+}
+
+class ProjectPhotos extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get project =>
+      integer().references(Projects, #id, onDelete: KeyAction.cascade)();
+  TextColumn get path => text().withLength(min: 0, max: 512)(); // File path
+}
+
+// Fixed Payments and Subscriptions table
+class Subscriptions extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get account =>
+      integer().references(Accounts, #id, onDelete: KeyAction.cascade)();
+  IntColumn get profile => integer().references(Profiles, #id,
+      onDelete: KeyAction.cascade)(); // Profile association
+  IntColumn get interval =>
+      intEnum<BudgetInterval>()(); // The interval for the subscription
+  IntColumn get day => integer().withDefault(const Constant(1))();
+  IntColumn get amount => integer().withDefault(const Constant(0))();
+  DateTimeColumn get addedDate =>
+      dateTime().clientDefault(() => DateTime.now())(); // Date added
+  DateTimeColumn get updateDate =>
+      dateTime().clientDefault(() => DateTime.now())(); // Last update date
 }

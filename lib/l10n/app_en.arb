@@ -371,11 +371,15 @@
   "@allProfiles": {
     "description": "Label for list of all profiles."
   },
-  "deleteThisTransactionQn": "Delete this Transaction?",
+  "deleteThisTransactionQn": "Delete this transaction?",
   "@deleteThisTransactionQn": {
     "description": "Query to confirm deletion of current transaction."
   },
-  "deleteThisAccountQn": "Delete this Account?",
+  "deleteThisProjectQn": "Delete this project?",
+  "@deleteThisProjectQn": {
+    "description": "Query to confirm deletion of current project."
+  },
+  "deleteThisAccountQn": "Delete this account?",
   "@deleteThisAccountQn": {
     "description": "Query to confirm deletion of current account."
   },
@@ -614,6 +618,26 @@
   "savings": "Savings",
   "@savings": {
     "description": "Savings - for budget"
+  },
+  "project": "Project",
+  "@project": {
+    "description": "Project"
+  },
+  "projectName": "Project name",
+  "@projectName": {
+    "description": "Project"
+  },
+  "projectStatus": "Project status",
+  "@projectStatus": {
+    "description": "Project status"
+  },
+  "projectForm": "Project form",
+  "@projectForm": {
+    "description": "Project form"
+  },
+  "myProjects": "My Projects",
+  "@myProjects": {
+    "description": "Projects"
   },
   "budgetPerformance": "Budget Performance",
   "@budgetPerformance": {

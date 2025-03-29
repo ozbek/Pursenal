@@ -10,6 +10,7 @@ import 'package:pursenal/core/repositories/acc_types_drift_repository.dart';
 import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
 import 'package:pursenal/core/repositories/balances_drift_repository.dart';
 import 'package:pursenal/core/repositories/file_path_drift_repository.dart';
+import 'package:pursenal/core/repositories/projects_drift_repository.dart';
 import 'package:pursenal/core/repositories/transactions_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +21,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
   final BalancesDriftRepository _balancesDriftRepository;
   final FilePathsDriftRepository _filePathsDriftRepository;
   final AccTypesDriftRepository _accTypesDriftRepository;
+  final ProjectsDriftRepository _projectsDriftRepository;
 
   TransactionEntryViewmodel({
     required MyDatabase db,
@@ -41,6 +43,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
         _transactionsDriftRepository = TransactionsDriftRepository(db),
         _balancesDriftRepository = BalancesDriftRepository(db),
         _accTypesDriftRepository = AccTypesDriftRepository(db),
+        _projectsDriftRepository = ProjectsDriftRepository(db),
         _filePathsDriftRepository = FilePathsDriftRepository(db);
 
   LoadingStatus loadingStatus = LoadingStatus.idle;
@@ -66,6 +69,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
   final Profile _profile;
   Account? _selectedFund;
   Account? _selectedAccount;
+  Project? _selectedProject;
 
   final DoubleEntry? _doubleEntry;
 
@@ -103,15 +107,18 @@ class TransactionEntryViewmodel extends ChangeNotifier {
   Account? get selectedFund => _selectedFund;
   Account? get selectedAccount => _selectedAccount;
   DateTime get startDate => _startDate;
+  Project? get selectedProject => _selectedProject;
 
   List<AccType> accTypes = [];
 
   SharedPreferences? _prefs;
 
+  List<Project> projects = [];
+
   Future<void> init() async {
     loadingStatus = LoadingStatus.loading;
     await getAccounts();
-
+    await _getAllProjects();
     _prefs = await SharedPreferences.getInstance();
 
     isPayment = _vchType == VoucherType.payment;
@@ -146,6 +153,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
       vchNo =
           (await _transactionsDriftRepository.getLastTransactionID() ?? 0) + 1;
     }
+
     loadingStatus = LoadingStatus.completed;
     notifyListeners();
     _sortOtherAccounts();
@@ -228,6 +236,11 @@ class TransactionEntryViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
+  set selectedProject(Project? value) {
+    _selectedProject = value;
+    notifyListeners();
+  }
+
   Future<void> getAccounts() async {
     _ledgers =
         await _accountsDriftRepository.getLedgers(profileId: _profile.id);
@@ -259,6 +272,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
     _vchType = tr.vchType;
     _narr = tr.narr;
     _refNo = tr.refNo;
+    _selectedProject = projects.firstWhereOrNull((p) => p.id == tr.project);
     notifyListeners();
   }
 
@@ -282,6 +296,15 @@ class TransactionEntryViewmodel extends ChangeNotifier {
     if (_images.contains(path)) {
       _images.remove(path);
       notifyListeners();
+    }
+  }
+
+  Future<void> _getAllProjects() async {
+    try {
+      projects = await _projectsDriftRepository.getAllProjects(_profile.id);
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: ';
     }
   }
 
@@ -363,6 +386,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
               cr: isPayment ? _selectedFund!.id : _selectedAccount!.id,
               amount: _amount,
               vchType: _vchType,
+              project: _selectedProject?.id,
               profile: _profile.id);
           for (var f in _doubleEntry.filePaths) {
             await _filePathsDriftRepository.delete(f.id);
@@ -380,6 +404,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
               cr: isPayment ? _selectedFund!.id : _selectedAccount!.id,
               amount: _amount,
               vchType: _vchType,
+              project: _selectedProject?.id,
               profile: _profile.id);
           for (String p in _images) {
             await _filePathsDriftRepository.insertPath(
