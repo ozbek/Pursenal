@@ -74,7 +74,7 @@ class TransactionTile extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 4,
+                  flex: fundName != null ? 4 : 0,
                   child: Text(
                     fundName != null
                         ? isTransfer
@@ -85,7 +85,16 @@ class TransactionTile extends StatelessWidget {
                                     .paidFrom(fundName!)
                                 : AppLocalizations.of(context)!
                                     .receivedIn(fundName!)
-                        : narr,
+                        : "",
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+                Expanded(
+                  flex: 4,
+                  child: Text(
+                    narr,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.start,
                     style: Theme.of(context).textTheme.titleSmall,
