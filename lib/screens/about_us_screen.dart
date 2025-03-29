@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pursenal/app/global/dimensions.dart';
+import 'package:pursenal/app/global/values.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutUsScreen extends StatelessWidget {
@@ -61,15 +62,24 @@ class AboutUsScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
                   child: Text(
-                    'Pursenal',
-                    style: Theme.of(context).textTheme.titleMedium,
+                    appName,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: Text(
+                    appVersion,
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
                 const SizedBox(height: 10),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                   child: Text(
                     "Pursenal is a free and open-source (FOSS) cash register app designed for personal and business finance management. Built with Flutter, it runs seamlessly on multiple platforms. Users can create multiple profiles, track income and expenses across cash, bank, credit cards, and loans, and manage finances in a wide variety of currencies. The app features insightful charts, budget tracking, and continues to evolve with new features, making financial management simple and efficient.",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -80,14 +90,15 @@ class AboutUsScreen extends StatelessWidget {
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                     child: Text(
                       'License:',
                     ),
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                   child: Text(
                     'Pursenal is licensed under the GNU General Public License v3 (GPL v3).  ',
                   ),
@@ -96,7 +107,8 @@ class AboutUsScreen extends StatelessWidget {
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 16),
                       child: Text(
                         "Contact us:",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
