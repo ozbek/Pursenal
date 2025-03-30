@@ -672,6 +672,7 @@ class TransactionForm extends StatelessWidget {
                               vertical: 4, horizontal: 8),
                           child: DropdownMenu<Project>(
                             width: smallWidth,
+                            enableSearch: false,
                             label: Text(
                               AppLocalizations.of(context)!.project,
                             ),

@@ -97,8 +97,7 @@ class AboutUsScreen extends StatelessWidget {
                   ),
                 ),
                 const Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                   child: Text(
                     'Pursenal is licensed under the GNU General Public License v3 (GPL v3).  ',
                   ),

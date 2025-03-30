@@ -56,6 +56,7 @@ android/key.properties
 /debug-info
 
 build_appimage.sh
+build_apk.sh
 /AppDir
 .env
 *.AppImage
