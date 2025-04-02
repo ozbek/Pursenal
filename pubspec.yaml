@@ -1,5 +1,5 @@
 name: pursenal
-description: A FOSS Cash Register App.
+description: A FOSS, Cross-Platform Money Management App.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.1.0
@@ -110,7 +110,7 @@ package_rename_config:
   web:
     app_name: Pursenal # (String) The title of the web app and PWA
     short_app_name: Pursenal # (String) The short display name of the PWA (Optional, defaults to app_name if not set)
-    description: A FOSS Cash Register App. # (String) The description of the web app and PWA
+    description: A FOSS, Cross-Platform Money Management App. # (String) The description of the web app and PWA
 
   windows:
     app_name: Pursenal # (String) The window title & software name of the windows app

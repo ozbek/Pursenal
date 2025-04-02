@@ -2,7 +2,7 @@
 
 <img alt="Screenshot 1" src="promo-images/1.png" width="500px">
 
-**Pursenal** is a free and open source cash register app built using Flutter. Designed for both personal and business finance management, Pursenal helps you track expenses, income, and budgets with ease—across multiple profiles, currencies, and platforms.
+**Pursenal** is a free and open source money management app built using Flutter. Designed for both personal and business finance management, Pursenal helps you track expenses, income, and budgets with ease—across multiple profiles, currencies, and platforms.
 
 ## Features
 
@@ -26,6 +26,9 @@
 
 - **Notifications & Reminders:**  
   Set up daily reminders and alerts to keep your finances on track.
+
+- **Projects:**  
+  Assign expenses and incomes to a specific project.
 
 ## Screenshots
 
@@ -108,4 +111,4 @@ Pursenal is licensed under the GNU General Public License v3 (GPL v3) with addit
 
 ## Contact
 
-For questions, suggestions, or issues, please open an issue on GitHub.
+For questions, suggestions, or issues, please contact me, or open an issue on GitHub.
