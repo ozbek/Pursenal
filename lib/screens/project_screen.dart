@@ -12,6 +12,7 @@ import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/project_viewmodel.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pursenal/widgets/shared/the_divider.dart';
 import 'package:pursenal/widgets/shared/transactions_list.dart';
 import 'package:pursenal/widgets/shared/transactions_list_wide.dart';
 
@@ -149,16 +150,100 @@ class ProjectScreen extends StatelessWidget {
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 2, horizontal: 16),
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                viewmodel
-                                                    .projectPlan!.project.name,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headlineMedium,
-                                              ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    viewmodel.projectPlan!
+                                                        .project.name,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headlineMedium,
+                                                  ),
+                                                ),
+                                                Visibility(
+                                                  visible:
+                                                      viewmodel.projectPlan !=
+                                                          null,
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: ActionChip(
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12)),
+                                                          avatar: const Icon(
+                                                            Icons.edit,
+                                                            color: Colors.white,
+                                                          ),
+                                                          onPressed: () {
+                                                            showDialog(
+                                                              context: context,
+                                                              builder: (context) =>
+                                                                  SimpleDialog(
+                                                                title: Text(AppLocalizations.of(
+                                                                        context)!
+                                                                    .select(AppLocalizations.of(
+                                                                            context)!
+                                                                        .projectStatus)),
+                                                                children: [
+                                                                  ...ProjectStatus
+                                                                      .values
+                                                                      .map((p) =>
+                                                                          ListTile(
+                                                                            title:
+                                                                                Text(p.label),
+                                                                            onTap:
+                                                                                () async {
+                                                                              final bool ss = await viewmodel.changeProjectStatus(p);
+                                                                              if (ss) {
+                                                                                viewmodel.refetchProject();
+                                                                              }
+                                                                              if (context.mounted) {
+                                                                                Navigator.pop(context);
+                                                                              }
+                                                                            },
+                                                                          )),
+                                                                  const SizedBox(
+                                                                    height: 12,
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                          color: WidgetStatePropertyAll(
+                                                              Theme.of(context)
+                                                                  .primaryColor),
+                                                          label: Text(
+                                                            viewmodel
+                                                                .projectPlan!
+                                                                .project
+                                                                .status
+                                                                .label,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          )),
+                                                    ),
+                                                  ),
+                                                )
+                                                    .animate(delay: 150.ms)
+                                                    .scale(
+                                                        begin: const Offset(
+                                                            1.02, 1.02),
+                                                        duration: 100.ms)
+                                                    .fade(
+                                                        curve: Curves.easeInOut,
+                                                        duration: 100.ms),
+                                              ],
                                             ),
                                           )
                                               .animate()
@@ -246,80 +331,6 @@ class ProjectScreen extends StatelessWidget {
                                             ),
                                           )
                                               .animate(delay: 150.ms)
-                                              .scale(
-                                                  begin:
-                                                      const Offset(1.02, 1.02),
-                                                  duration: 100.ms)
-                                              .fade(
-                                                  curve: Curves.easeInOut,
-                                                  duration: 100.ms),
-                                          Visibility(
-                                            visible:
-                                                viewmodel.projectPlan != null,
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: ActionChip(
-                                                    avatar: const Icon(
-                                                      Icons.edit,
-                                                      color: Colors.white,
-                                                    ),
-                                                    onPressed: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            SimpleDialog(
-                                                          title: Text(AppLocalizations
-                                                                  .of(context)!
-                                                              .select(AppLocalizations
-                                                                      .of(context)!
-                                                                  .projectStatus)),
-                                                          children: [
-                                                            ...ProjectStatus
-                                                                .values
-                                                                .map((p) =>
-                                                                    ListTile(
-                                                                      title: Text(
-                                                                          p.label),
-                                                                      onTap:
-                                                                          () async {
-                                                                        final bool
-                                                                            ss =
-                                                                            await viewmodel.changeProjectStatus(p);
-                                                                        if (ss) {
-                                                                          viewmodel
-                                                                              .refetchProject();
-                                                                        }
-                                                                        if (context
-                                                                            .mounted) {
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        }
-                                                                      },
-                                                                    )),
-                                                            const SizedBox(
-                                                              height: 12,
-                                                            )
-                                                          ],
-                                                        ),
-                                                      );
-                                                    },
-                                                    color:
-                                                        WidgetStatePropertyAll(
-                                                            Theme.of(context)
-                                                                .primaryColor),
-                                                    label: Text(
-                                                      viewmodel.projectPlan!
-                                                          .project.status.label,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    )),
-                                              ),
-                                            ),
-                                          )
-                                              .animate(delay: 250.ms)
                                               .scale(
                                                   begin:
                                                       const Offset(1.02, 1.02),
@@ -472,6 +483,9 @@ class ProjectScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
+                          ),
+                          const TheDivider(
+                            indent: 0,
                           ),
                           Visibility(
                             visible: viewmodel.transactions.isNotEmpty,

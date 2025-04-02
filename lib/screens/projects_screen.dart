@@ -10,6 +10,7 @@ import 'package:pursenal/viewmodels/projects_viewmodel.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
 import 'package:pursenal/widgets/shared/search_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pursenal/widgets/shared/the_divider.dart';
 
 class ProjectsScreen extends StatelessWidget {
   const ProjectsScreen({super.key, required this.profile});
@@ -107,6 +108,9 @@ class ProjectsList extends StatelessWidget {
                   ...viewmodel.statusCriterias.map((s) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 2),
                         child: FilterChip(
+                          showCheckmark: false,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           label: Text(s.label),
                           onSelected: (v) {
                             viewmodel.addToFilter(status: s);
@@ -118,7 +122,10 @@ class ProjectsList extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 14,
+              height: 8,
+            ),
+            const TheDivider(
+              indent: 0,
             ),
             Expanded(child: Builder(builder: (_) {
               if (viewmodel.searchLoadingStatus == LoadingStatus.completed) {
@@ -148,15 +155,11 @@ class ProjectsList extends StatelessWidget {
                       title: Text(p.name,
                           style: Theme.of(context).textTheme.titleMedium),
                       trailing: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Chip(
-                            color: WidgetStatePropertyAll(
-                                Theme.of(context).primaryColor),
-                            label: Text(
-                              p.status.label,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                      ),
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            p.status.label,
+                            overflow: TextOverflow.ellipsis,
+                          )),
                       subtitle: Text(p.description ?? ""),
                     );
                   },

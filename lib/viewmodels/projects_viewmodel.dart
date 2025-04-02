@@ -76,6 +76,9 @@ class ProjectsViewmodel extends ChangeNotifier {
   Future<void> getProjects() async {
     try {
       _projects = await _projectsDriftRepository.getAllProjects(profile.id);
+      _projects.sort(
+        (a, b) => a.status.index.compareTo(b.status.index),
+      );
       statusCriterias = _projects.map((a) => a.status).toSet();
       AppLogger.instance.info("Projects loaded from database");
     } catch (e) {

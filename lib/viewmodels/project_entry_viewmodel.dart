@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:pursenal/app/extensions/datetime.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
@@ -35,6 +36,7 @@ class ProjectEntryViewmodel extends ChangeNotifier {
   Budget? _budget;
   String get projectName => _projectName;
   List<String> mediaPaths = [];
+  final DateTime _now = DateTime.now();
 
   set projectName(String value) {
     _projectName = value;
@@ -52,6 +54,12 @@ class ProjectEntryViewmodel extends ChangeNotifier {
 
   set startDate(DateTime? value) {
     _startDate = value;
+
+    if (value != null &&
+        value.isAfterOrEqualTo(_now) &&
+        _projectStatus == ProjectStatus.pending) {
+      _projectStatus = ProjectStatus.started;
+    }
     notifyListeners();
   }
 
@@ -59,6 +67,11 @@ class ProjectEntryViewmodel extends ChangeNotifier {
 
   set endDate(DateTime? value) {
     _endDate = value;
+    if (value != null &&
+        value.isBeforeOrEqualTo(_now) &&
+        _projectStatus == ProjectStatus.pending) {
+      _projectStatus = ProjectStatus.completed;
+    }
     notifyListeners();
   }
 
