@@ -23,7 +23,7 @@ import 'package:pursenal/screens/welcome_screen.dart';
 import 'package:pursenal/utils/services/notification_servie.dart';
 import 'package:pursenal/providers/theme_provider.dart';
 import 'package:pursenal/screens/main_screen.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/db/app_drift_database.dart';
 import 'package:pursenal/screens/profile_selection_screen.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:path/path.dart' as p;
@@ -35,7 +35,7 @@ import 'package:timezone/data/latest.dart' as tz;
 
 Future<String> _getDatabasePath() async {
   final appDir = await getApplicationSupportDirectory();
-  return p.join(appDir.path, 'db', 'app_database.sqlite');
+  return p.join(appDir.path, 'db', 'app_drift_database.sqlite');
 }
 
 DatabaseConnection _backgroundConnection(String path) {
@@ -68,55 +68,61 @@ void main() async {
 
   runApp(MultiProvider(
     providers: [
-      Provider<MyDatabase>(
-        create: (context) => MyDatabase(connection, "b"),
+      Provider<AppDriftDatabase>(
+        create: (context) => AppDriftDatabase(connection, "b"),
         dispose: (context, db) => db.close(),
       ),
       Provider<ProfilesDriftRepository>(
         create: (context) =>
-            ProfilesDriftRepository(context.read<MyDatabase>()),
+            ProfilesDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<AccountTypesDriftRepository>(
         create: (context) =>
-            AccountTypesDriftRepository(context.read<MyDatabase>()),
+            AccountTypesDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<AccountsDriftRepository>(
         create: (context) =>
-            AccountsDriftRepository(context.read<MyDatabase>()),
+            AccountsDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<BalancesDriftRepository>(
         create: (context) =>
-            BalancesDriftRepository(context.read<MyDatabase>()),
+            BalancesDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<BanksDriftRepository>(
-        create: (context) => BanksDriftRepository(context.read<MyDatabase>()),
+        create: (context) =>
+            BanksDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<BudgetsDriftRepository>(
-        create: (context) => BudgetsDriftRepository(context.read<MyDatabase>()),
+        create: (context) =>
+            BudgetsDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<CCardsDriftRepository>(
-        create: (context) => CCardsDriftRepository(context.read<MyDatabase>()),
+        create: (context) =>
+            CCardsDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<LoansDriftRepository>(
-        create: (context) => LoansDriftRepository(context.read<MyDatabase>()),
+        create: (context) =>
+            LoansDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<PeopleDriftRepository>(
-        create: (context) => PeopleDriftRepository(context.read<MyDatabase>()),
+        create: (context) =>
+            PeopleDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<ReceivablesDriftRepository>(
         create: (context) =>
-            ReceivablesDriftRepository(context.read<MyDatabase>()),
+            ReceivablesDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<WalletsDriftRepository>(
-        create: (context) => WalletsDriftRepository(context.read<MyDatabase>()),
+        create: (context) =>
+            WalletsDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<TransactionsDriftRepository>(
         create: (context) =>
-            TransactionsDriftRepository(context.read<MyDatabase>()),
+            TransactionsDriftRepository(context.read<AppDriftDatabase>()),
       ),
       Provider<ProjectsDriftRepository>(
         create: (context) =>
-            ProjectsDriftRepository(context.read<MyDatabase>()),
+            ProjectsDriftRepository(context.read<AppDriftDatabase>()),
       ),
       ChangeNotifierProvider<AppViewmodel>(
         create: (context) =>

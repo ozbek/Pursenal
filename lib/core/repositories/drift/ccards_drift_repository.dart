@@ -1,13 +1,13 @@
 import 'package:drift/drift.dart';
 import 'package:pursenal/app/extensions/drift_models.dart';
 import 'package:pursenal/core/abstracts/credit_cards_repository.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/db/app_drift_database.dart';
 import 'package:pursenal/core/models/domain/credit_card.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class CCardsDriftRepository implements CreditCardsRepository {
   CCardsDriftRepository(this.db);
-  final MyDatabase db;
+  final AppDriftDatabase db;
 
   @override
   Future<int> insertCCard({

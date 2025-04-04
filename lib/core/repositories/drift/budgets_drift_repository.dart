@@ -1,14 +1,14 @@
 import 'package:drift/drift.dart';
 import 'package:pursenal/app/extensions/drift_models.dart';
 import 'package:pursenal/core/abstracts/budgets_repository.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/db/app_drift_database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/models/domain/budget.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class BudgetsDriftRepository implements BudgetsRepository {
   BudgetsDriftRepository(this.db);
-  final MyDatabase db;
+  final AppDriftDatabase db;
 
   @override
   Future<int> delete(int id) async {

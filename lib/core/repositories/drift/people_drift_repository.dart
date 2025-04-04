@@ -1,13 +1,13 @@
 import 'package:drift/drift.dart';
 import 'package:pursenal/app/extensions/drift_models.dart';
 import 'package:pursenal/core/abstracts/people_repository.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/db/app_drift_database.dart';
 import 'package:pursenal/core/models/domain/people.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class PeopleDriftRepository implements PeopleRepository {
   PeopleDriftRepository(this.db);
-  final MyDatabase db;
+  final AppDriftDatabase db;
 
   @override
   Future<int> insertPeople({

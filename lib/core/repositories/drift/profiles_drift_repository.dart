@@ -1,14 +1,14 @@
 import 'package:drift/drift.dart';
 import 'package:pursenal/app/extensions/drift_models.dart';
 import 'package:pursenal/core/abstracts/profiles_repository.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/db/app_drift_database.dart';
 import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class ProfilesDriftRepository implements ProfilesRepository {
   ProfilesDriftRepository(this.db);
-  final MyDatabase db;
+  final AppDriftDatabase db;
 
   @override
   Future<List<Profile>> getAll() async {

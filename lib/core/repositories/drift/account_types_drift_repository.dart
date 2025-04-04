@@ -1,12 +1,12 @@
 import 'package:pursenal/app/extensions/drift_models.dart';
 import 'package:pursenal/core/abstracts/account_types_repository.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/db/app_drift_database.dart';
 import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class AccountTypesDriftRepository implements AccountTypesRepository {
   AccountTypesDriftRepository(this.db);
-  final MyDatabase db;
+  final AppDriftDatabase db;
 
   @override
   Future<List<AccountType>> getAll() async {

@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/db/app_drift_database.dart';
 import 'package:pursenal/core/models/domain/account.dart';
 import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/bank.dart';

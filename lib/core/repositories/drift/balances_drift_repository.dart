@@ -1,11 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:pursenal/core/abstracts/balances_repository.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/db/app_drift_database.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class BalancesDriftRepository implements BalancesRepository {
   BalancesDriftRepository(this.db);
-  final MyDatabase db;
+  final AppDriftDatabase db;
 
   @override
   Future<int> insertBalance({required int account, required int amount}) async {

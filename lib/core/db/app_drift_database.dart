@@ -13,7 +13,7 @@ import 'package:pursenal/utils/db_utils.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
-part 'database.g.dart';
+part 'app_drift_database.g.dart';
 
 @DriftDatabase(tables: [
   DriftAccTypes,
@@ -36,9 +36,9 @@ part 'database.g.dart';
   DriftReceivables,
   DriftPeople
 ])
-class MyDatabase extends _$MyDatabase {
+class AppDriftDatabase extends _$AppDriftDatabase {
   // we tell the database where to store the data with this constructor
-  MyDatabase(DatabaseConnection super.connection, this.dbName);
+  AppDriftDatabase(DatabaseConnection super.connection, this.dbName);
 
   final String dbName;
   @override

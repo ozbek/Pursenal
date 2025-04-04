@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'database.dart';
+part of 'app_drift_database.dart';
 
 // ignore_for_file: type=lint
 class $DriftAccTypesTable extends DriftAccTypes
@@ -6937,9 +6937,9 @@ class DriftPeopleCompanion extends UpdateCompanion<DriftPeopleData> {
   }
 }
 
-abstract class _$MyDatabase extends GeneratedDatabase {
-  _$MyDatabase(QueryExecutor e) : super(e);
-  $MyDatabaseManager get managers => $MyDatabaseManager(this);
+abstract class _$AppDriftDatabase extends GeneratedDatabase {
+  _$AppDriftDatabase(QueryExecutor e) : super(e);
+  $AppDriftDatabaseManager get managers => $AppDriftDatabaseManager(this);
   late final $DriftAccTypesTable driftAccTypes = $DriftAccTypesTable(this);
   late final $DriftProfilesTable driftProfiles = $DriftProfilesTable(this);
   late final $DriftAccountsTable driftAccounts = $DriftAccountsTable(this);
@@ -7185,13 +7185,13 @@ typedef $$DriftAccTypesTableUpdateCompanionBuilder = DriftAccTypesCompanion
   Value<bool> isEditable,
 });
 
-final class $$DriftAccTypesTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftAccTypesTable, DriftAccType> {
+final class $$DriftAccTypesTableReferences extends BaseReferences<
+    _$AppDriftDatabase, $DriftAccTypesTable, DriftAccType> {
   $$DriftAccTypesTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$DriftAccountsTable, List<DriftAccount>>
-      _driftAccountsRefsTable(_$MyDatabase db) =>
+      _driftAccountsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftAccounts,
               aliasName: $_aliasNameGenerator(
                   db.driftAccTypes.id, db.driftAccounts.accType));
@@ -7207,7 +7207,7 @@ final class $$DriftAccTypesTableReferences
 }
 
 class $$DriftAccTypesTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftAccTypesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftAccTypesTable> {
   $$DriftAccTypesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -7258,7 +7258,7 @@ class $$DriftAccTypesTableFilterComposer
 }
 
 class $$DriftAccTypesTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftAccTypesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftAccTypesTable> {
   $$DriftAccTypesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -7286,7 +7286,7 @@ class $$DriftAccTypesTableOrderingComposer
 }
 
 class $$DriftAccTypesTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftAccTypesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftAccTypesTable> {
   $$DriftAccTypesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -7335,7 +7335,7 @@ class $$DriftAccTypesTableAnnotationComposer
 }
 
 class $$DriftAccTypesTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftAccTypesTable,
     DriftAccType,
     $$DriftAccTypesTableFilterComposer,
@@ -7346,7 +7346,8 @@ class $$DriftAccTypesTableTableManager extends RootTableManager<
     (DriftAccType, $$DriftAccTypesTableReferences),
     DriftAccType,
     PrefetchHooks Function({bool driftAccountsRefs})> {
-  $$DriftAccTypesTableTableManager(_$MyDatabase db, $DriftAccTypesTable table)
+  $$DriftAccTypesTableTableManager(
+      _$AppDriftDatabase db, $DriftAccTypesTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -7424,7 +7425,7 @@ class $$DriftAccTypesTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftAccTypesTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftAccTypesTable,
     DriftAccType,
     $$DriftAccTypesTableFilterComposer,
@@ -7470,13 +7471,13 @@ typedef $$DriftProfilesTableUpdateCompanionBuilder = DriftProfilesCompanion
   Value<DateTime> updateDate,
 });
 
-final class $$DriftProfilesTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftProfilesTable, DriftProfile> {
+final class $$DriftProfilesTableReferences extends BaseReferences<
+    _$AppDriftDatabase, $DriftProfilesTable, DriftProfile> {
   $$DriftProfilesTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$DriftAccountsTable, List<DriftAccount>>
-      _driftAccountsRefsTable(_$MyDatabase db) =>
+      _driftAccountsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftAccounts,
               aliasName: $_aliasNameGenerator(
                   db.driftProfiles.id, db.driftAccounts.profile));
@@ -7491,7 +7492,7 @@ final class $$DriftProfilesTableReferences
   }
 
   static MultiTypedResultKey<$DriftBudgetsTable, List<DriftBudget>>
-      _driftBudgetsRefsTable(_$MyDatabase db) =>
+      _driftBudgetsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftBudgets,
               aliasName: $_aliasNameGenerator(
                   db.driftProfiles.id, db.driftBudgets.profile));
@@ -7506,7 +7507,7 @@ final class $$DriftProfilesTableReferences
   }
 
   static MultiTypedResultKey<$DriftProjectsTable, List<DriftProject>>
-      _driftProjectsRefsTable(_$MyDatabase db) =>
+      _driftProjectsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftProjects,
               aliasName: $_aliasNameGenerator(
                   db.driftProfiles.id, db.driftProjects.profile));
@@ -7521,7 +7522,7 @@ final class $$DriftProfilesTableReferences
   }
 
   static MultiTypedResultKey<$DriftTransactionsTable, List<DriftTransaction>>
-      _driftTransactionsRefsTable(_$MyDatabase db) =>
+      _driftTransactionsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftTransactions,
               aliasName: $_aliasNameGenerator(
                   db.driftProfiles.id, db.driftTransactions.profile));
@@ -7538,7 +7539,7 @@ final class $$DriftProfilesTableReferences
   }
 
   static MultiTypedResultKey<$DriftSubscriptionsTable, List<DriftSubscription>>
-      _driftSubscriptionsRefsTable(_$MyDatabase db) =>
+      _driftSubscriptionsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftSubscriptions,
               aliasName: $_aliasNameGenerator(
                   db.driftProfiles.id, db.driftSubscriptions.profile));
@@ -7556,7 +7557,7 @@ final class $$DriftProfilesTableReferences
 }
 
 class $$DriftProfilesTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftProfilesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftProfilesTable> {
   $$DriftProfilesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -7715,7 +7716,7 @@ class $$DriftProfilesTableFilterComposer
 }
 
 class $$DriftProfilesTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftProfilesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftProfilesTable> {
   $$DriftProfilesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -7767,7 +7768,7 @@ class $$DriftProfilesTableOrderingComposer
 }
 
 class $$DriftProfilesTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftProfilesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftProfilesTable> {
   $$DriftProfilesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -7926,7 +7927,7 @@ class $$DriftProfilesTableAnnotationComposer
 }
 
 class $$DriftProfilesTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftProfilesTable,
     DriftProfile,
     $$DriftProfilesTableFilterComposer,
@@ -7942,7 +7943,8 @@ class $$DriftProfilesTableTableManager extends RootTableManager<
         bool driftProjectsRefs,
         bool driftTransactionsRefs,
         bool driftSubscriptionsRefs})> {
-  $$DriftProfilesTableTableManager(_$MyDatabase db, $DriftProfilesTable table)
+  $$DriftProfilesTableTableManager(
+      _$AppDriftDatabase db, $DriftProfilesTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -8113,7 +8115,7 @@ class $$DriftProfilesTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftProfilesTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftProfilesTable,
     DriftProfile,
     $$DriftProfilesTableFilterComposer,
@@ -8154,12 +8156,12 @@ typedef $$DriftAccountsTableUpdateCompanionBuilder = DriftAccountsCompanion
   Value<int> profile,
 });
 
-final class $$DriftAccountsTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftAccountsTable, DriftAccount> {
+final class $$DriftAccountsTableReferences extends BaseReferences<
+    _$AppDriftDatabase, $DriftAccountsTable, DriftAccount> {
   $$DriftAccountsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccTypesTable _accTypeTable(_$MyDatabase db) =>
+  static $DriftAccTypesTable _accTypeTable(_$AppDriftDatabase db) =>
       db.driftAccTypes.createAlias(
           $_aliasNameGenerator(db.driftAccounts.accType, db.driftAccTypes.id));
 
@@ -8174,7 +8176,7 @@ final class $$DriftAccountsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $DriftProfilesTable _profileTable(_$MyDatabase db) =>
+  static $DriftProfilesTable _profileTable(_$AppDriftDatabase db) =>
       db.driftProfiles.createAlias(
           $_aliasNameGenerator(db.driftAccounts.profile, db.driftProfiles.id));
 
@@ -8190,7 +8192,7 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftTransactionsTable, List<DriftTransaction>>
-      _drAccountTable(_$MyDatabase db) =>
+      _drAccountTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftTransactions,
               aliasName: $_aliasNameGenerator(
                   db.driftAccounts.id, db.driftTransactions.dr));
@@ -8206,7 +8208,7 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftTransactionsTable, List<DriftTransaction>>
-      _crAccountTable(_$MyDatabase db) =>
+      _crAccountTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftTransactions,
               aliasName: $_aliasNameGenerator(
                   db.driftAccounts.id, db.driftTransactions.cr));
@@ -8222,10 +8224,10 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftBanksTable, List<DriftBank>>
-      _driftBanksRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
-          db.driftBanks,
-          aliasName:
-              $_aliasNameGenerator(db.driftAccounts.id, db.driftBanks.account));
+      _driftBanksRefsTable(_$AppDriftDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftBanks,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftBanks.account));
 
   $$DriftBanksTableProcessedTableManager get driftBanksRefs {
     final manager = $$DriftBanksTableTableManager($_db, $_db.driftBanks)
@@ -8237,7 +8239,7 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftWalletsTable, List<DriftWallet>>
-      _driftWalletsRefsTable(_$MyDatabase db) =>
+      _driftWalletsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftWallets,
               aliasName: $_aliasNameGenerator(
                   db.driftAccounts.id, db.driftWallets.account));
@@ -8252,10 +8254,10 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftLoansTable, List<DriftLoan>>
-      _driftLoansRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
-          db.driftLoans,
-          aliasName:
-              $_aliasNameGenerator(db.driftAccounts.id, db.driftLoans.account));
+      _driftLoansRefsTable(_$AppDriftDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftLoans,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftLoans.account));
 
   $$DriftLoansTableProcessedTableManager get driftLoansRefs {
     final manager = $$DriftLoansTableTableManager($_db, $_db.driftLoans)
@@ -8267,7 +8269,7 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftCCardsTable, List<DriftCCard>>
-      _driftCCardsRefsTable(_$MyDatabase db) =>
+      _driftCCardsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftCCards,
               aliasName: $_aliasNameGenerator(
                   db.driftAccounts.id, db.driftCCards.account));
@@ -8282,7 +8284,7 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftBalancesTable, List<DriftBalance>>
-      _driftBalancesRefsTable(_$MyDatabase db) =>
+      _driftBalancesRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftBalances,
               aliasName: $_aliasNameGenerator(
                   db.driftAccounts.id, db.driftBalances.account));
@@ -8298,7 +8300,7 @@ final class $$DriftAccountsTableReferences
 
   static MultiTypedResultKey<$DriftBudgetAccountsTable,
       List<DriftBudgetAccount>> _driftBudgetAccountsRefsTable(
-          _$MyDatabase db) =>
+          _$AppDriftDatabase db) =>
       MultiTypedResultKey.fromTable(db.driftBudgetAccounts,
           aliasName: $_aliasNameGenerator(
               db.driftAccounts.id, db.driftBudgetAccounts.account));
@@ -8315,7 +8317,7 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftBudgetFundsTable, List<DriftBudgetFund>>
-      _driftBudgetFundsRefsTable(_$MyDatabase db) =>
+      _driftBudgetFundsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftBudgetFunds,
               aliasName: $_aliasNameGenerator(
                   db.driftAccounts.id, db.driftBudgetFunds.account));
@@ -8332,7 +8334,7 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftSubscriptionsTable, List<DriftSubscription>>
-      _driftSubscriptionsRefsTable(_$MyDatabase db) =>
+      _driftSubscriptionsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftSubscriptions,
               aliasName: $_aliasNameGenerator(
                   db.driftAccounts.id, db.driftSubscriptions.account));
@@ -8349,7 +8351,7 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftReceivablesTable, List<DriftReceivable>>
-      _driftReceivablesRefsTable(_$MyDatabase db) =>
+      _driftReceivablesRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftReceivables,
               aliasName: $_aliasNameGenerator(
                   db.driftAccounts.id, db.driftReceivables.accountId));
@@ -8366,7 +8368,7 @@ final class $$DriftAccountsTableReferences
   }
 
   static MultiTypedResultKey<$DriftPeopleTable, List<DriftPeopleData>>
-      _driftPeopleRefsTable(_$MyDatabase db) =>
+      _driftPeopleRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftPeople,
               aliasName: $_aliasNameGenerator(
                   db.driftAccounts.id, db.driftPeople.accountId));
@@ -8382,7 +8384,7 @@ final class $$DriftAccountsTableReferences
 }
 
 class $$DriftAccountsTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftAccountsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftAccountsTable> {
   $$DriftAccountsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -8705,7 +8707,7 @@ class $$DriftAccountsTableFilterComposer
 }
 
 class $$DriftAccountsTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftAccountsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftAccountsTable> {
   $$DriftAccountsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -8776,7 +8778,7 @@ class $$DriftAccountsTableOrderingComposer
 }
 
 class $$DriftAccountsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftAccountsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftAccountsTable> {
   $$DriftAccountsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -9104,7 +9106,7 @@ class $$DriftAccountsTableAnnotationComposer
 }
 
 class $$DriftAccountsTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftAccountsTable,
     DriftAccount,
     $$DriftAccountsTableFilterComposer,
@@ -9129,7 +9131,8 @@ class $$DriftAccountsTableTableManager extends RootTableManager<
         bool driftSubscriptionsRefs,
         bool driftReceivablesRefs,
         bool driftPeopleRefs})> {
-  $$DriftAccountsTableTableManager(_$MyDatabase db, $DriftAccountsTable table)
+  $$DriftAccountsTableTableManager(
+      _$AppDriftDatabase db, $DriftAccountsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -9422,7 +9425,7 @@ class $$DriftAccountsTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftAccountsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftAccountsTable,
     DriftAccount,
     $$DriftAccountsTableFilterComposer,
@@ -9472,11 +9475,11 @@ typedef $$DriftBudgetsTableUpdateCompanionBuilder = DriftBudgetsCompanion
   Value<DateTime> updateDate,
 });
 
-final class $$DriftBudgetsTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftBudgetsTable, DriftBudget> {
+final class $$DriftBudgetsTableReferences extends BaseReferences<
+    _$AppDriftDatabase, $DriftBudgetsTable, DriftBudget> {
   $$DriftBudgetsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftProfilesTable _profileTable(_$MyDatabase db) =>
+  static $DriftProfilesTable _profileTable(_$AppDriftDatabase db) =>
       db.driftProfiles.createAlias(
           $_aliasNameGenerator(db.driftBudgets.profile, db.driftProfiles.id));
 
@@ -9492,7 +9495,7 @@ final class $$DriftBudgetsTableReferences
   }
 
   static MultiTypedResultKey<$DriftProjectsTable, List<DriftProject>>
-      _driftProjectsRefsTable(_$MyDatabase db) =>
+      _driftProjectsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftProjects,
               aliasName: $_aliasNameGenerator(
                   db.driftBudgets.id, db.driftProjects.budget));
@@ -9508,7 +9511,7 @@ final class $$DriftBudgetsTableReferences
 
   static MultiTypedResultKey<$DriftBudgetAccountsTable,
       List<DriftBudgetAccount>> _driftBudgetAccountsRefsTable(
-          _$MyDatabase db) =>
+          _$AppDriftDatabase db) =>
       MultiTypedResultKey.fromTable(db.driftBudgetAccounts,
           aliasName: $_aliasNameGenerator(
               db.driftBudgets.id, db.driftBudgetAccounts.budget));
@@ -9525,7 +9528,7 @@ final class $$DriftBudgetsTableReferences
   }
 
   static MultiTypedResultKey<$DriftBudgetFundsTable, List<DriftBudgetFund>>
-      _driftBudgetFundsRefsTable(_$MyDatabase db) =>
+      _driftBudgetFundsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftBudgetFunds,
               aliasName: $_aliasNameGenerator(
                   db.driftBudgets.id, db.driftBudgetFunds.budget));
@@ -9543,7 +9546,7 @@ final class $$DriftBudgetsTableReferences
 }
 
 class $$DriftBudgetsTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftBudgetsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBudgetsTable> {
   $$DriftBudgetsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -9662,7 +9665,7 @@ class $$DriftBudgetsTableFilterComposer
 }
 
 class $$DriftBudgetsTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftBudgetsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBudgetsTable> {
   $$DriftBudgetsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -9716,7 +9719,7 @@ class $$DriftBudgetsTableOrderingComposer
 }
 
 class $$DriftBudgetsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftBudgetsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBudgetsTable> {
   $$DriftBudgetsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -9835,7 +9838,7 @@ class $$DriftBudgetsTableAnnotationComposer
 }
 
 class $$DriftBudgetsTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftBudgetsTable,
     DriftBudget,
     $$DriftBudgetsTableFilterComposer,
@@ -9850,7 +9853,8 @@ class $$DriftBudgetsTableTableManager extends RootTableManager<
         bool driftProjectsRefs,
         bool driftBudgetAccountsRefs,
         bool driftBudgetFundsRefs})> {
-  $$DriftBudgetsTableTableManager(_$MyDatabase db, $DriftBudgetsTable table)
+  $$DriftBudgetsTableTableManager(
+      _$AppDriftDatabase db, $DriftBudgetsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -9997,7 +10001,7 @@ class $$DriftBudgetsTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftBudgetsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftBudgetsTable,
     DriftBudget,
     $$DriftBudgetsTableFilterComposer,
@@ -10039,12 +10043,12 @@ typedef $$DriftProjectsTableUpdateCompanionBuilder = DriftProjectsCompanion
   Value<DateTime> updateDate,
 });
 
-final class $$DriftProjectsTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftProjectsTable, DriftProject> {
+final class $$DriftProjectsTableReferences extends BaseReferences<
+    _$AppDriftDatabase, $DriftProjectsTable, DriftProject> {
   $$DriftProjectsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftProfilesTable _profileTable(_$MyDatabase db) =>
+  static $DriftProfilesTable _profileTable(_$AppDriftDatabase db) =>
       db.driftProfiles.createAlias(
           $_aliasNameGenerator(db.driftProjects.profile, db.driftProfiles.id));
 
@@ -10059,7 +10063,7 @@ final class $$DriftProjectsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $DriftBudgetsTable _budgetTable(_$MyDatabase db) =>
+  static $DriftBudgetsTable _budgetTable(_$AppDriftDatabase db) =>
       db.driftBudgets.createAlias(
           $_aliasNameGenerator(db.driftProjects.budget, db.driftBudgets.id));
 
@@ -10075,7 +10079,7 @@ final class $$DriftProjectsTableReferences
   }
 
   static MultiTypedResultKey<$DriftTransactionsTable, List<DriftTransaction>>
-      _driftTransactionsRefsTable(_$MyDatabase db) =>
+      _driftTransactionsRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftTransactions,
               aliasName: $_aliasNameGenerator(
                   db.driftProjects.id, db.driftTransactions.project));
@@ -10092,7 +10096,7 @@ final class $$DriftProjectsTableReferences
   }
 
   static MultiTypedResultKey<$DriftProjectPhotosTable, List<DriftProjectPhoto>>
-      _driftProjectPhotosRefsTable(_$MyDatabase db) =>
+      _driftProjectPhotosRefsTable(_$AppDriftDatabase db) =>
           MultiTypedResultKey.fromTable(db.driftProjectPhotos,
               aliasName: $_aliasNameGenerator(
                   db.driftProjects.id, db.driftProjectPhotos.project));
@@ -10110,7 +10114,7 @@ final class $$DriftProjectsTableReferences
 }
 
 class $$DriftProjectsTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftProjectsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftProjectsTable> {
   $$DriftProjectsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -10228,7 +10232,7 @@ class $$DriftProjectsTableFilterComposer
 }
 
 class $$DriftProjectsTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftProjectsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftProjectsTable> {
   $$DriftProjectsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -10302,7 +10306,7 @@ class $$DriftProjectsTableOrderingComposer
 }
 
 class $$DriftProjectsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftProjectsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftProjectsTable> {
   $$DriftProjectsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -10420,7 +10424,7 @@ class $$DriftProjectsTableAnnotationComposer
 }
 
 class $$DriftProjectsTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftProjectsTable,
     DriftProject,
     $$DriftProjectsTableFilterComposer,
@@ -10435,7 +10439,8 @@ class $$DriftProjectsTableTableManager extends RootTableManager<
         bool budget,
         bool driftTransactionsRefs,
         bool driftProjectPhotosRefs})> {
-  $$DriftProjectsTableTableManager(_$MyDatabase db, $DriftProjectsTable table)
+  $$DriftProjectsTableTableManager(
+      _$AppDriftDatabase db, $DriftProjectsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -10582,7 +10587,7 @@ class $$DriftProjectsTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftProjectsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftProjectsTable,
     DriftProject,
     $$DriftProjectsTableFilterComposer,
@@ -10629,11 +10634,11 @@ typedef $$DriftTransactionsTableUpdateCompanionBuilder
 });
 
 final class $$DriftTransactionsTableReferences extends BaseReferences<
-    _$MyDatabase, $DriftTransactionsTable, DriftTransaction> {
+    _$AppDriftDatabase, $DriftTransactionsTable, DriftTransaction> {
   $$DriftTransactionsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _drTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _drTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias(
           $_aliasNameGenerator(db.driftTransactions.dr, db.driftAccounts.id));
 
@@ -10648,7 +10653,7 @@ final class $$DriftTransactionsTableReferences extends BaseReferences<
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $DriftAccountsTable _crTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _crTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias(
           $_aliasNameGenerator(db.driftTransactions.cr, db.driftAccounts.id));
 
@@ -10663,7 +10668,7 @@ final class $$DriftTransactionsTableReferences extends BaseReferences<
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $DriftProfilesTable _profileTable(_$MyDatabase db) =>
+  static $DriftProfilesTable _profileTable(_$AppDriftDatabase db) =>
       db.driftProfiles.createAlias($_aliasNameGenerator(
           db.driftTransactions.profile, db.driftProfiles.id));
 
@@ -10678,7 +10683,7 @@ final class $$DriftTransactionsTableReferences extends BaseReferences<
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $DriftProjectsTable _projectTable(_$MyDatabase db) =>
+  static $DriftProjectsTable _projectTable(_$AppDriftDatabase db) =>
       db.driftProjects.createAlias($_aliasNameGenerator(
           db.driftTransactions.project, db.driftProjects.id));
 
@@ -10695,7 +10700,7 @@ final class $$DriftTransactionsTableReferences extends BaseReferences<
 
   static MultiTypedResultKey<$DriftTransactionPhotosTable,
       List<DriftTransactionPhoto>> _driftTransactionPhotosRefsTable(
-          _$MyDatabase db) =>
+          _$AppDriftDatabase db) =>
       MultiTypedResultKey.fromTable(db.driftTransactionPhotos,
           aliasName: $_aliasNameGenerator(
               db.driftTransactions.id, db.driftTransactionPhotos.transaction));
@@ -10714,7 +10719,7 @@ final class $$DriftTransactionsTableReferences extends BaseReferences<
 }
 
 class $$DriftTransactionsTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftTransactionsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftTransactionsTable> {
   $$DriftTransactionsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -10853,7 +10858,7 @@ class $$DriftTransactionsTableFilterComposer
 }
 
 class $$DriftTransactionsTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftTransactionsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftTransactionsTable> {
   $$DriftTransactionsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -10967,7 +10972,7 @@ class $$DriftTransactionsTableOrderingComposer
 }
 
 class $$DriftTransactionsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftTransactionsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftTransactionsTable> {
   $$DriftTransactionsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -11104,7 +11109,7 @@ class $$DriftTransactionsTableAnnotationComposer
 }
 
 class $$DriftTransactionsTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftTransactionsTable,
     DriftTransaction,
     $$DriftTransactionsTableFilterComposer,
@@ -11121,7 +11126,7 @@ class $$DriftTransactionsTableTableManager extends RootTableManager<
         bool project,
         bool driftTransactionPhotosRefs})> {
   $$DriftTransactionsTableTableManager(
-      _$MyDatabase db, $DriftTransactionsTable table)
+      _$AppDriftDatabase db, $DriftTransactionsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -11284,7 +11289,7 @@ class $$DriftTransactionsTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftTransactionsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftTransactionsTable,
     DriftTransaction,
     $$DriftTransactionsTableFilterComposer,
@@ -11314,7 +11319,7 @@ typedef $$DriftUsersTableUpdateCompanionBuilder = DriftUsersCompanion Function({
 });
 
 class $$DriftUsersTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftUsersTable> {
+    extends Composer<_$AppDriftDatabase, $DriftUsersTable> {
   $$DriftUsersTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -11336,7 +11341,7 @@ class $$DriftUsersTableFilterComposer
 }
 
 class $$DriftUsersTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftUsersTable> {
+    extends Composer<_$AppDriftDatabase, $DriftUsersTable> {
   $$DriftUsersTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -11358,7 +11363,7 @@ class $$DriftUsersTableOrderingComposer
 }
 
 class $$DriftUsersTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftUsersTable> {
+    extends Composer<_$AppDriftDatabase, $DriftUsersTable> {
   $$DriftUsersTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -11380,7 +11385,7 @@ class $$DriftUsersTableAnnotationComposer
 }
 
 class $$DriftUsersTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftUsersTable,
     DriftUser,
     $$DriftUsersTableFilterComposer,
@@ -11388,10 +11393,13 @@ class $$DriftUsersTableTableManager extends RootTableManager<
     $$DriftUsersTableAnnotationComposer,
     $$DriftUsersTableCreateCompanionBuilder,
     $$DriftUsersTableUpdateCompanionBuilder,
-    (DriftUser, BaseReferences<_$MyDatabase, $DriftUsersTable, DriftUser>),
+    (
+      DriftUser,
+      BaseReferences<_$AppDriftDatabase, $DriftUsersTable, DriftUser>
+    ),
     DriftUser,
     PrefetchHooks Function()> {
-  $$DriftUsersTableTableManager(_$MyDatabase db, $DriftUsersTable table)
+  $$DriftUsersTableTableManager(_$AppDriftDatabase db, $DriftUsersTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -11433,7 +11441,7 @@ class $$DriftUsersTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftUsersTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftUsersTable,
     DriftUser,
     $$DriftUsersTableFilterComposer,
@@ -11441,7 +11449,10 @@ typedef $$DriftUsersTableProcessedTableManager = ProcessedTableManager<
     $$DriftUsersTableAnnotationComposer,
     $$DriftUsersTableCreateCompanionBuilder,
     $$DriftUsersTableUpdateCompanionBuilder,
-    (DriftUser, BaseReferences<_$MyDatabase, $DriftUsersTable, DriftUser>),
+    (
+      DriftUser,
+      BaseReferences<_$AppDriftDatabase, $DriftUsersTable, DriftUser>
+    ),
     DriftUser,
     PrefetchHooks Function()>;
 typedef $$DriftBanksTableCreateCompanionBuilder = DriftBanksCompanion Function({
@@ -11464,10 +11475,10 @@ typedef $$DriftBanksTableUpdateCompanionBuilder = DriftBanksCompanion Function({
 });
 
 final class $$DriftBanksTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftBanksTable, DriftBank> {
+    extends BaseReferences<_$AppDriftDatabase, $DriftBanksTable, DriftBank> {
   $$DriftBanksTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _accountTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias(
           $_aliasNameGenerator(db.driftBanks.account, db.driftAccounts.id));
 
@@ -11484,7 +11495,7 @@ final class $$DriftBanksTableReferences
 }
 
 class $$DriftBanksTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftBanksTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBanksTable> {
   $$DriftBanksTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -11532,7 +11543,7 @@ class $$DriftBanksTableFilterComposer
 }
 
 class $$DriftBanksTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftBanksTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBanksTable> {
   $$DriftBanksTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -11580,7 +11591,7 @@ class $$DriftBanksTableOrderingComposer
 }
 
 class $$DriftBanksTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftBanksTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBanksTable> {
   $$DriftBanksTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -11628,7 +11639,7 @@ class $$DriftBanksTableAnnotationComposer
 }
 
 class $$DriftBanksTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftBanksTable,
     DriftBank,
     $$DriftBanksTableFilterComposer,
@@ -11639,7 +11650,7 @@ class $$DriftBanksTableTableManager extends RootTableManager<
     (DriftBank, $$DriftBanksTableReferences),
     DriftBank,
     PrefetchHooks Function({bool account})> {
-  $$DriftBanksTableTableManager(_$MyDatabase db, $DriftBanksTable table)
+  $$DriftBanksTableTableManager(_$AppDriftDatabase db, $DriftBanksTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -11730,7 +11741,7 @@ class $$DriftBanksTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftBanksTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftBanksTable,
     DriftBank,
     $$DriftBanksTableFilterComposer,
@@ -11752,11 +11763,11 @@ typedef $$DriftWalletsTableUpdateCompanionBuilder = DriftWalletsCompanion
   Value<int> account,
 });
 
-final class $$DriftWalletsTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftWalletsTable, DriftWallet> {
+final class $$DriftWalletsTableReferences extends BaseReferences<
+    _$AppDriftDatabase, $DriftWalletsTable, DriftWallet> {
   $$DriftWalletsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _accountTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias(
           $_aliasNameGenerator(db.driftWallets.account, db.driftAccounts.id));
 
@@ -11773,7 +11784,7 @@ final class $$DriftWalletsTableReferences
 }
 
 class $$DriftWalletsTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftWalletsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftWalletsTable> {
   $$DriftWalletsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -11806,7 +11817,7 @@ class $$DriftWalletsTableFilterComposer
 }
 
 class $$DriftWalletsTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftWalletsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftWalletsTable> {
   $$DriftWalletsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -11839,7 +11850,7 @@ class $$DriftWalletsTableOrderingComposer
 }
 
 class $$DriftWalletsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftWalletsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftWalletsTable> {
   $$DriftWalletsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -11872,7 +11883,7 @@ class $$DriftWalletsTableAnnotationComposer
 }
 
 class $$DriftWalletsTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftWalletsTable,
     DriftWallet,
     $$DriftWalletsTableFilterComposer,
@@ -11883,7 +11894,8 @@ class $$DriftWalletsTableTableManager extends RootTableManager<
     (DriftWallet, $$DriftWalletsTableReferences),
     DriftWallet,
     PrefetchHooks Function({bool account})> {
-  $$DriftWalletsTableTableManager(_$MyDatabase db, $DriftWalletsTable table)
+  $$DriftWalletsTableTableManager(
+      _$AppDriftDatabase db, $DriftWalletsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -11954,7 +11966,7 @@ class $$DriftWalletsTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftWalletsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftWalletsTable,
     DriftWallet,
     $$DriftWalletsTableFilterComposer,
@@ -11987,10 +11999,10 @@ typedef $$DriftLoansTableUpdateCompanionBuilder = DriftLoansCompanion Function({
 });
 
 final class $$DriftLoansTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftLoansTable, DriftLoan> {
+    extends BaseReferences<_$AppDriftDatabase, $DriftLoansTable, DriftLoan> {
   $$DriftLoansTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _accountTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias(
           $_aliasNameGenerator(db.driftLoans.account, db.driftAccounts.id));
 
@@ -12007,7 +12019,7 @@ final class $$DriftLoansTableReferences
 }
 
 class $$DriftLoansTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftLoansTable> {
+    extends Composer<_$AppDriftDatabase, $DriftLoansTable> {
   $$DriftLoansTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -12058,7 +12070,7 @@ class $$DriftLoansTableFilterComposer
 }
 
 class $$DriftLoansTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftLoansTable> {
+    extends Composer<_$AppDriftDatabase, $DriftLoansTable> {
   $$DriftLoansTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -12110,7 +12122,7 @@ class $$DriftLoansTableOrderingComposer
 }
 
 class $$DriftLoansTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftLoansTable> {
+    extends Composer<_$AppDriftDatabase, $DriftLoansTable> {
   $$DriftLoansTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -12161,7 +12173,7 @@ class $$DriftLoansTableAnnotationComposer
 }
 
 class $$DriftLoansTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftLoansTable,
     DriftLoan,
     $$DriftLoansTableFilterComposer,
@@ -12172,7 +12184,7 @@ class $$DriftLoansTableTableManager extends RootTableManager<
     (DriftLoan, $$DriftLoansTableReferences),
     DriftLoan,
     PrefetchHooks Function({bool account})> {
-  $$DriftLoansTableTableManager(_$MyDatabase db, $DriftLoansTable table)
+  $$DriftLoansTableTableManager(_$AppDriftDatabase db, $DriftLoansTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -12267,7 +12279,7 @@ class $$DriftLoansTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftLoansTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftLoansTable,
     DriftLoan,
     $$DriftLoansTableFilterComposer,
@@ -12298,10 +12310,10 @@ typedef $$DriftCCardsTableUpdateCompanionBuilder = DriftCCardsCompanion
 });
 
 final class $$DriftCCardsTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftCCardsTable, DriftCCard> {
+    extends BaseReferences<_$AppDriftDatabase, $DriftCCardsTable, DriftCCard> {
   $$DriftCCardsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _accountTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias(
           $_aliasNameGenerator(db.driftCCards.account, db.driftAccounts.id));
 
@@ -12318,7 +12330,7 @@ final class $$DriftCCardsTableReferences
 }
 
 class $$DriftCCardsTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftCCardsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftCCardsTable> {
   $$DriftCCardsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -12363,7 +12375,7 @@ class $$DriftCCardsTableFilterComposer
 }
 
 class $$DriftCCardsTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftCCardsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftCCardsTable> {
   $$DriftCCardsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -12409,7 +12421,7 @@ class $$DriftCCardsTableOrderingComposer
 }
 
 class $$DriftCCardsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftCCardsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftCCardsTable> {
   $$DriftCCardsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -12454,7 +12466,7 @@ class $$DriftCCardsTableAnnotationComposer
 }
 
 class $$DriftCCardsTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftCCardsTable,
     DriftCCard,
     $$DriftCCardsTableFilterComposer,
@@ -12465,7 +12477,7 @@ class $$DriftCCardsTableTableManager extends RootTableManager<
     (DriftCCard, $$DriftCCardsTableReferences),
     DriftCCard,
     PrefetchHooks Function({bool account})> {
-  $$DriftCCardsTableTableManager(_$MyDatabase db, $DriftCCardsTable table)
+  $$DriftCCardsTableTableManager(_$AppDriftDatabase db, $DriftCCardsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -12552,7 +12564,7 @@ class $$DriftCCardsTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftCCardsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftCCardsTable,
     DriftCCard,
     $$DriftCCardsTableFilterComposer,
@@ -12576,12 +12588,12 @@ typedef $$DriftBalancesTableUpdateCompanionBuilder = DriftBalancesCompanion
   Value<int> amount,
 });
 
-final class $$DriftBalancesTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftBalancesTable, DriftBalance> {
+final class $$DriftBalancesTableReferences extends BaseReferences<
+    _$AppDriftDatabase, $DriftBalancesTable, DriftBalance> {
   $$DriftBalancesTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _accountTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias(
           $_aliasNameGenerator(db.driftBalances.account, db.driftAccounts.id));
 
@@ -12598,7 +12610,7 @@ final class $$DriftBalancesTableReferences
 }
 
 class $$DriftBalancesTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftBalancesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBalancesTable> {
   $$DriftBalancesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -12634,7 +12646,7 @@ class $$DriftBalancesTableFilterComposer
 }
 
 class $$DriftBalancesTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftBalancesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBalancesTable> {
   $$DriftBalancesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -12670,7 +12682,7 @@ class $$DriftBalancesTableOrderingComposer
 }
 
 class $$DriftBalancesTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftBalancesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBalancesTable> {
   $$DriftBalancesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -12706,7 +12718,7 @@ class $$DriftBalancesTableAnnotationComposer
 }
 
 class $$DriftBalancesTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftBalancesTable,
     DriftBalance,
     $$DriftBalancesTableFilterComposer,
@@ -12717,7 +12729,8 @@ class $$DriftBalancesTableTableManager extends RootTableManager<
     (DriftBalance, $$DriftBalancesTableReferences),
     DriftBalance,
     PrefetchHooks Function({bool account})> {
-  $$DriftBalancesTableTableManager(_$MyDatabase db, $DriftBalancesTable table)
+  $$DriftBalancesTableTableManager(
+      _$AppDriftDatabase db, $DriftBalancesTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -12792,7 +12805,7 @@ class $$DriftBalancesTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftBalancesTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftBalancesTable,
     DriftBalance,
     $$DriftBalancesTableFilterComposer,
@@ -12817,11 +12830,11 @@ typedef $$DriftTransactionPhotosTableUpdateCompanionBuilder
 });
 
 final class $$DriftTransactionPhotosTableReferences extends BaseReferences<
-    _$MyDatabase, $DriftTransactionPhotosTable, DriftTransactionPhoto> {
+    _$AppDriftDatabase, $DriftTransactionPhotosTable, DriftTransactionPhoto> {
   $$DriftTransactionPhotosTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftTransactionsTable _transactionTable(_$MyDatabase db) =>
+  static $DriftTransactionsTable _transactionTable(_$AppDriftDatabase db) =>
       db.driftTransactions.createAlias($_aliasNameGenerator(
           db.driftTransactionPhotos.transaction, db.driftTransactions.id));
 
@@ -12839,7 +12852,7 @@ final class $$DriftTransactionPhotosTableReferences extends BaseReferences<
 }
 
 class $$DriftTransactionPhotosTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftTransactionPhotosTable> {
+    extends Composer<_$AppDriftDatabase, $DriftTransactionPhotosTable> {
   $$DriftTransactionPhotosTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -12875,7 +12888,7 @@ class $$DriftTransactionPhotosTableFilterComposer
 }
 
 class $$DriftTransactionPhotosTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftTransactionPhotosTable> {
+    extends Composer<_$AppDriftDatabase, $DriftTransactionPhotosTable> {
   $$DriftTransactionPhotosTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -12911,7 +12924,7 @@ class $$DriftTransactionPhotosTableOrderingComposer
 }
 
 class $$DriftTransactionPhotosTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftTransactionPhotosTable> {
+    extends Composer<_$AppDriftDatabase, $DriftTransactionPhotosTable> {
   $$DriftTransactionPhotosTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -12948,7 +12961,7 @@ class $$DriftTransactionPhotosTableAnnotationComposer
 }
 
 class $$DriftTransactionPhotosTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftTransactionPhotosTable,
     DriftTransactionPhoto,
     $$DriftTransactionPhotosTableFilterComposer,
@@ -12960,7 +12973,7 @@ class $$DriftTransactionPhotosTableTableManager extends RootTableManager<
     DriftTransactionPhoto,
     PrefetchHooks Function({bool transaction})> {
   $$DriftTransactionPhotosTableTableManager(
-      _$MyDatabase db, $DriftTransactionPhotosTable table)
+      _$AppDriftDatabase db, $DriftTransactionPhotosTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -13040,7 +13053,7 @@ class $$DriftTransactionPhotosTableTableManager extends RootTableManager<
 
 typedef $$DriftTransactionPhotosTableProcessedTableManager
     = ProcessedTableManager<
-        _$MyDatabase,
+        _$AppDriftDatabase,
         $DriftTransactionPhotosTable,
         DriftTransactionPhoto,
         $$DriftTransactionPhotosTableFilterComposer,
@@ -13067,11 +13080,11 @@ typedef $$DriftBudgetAccountsTableUpdateCompanionBuilder
 });
 
 final class $$DriftBudgetAccountsTableReferences extends BaseReferences<
-    _$MyDatabase, $DriftBudgetAccountsTable, DriftBudgetAccount> {
+    _$AppDriftDatabase, $DriftBudgetAccountsTable, DriftBudgetAccount> {
   $$DriftBudgetAccountsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _accountTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias($_aliasNameGenerator(
           db.driftBudgetAccounts.account, db.driftAccounts.id));
 
@@ -13086,7 +13099,7 @@ final class $$DriftBudgetAccountsTableReferences extends BaseReferences<
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $DriftBudgetsTable _budgetTable(_$MyDatabase db) =>
+  static $DriftBudgetsTable _budgetTable(_$AppDriftDatabase db) =>
       db.driftBudgets.createAlias($_aliasNameGenerator(
           db.driftBudgetAccounts.budget, db.driftBudgets.id));
 
@@ -13103,7 +13116,7 @@ final class $$DriftBudgetAccountsTableReferences extends BaseReferences<
 }
 
 class $$DriftBudgetAccountsTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftBudgetAccountsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBudgetAccountsTable> {
   $$DriftBudgetAccountsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -13159,7 +13172,7 @@ class $$DriftBudgetAccountsTableFilterComposer
 }
 
 class $$DriftBudgetAccountsTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftBudgetAccountsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBudgetAccountsTable> {
   $$DriftBudgetAccountsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -13215,7 +13228,7 @@ class $$DriftBudgetAccountsTableOrderingComposer
 }
 
 class $$DriftBudgetAccountsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftBudgetAccountsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBudgetAccountsTable> {
   $$DriftBudgetAccountsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -13271,7 +13284,7 @@ class $$DriftBudgetAccountsTableAnnotationComposer
 }
 
 class $$DriftBudgetAccountsTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftBudgetAccountsTable,
     DriftBudgetAccount,
     $$DriftBudgetAccountsTableFilterComposer,
@@ -13283,7 +13296,7 @@ class $$DriftBudgetAccountsTableTableManager extends RootTableManager<
     DriftBudgetAccount,
     PrefetchHooks Function({bool account, bool budget})> {
   $$DriftBudgetAccountsTableTableManager(
-      _$MyDatabase db, $DriftBudgetAccountsTable table)
+      _$AppDriftDatabase db, $DriftBudgetAccountsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -13376,7 +13389,7 @@ class $$DriftBudgetAccountsTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftBudgetAccountsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftBudgetAccountsTable,
     DriftBudgetAccount,
     $$DriftBudgetAccountsTableFilterComposer,
@@ -13401,11 +13414,11 @@ typedef $$DriftBudgetFundsTableUpdateCompanionBuilder
 });
 
 final class $$DriftBudgetFundsTableReferences extends BaseReferences<
-    _$MyDatabase, $DriftBudgetFundsTable, DriftBudgetFund> {
+    _$AppDriftDatabase, $DriftBudgetFundsTable, DriftBudgetFund> {
   $$DriftBudgetFundsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _accountTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias($_aliasNameGenerator(
           db.driftBudgetFunds.account, db.driftAccounts.id));
 
@@ -13420,7 +13433,7 @@ final class $$DriftBudgetFundsTableReferences extends BaseReferences<
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $DriftBudgetsTable _budgetTable(_$MyDatabase db) =>
+  static $DriftBudgetsTable _budgetTable(_$AppDriftDatabase db) =>
       db.driftBudgets.createAlias(
           $_aliasNameGenerator(db.driftBudgetFunds.budget, db.driftBudgets.id));
 
@@ -13437,7 +13450,7 @@ final class $$DriftBudgetFundsTableReferences extends BaseReferences<
 }
 
 class $$DriftBudgetFundsTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftBudgetFundsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBudgetFundsTable> {
   $$DriftBudgetFundsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -13490,7 +13503,7 @@ class $$DriftBudgetFundsTableFilterComposer
 }
 
 class $$DriftBudgetFundsTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftBudgetFundsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBudgetFundsTable> {
   $$DriftBudgetFundsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -13543,7 +13556,7 @@ class $$DriftBudgetFundsTableOrderingComposer
 }
 
 class $$DriftBudgetFundsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftBudgetFundsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftBudgetFundsTable> {
   $$DriftBudgetFundsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -13596,7 +13609,7 @@ class $$DriftBudgetFundsTableAnnotationComposer
 }
 
 class $$DriftBudgetFundsTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftBudgetFundsTable,
     DriftBudgetFund,
     $$DriftBudgetFundsTableFilterComposer,
@@ -13608,7 +13621,7 @@ class $$DriftBudgetFundsTableTableManager extends RootTableManager<
     DriftBudgetFund,
     PrefetchHooks Function({bool account, bool budget})> {
   $$DriftBudgetFundsTableTableManager(
-      _$MyDatabase db, $DriftBudgetFundsTable table)
+      _$AppDriftDatabase db, $DriftBudgetFundsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -13693,7 +13706,7 @@ class $$DriftBudgetFundsTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftBudgetFundsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftBudgetFundsTable,
     DriftBudgetFund,
     $$DriftBudgetFundsTableFilterComposer,
@@ -13718,11 +13731,11 @@ typedef $$DriftProjectPhotosTableUpdateCompanionBuilder
 });
 
 final class $$DriftProjectPhotosTableReferences extends BaseReferences<
-    _$MyDatabase, $DriftProjectPhotosTable, DriftProjectPhoto> {
+    _$AppDriftDatabase, $DriftProjectPhotosTable, DriftProjectPhoto> {
   $$DriftProjectPhotosTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftProjectsTable _projectTable(_$MyDatabase db) =>
+  static $DriftProjectsTable _projectTable(_$AppDriftDatabase db) =>
       db.driftProjects.createAlias($_aliasNameGenerator(
           db.driftProjectPhotos.project, db.driftProjects.id));
 
@@ -13739,7 +13752,7 @@ final class $$DriftProjectPhotosTableReferences extends BaseReferences<
 }
 
 class $$DriftProjectPhotosTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftProjectPhotosTable> {
+    extends Composer<_$AppDriftDatabase, $DriftProjectPhotosTable> {
   $$DriftProjectPhotosTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -13775,7 +13788,7 @@ class $$DriftProjectPhotosTableFilterComposer
 }
 
 class $$DriftProjectPhotosTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftProjectPhotosTable> {
+    extends Composer<_$AppDriftDatabase, $DriftProjectPhotosTable> {
   $$DriftProjectPhotosTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -13811,7 +13824,7 @@ class $$DriftProjectPhotosTableOrderingComposer
 }
 
 class $$DriftProjectPhotosTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftProjectPhotosTable> {
+    extends Composer<_$AppDriftDatabase, $DriftProjectPhotosTable> {
   $$DriftProjectPhotosTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -13847,7 +13860,7 @@ class $$DriftProjectPhotosTableAnnotationComposer
 }
 
 class $$DriftProjectPhotosTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftProjectPhotosTable,
     DriftProjectPhoto,
     $$DriftProjectPhotosTableFilterComposer,
@@ -13859,7 +13872,7 @@ class $$DriftProjectPhotosTableTableManager extends RootTableManager<
     DriftProjectPhoto,
     PrefetchHooks Function({bool project})> {
   $$DriftProjectPhotosTableTableManager(
-      _$MyDatabase db, $DriftProjectPhotosTable table)
+      _$AppDriftDatabase db, $DriftProjectPhotosTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -13936,7 +13949,7 @@ class $$DriftProjectPhotosTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftProjectPhotosTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftProjectPhotosTable,
     DriftProjectPhoto,
     $$DriftProjectPhotosTableFilterComposer,
@@ -13971,11 +13984,11 @@ typedef $$DriftSubscriptionsTableUpdateCompanionBuilder
 });
 
 final class $$DriftSubscriptionsTableReferences extends BaseReferences<
-    _$MyDatabase, $DriftSubscriptionsTable, DriftSubscription> {
+    _$AppDriftDatabase, $DriftSubscriptionsTable, DriftSubscription> {
   $$DriftSubscriptionsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _accountTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias($_aliasNameGenerator(
           db.driftSubscriptions.account, db.driftAccounts.id));
 
@@ -13990,7 +14003,7 @@ final class $$DriftSubscriptionsTableReferences extends BaseReferences<
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $DriftProfilesTable _profileTable(_$MyDatabase db) =>
+  static $DriftProfilesTable _profileTable(_$AppDriftDatabase db) =>
       db.driftProfiles.createAlias($_aliasNameGenerator(
           db.driftSubscriptions.profile, db.driftProfiles.id));
 
@@ -14007,7 +14020,7 @@ final class $$DriftSubscriptionsTableReferences extends BaseReferences<
 }
 
 class $$DriftSubscriptionsTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftSubscriptionsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftSubscriptionsTable> {
   $$DriftSubscriptionsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -14077,7 +14090,7 @@ class $$DriftSubscriptionsTableFilterComposer
 }
 
 class $$DriftSubscriptionsTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftSubscriptionsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftSubscriptionsTable> {
   $$DriftSubscriptionsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -14145,7 +14158,7 @@ class $$DriftSubscriptionsTableOrderingComposer
 }
 
 class $$DriftSubscriptionsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftSubscriptionsTable> {
+    extends Composer<_$AppDriftDatabase, $DriftSubscriptionsTable> {
   $$DriftSubscriptionsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -14213,7 +14226,7 @@ class $$DriftSubscriptionsTableAnnotationComposer
 }
 
 class $$DriftSubscriptionsTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftSubscriptionsTable,
     DriftSubscription,
     $$DriftSubscriptionsTableFilterComposer,
@@ -14225,7 +14238,7 @@ class $$DriftSubscriptionsTableTableManager extends RootTableManager<
     DriftSubscription,
     PrefetchHooks Function({bool account, bool profile})> {
   $$DriftSubscriptionsTableTableManager(
-      _$MyDatabase db, $DriftSubscriptionsTable table)
+      _$AppDriftDatabase db, $DriftSubscriptionsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -14333,7 +14346,7 @@ class $$DriftSubscriptionsTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftSubscriptionsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftSubscriptionsTable,
     DriftSubscription,
     $$DriftSubscriptionsTableFilterComposer,
@@ -14360,11 +14373,11 @@ typedef $$DriftReceivablesTableUpdateCompanionBuilder
 });
 
 final class $$DriftReceivablesTableReferences extends BaseReferences<
-    _$MyDatabase, $DriftReceivablesTable, DriftReceivable> {
+    _$AppDriftDatabase, $DriftReceivablesTable, DriftReceivable> {
   $$DriftReceivablesTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _accountIdTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _accountIdTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias($_aliasNameGenerator(
           db.driftReceivables.accountId, db.driftAccounts.id));
 
@@ -14381,7 +14394,7 @@ final class $$DriftReceivablesTableReferences extends BaseReferences<
 }
 
 class $$DriftReceivablesTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftReceivablesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftReceivablesTable> {
   $$DriftReceivablesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -14420,7 +14433,7 @@ class $$DriftReceivablesTableFilterComposer
 }
 
 class $$DriftReceivablesTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftReceivablesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftReceivablesTable> {
   $$DriftReceivablesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -14459,7 +14472,7 @@ class $$DriftReceivablesTableOrderingComposer
 }
 
 class $$DriftReceivablesTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftReceivablesTable> {
+    extends Composer<_$AppDriftDatabase, $DriftReceivablesTable> {
   $$DriftReceivablesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -14498,7 +14511,7 @@ class $$DriftReceivablesTableAnnotationComposer
 }
 
 class $$DriftReceivablesTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftReceivablesTable,
     DriftReceivable,
     $$DriftReceivablesTableFilterComposer,
@@ -14510,7 +14523,7 @@ class $$DriftReceivablesTableTableManager extends RootTableManager<
     DriftReceivable,
     PrefetchHooks Function({bool accountId})> {
   $$DriftReceivablesTableTableManager(
-      _$MyDatabase db, $DriftReceivablesTable table)
+      _$AppDriftDatabase db, $DriftReceivablesTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -14590,7 +14603,7 @@ class $$DriftReceivablesTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftReceivablesTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftReceivablesTable,
     DriftReceivable,
     $$DriftReceivablesTableFilterComposer,
@@ -14622,11 +14635,11 @@ typedef $$DriftPeopleTableUpdateCompanionBuilder = DriftPeopleCompanion
   Value<String?> tin,
 });
 
-final class $$DriftPeopleTableReferences
-    extends BaseReferences<_$MyDatabase, $DriftPeopleTable, DriftPeopleData> {
+final class $$DriftPeopleTableReferences extends BaseReferences<
+    _$AppDriftDatabase, $DriftPeopleTable, DriftPeopleData> {
   $$DriftPeopleTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $DriftAccountsTable _accountIdTable(_$MyDatabase db) =>
+  static $DriftAccountsTable _accountIdTable(_$AppDriftDatabase db) =>
       db.driftAccounts.createAlias(
           $_aliasNameGenerator(db.driftPeople.accountId, db.driftAccounts.id));
 
@@ -14643,7 +14656,7 @@ final class $$DriftPeopleTableReferences
 }
 
 class $$DriftPeopleTableFilterComposer
-    extends Composer<_$MyDatabase, $DriftPeopleTable> {
+    extends Composer<_$AppDriftDatabase, $DriftPeopleTable> {
   $$DriftPeopleTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -14691,7 +14704,7 @@ class $$DriftPeopleTableFilterComposer
 }
 
 class $$DriftPeopleTableOrderingComposer
-    extends Composer<_$MyDatabase, $DriftPeopleTable> {
+    extends Composer<_$AppDriftDatabase, $DriftPeopleTable> {
   $$DriftPeopleTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -14739,7 +14752,7 @@ class $$DriftPeopleTableOrderingComposer
 }
 
 class $$DriftPeopleTableAnnotationComposer
-    extends Composer<_$MyDatabase, $DriftPeopleTable> {
+    extends Composer<_$AppDriftDatabase, $DriftPeopleTable> {
   $$DriftPeopleTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -14787,7 +14800,7 @@ class $$DriftPeopleTableAnnotationComposer
 }
 
 class $$DriftPeopleTableTableManager extends RootTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftPeopleTable,
     DriftPeopleData,
     $$DriftPeopleTableFilterComposer,
@@ -14798,7 +14811,7 @@ class $$DriftPeopleTableTableManager extends RootTableManager<
     (DriftPeopleData, $$DriftPeopleTableReferences),
     DriftPeopleData,
     PrefetchHooks Function({bool accountId})> {
-  $$DriftPeopleTableTableManager(_$MyDatabase db, $DriftPeopleTable table)
+  $$DriftPeopleTableTableManager(_$AppDriftDatabase db, $DriftPeopleTable table)
       : super(TableManagerState(
           db: db,
           table: table,
@@ -14889,7 +14902,7 @@ class $$DriftPeopleTableTableManager extends RootTableManager<
 }
 
 typedef $$DriftPeopleTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
+    _$AppDriftDatabase,
     $DriftPeopleTable,
     DriftPeopleData,
     $$DriftPeopleTableFilterComposer,
@@ -14901,9 +14914,9 @@ typedef $$DriftPeopleTableProcessedTableManager = ProcessedTableManager<
     DriftPeopleData,
     PrefetchHooks Function({bool accountId})>;
 
-class $MyDatabaseManager {
-  final _$MyDatabase _db;
-  $MyDatabaseManager(this._db);
+class $AppDriftDatabaseManager {
+  final _$AppDriftDatabase _db;
+  $AppDriftDatabaseManager(this._db);
   $$DriftAccTypesTableTableManager get driftAccTypes =>
       $$DriftAccTypesTableTableManager(_db, _db.driftAccTypes);
   $$DriftProfilesTableTableManager get driftProfiles =>
