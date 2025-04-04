@@ -45,22 +45,22 @@ class TransactionsCard extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              ...viewmodel.recentTransactions.map((d) => TransactionTile(
+              ...viewmodel.recentTransactions.map((t) => TransactionTile(
                   isColorful: true,
-                  isNegative: d.transaction.vchType == VoucherType.payment,
-                  vchDate: d.transaction.vchDate,
-                  accountName: d.transaction.vchType == VoucherType.payment
-                      ? d.drAccount.name
-                      : d.crAccount.name,
-                  amount: d.transaction.amount,
+                  isNegative: t.voucherType == VoucherType.payment,
+                  vchDate: t.voucherDate,
+                  accountName: t.voucherType == VoucherType.payment
+                      ? t.drAccount.name
+                      : t.crAccount.name,
+                  amount: t.amount,
                   isTransfer:
-                      (fundingAccountIDs.contains(d.drAccount.accType) &&
-                          fundingAccountIDs.contains(d.crAccount.accType)),
+                      (fundingAccountIDs.contains(t.drAccount.accountType) &&
+                          fundingAccountIDs.contains(t.crAccount.accountType)),
                   onClick: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(
                       builder: (context) => TransactionScreen(
-                        doubleEntry: d,
+                        transaction: t,
                         profile: viewmodel.selectedProfile,
                       ),
                     ))
@@ -68,9 +68,9 @@ class TransactionsCard extends StatelessWidget {
                       viewmodel.init();
                     });
                   },
-                  vchType: d.transaction.vchType,
-                  transactionID: d.transaction.id,
-                  narr: d.transaction.narr,
+                  vchType: t.voucherType,
+                  transactionID: t.dbID,
+                  narr: t.narration,
                   currency: viewmodel.selectedProfile.currency)),
               viewmodel.recentTransactions.length >= viewmodel.recentCount
                   ? Padding(

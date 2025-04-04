@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/extensions/currency.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/account.dart';
 import 'package:pursenal/viewmodels/insights_viewmodel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pursenal/widgets/shared/progress_bar.dart';
@@ -45,28 +45,28 @@ class BudgetBarChartCard extends StatelessWidget {
               const SizedBox(
                 height: 6,
               ),
-              if (viewmodel.budgetPlans.length > 1)
+              if (viewmodel.budgets.length > 1)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: DropdownMenu(
                       enableSearch: false,
                       width: cardWidth,
                       label: Text(AppLocalizations.of(context)!.myBudgets),
-                      initialSelection: viewmodel.selectedBudgetPlan,
+                      initialSelection: viewmodel.selectedBudget,
                       onSelected: (b) {
-                        viewmodel.selectedBudgetPlan = b;
+                        viewmodel.selectedBudget = b;
                       },
                       dropdownMenuEntries: [
-                        ...viewmodel.budgetPlans.map(
+                        ...viewmodel.budgets.map(
                           (b) => DropdownMenuEntry(
                               value: b,
-                              label: b.budget.name,
-                              trailingIcon: Text(b.budget.interval.label)),
+                              label: b.name,
+                              trailingIcon: Text(b.interval.label)),
                         )
                       ]),
                 ),
               Visibility(
-                visible: viewmodel.selectedBudgetPlan != null,
+                visible: viewmodel.selectedBudget != null,
                 child: Container(
                   padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
@@ -74,17 +74,16 @@ class BudgetBarChartCard extends StatelessWidget {
                       color: Theme.of(context).scaffoldBackgroundColor),
                   child: Column(
                     children: [
-                      ...viewmodel.selectedBudgetPlan!.expenses.entries
+                      ...viewmodel.selectedBudget!.expenses.entries
                           .mapIndexed((index, b) {
                         final Account acc = b.key;
 
                         int expA = viewmodel.expenseTotals.entries
-                                .firstWhereOrNull((e) => e.key.id == acc.id)
+                                .firstWhereOrNull((e) => e.key.dbID == acc.dbID)
                                 ?.value ??
                             0;
 
-                        int expB =
-                            viewmodel.selectedBudgetPlan?.expenses[acc] ?? 0;
+                        int expB = viewmodel.selectedBudget?.expenses[acc] ?? 0;
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

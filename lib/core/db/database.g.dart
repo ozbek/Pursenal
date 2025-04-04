@@ -3,11 +3,12 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $AccTypesTable extends AccTypes with TableInfo<$AccTypesTable, AccType> {
+class $DriftAccTypesTable extends DriftAccTypes
+    with TableInfo<$DriftAccTypesTable, DriftAccType> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $AccTypesTable(this.attachedDatabase, [this._alias]);
+  $DriftAccTypesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -29,7 +30,7 @@ class $AccTypesTable extends AccTypes with TableInfo<$AccTypesTable, AccType> {
   late final GeneratedColumnWithTypeConverter<PrimaryType, int> primary =
       GeneratedColumn<int>('primary', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<PrimaryType>($AccTypesTable.$converterprimary);
+          .withConverter<PrimaryType>($DriftAccTypesTable.$converterprimary);
   static const VerificationMeta _addedDateMeta =
       const VerificationMeta('addedDate');
   @override
@@ -63,9 +64,9 @@ class $AccTypesTable extends AccTypes with TableInfo<$AccTypesTable, AccType> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'acc_types';
+  static const String $name = 'drift_acc_types';
   @override
-  VerificationContext validateIntegrity(Insertable<AccType> instance,
+  VerificationContext validateIntegrity(Insertable<DriftAccType> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -100,14 +101,14 @@ class $AccTypesTable extends AccTypes with TableInfo<$AccTypesTable, AccType> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  AccType map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftAccType map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AccType(
+    return DriftAccType(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      primary: $AccTypesTable.$converterprimary.fromSql(attachedDatabase
+      primary: $DriftAccTypesTable.$converterprimary.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}primary'])!),
       addedDate: attachedDatabase.typeMapping
@@ -120,22 +121,22 @@ class $AccTypesTable extends AccTypes with TableInfo<$AccTypesTable, AccType> {
   }
 
   @override
-  $AccTypesTable createAlias(String alias) {
-    return $AccTypesTable(attachedDatabase, alias);
+  $DriftAccTypesTable createAlias(String alias) {
+    return $DriftAccTypesTable(attachedDatabase, alias);
   }
 
   static JsonTypeConverter2<PrimaryType, int, int> $converterprimary =
       const EnumIndexConverter<PrimaryType>(PrimaryType.values);
 }
 
-class AccType extends DataClass implements Insertable<AccType> {
+class DriftAccType extends DataClass implements Insertable<DriftAccType> {
   final int id;
   final String name;
   final PrimaryType primary;
   final DateTime addedDate;
   final DateTime updateDate;
   final bool isEditable;
-  const AccType(
+  const DriftAccType(
       {required this.id,
       required this.name,
       required this.primary,
@@ -149,7 +150,7 @@ class AccType extends DataClass implements Insertable<AccType> {
     map['name'] = Variable<String>(name);
     {
       map['primary'] =
-          Variable<int>($AccTypesTable.$converterprimary.toSql(primary));
+          Variable<int>($DriftAccTypesTable.$converterprimary.toSql(primary));
     }
     map['added_date'] = Variable<DateTime>(addedDate);
     map['update_date'] = Variable<DateTime>(updateDate);
@@ -157,8 +158,8 @@ class AccType extends DataClass implements Insertable<AccType> {
     return map;
   }
 
-  AccTypesCompanion toCompanion(bool nullToAbsent) {
-    return AccTypesCompanion(
+  DriftAccTypesCompanion toCompanion(bool nullToAbsent) {
+    return DriftAccTypesCompanion(
       id: Value(id),
       name: Value(name),
       primary: Value(primary),
@@ -168,13 +169,13 @@ class AccType extends DataClass implements Insertable<AccType> {
     );
   }
 
-  factory AccType.fromJson(Map<String, dynamic> json,
+  factory DriftAccType.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return AccType(
+    return DriftAccType(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      primary: $AccTypesTable.$converterprimary
+      primary: $DriftAccTypesTable.$converterprimary
           .fromJson(serializer.fromJson<int>(json['primary'])),
       addedDate: serializer.fromJson<DateTime>(json['addedDate']),
       updateDate: serializer.fromJson<DateTime>(json['updateDate']),
@@ -188,21 +189,21 @@ class AccType extends DataClass implements Insertable<AccType> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'primary': serializer
-          .toJson<int>($AccTypesTable.$converterprimary.toJson(primary)),
+          .toJson<int>($DriftAccTypesTable.$converterprimary.toJson(primary)),
       'addedDate': serializer.toJson<DateTime>(addedDate),
       'updateDate': serializer.toJson<DateTime>(updateDate),
       'isEditable': serializer.toJson<bool>(isEditable),
     };
   }
 
-  AccType copyWith(
+  DriftAccType copyWith(
           {int? id,
           String? name,
           PrimaryType? primary,
           DateTime? addedDate,
           DateTime? updateDate,
           bool? isEditable}) =>
-      AccType(
+      DriftAccType(
         id: id ?? this.id,
         name: name ?? this.name,
         primary: primary ?? this.primary,
@@ -210,8 +211,8 @@ class AccType extends DataClass implements Insertable<AccType> {
         updateDate: updateDate ?? this.updateDate,
         isEditable: isEditable ?? this.isEditable,
       );
-  AccType copyWithCompanion(AccTypesCompanion data) {
-    return AccType(
+  DriftAccType copyWithCompanion(DriftAccTypesCompanion data) {
+    return DriftAccType(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       primary: data.primary.present ? data.primary.value : this.primary,
@@ -225,7 +226,7 @@ class AccType extends DataClass implements Insertable<AccType> {
 
   @override
   String toString() {
-    return (StringBuffer('AccType(')
+    return (StringBuffer('DriftAccType(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('primary: $primary, ')
@@ -242,7 +243,7 @@ class AccType extends DataClass implements Insertable<AccType> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is AccType &&
+      (other is DriftAccType &&
           other.id == this.id &&
           other.name == this.name &&
           other.primary == this.primary &&
@@ -251,14 +252,14 @@ class AccType extends DataClass implements Insertable<AccType> {
           other.isEditable == this.isEditable);
 }
 
-class AccTypesCompanion extends UpdateCompanion<AccType> {
+class DriftAccTypesCompanion extends UpdateCompanion<DriftAccType> {
   final Value<int> id;
   final Value<String> name;
   final Value<PrimaryType> primary;
   final Value<DateTime> addedDate;
   final Value<DateTime> updateDate;
   final Value<bool> isEditable;
-  const AccTypesCompanion({
+  const DriftAccTypesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.primary = const Value.absent(),
@@ -266,7 +267,7 @@ class AccTypesCompanion extends UpdateCompanion<AccType> {
     this.updateDate = const Value.absent(),
     this.isEditable = const Value.absent(),
   });
-  AccTypesCompanion.insert({
+  DriftAccTypesCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required PrimaryType primary,
@@ -275,7 +276,7 @@ class AccTypesCompanion extends UpdateCompanion<AccType> {
     this.isEditable = const Value.absent(),
   })  : name = Value(name),
         primary = Value(primary);
-  static Insertable<AccType> custom({
+  static Insertable<DriftAccType> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? primary,
@@ -293,14 +294,14 @@ class AccTypesCompanion extends UpdateCompanion<AccType> {
     });
   }
 
-  AccTypesCompanion copyWith(
+  DriftAccTypesCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
       Value<PrimaryType>? primary,
       Value<DateTime>? addedDate,
       Value<DateTime>? updateDate,
       Value<bool>? isEditable}) {
-    return AccTypesCompanion(
+    return DriftAccTypesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       primary: primary ?? this.primary,
@@ -320,8 +321,8 @@ class AccTypesCompanion extends UpdateCompanion<AccType> {
       map['name'] = Variable<String>(name.value);
     }
     if (primary.present) {
-      map['primary'] =
-          Variable<int>($AccTypesTable.$converterprimary.toSql(primary.value));
+      map['primary'] = Variable<int>(
+          $DriftAccTypesTable.$converterprimary.toSql(primary.value));
     }
     if (addedDate.present) {
       map['added_date'] = Variable<DateTime>(addedDate.value);
@@ -337,7 +338,7 @@ class AccTypesCompanion extends UpdateCompanion<AccType> {
 
   @override
   String toString() {
-    return (StringBuffer('AccTypesCompanion(')
+    return (StringBuffer('DriftAccTypesCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('primary: $primary, ')
@@ -349,11 +350,12 @@ class AccTypesCompanion extends UpdateCompanion<AccType> {
   }
 }
 
-class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
+class $DriftProfilesTable extends DriftProfiles
+    with TableInfo<$DriftProfilesTable, DriftProfile> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $ProfilesTable(this.attachedDatabase, [this._alias]);
+  $DriftProfilesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -434,7 +436,7 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   late final GeneratedColumnWithTypeConverter<Currency, int> currency =
       GeneratedColumn<int>('currency', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<Currency>($ProfilesTable.$convertercurrency);
+          .withConverter<Currency>($DriftProfilesTable.$convertercurrency);
   static const VerificationMeta _globalIDMeta =
       const VerificationMeta('globalID');
   @override
@@ -490,9 +492,9 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'profiles';
+  static const String $name = 'drift_profiles';
   @override
-  VerificationContext validateIntegrity(Insertable<Profile> instance,
+  VerificationContext validateIntegrity(Insertable<DriftProfile> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -559,9 +561,9 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Profile map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftProfile map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Profile(
+    return DriftProfile(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -580,7 +582,7 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
           .read(DriftSqlType.string, data['${effectivePrefix}tin']),
       isSelected: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_selected'])!,
-      currency: $ProfilesTable.$convertercurrency.fromSql(attachedDatabase
+      currency: $DriftProfilesTable.$convertercurrency.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}currency'])!),
       globalID: attachedDatabase.typeMapping
@@ -595,15 +597,15 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   }
 
   @override
-  $ProfilesTable createAlias(String alias) {
-    return $ProfilesTable(attachedDatabase, alias);
+  $DriftProfilesTable createAlias(String alias) {
+    return $DriftProfilesTable(attachedDatabase, alias);
   }
 
   static JsonTypeConverter2<Currency, int, int> $convertercurrency =
       const EnumIndexConverter<Currency>(Currency.values);
 }
 
-class Profile extends DataClass implements Insertable<Profile> {
+class DriftProfile extends DataClass implements Insertable<DriftProfile> {
   final int id;
   final String name;
   final String? alias;
@@ -618,7 +620,7 @@ class Profile extends DataClass implements Insertable<Profile> {
   final bool isLocal;
   final DateTime addedDate;
   final DateTime updateDate;
-  const Profile(
+  const DriftProfile(
       {required this.id,
       required this.name,
       this.alias,
@@ -659,7 +661,7 @@ class Profile extends DataClass implements Insertable<Profile> {
     map['is_selected'] = Variable<bool>(isSelected);
     {
       map['currency'] =
-          Variable<int>($ProfilesTable.$convertercurrency.toSql(currency));
+          Variable<int>($DriftProfilesTable.$convertercurrency.toSql(currency));
     }
     if (!nullToAbsent || globalID != null) {
       map['global_i_d'] = Variable<String>(globalID);
@@ -670,8 +672,8 @@ class Profile extends DataClass implements Insertable<Profile> {
     return map;
   }
 
-  ProfilesCompanion toCompanion(bool nullToAbsent) {
-    return ProfilesCompanion(
+  DriftProfilesCompanion toCompanion(bool nullToAbsent) {
+    return DriftProfilesCompanion(
       id: Value(id),
       name: Value(name),
       alias:
@@ -696,10 +698,10 @@ class Profile extends DataClass implements Insertable<Profile> {
     );
   }
 
-  factory Profile.fromJson(Map<String, dynamic> json,
+  factory DriftProfile.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Profile(
+    return DriftProfile(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       alias: serializer.fromJson<String?>(json['alias']),
@@ -709,7 +711,7 @@ class Profile extends DataClass implements Insertable<Profile> {
       phone: serializer.fromJson<String?>(json['phone']),
       tin: serializer.fromJson<String?>(json['tin']),
       isSelected: serializer.fromJson<bool>(json['isSelected']),
-      currency: $ProfilesTable.$convertercurrency
+      currency: $DriftProfilesTable.$convertercurrency
           .fromJson(serializer.fromJson<int>(json['currency'])),
       globalID: serializer.fromJson<String?>(json['globalID']),
       isLocal: serializer.fromJson<bool>(json['isLocal']),
@@ -731,7 +733,7 @@ class Profile extends DataClass implements Insertable<Profile> {
       'tin': serializer.toJson<String?>(tin),
       'isSelected': serializer.toJson<bool>(isSelected),
       'currency': serializer
-          .toJson<int>($ProfilesTable.$convertercurrency.toJson(currency)),
+          .toJson<int>($DriftProfilesTable.$convertercurrency.toJson(currency)),
       'globalID': serializer.toJson<String?>(globalID),
       'isLocal': serializer.toJson<bool>(isLocal),
       'addedDate': serializer.toJson<DateTime>(addedDate),
@@ -739,7 +741,7 @@ class Profile extends DataClass implements Insertable<Profile> {
     };
   }
 
-  Profile copyWith(
+  DriftProfile copyWith(
           {int? id,
           String? name,
           Value<String?> alias = const Value.absent(),
@@ -754,7 +756,7 @@ class Profile extends DataClass implements Insertable<Profile> {
           bool? isLocal,
           DateTime? addedDate,
           DateTime? updateDate}) =>
-      Profile(
+      DriftProfile(
         id: id ?? this.id,
         name: name ?? this.name,
         alias: alias.present ? alias.value : this.alias,
@@ -770,8 +772,8 @@ class Profile extends DataClass implements Insertable<Profile> {
         addedDate: addedDate ?? this.addedDate,
         updateDate: updateDate ?? this.updateDate,
       );
-  Profile copyWithCompanion(ProfilesCompanion data) {
-    return Profile(
+  DriftProfile copyWithCompanion(DriftProfilesCompanion data) {
+    return DriftProfile(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       alias: data.alias.present ? data.alias.value : this.alias,
@@ -793,7 +795,7 @@ class Profile extends DataClass implements Insertable<Profile> {
 
   @override
   String toString() {
-    return (StringBuffer('Profile(')
+    return (StringBuffer('DriftProfile(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('alias: $alias, ')
@@ -818,7 +820,7 @@ class Profile extends DataClass implements Insertable<Profile> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Profile &&
+      (other is DriftProfile &&
           other.id == this.id &&
           other.name == this.name &&
           other.alias == this.alias &&
@@ -835,7 +837,7 @@ class Profile extends DataClass implements Insertable<Profile> {
           other.updateDate == this.updateDate);
 }
 
-class ProfilesCompanion extends UpdateCompanion<Profile> {
+class DriftProfilesCompanion extends UpdateCompanion<DriftProfile> {
   final Value<int> id;
   final Value<String> name;
   final Value<String?> alias;
@@ -850,7 +852,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
   final Value<bool> isLocal;
   final Value<DateTime> addedDate;
   final Value<DateTime> updateDate;
-  const ProfilesCompanion({
+  const DriftProfilesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.alias = const Value.absent(),
@@ -866,7 +868,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
   });
-  ProfilesCompanion.insert({
+  DriftProfilesCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     this.alias = const Value.absent(),
@@ -883,7 +885,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     this.updateDate = const Value.absent(),
   })  : name = Value(name),
         currency = Value(currency);
-  static Insertable<Profile> custom({
+  static Insertable<DriftProfile> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? alias,
@@ -917,7 +919,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     });
   }
 
-  ProfilesCompanion copyWith(
+  DriftProfilesCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
       Value<String?>? alias,
@@ -932,7 +934,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
       Value<bool>? isLocal,
       Value<DateTime>? addedDate,
       Value<DateTime>? updateDate}) {
-    return ProfilesCompanion(
+    return DriftProfilesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       alias: alias ?? this.alias,
@@ -982,7 +984,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     }
     if (currency.present) {
       map['currency'] = Variable<int>(
-          $ProfilesTable.$convertercurrency.toSql(currency.value));
+          $DriftProfilesTable.$convertercurrency.toSql(currency.value));
     }
     if (globalID.present) {
       map['global_i_d'] = Variable<String>(globalID.value);
@@ -1001,7 +1003,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
 
   @override
   String toString() {
-    return (StringBuffer('ProfilesCompanion(')
+    return (StringBuffer('DriftProfilesCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('alias: $alias, ')
@@ -1021,11 +1023,12 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
   }
 }
 
-class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
+class $DriftAccountsTable extends DriftAccounts
+    with TableInfo<$DriftAccountsTable, DriftAccount> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $AccountsTable(this.attachedDatabase, [this._alias]);
+  $DriftAccountsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1067,7 +1070,7 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES acc_types (id) ON DELETE CASCADE'));
+          'REFERENCES drift_acc_types (id) ON DELETE CASCADE'));
   static const VerificationMeta _addedDateMeta =
       const VerificationMeta('addedDate');
   @override
@@ -1102,7 +1105,7 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES profiles (id) ON DELETE CASCADE'));
+          'REFERENCES drift_profiles (id) ON DELETE CASCADE'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1119,9 +1122,9 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'accounts';
+  static const String $name = 'drift_accounts';
   @override
-  VerificationContext validateIntegrity(Insertable<Account> instance,
+  VerificationContext validateIntegrity(Insertable<DriftAccount> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1176,9 +1179,9 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Account map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftAccount map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Account(
+    return DriftAccount(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -1201,12 +1204,12 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   }
 
   @override
-  $AccountsTable createAlias(String alias) {
-    return $AccountsTable(attachedDatabase, alias);
+  $DriftAccountsTable createAlias(String alias) {
+    return $DriftAccountsTable(attachedDatabase, alias);
   }
 }
 
-class Account extends DataClass implements Insertable<Account> {
+class DriftAccount extends DataClass implements Insertable<DriftAccount> {
   final int id;
   final String name;
   final int openBal;
@@ -1216,7 +1219,7 @@ class Account extends DataClass implements Insertable<Account> {
   final DateTime updateDate;
   final bool isEditable;
   final int profile;
-  const Account(
+  const DriftAccount(
       {required this.id,
       required this.name,
       required this.openBal,
@@ -1241,8 +1244,8 @@ class Account extends DataClass implements Insertable<Account> {
     return map;
   }
 
-  AccountsCompanion toCompanion(bool nullToAbsent) {
-    return AccountsCompanion(
+  DriftAccountsCompanion toCompanion(bool nullToAbsent) {
+    return DriftAccountsCompanion(
       id: Value(id),
       name: Value(name),
       openBal: Value(openBal),
@@ -1255,10 +1258,10 @@ class Account extends DataClass implements Insertable<Account> {
     );
   }
 
-  factory Account.fromJson(Map<String, dynamic> json,
+  factory DriftAccount.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Account(
+    return DriftAccount(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       openBal: serializer.fromJson<int>(json['openBal']),
@@ -1286,7 +1289,7 @@ class Account extends DataClass implements Insertable<Account> {
     };
   }
 
-  Account copyWith(
+  DriftAccount copyWith(
           {int? id,
           String? name,
           int? openBal,
@@ -1296,7 +1299,7 @@ class Account extends DataClass implements Insertable<Account> {
           DateTime? updateDate,
           bool? isEditable,
           int? profile}) =>
-      Account(
+      DriftAccount(
         id: id ?? this.id,
         name: name ?? this.name,
         openBal: openBal ?? this.openBal,
@@ -1307,8 +1310,8 @@ class Account extends DataClass implements Insertable<Account> {
         isEditable: isEditable ?? this.isEditable,
         profile: profile ?? this.profile,
       );
-  Account copyWithCompanion(AccountsCompanion data) {
-    return Account(
+  DriftAccount copyWithCompanion(DriftAccountsCompanion data) {
+    return DriftAccount(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       openBal: data.openBal.present ? data.openBal.value : this.openBal,
@@ -1325,7 +1328,7 @@ class Account extends DataClass implements Insertable<Account> {
 
   @override
   String toString() {
-    return (StringBuffer('Account(')
+    return (StringBuffer('DriftAccount(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('openBal: $openBal, ')
@@ -1345,7 +1348,7 @@ class Account extends DataClass implements Insertable<Account> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Account &&
+      (other is DriftAccount &&
           other.id == this.id &&
           other.name == this.name &&
           other.openBal == this.openBal &&
@@ -1357,7 +1360,7 @@ class Account extends DataClass implements Insertable<Account> {
           other.profile == this.profile);
 }
 
-class AccountsCompanion extends UpdateCompanion<Account> {
+class DriftAccountsCompanion extends UpdateCompanion<DriftAccount> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> openBal;
@@ -1367,7 +1370,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
   final Value<DateTime> updateDate;
   final Value<bool> isEditable;
   final Value<int> profile;
-  const AccountsCompanion({
+  const DriftAccountsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.openBal = const Value.absent(),
@@ -1378,7 +1381,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     this.isEditable = const Value.absent(),
     this.profile = const Value.absent(),
   });
-  AccountsCompanion.insert({
+  DriftAccountsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     this.openBal = const Value.absent(),
@@ -1391,7 +1394,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
   })  : name = Value(name),
         accType = Value(accType),
         profile = Value(profile);
-  static Insertable<Account> custom({
+  static Insertable<DriftAccount> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? openBal,
@@ -1415,7 +1418,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     });
   }
 
-  AccountsCompanion copyWith(
+  DriftAccountsCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
       Value<int>? openBal,
@@ -1425,7 +1428,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
       Value<DateTime>? updateDate,
       Value<bool>? isEditable,
       Value<int>? profile}) {
-    return AccountsCompanion(
+    return DriftAccountsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       openBal: openBal ?? this.openBal,
@@ -1473,7 +1476,7 @@ class AccountsCompanion extends UpdateCompanion<Account> {
 
   @override
   String toString() {
-    return (StringBuffer('AccountsCompanion(')
+    return (StringBuffer('DriftAccountsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('openBal: $openBal, ')
@@ -1488,11 +1491,12 @@ class AccountsCompanion extends UpdateCompanion<Account> {
   }
 }
 
-class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
+class $DriftBudgetsTable extends DriftBudgets
+    with TableInfo<$DriftBudgetsTable, DriftBudget> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $BudgetsTable(this.attachedDatabase, [this._alias]);
+  $DriftBudgetsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1514,7 +1518,7 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
   late final GeneratedColumnWithTypeConverter<BudgetInterval, int> interval =
       GeneratedColumn<int>('interval', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<BudgetInterval>($BudgetsTable.$converterinterval);
+          .withConverter<BudgetInterval>($DriftBudgetsTable.$converterinterval);
   static const VerificationMeta _detailsMeta =
       const VerificationMeta('details');
   @override
@@ -1548,7 +1552,7 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES profiles (id) ON DELETE CASCADE'));
+          'REFERENCES drift_profiles (id) ON DELETE CASCADE'));
   static const VerificationMeta _addedDateMeta =
       const VerificationMeta('addedDate');
   @override
@@ -1581,9 +1585,9 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'budgets';
+  static const String $name = 'drift_budgets';
   @override
-  VerificationContext validateIntegrity(Insertable<Budget> instance,
+  VerificationContext validateIntegrity(Insertable<DriftBudget> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1632,14 +1636,14 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Budget map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftBudget map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Budget(
+    return DriftBudget(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      interval: $BudgetsTable.$converterinterval.fromSql(attachedDatabase
+      interval: $DriftBudgetsTable.$converterinterval.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}interval'])!),
       details: attachedDatabase.typeMapping
@@ -1658,15 +1662,15 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
   }
 
   @override
-  $BudgetsTable createAlias(String alias) {
-    return $BudgetsTable(attachedDatabase, alias);
+  $DriftBudgetsTable createAlias(String alias) {
+    return $DriftBudgetsTable(attachedDatabase, alias);
   }
 
   static JsonTypeConverter2<BudgetInterval, int, int> $converterinterval =
       const EnumIndexConverter<BudgetInterval>(BudgetInterval.values);
 }
 
-class Budget extends DataClass implements Insertable<Budget> {
+class DriftBudget extends DataClass implements Insertable<DriftBudget> {
   final int id;
   final String name;
   final BudgetInterval interval;
@@ -1676,7 +1680,7 @@ class Budget extends DataClass implements Insertable<Budget> {
   final int profile;
   final DateTime addedDate;
   final DateTime updateDate;
-  const Budget(
+  const DriftBudget(
       {required this.id,
       required this.name,
       required this.interval,
@@ -1693,7 +1697,7 @@ class Budget extends DataClass implements Insertable<Budget> {
     map['name'] = Variable<String>(name);
     {
       map['interval'] =
-          Variable<int>($BudgetsTable.$converterinterval.toSql(interval));
+          Variable<int>($DriftBudgetsTable.$converterinterval.toSql(interval));
     }
     map['details'] = Variable<String>(details);
     map['start_day'] = Variable<int>(startDay);
@@ -1704,8 +1708,8 @@ class Budget extends DataClass implements Insertable<Budget> {
     return map;
   }
 
-  BudgetsCompanion toCompanion(bool nullToAbsent) {
-    return BudgetsCompanion(
+  DriftBudgetsCompanion toCompanion(bool nullToAbsent) {
+    return DriftBudgetsCompanion(
       id: Value(id),
       name: Value(name),
       interval: Value(interval),
@@ -1718,13 +1722,13 @@ class Budget extends DataClass implements Insertable<Budget> {
     );
   }
 
-  factory Budget.fromJson(Map<String, dynamic> json,
+  factory DriftBudget.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Budget(
+    return DriftBudget(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      interval: $BudgetsTable.$converterinterval
+      interval: $DriftBudgetsTable.$converterinterval
           .fromJson(serializer.fromJson<int>(json['interval'])),
       details: serializer.fromJson<String>(json['details']),
       startDay: serializer.fromJson<int>(json['startDay']),
@@ -1741,7 +1745,7 @@ class Budget extends DataClass implements Insertable<Budget> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'interval': serializer
-          .toJson<int>($BudgetsTable.$converterinterval.toJson(interval)),
+          .toJson<int>($DriftBudgetsTable.$converterinterval.toJson(interval)),
       'details': serializer.toJson<String>(details),
       'startDay': serializer.toJson<int>(startDay),
       'startDate': serializer.toJson<DateTime>(startDate),
@@ -1751,7 +1755,7 @@ class Budget extends DataClass implements Insertable<Budget> {
     };
   }
 
-  Budget copyWith(
+  DriftBudget copyWith(
           {int? id,
           String? name,
           BudgetInterval? interval,
@@ -1761,7 +1765,7 @@ class Budget extends DataClass implements Insertable<Budget> {
           int? profile,
           DateTime? addedDate,
           DateTime? updateDate}) =>
-      Budget(
+      DriftBudget(
         id: id ?? this.id,
         name: name ?? this.name,
         interval: interval ?? this.interval,
@@ -1772,8 +1776,8 @@ class Budget extends DataClass implements Insertable<Budget> {
         addedDate: addedDate ?? this.addedDate,
         updateDate: updateDate ?? this.updateDate,
       );
-  Budget copyWithCompanion(BudgetsCompanion data) {
-    return Budget(
+  DriftBudget copyWithCompanion(DriftBudgetsCompanion data) {
+    return DriftBudget(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       interval: data.interval.present ? data.interval.value : this.interval,
@@ -1789,7 +1793,7 @@ class Budget extends DataClass implements Insertable<Budget> {
 
   @override
   String toString() {
-    return (StringBuffer('Budget(')
+    return (StringBuffer('DriftBudget(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('interval: $interval, ')
@@ -1809,7 +1813,7 @@ class Budget extends DataClass implements Insertable<Budget> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Budget &&
+      (other is DriftBudget &&
           other.id == this.id &&
           other.name == this.name &&
           other.interval == this.interval &&
@@ -1821,7 +1825,7 @@ class Budget extends DataClass implements Insertable<Budget> {
           other.updateDate == this.updateDate);
 }
 
-class BudgetsCompanion extends UpdateCompanion<Budget> {
+class DriftBudgetsCompanion extends UpdateCompanion<DriftBudget> {
   final Value<int> id;
   final Value<String> name;
   final Value<BudgetInterval> interval;
@@ -1831,7 +1835,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
   final Value<int> profile;
   final Value<DateTime> addedDate;
   final Value<DateTime> updateDate;
-  const BudgetsCompanion({
+  const DriftBudgetsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.interval = const Value.absent(),
@@ -1842,7 +1846,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
   });
-  BudgetsCompanion.insert({
+  DriftBudgetsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required BudgetInterval interval,
@@ -1856,7 +1860,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
         interval = Value(interval),
         details = Value(details),
         profile = Value(profile);
-  static Insertable<Budget> custom({
+  static Insertable<DriftBudget> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? interval,
@@ -1880,7 +1884,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
     });
   }
 
-  BudgetsCompanion copyWith(
+  DriftBudgetsCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
       Value<BudgetInterval>? interval,
@@ -1890,7 +1894,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
       Value<int>? profile,
       Value<DateTime>? addedDate,
       Value<DateTime>? updateDate}) {
-    return BudgetsCompanion(
+    return DriftBudgetsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       interval: interval ?? this.interval,
@@ -1913,8 +1917,8 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
       map['name'] = Variable<String>(name.value);
     }
     if (interval.present) {
-      map['interval'] =
-          Variable<int>($BudgetsTable.$converterinterval.toSql(interval.value));
+      map['interval'] = Variable<int>(
+          $DriftBudgetsTable.$converterinterval.toSql(interval.value));
     }
     if (details.present) {
       map['details'] = Variable<String>(details.value);
@@ -1939,7 +1943,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
 
   @override
   String toString() {
-    return (StringBuffer('BudgetsCompanion(')
+    return (StringBuffer('DriftBudgetsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('interval: $interval, ')
@@ -1954,11 +1958,12 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
   }
 }
 
-class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
+class $DriftProjectsTable extends DriftProjects
+    with TableInfo<$DriftProjectsTable, DriftProject> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $ProjectsTable(this.attachedDatabase, [this._alias]);
+  $DriftProjectsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1996,7 +2001,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES profiles (id) ON DELETE CASCADE'));
+          'REFERENCES drift_profiles (id) ON DELETE CASCADE'));
   static const VerificationMeta _endDateMeta =
       const VerificationMeta('endDate');
   @override
@@ -2007,7 +2012,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
   late final GeneratedColumnWithTypeConverter<ProjectStatus, int> status =
       GeneratedColumn<int>('status', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<ProjectStatus>($ProjectsTable.$converterstatus);
+          .withConverter<ProjectStatus>($DriftProjectsTable.$converterstatus);
   static const VerificationMeta _budgetMeta = const VerificationMeta('budget');
   @override
   late final GeneratedColumn<int> budget = GeneratedColumn<int>(
@@ -2015,7 +2020,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES budgets (id) ON DELETE SET NULL'));
+          'REFERENCES drift_budgets (id) ON DELETE SET NULL'));
   static const VerificationMeta _addedDateMeta =
       const VerificationMeta('addedDate');
   @override
@@ -2049,9 +2054,9 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'projects';
+  static const String $name = 'drift_projects';
   @override
-  VerificationContext validateIntegrity(Insertable<Project> instance,
+  VerificationContext validateIntegrity(Insertable<DriftProject> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -2104,9 +2109,9 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Project map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftProject map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Project(
+    return DriftProject(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -2119,7 +2124,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
           .read(DriftSqlType.int, data['${effectivePrefix}profile'])!,
       endDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}end_date']),
-      status: $ProjectsTable.$converterstatus.fromSql(attachedDatabase
+      status: $DriftProjectsTable.$converterstatus.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}status'])!),
       budget: attachedDatabase.typeMapping
@@ -2132,15 +2137,15 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
   }
 
   @override
-  $ProjectsTable createAlias(String alias) {
-    return $ProjectsTable(attachedDatabase, alias);
+  $DriftProjectsTable createAlias(String alias) {
+    return $DriftProjectsTable(attachedDatabase, alias);
   }
 
   static JsonTypeConverter2<ProjectStatus, int, int> $converterstatus =
       const EnumIndexConverter<ProjectStatus>(ProjectStatus.values);
 }
 
-class Project extends DataClass implements Insertable<Project> {
+class DriftProject extends DataClass implements Insertable<DriftProject> {
   final int id;
   final String name;
   final String? description;
@@ -2151,7 +2156,7 @@ class Project extends DataClass implements Insertable<Project> {
   final int? budget;
   final DateTime addedDate;
   final DateTime updateDate;
-  const Project(
+  const DriftProject(
       {required this.id,
       required this.name,
       this.description,
@@ -2179,7 +2184,7 @@ class Project extends DataClass implements Insertable<Project> {
     }
     {
       map['status'] =
-          Variable<int>($ProjectsTable.$converterstatus.toSql(status));
+          Variable<int>($DriftProjectsTable.$converterstatus.toSql(status));
     }
     if (!nullToAbsent || budget != null) {
       map['budget'] = Variable<int>(budget);
@@ -2189,8 +2194,8 @@ class Project extends DataClass implements Insertable<Project> {
     return map;
   }
 
-  ProjectsCompanion toCompanion(bool nullToAbsent) {
-    return ProjectsCompanion(
+  DriftProjectsCompanion toCompanion(bool nullToAbsent) {
+    return DriftProjectsCompanion(
       id: Value(id),
       name: Value(name),
       description: description == null && nullToAbsent
@@ -2211,17 +2216,17 @@ class Project extends DataClass implements Insertable<Project> {
     );
   }
 
-  factory Project.fromJson(Map<String, dynamic> json,
+  factory DriftProject.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Project(
+    return DriftProject(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String?>(json['description']),
       startDate: serializer.fromJson<DateTime?>(json['startDate']),
       profile: serializer.fromJson<int>(json['profile']),
       endDate: serializer.fromJson<DateTime?>(json['endDate']),
-      status: $ProjectsTable.$converterstatus
+      status: $DriftProjectsTable.$converterstatus
           .fromJson(serializer.fromJson<int>(json['status'])),
       budget: serializer.fromJson<int?>(json['budget']),
       addedDate: serializer.fromJson<DateTime>(json['addedDate']),
@@ -2239,14 +2244,14 @@ class Project extends DataClass implements Insertable<Project> {
       'profile': serializer.toJson<int>(profile),
       'endDate': serializer.toJson<DateTime?>(endDate),
       'status': serializer
-          .toJson<int>($ProjectsTable.$converterstatus.toJson(status)),
+          .toJson<int>($DriftProjectsTable.$converterstatus.toJson(status)),
       'budget': serializer.toJson<int?>(budget),
       'addedDate': serializer.toJson<DateTime>(addedDate),
       'updateDate': serializer.toJson<DateTime>(updateDate),
     };
   }
 
-  Project copyWith(
+  DriftProject copyWith(
           {int? id,
           String? name,
           Value<String?> description = const Value.absent(),
@@ -2257,7 +2262,7 @@ class Project extends DataClass implements Insertable<Project> {
           Value<int?> budget = const Value.absent(),
           DateTime? addedDate,
           DateTime? updateDate}) =>
-      Project(
+      DriftProject(
         id: id ?? this.id,
         name: name ?? this.name,
         description: description.present ? description.value : this.description,
@@ -2269,8 +2274,8 @@ class Project extends DataClass implements Insertable<Project> {
         addedDate: addedDate ?? this.addedDate,
         updateDate: updateDate ?? this.updateDate,
       );
-  Project copyWithCompanion(ProjectsCompanion data) {
-    return Project(
+  DriftProject copyWithCompanion(DriftProjectsCompanion data) {
+    return DriftProject(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       description:
@@ -2288,7 +2293,7 @@ class Project extends DataClass implements Insertable<Project> {
 
   @override
   String toString() {
-    return (StringBuffer('Project(')
+    return (StringBuffer('DriftProject(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
@@ -2309,7 +2314,7 @@ class Project extends DataClass implements Insertable<Project> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Project &&
+      (other is DriftProject &&
           other.id == this.id &&
           other.name == this.name &&
           other.description == this.description &&
@@ -2322,7 +2327,7 @@ class Project extends DataClass implements Insertable<Project> {
           other.updateDate == this.updateDate);
 }
 
-class ProjectsCompanion extends UpdateCompanion<Project> {
+class DriftProjectsCompanion extends UpdateCompanion<DriftProject> {
   final Value<int> id;
   final Value<String> name;
   final Value<String?> description;
@@ -2333,7 +2338,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   final Value<int?> budget;
   final Value<DateTime> addedDate;
   final Value<DateTime> updateDate;
-  const ProjectsCompanion({
+  const DriftProjectsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
@@ -2345,7 +2350,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
   });
-  ProjectsCompanion.insert({
+  DriftProjectsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     this.description = const Value.absent(),
@@ -2359,7 +2364,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   })  : name = Value(name),
         profile = Value(profile),
         status = Value(status);
-  static Insertable<Project> custom({
+  static Insertable<DriftProject> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? description,
@@ -2385,7 +2390,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     });
   }
 
-  ProjectsCompanion copyWith(
+  DriftProjectsCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
       Value<String?>? description,
@@ -2396,7 +2401,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       Value<int?>? budget,
       Value<DateTime>? addedDate,
       Value<DateTime>? updateDate}) {
-    return ProjectsCompanion(
+    return DriftProjectsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
@@ -2432,8 +2437,8 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       map['end_date'] = Variable<DateTime>(endDate.value);
     }
     if (status.present) {
-      map['status'] =
-          Variable<int>($ProjectsTable.$converterstatus.toSql(status.value));
+      map['status'] = Variable<int>(
+          $DriftProjectsTable.$converterstatus.toSql(status.value));
     }
     if (budget.present) {
       map['budget'] = Variable<int>(budget.value);
@@ -2449,7 +2454,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
 
   @override
   String toString() {
-    return (StringBuffer('ProjectsCompanion(')
+    return (StringBuffer('DriftProjectsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
@@ -2465,12 +2470,12 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   }
 }
 
-class $TransactionsTable extends Transactions
-    with TableInfo<$TransactionsTable, Transaction> {
+class $DriftTransactionsTable extends DriftTransactions
+    with TableInfo<$DriftTransactionsTable, DriftTransaction> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TransactionsTable(this.attachedDatabase, [this._alias]);
+  $DriftTransactionsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -2506,7 +2511,8 @@ class $TransactionsTable extends Transactions
   late final GeneratedColumnWithTypeConverter<VoucherType, int> vchType =
       GeneratedColumn<int>('vch_type', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<VoucherType>($TransactionsTable.$convertervchType);
+          .withConverter<VoucherType>(
+              $DriftTransactionsTable.$convertervchType);
   static const VerificationMeta _drMeta = const VerificationMeta('dr');
   @override
   late final GeneratedColumn<int> dr = GeneratedColumn<int>(
@@ -2514,7 +2520,7 @@ class $TransactionsTable extends Transactions
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES accounts (id) ON DELETE CASCADE'));
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
   static const VerificationMeta _crMeta = const VerificationMeta('cr');
   @override
   late final GeneratedColumn<int> cr = GeneratedColumn<int>(
@@ -2522,7 +2528,7 @@ class $TransactionsTable extends Transactions
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES accounts (id) ON DELETE CASCADE'));
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
   late final GeneratedColumn<int> amount = GeneratedColumn<int>(
@@ -2538,7 +2544,7 @@ class $TransactionsTable extends Transactions
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES profiles (id) ON DELETE CASCADE'));
+          'REFERENCES drift_profiles (id) ON DELETE CASCADE'));
   static const VerificationMeta _projectMeta =
       const VerificationMeta('project');
   @override
@@ -2547,7 +2553,7 @@ class $TransactionsTable extends Transactions
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES projects (id) ON DELETE SET NULL'));
+          'REFERENCES drift_projects (id) ON DELETE SET NULL'));
   static const VerificationMeta _addedDateMeta =
       const VerificationMeta('addedDate');
   @override
@@ -2583,9 +2589,9 @@ class $TransactionsTable extends Transactions
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'transactions';
+  static const String $name = 'drift_transactions';
   @override
-  VerificationContext validateIntegrity(Insertable<Transaction> instance,
+  VerificationContext validateIntegrity(Insertable<DriftTransaction> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -2650,9 +2656,9 @@ class $TransactionsTable extends Transactions
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Transaction map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftTransaction map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Transaction(
+    return DriftTransaction(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       vchDate: attachedDatabase.typeMapping
@@ -2661,9 +2667,9 @@ class $TransactionsTable extends Transactions
           .read(DriftSqlType.string, data['${effectivePrefix}narr'])!,
       refNo: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}ref_no'])!,
-      vchType: $TransactionsTable.$convertervchType.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}vch_type'])!),
+      vchType: $DriftTransactionsTable.$convertervchType.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.int, data['${effectivePrefix}vch_type'])!),
       dr: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}dr'])!,
       cr: attachedDatabase.typeMapping
@@ -2682,15 +2688,16 @@ class $TransactionsTable extends Transactions
   }
 
   @override
-  $TransactionsTable createAlias(String alias) {
-    return $TransactionsTable(attachedDatabase, alias);
+  $DriftTransactionsTable createAlias(String alias) {
+    return $DriftTransactionsTable(attachedDatabase, alias);
   }
 
   static JsonTypeConverter2<VoucherType, int, int> $convertervchType =
       const EnumIndexConverter<VoucherType>(VoucherType.values);
 }
 
-class Transaction extends DataClass implements Insertable<Transaction> {
+class DriftTransaction extends DataClass
+    implements Insertable<DriftTransaction> {
   final int id;
   final DateTime vchDate;
   final String narr;
@@ -2703,7 +2710,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final int? project;
   final DateTime addedDate;
   final DateTime updateDate;
-  const Transaction(
+  const DriftTransaction(
       {required this.id,
       required this.vchDate,
       required this.narr,
@@ -2724,8 +2731,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     map['narr'] = Variable<String>(narr);
     map['ref_no'] = Variable<String>(refNo);
     {
-      map['vch_type'] =
-          Variable<int>($TransactionsTable.$convertervchType.toSql(vchType));
+      map['vch_type'] = Variable<int>(
+          $DriftTransactionsTable.$convertervchType.toSql(vchType));
     }
     map['dr'] = Variable<int>(dr);
     map['cr'] = Variable<int>(cr);
@@ -2739,8 +2746,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     return map;
   }
 
-  TransactionsCompanion toCompanion(bool nullToAbsent) {
-    return TransactionsCompanion(
+  DriftTransactionsCompanion toCompanion(bool nullToAbsent) {
+    return DriftTransactionsCompanion(
       id: Value(id),
       vchDate: Value(vchDate),
       narr: Value(narr),
@@ -2758,15 +2765,15 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     );
   }
 
-  factory Transaction.fromJson(Map<String, dynamic> json,
+  factory DriftTransaction.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Transaction(
+    return DriftTransaction(
       id: serializer.fromJson<int>(json['id']),
       vchDate: serializer.fromJson<DateTime>(json['vchDate']),
       narr: serializer.fromJson<String>(json['narr']),
       refNo: serializer.fromJson<String>(json['refNo']),
-      vchType: $TransactionsTable.$convertervchType
+      vchType: $DriftTransactionsTable.$convertervchType
           .fromJson(serializer.fromJson<int>(json['vchType'])),
       dr: serializer.fromJson<int>(json['dr']),
       cr: serializer.fromJson<int>(json['cr']),
@@ -2785,8 +2792,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'vchDate': serializer.toJson<DateTime>(vchDate),
       'narr': serializer.toJson<String>(narr),
       'refNo': serializer.toJson<String>(refNo),
-      'vchType': serializer
-          .toJson<int>($TransactionsTable.$convertervchType.toJson(vchType)),
+      'vchType': serializer.toJson<int>(
+          $DriftTransactionsTable.$convertervchType.toJson(vchType)),
       'dr': serializer.toJson<int>(dr),
       'cr': serializer.toJson<int>(cr),
       'amount': serializer.toJson<int>(amount),
@@ -2797,7 +2804,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     };
   }
 
-  Transaction copyWith(
+  DriftTransaction copyWith(
           {int? id,
           DateTime? vchDate,
           String? narr,
@@ -2810,7 +2817,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           Value<int?> project = const Value.absent(),
           DateTime? addedDate,
           DateTime? updateDate}) =>
-      Transaction(
+      DriftTransaction(
         id: id ?? this.id,
         vchDate: vchDate ?? this.vchDate,
         narr: narr ?? this.narr,
@@ -2824,8 +2831,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
         addedDate: addedDate ?? this.addedDate,
         updateDate: updateDate ?? this.updateDate,
       );
-  Transaction copyWithCompanion(TransactionsCompanion data) {
-    return Transaction(
+  DriftTransaction copyWithCompanion(DriftTransactionsCompanion data) {
+    return DriftTransaction(
       id: data.id.present ? data.id.value : this.id,
       vchDate: data.vchDate.present ? data.vchDate.value : this.vchDate,
       narr: data.narr.present ? data.narr.value : this.narr,
@@ -2844,7 +2851,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
 
   @override
   String toString() {
-    return (StringBuffer('Transaction(')
+    return (StringBuffer('DriftTransaction(')
           ..write('id: $id, ')
           ..write('vchDate: $vchDate, ')
           ..write('narr: $narr, ')
@@ -2867,7 +2874,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Transaction &&
+      (other is DriftTransaction &&
           other.id == this.id &&
           other.vchDate == this.vchDate &&
           other.narr == this.narr &&
@@ -2882,7 +2889,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.updateDate == this.updateDate);
 }
 
-class TransactionsCompanion extends UpdateCompanion<Transaction> {
+class DriftTransactionsCompanion extends UpdateCompanion<DriftTransaction> {
   final Value<int> id;
   final Value<DateTime> vchDate;
   final Value<String> narr;
@@ -2895,7 +2902,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<int?> project;
   final Value<DateTime> addedDate;
   final Value<DateTime> updateDate;
-  const TransactionsCompanion({
+  const DriftTransactionsCompanion({
     this.id = const Value.absent(),
     this.vchDate = const Value.absent(),
     this.narr = const Value.absent(),
@@ -2909,7 +2916,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
   });
-  TransactionsCompanion.insert({
+  DriftTransactionsCompanion.insert({
     this.id = const Value.absent(),
     required DateTime vchDate,
     required String narr,
@@ -2929,7 +2936,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
         dr = Value(dr),
         cr = Value(cr),
         profile = Value(profile);
-  static Insertable<Transaction> custom({
+  static Insertable<DriftTransaction> custom({
     Expression<int>? id,
     Expression<DateTime>? vchDate,
     Expression<String>? narr,
@@ -2959,7 +2966,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     });
   }
 
-  TransactionsCompanion copyWith(
+  DriftTransactionsCompanion copyWith(
       {Value<int>? id,
       Value<DateTime>? vchDate,
       Value<String>? narr,
@@ -2972,7 +2979,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       Value<int?>? project,
       Value<DateTime>? addedDate,
       Value<DateTime>? updateDate}) {
-    return TransactionsCompanion(
+    return DriftTransactionsCompanion(
       id: id ?? this.id,
       vchDate: vchDate ?? this.vchDate,
       narr: narr ?? this.narr,
@@ -3005,7 +3012,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     }
     if (vchType.present) {
       map['vch_type'] = Variable<int>(
-          $TransactionsTable.$convertervchType.toSql(vchType.value));
+          $DriftTransactionsTable.$convertervchType.toSql(vchType.value));
     }
     if (dr.present) {
       map['dr'] = Variable<int>(dr.value);
@@ -3033,7 +3040,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
 
   @override
   String toString() {
-    return (StringBuffer('TransactionsCompanion(')
+    return (StringBuffer('DriftTransactionsCompanion(')
           ..write('id: $id, ')
           ..write('vchDate: $vchDate, ')
           ..write('narr: $narr, ')
@@ -3051,11 +3058,12 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   }
 }
 
-class $UsersTable extends Users with TableInfo<$UsersTable, User> {
+class $DriftUsersTable extends DriftUsers
+    with TableInfo<$DriftUsersTable, DriftUser> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $UsersTable(this.attachedDatabase, [this._alias]);
+  $DriftUsersTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -3088,9 +3096,9 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'users';
+  static const String $name = 'drift_users';
   @override
-  VerificationContext validateIntegrity(Insertable<User> instance,
+  VerificationContext validateIntegrity(Insertable<DriftUser> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -3115,9 +3123,9 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  User map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftUser map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return User(
+    return DriftUser(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -3128,16 +3136,17 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   }
 
   @override
-  $UsersTable createAlias(String alias) {
-    return $UsersTable(attachedDatabase, alias);
+  $DriftUsersTable createAlias(String alias) {
+    return $DriftUsersTable(attachedDatabase, alias);
   }
 }
 
-class User extends DataClass implements Insertable<User> {
+class DriftUser extends DataClass implements Insertable<DriftUser> {
   final int id;
   final String name;
   final String deviceID;
-  const User({required this.id, required this.name, required this.deviceID});
+  const DriftUser(
+      {required this.id, required this.name, required this.deviceID});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3147,18 +3156,18 @@ class User extends DataClass implements Insertable<User> {
     return map;
   }
 
-  UsersCompanion toCompanion(bool nullToAbsent) {
-    return UsersCompanion(
+  DriftUsersCompanion toCompanion(bool nullToAbsent) {
+    return DriftUsersCompanion(
       id: Value(id),
       name: Value(name),
       deviceID: Value(deviceID),
     );
   }
 
-  factory User.fromJson(Map<String, dynamic> json,
+  factory DriftUser.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return User(
+    return DriftUser(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       deviceID: serializer.fromJson<String>(json['deviceID']),
@@ -3174,13 +3183,13 @@ class User extends DataClass implements Insertable<User> {
     };
   }
 
-  User copyWith({int? id, String? name, String? deviceID}) => User(
+  DriftUser copyWith({int? id, String? name, String? deviceID}) => DriftUser(
         id: id ?? this.id,
         name: name ?? this.name,
         deviceID: deviceID ?? this.deviceID,
       );
-  User copyWithCompanion(UsersCompanion data) {
-    return User(
+  DriftUser copyWithCompanion(DriftUsersCompanion data) {
+    return DriftUser(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       deviceID: data.deviceID.present ? data.deviceID.value : this.deviceID,
@@ -3189,7 +3198,7 @@ class User extends DataClass implements Insertable<User> {
 
   @override
   String toString() {
-    return (StringBuffer('User(')
+    return (StringBuffer('DriftUser(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('deviceID: $deviceID')
@@ -3202,28 +3211,28 @@ class User extends DataClass implements Insertable<User> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is User &&
+      (other is DriftUser &&
           other.id == this.id &&
           other.name == this.name &&
           other.deviceID == this.deviceID);
 }
 
-class UsersCompanion extends UpdateCompanion<User> {
+class DriftUsersCompanion extends UpdateCompanion<DriftUser> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> deviceID;
-  const UsersCompanion({
+  const DriftUsersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.deviceID = const Value.absent(),
   });
-  UsersCompanion.insert({
+  DriftUsersCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String deviceID,
   })  : name = Value(name),
         deviceID = Value(deviceID);
-  static Insertable<User> custom({
+  static Insertable<DriftUser> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? deviceID,
@@ -3235,9 +3244,9 @@ class UsersCompanion extends UpdateCompanion<User> {
     });
   }
 
-  UsersCompanion copyWith(
+  DriftUsersCompanion copyWith(
       {Value<int>? id, Value<String>? name, Value<String>? deviceID}) {
-    return UsersCompanion(
+    return DriftUsersCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       deviceID: deviceID ?? this.deviceID,
@@ -3261,7 +3270,7 @@ class UsersCompanion extends UpdateCompanion<User> {
 
   @override
   String toString() {
-    return (StringBuffer('UsersCompanion(')
+    return (StringBuffer('DriftUsersCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('deviceID: $deviceID')
@@ -3270,11 +3279,12 @@ class UsersCompanion extends UpdateCompanion<User> {
   }
 }
 
-class $BanksTable extends Banks with TableInfo<$BanksTable, Bank> {
+class $DriftBanksTable extends DriftBanks
+    with TableInfo<$DriftBanksTable, DriftBank> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $BanksTable(this.attachedDatabase, [this._alias]);
+  $DriftBanksTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -3292,7 +3302,7 @@ class $BanksTable extends Banks with TableInfo<$BanksTable, Bank> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES accounts (id) ON DELETE CASCADE'));
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
   static const VerificationMeta _holderNameMeta =
       const VerificationMeta('holderName');
   @override
@@ -3344,9 +3354,9 @@ class $BanksTable extends Banks with TableInfo<$BanksTable, Bank> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'banks';
+  static const String $name = 'drift_banks';
   @override
-  VerificationContext validateIntegrity(Insertable<Bank> instance,
+  VerificationContext validateIntegrity(Insertable<DriftBank> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -3391,9 +3401,9 @@ class $BanksTable extends Banks with TableInfo<$BanksTable, Bank> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Bank map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftBank map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Bank(
+    return DriftBank(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       account: attachedDatabase.typeMapping
@@ -3412,12 +3422,12 @@ class $BanksTable extends Banks with TableInfo<$BanksTable, Bank> {
   }
 
   @override
-  $BanksTable createAlias(String alias) {
-    return $BanksTable(attachedDatabase, alias);
+  $DriftBanksTable createAlias(String alias) {
+    return $DriftBanksTable(attachedDatabase, alias);
   }
 }
 
-class Bank extends DataClass implements Insertable<Bank> {
+class DriftBank extends DataClass implements Insertable<DriftBank> {
   final int id;
   final int account;
   final String? holderName;
@@ -3425,7 +3435,7 @@ class Bank extends DataClass implements Insertable<Bank> {
   final String? branch;
   final String? branchCode;
   final String? accountNo;
-  const Bank(
+  const DriftBank(
       {required this.id,
       required this.account,
       this.holderName,
@@ -3456,8 +3466,8 @@ class Bank extends DataClass implements Insertable<Bank> {
     return map;
   }
 
-  BanksCompanion toCompanion(bool nullToAbsent) {
-    return BanksCompanion(
+  DriftBanksCompanion toCompanion(bool nullToAbsent) {
+    return DriftBanksCompanion(
       id: Value(id),
       account: Value(account),
       holderName: holderName == null && nullToAbsent
@@ -3477,10 +3487,10 @@ class Bank extends DataClass implements Insertable<Bank> {
     );
   }
 
-  factory Bank.fromJson(Map<String, dynamic> json,
+  factory DriftBank.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Bank(
+    return DriftBank(
       id: serializer.fromJson<int>(json['id']),
       account: serializer.fromJson<int>(json['account']),
       holderName: serializer.fromJson<String?>(json['holderName']),
@@ -3504,7 +3514,7 @@ class Bank extends DataClass implements Insertable<Bank> {
     };
   }
 
-  Bank copyWith(
+  DriftBank copyWith(
           {int? id,
           int? account,
           Value<String?> holderName = const Value.absent(),
@@ -3512,7 +3522,7 @@ class Bank extends DataClass implements Insertable<Bank> {
           Value<String?> branch = const Value.absent(),
           Value<String?> branchCode = const Value.absent(),
           Value<String?> accountNo = const Value.absent()}) =>
-      Bank(
+      DriftBank(
         id: id ?? this.id,
         account: account ?? this.account,
         holderName: holderName.present ? holderName.value : this.holderName,
@@ -3521,8 +3531,8 @@ class Bank extends DataClass implements Insertable<Bank> {
         branchCode: branchCode.present ? branchCode.value : this.branchCode,
         accountNo: accountNo.present ? accountNo.value : this.accountNo,
       );
-  Bank copyWithCompanion(BanksCompanion data) {
-    return Bank(
+  DriftBank copyWithCompanion(DriftBanksCompanion data) {
+    return DriftBank(
       id: data.id.present ? data.id.value : this.id,
       account: data.account.present ? data.account.value : this.account,
       holderName:
@@ -3538,7 +3548,7 @@ class Bank extends DataClass implements Insertable<Bank> {
 
   @override
   String toString() {
-    return (StringBuffer('Bank(')
+    return (StringBuffer('DriftBank(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('holderName: $holderName, ')
@@ -3556,7 +3566,7 @@ class Bank extends DataClass implements Insertable<Bank> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Bank &&
+      (other is DriftBank &&
           other.id == this.id &&
           other.account == this.account &&
           other.holderName == this.holderName &&
@@ -3566,7 +3576,7 @@ class Bank extends DataClass implements Insertable<Bank> {
           other.accountNo == this.accountNo);
 }
 
-class BanksCompanion extends UpdateCompanion<Bank> {
+class DriftBanksCompanion extends UpdateCompanion<DriftBank> {
   final Value<int> id;
   final Value<int> account;
   final Value<String?> holderName;
@@ -3574,7 +3584,7 @@ class BanksCompanion extends UpdateCompanion<Bank> {
   final Value<String?> branch;
   final Value<String?> branchCode;
   final Value<String?> accountNo;
-  const BanksCompanion({
+  const DriftBanksCompanion({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
     this.holderName = const Value.absent(),
@@ -3583,7 +3593,7 @@ class BanksCompanion extends UpdateCompanion<Bank> {
     this.branchCode = const Value.absent(),
     this.accountNo = const Value.absent(),
   });
-  BanksCompanion.insert({
+  DriftBanksCompanion.insert({
     this.id = const Value.absent(),
     required int account,
     this.holderName = const Value.absent(),
@@ -3592,7 +3602,7 @@ class BanksCompanion extends UpdateCompanion<Bank> {
     this.branchCode = const Value.absent(),
     this.accountNo = const Value.absent(),
   }) : account = Value(account);
-  static Insertable<Bank> custom({
+  static Insertable<DriftBank> custom({
     Expression<int>? id,
     Expression<int>? account,
     Expression<String>? holderName,
@@ -3612,7 +3622,7 @@ class BanksCompanion extends UpdateCompanion<Bank> {
     });
   }
 
-  BanksCompanion copyWith(
+  DriftBanksCompanion copyWith(
       {Value<int>? id,
       Value<int>? account,
       Value<String?>? holderName,
@@ -3620,7 +3630,7 @@ class BanksCompanion extends UpdateCompanion<Bank> {
       Value<String?>? branch,
       Value<String?>? branchCode,
       Value<String?>? accountNo}) {
-    return BanksCompanion(
+    return DriftBanksCompanion(
       id: id ?? this.id,
       account: account ?? this.account,
       holderName: holderName ?? this.holderName,
@@ -3660,7 +3670,7 @@ class BanksCompanion extends UpdateCompanion<Bank> {
 
   @override
   String toString() {
-    return (StringBuffer('BanksCompanion(')
+    return (StringBuffer('DriftBanksCompanion(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('holderName: $holderName, ')
@@ -3673,11 +3683,12 @@ class BanksCompanion extends UpdateCompanion<Bank> {
   }
 }
 
-class $WalletsTable extends Wallets with TableInfo<$WalletsTable, Wallet> {
+class $DriftWalletsTable extends DriftWallets
+    with TableInfo<$DriftWalletsTable, DriftWallet> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $WalletsTable(this.attachedDatabase, [this._alias]);
+  $DriftWalletsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -3695,7 +3706,7 @@ class $WalletsTable extends Wallets with TableInfo<$WalletsTable, Wallet> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES accounts (id) ON DELETE CASCADE'));
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
   static const VerificationMeta _addedDateMeta =
       const VerificationMeta('addedDate');
   @override
@@ -3718,9 +3729,9 @@ class $WalletsTable extends Wallets with TableInfo<$WalletsTable, Wallet> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'wallets';
+  static const String $name = 'drift_wallets';
   @override
-  VerificationContext validateIntegrity(Insertable<Wallet> instance,
+  VerificationContext validateIntegrity(Insertable<DriftWallet> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -3749,9 +3760,9 @@ class $WalletsTable extends Wallets with TableInfo<$WalletsTable, Wallet> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Wallet map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftWallet map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Wallet(
+    return DriftWallet(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       account: attachedDatabase.typeMapping
@@ -3764,17 +3775,17 @@ class $WalletsTable extends Wallets with TableInfo<$WalletsTable, Wallet> {
   }
 
   @override
-  $WalletsTable createAlias(String alias) {
-    return $WalletsTable(attachedDatabase, alias);
+  $DriftWalletsTable createAlias(String alias) {
+    return $DriftWalletsTable(attachedDatabase, alias);
   }
 }
 
-class Wallet extends DataClass implements Insertable<Wallet> {
+class DriftWallet extends DataClass implements Insertable<DriftWallet> {
   final int id;
   final int account;
   final DateTime addedDate;
   final DateTime updateDate;
-  const Wallet(
+  const DriftWallet(
       {required this.id,
       required this.account,
       required this.addedDate,
@@ -3789,8 +3800,8 @@ class Wallet extends DataClass implements Insertable<Wallet> {
     return map;
   }
 
-  WalletsCompanion toCompanion(bool nullToAbsent) {
-    return WalletsCompanion(
+  DriftWalletsCompanion toCompanion(bool nullToAbsent) {
+    return DriftWalletsCompanion(
       id: Value(id),
       account: Value(account),
       addedDate: Value(addedDate),
@@ -3798,10 +3809,10 @@ class Wallet extends DataClass implements Insertable<Wallet> {
     );
   }
 
-  factory Wallet.fromJson(Map<String, dynamic> json,
+  factory DriftWallet.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Wallet(
+    return DriftWallet(
       id: serializer.fromJson<int>(json['id']),
       account: serializer.fromJson<int>(json['account']),
       addedDate: serializer.fromJson<DateTime>(json['addedDate']),
@@ -3819,16 +3830,16 @@ class Wallet extends DataClass implements Insertable<Wallet> {
     };
   }
 
-  Wallet copyWith(
+  DriftWallet copyWith(
           {int? id, int? account, DateTime? addedDate, DateTime? updateDate}) =>
-      Wallet(
+      DriftWallet(
         id: id ?? this.id,
         account: account ?? this.account,
         addedDate: addedDate ?? this.addedDate,
         updateDate: updateDate ?? this.updateDate,
       );
-  Wallet copyWithCompanion(WalletsCompanion data) {
-    return Wallet(
+  DriftWallet copyWithCompanion(DriftWalletsCompanion data) {
+    return DriftWallet(
       id: data.id.present ? data.id.value : this.id,
       account: data.account.present ? data.account.value : this.account,
       addedDate: data.addedDate.present ? data.addedDate.value : this.addedDate,
@@ -3839,7 +3850,7 @@ class Wallet extends DataClass implements Insertable<Wallet> {
 
   @override
   String toString() {
-    return (StringBuffer('Wallet(')
+    return (StringBuffer('DriftWallet(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('addedDate: $addedDate, ')
@@ -3853,31 +3864,31 @@ class Wallet extends DataClass implements Insertable<Wallet> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Wallet &&
+      (other is DriftWallet &&
           other.id == this.id &&
           other.account == this.account &&
           other.addedDate == this.addedDate &&
           other.updateDate == this.updateDate);
 }
 
-class WalletsCompanion extends UpdateCompanion<Wallet> {
+class DriftWalletsCompanion extends UpdateCompanion<DriftWallet> {
   final Value<int> id;
   final Value<int> account;
   final Value<DateTime> addedDate;
   final Value<DateTime> updateDate;
-  const WalletsCompanion({
+  const DriftWalletsCompanion({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
   });
-  WalletsCompanion.insert({
+  DriftWalletsCompanion.insert({
     this.id = const Value.absent(),
     required int account,
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
   }) : account = Value(account);
-  static Insertable<Wallet> custom({
+  static Insertable<DriftWallet> custom({
     Expression<int>? id,
     Expression<int>? account,
     Expression<DateTime>? addedDate,
@@ -3891,12 +3902,12 @@ class WalletsCompanion extends UpdateCompanion<Wallet> {
     });
   }
 
-  WalletsCompanion copyWith(
+  DriftWalletsCompanion copyWith(
       {Value<int>? id,
       Value<int>? account,
       Value<DateTime>? addedDate,
       Value<DateTime>? updateDate}) {
-    return WalletsCompanion(
+    return DriftWalletsCompanion(
       id: id ?? this.id,
       account: account ?? this.account,
       addedDate: addedDate ?? this.addedDate,
@@ -3924,7 +3935,7 @@ class WalletsCompanion extends UpdateCompanion<Wallet> {
 
   @override
   String toString() {
-    return (StringBuffer('WalletsCompanion(')
+    return (StringBuffer('DriftWalletsCompanion(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('addedDate: $addedDate, ')
@@ -3934,11 +3945,12 @@ class WalletsCompanion extends UpdateCompanion<Wallet> {
   }
 }
 
-class $LoansTable extends Loans with TableInfo<$LoansTable, Loan> {
+class $DriftLoansTable extends DriftLoans
+    with TableInfo<$DriftLoansTable, DriftLoan> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $LoansTable(this.attachedDatabase, [this._alias]);
+  $DriftLoansTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -3956,7 +3968,7 @@ class $LoansTable extends Loans with TableInfo<$LoansTable, Loan> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES accounts (id) ON DELETE CASCADE'));
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
   static const VerificationMeta _institutionMeta =
       const VerificationMeta('institution');
   @override
@@ -4021,9 +4033,9 @@ class $LoansTable extends Loans with TableInfo<$LoansTable, Loan> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'loans';
+  static const String $name = 'drift_loans';
   @override
-  VerificationContext validateIntegrity(Insertable<Loan> instance,
+  VerificationContext validateIntegrity(Insertable<DriftLoan> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -4072,9 +4084,9 @@ class $LoansTable extends Loans with TableInfo<$LoansTable, Loan> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Loan map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftLoan map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Loan(
+    return DriftLoan(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       account: attachedDatabase.typeMapping
@@ -4095,12 +4107,12 @@ class $LoansTable extends Loans with TableInfo<$LoansTable, Loan> {
   }
 
   @override
-  $LoansTable createAlias(String alias) {
-    return $LoansTable(attachedDatabase, alias);
+  $DriftLoansTable createAlias(String alias) {
+    return $DriftLoansTable(attachedDatabase, alias);
   }
 }
 
-class Loan extends DataClass implements Insertable<Loan> {
+class DriftLoan extends DataClass implements Insertable<DriftLoan> {
   final int id;
   final int account;
   final String? institution;
@@ -4109,7 +4121,7 @@ class Loan extends DataClass implements Insertable<Loan> {
   final DateTime? endDate;
   final String? agreementNo;
   final String? accountNo;
-  const Loan(
+  const DriftLoan(
       {required this.id,
       required this.account,
       this.institution,
@@ -4144,8 +4156,8 @@ class Loan extends DataClass implements Insertable<Loan> {
     return map;
   }
 
-  LoansCompanion toCompanion(bool nullToAbsent) {
-    return LoansCompanion(
+  DriftLoansCompanion toCompanion(bool nullToAbsent) {
+    return DriftLoansCompanion(
       id: Value(id),
       account: Value(account),
       institution: institution == null && nullToAbsent
@@ -4169,10 +4181,10 @@ class Loan extends DataClass implements Insertable<Loan> {
     );
   }
 
-  factory Loan.fromJson(Map<String, dynamic> json,
+  factory DriftLoan.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Loan(
+    return DriftLoan(
       id: serializer.fromJson<int>(json['id']),
       account: serializer.fromJson<int>(json['account']),
       institution: serializer.fromJson<String?>(json['institution']),
@@ -4198,7 +4210,7 @@ class Loan extends DataClass implements Insertable<Loan> {
     };
   }
 
-  Loan copyWith(
+  DriftLoan copyWith(
           {int? id,
           int? account,
           Value<String?> institution = const Value.absent(),
@@ -4207,7 +4219,7 @@ class Loan extends DataClass implements Insertable<Loan> {
           Value<DateTime?> endDate = const Value.absent(),
           Value<String?> agreementNo = const Value.absent(),
           Value<String?> accountNo = const Value.absent()}) =>
-      Loan(
+      DriftLoan(
         id: id ?? this.id,
         account: account ?? this.account,
         institution: institution.present ? institution.value : this.institution,
@@ -4218,8 +4230,8 @@ class Loan extends DataClass implements Insertable<Loan> {
         agreementNo: agreementNo.present ? agreementNo.value : this.agreementNo,
         accountNo: accountNo.present ? accountNo.value : this.accountNo,
       );
-  Loan copyWithCompanion(LoansCompanion data) {
-    return Loan(
+  DriftLoan copyWithCompanion(DriftLoansCompanion data) {
+    return DriftLoan(
       id: data.id.present ? data.id.value : this.id,
       account: data.account.present ? data.account.value : this.account,
       institution:
@@ -4237,7 +4249,7 @@ class Loan extends DataClass implements Insertable<Loan> {
 
   @override
   String toString() {
-    return (StringBuffer('Loan(')
+    return (StringBuffer('DriftLoan(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('institution: $institution, ')
@@ -4256,7 +4268,7 @@ class Loan extends DataClass implements Insertable<Loan> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Loan &&
+      (other is DriftLoan &&
           other.id == this.id &&
           other.account == this.account &&
           other.institution == this.institution &&
@@ -4267,7 +4279,7 @@ class Loan extends DataClass implements Insertable<Loan> {
           other.accountNo == this.accountNo);
 }
 
-class LoansCompanion extends UpdateCompanion<Loan> {
+class DriftLoansCompanion extends UpdateCompanion<DriftLoan> {
   final Value<int> id;
   final Value<int> account;
   final Value<String?> institution;
@@ -4276,7 +4288,7 @@ class LoansCompanion extends UpdateCompanion<Loan> {
   final Value<DateTime?> endDate;
   final Value<String?> agreementNo;
   final Value<String?> accountNo;
-  const LoansCompanion({
+  const DriftLoansCompanion({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
     this.institution = const Value.absent(),
@@ -4286,7 +4298,7 @@ class LoansCompanion extends UpdateCompanion<Loan> {
     this.agreementNo = const Value.absent(),
     this.accountNo = const Value.absent(),
   });
-  LoansCompanion.insert({
+  DriftLoansCompanion.insert({
     this.id = const Value.absent(),
     required int account,
     this.institution = const Value.absent(),
@@ -4296,7 +4308,7 @@ class LoansCompanion extends UpdateCompanion<Loan> {
     this.agreementNo = const Value.absent(),
     this.accountNo = const Value.absent(),
   }) : account = Value(account);
-  static Insertable<Loan> custom({
+  static Insertable<DriftLoan> custom({
     Expression<int>? id,
     Expression<int>? account,
     Expression<String>? institution,
@@ -4318,7 +4330,7 @@ class LoansCompanion extends UpdateCompanion<Loan> {
     });
   }
 
-  LoansCompanion copyWith(
+  DriftLoansCompanion copyWith(
       {Value<int>? id,
       Value<int>? account,
       Value<String?>? institution,
@@ -4327,7 +4339,7 @@ class LoansCompanion extends UpdateCompanion<Loan> {
       Value<DateTime?>? endDate,
       Value<String?>? agreementNo,
       Value<String?>? accountNo}) {
-    return LoansCompanion(
+    return DriftLoansCompanion(
       id: id ?? this.id,
       account: account ?? this.account,
       institution: institution ?? this.institution,
@@ -4371,7 +4383,7 @@ class LoansCompanion extends UpdateCompanion<Loan> {
 
   @override
   String toString() {
-    return (StringBuffer('LoansCompanion(')
+    return (StringBuffer('DriftLoansCompanion(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('institution: $institution, ')
@@ -4385,11 +4397,12 @@ class LoansCompanion extends UpdateCompanion<Loan> {
   }
 }
 
-class $CCardsTable extends CCards with TableInfo<$CCardsTable, CCard> {
+class $DriftCCardsTable extends DriftCCards
+    with TableInfo<$DriftCCardsTable, DriftCCard> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $CCardsTable(this.attachedDatabase, [this._alias]);
+  $DriftCCardsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -4407,7 +4420,7 @@ class $CCardsTable extends CCards with TableInfo<$CCardsTable, CCard> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES accounts (id) ON DELETE CASCADE'));
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
   static const VerificationMeta _institutionMeta =
       const VerificationMeta('institution');
   @override
@@ -4449,9 +4462,9 @@ class $CCardsTable extends CCards with TableInfo<$CCardsTable, CCard> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'c_cards';
+  static const String $name = 'drift_c_cards';
   @override
-  VerificationContext validateIntegrity(Insertable<CCard> instance,
+  VerificationContext validateIntegrity(Insertable<DriftCCard> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -4492,9 +4505,9 @@ class $CCardsTable extends CCards with TableInfo<$CCardsTable, CCard> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  CCard map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftCCard map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return CCard(
+    return DriftCCard(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       account: attachedDatabase.typeMapping
@@ -4511,19 +4524,19 @@ class $CCardsTable extends CCards with TableInfo<$CCardsTable, CCard> {
   }
 
   @override
-  $CCardsTable createAlias(String alias) {
-    return $CCardsTable(attachedDatabase, alias);
+  $DriftCCardsTable createAlias(String alias) {
+    return $DriftCCardsTable(attachedDatabase, alias);
   }
 }
 
-class CCard extends DataClass implements Insertable<CCard> {
+class DriftCCard extends DataClass implements Insertable<DriftCCard> {
   final int id;
   final int account;
   final String? institution;
   final int? statementDate;
   final String? cardNo;
   final String? cardNetwork;
-  const CCard(
+  const DriftCCard(
       {required this.id,
       required this.account,
       this.institution,
@@ -4550,8 +4563,8 @@ class CCard extends DataClass implements Insertable<CCard> {
     return map;
   }
 
-  CCardsCompanion toCompanion(bool nullToAbsent) {
-    return CCardsCompanion(
+  DriftCCardsCompanion toCompanion(bool nullToAbsent) {
+    return DriftCCardsCompanion(
       id: Value(id),
       account: Value(account),
       institution: institution == null && nullToAbsent
@@ -4568,10 +4581,10 @@ class CCard extends DataClass implements Insertable<CCard> {
     );
   }
 
-  factory CCard.fromJson(Map<String, dynamic> json,
+  factory DriftCCard.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return CCard(
+    return DriftCCard(
       id: serializer.fromJson<int>(json['id']),
       account: serializer.fromJson<int>(json['account']),
       institution: serializer.fromJson<String?>(json['institution']),
@@ -4593,14 +4606,14 @@ class CCard extends DataClass implements Insertable<CCard> {
     };
   }
 
-  CCard copyWith(
+  DriftCCard copyWith(
           {int? id,
           int? account,
           Value<String?> institution = const Value.absent(),
           Value<int?> statementDate = const Value.absent(),
           Value<String?> cardNo = const Value.absent(),
           Value<String?> cardNetwork = const Value.absent()}) =>
-      CCard(
+      DriftCCard(
         id: id ?? this.id,
         account: account ?? this.account,
         institution: institution.present ? institution.value : this.institution,
@@ -4609,8 +4622,8 @@ class CCard extends DataClass implements Insertable<CCard> {
         cardNo: cardNo.present ? cardNo.value : this.cardNo,
         cardNetwork: cardNetwork.present ? cardNetwork.value : this.cardNetwork,
       );
-  CCard copyWithCompanion(CCardsCompanion data) {
-    return CCard(
+  DriftCCard copyWithCompanion(DriftCCardsCompanion data) {
+    return DriftCCard(
       id: data.id.present ? data.id.value : this.id,
       account: data.account.present ? data.account.value : this.account,
       institution:
@@ -4626,7 +4639,7 @@ class CCard extends DataClass implements Insertable<CCard> {
 
   @override
   String toString() {
-    return (StringBuffer('CCard(')
+    return (StringBuffer('DriftCCard(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('institution: $institution, ')
@@ -4643,7 +4656,7 @@ class CCard extends DataClass implements Insertable<CCard> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is CCard &&
+      (other is DriftCCard &&
           other.id == this.id &&
           other.account == this.account &&
           other.institution == this.institution &&
@@ -4652,14 +4665,14 @@ class CCard extends DataClass implements Insertable<CCard> {
           other.cardNetwork == this.cardNetwork);
 }
 
-class CCardsCompanion extends UpdateCompanion<CCard> {
+class DriftCCardsCompanion extends UpdateCompanion<DriftCCard> {
   final Value<int> id;
   final Value<int> account;
   final Value<String?> institution;
   final Value<int?> statementDate;
   final Value<String?> cardNo;
   final Value<String?> cardNetwork;
-  const CCardsCompanion({
+  const DriftCCardsCompanion({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
     this.institution = const Value.absent(),
@@ -4667,7 +4680,7 @@ class CCardsCompanion extends UpdateCompanion<CCard> {
     this.cardNo = const Value.absent(),
     this.cardNetwork = const Value.absent(),
   });
-  CCardsCompanion.insert({
+  DriftCCardsCompanion.insert({
     this.id = const Value.absent(),
     required int account,
     this.institution = const Value.absent(),
@@ -4675,7 +4688,7 @@ class CCardsCompanion extends UpdateCompanion<CCard> {
     this.cardNo = const Value.absent(),
     this.cardNetwork = const Value.absent(),
   }) : account = Value(account);
-  static Insertable<CCard> custom({
+  static Insertable<DriftCCard> custom({
     Expression<int>? id,
     Expression<int>? account,
     Expression<String>? institution,
@@ -4693,14 +4706,14 @@ class CCardsCompanion extends UpdateCompanion<CCard> {
     });
   }
 
-  CCardsCompanion copyWith(
+  DriftCCardsCompanion copyWith(
       {Value<int>? id,
       Value<int>? account,
       Value<String?>? institution,
       Value<int?>? statementDate,
       Value<String?>? cardNo,
       Value<String?>? cardNetwork}) {
-    return CCardsCompanion(
+    return DriftCCardsCompanion(
       id: id ?? this.id,
       account: account ?? this.account,
       institution: institution ?? this.institution,
@@ -4736,7 +4749,7 @@ class CCardsCompanion extends UpdateCompanion<CCard> {
 
   @override
   String toString() {
-    return (StringBuffer('CCardsCompanion(')
+    return (StringBuffer('DriftCCardsCompanion(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('institution: $institution, ')
@@ -4748,11 +4761,12 @@ class CCardsCompanion extends UpdateCompanion<CCard> {
   }
 }
 
-class $BalancesTable extends Balances with TableInfo<$BalancesTable, Balance> {
+class $DriftBalancesTable extends DriftBalances
+    with TableInfo<$DriftBalancesTable, DriftBalance> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $BalancesTable(this.attachedDatabase, [this._alias]);
+  $DriftBalancesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -4770,7 +4784,7 @@ class $BalancesTable extends Balances with TableInfo<$BalancesTable, Balance> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES accounts (id) ON DELETE CASCADE'));
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
   late final GeneratedColumn<int> amount = GeneratedColumn<int>(
@@ -4784,9 +4798,9 @@ class $BalancesTable extends Balances with TableInfo<$BalancesTable, Balance> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'balances';
+  static const String $name = 'drift_balances';
   @override
-  VerificationContext validateIntegrity(Insertable<Balance> instance,
+  VerificationContext validateIntegrity(Insertable<DriftBalance> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -4809,9 +4823,9 @@ class $BalancesTable extends Balances with TableInfo<$BalancesTable, Balance> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Balance map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftBalance map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Balance(
+    return DriftBalance(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       account: attachedDatabase.typeMapping
@@ -4822,16 +4836,16 @@ class $BalancesTable extends Balances with TableInfo<$BalancesTable, Balance> {
   }
 
   @override
-  $BalancesTable createAlias(String alias) {
-    return $BalancesTable(attachedDatabase, alias);
+  $DriftBalancesTable createAlias(String alias) {
+    return $DriftBalancesTable(attachedDatabase, alias);
   }
 }
 
-class Balance extends DataClass implements Insertable<Balance> {
+class DriftBalance extends DataClass implements Insertable<DriftBalance> {
   final int id;
   final int account;
   final int amount;
-  const Balance(
+  const DriftBalance(
       {required this.id, required this.account, required this.amount});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4842,18 +4856,18 @@ class Balance extends DataClass implements Insertable<Balance> {
     return map;
   }
 
-  BalancesCompanion toCompanion(bool nullToAbsent) {
-    return BalancesCompanion(
+  DriftBalancesCompanion toCompanion(bool nullToAbsent) {
+    return DriftBalancesCompanion(
       id: Value(id),
       account: Value(account),
       amount: Value(amount),
     );
   }
 
-  factory Balance.fromJson(Map<String, dynamic> json,
+  factory DriftBalance.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Balance(
+    return DriftBalance(
       id: serializer.fromJson<int>(json['id']),
       account: serializer.fromJson<int>(json['account']),
       amount: serializer.fromJson<int>(json['amount']),
@@ -4869,13 +4883,13 @@ class Balance extends DataClass implements Insertable<Balance> {
     };
   }
 
-  Balance copyWith({int? id, int? account, int? amount}) => Balance(
+  DriftBalance copyWith({int? id, int? account, int? amount}) => DriftBalance(
         id: id ?? this.id,
         account: account ?? this.account,
         amount: amount ?? this.amount,
       );
-  Balance copyWithCompanion(BalancesCompanion data) {
-    return Balance(
+  DriftBalance copyWithCompanion(DriftBalancesCompanion data) {
+    return DriftBalance(
       id: data.id.present ? data.id.value : this.id,
       account: data.account.present ? data.account.value : this.account,
       amount: data.amount.present ? data.amount.value : this.amount,
@@ -4884,7 +4898,7 @@ class Balance extends DataClass implements Insertable<Balance> {
 
   @override
   String toString() {
-    return (StringBuffer('Balance(')
+    return (StringBuffer('DriftBalance(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('amount: $amount')
@@ -4897,27 +4911,27 @@ class Balance extends DataClass implements Insertable<Balance> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Balance &&
+      (other is DriftBalance &&
           other.id == this.id &&
           other.account == this.account &&
           other.amount == this.amount);
 }
 
-class BalancesCompanion extends UpdateCompanion<Balance> {
+class DriftBalancesCompanion extends UpdateCompanion<DriftBalance> {
   final Value<int> id;
   final Value<int> account;
   final Value<int> amount;
-  const BalancesCompanion({
+  const DriftBalancesCompanion({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
     this.amount = const Value.absent(),
   });
-  BalancesCompanion.insert({
+  DriftBalancesCompanion.insert({
     this.id = const Value.absent(),
     required int account,
     this.amount = const Value.absent(),
   }) : account = Value(account);
-  static Insertable<Balance> custom({
+  static Insertable<DriftBalance> custom({
     Expression<int>? id,
     Expression<int>? account,
     Expression<int>? amount,
@@ -4929,9 +4943,9 @@ class BalancesCompanion extends UpdateCompanion<Balance> {
     });
   }
 
-  BalancesCompanion copyWith(
+  DriftBalancesCompanion copyWith(
       {Value<int>? id, Value<int>? account, Value<int>? amount}) {
-    return BalancesCompanion(
+    return DriftBalancesCompanion(
       id: id ?? this.id,
       account: account ?? this.account,
       amount: amount ?? this.amount,
@@ -4955,7 +4969,7 @@ class BalancesCompanion extends UpdateCompanion<Balance> {
 
   @override
   String toString() {
-    return (StringBuffer('BalancesCompanion(')
+    return (StringBuffer('DriftBalancesCompanion(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('amount: $amount')
@@ -4964,12 +4978,12 @@ class BalancesCompanion extends UpdateCompanion<Balance> {
   }
 }
 
-class $FilePathsTable extends FilePaths
-    with TableInfo<$FilePathsTable, FilePath> {
+class $DriftTransactionPhotosTable extends DriftTransactionPhotos
+    with TableInfo<$DriftTransactionPhotosTable, DriftTransactionPhoto> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $FilePathsTable(this.attachedDatabase, [this._alias]);
+  $DriftTransactionPhotosTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -4987,24 +5001,25 @@ class $FilePathsTable extends FilePaths
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES transactions (id) ON DELETE CASCADE'));
+          'REFERENCES drift_transactions (id) ON DELETE CASCADE'));
   static const VerificationMeta _pathMeta = const VerificationMeta('path');
   @override
   late final GeneratedColumn<String> path = GeneratedColumn<String>(
-      'path', aliasedName, true,
+      'path', aliasedName, false,
       additionalChecks:
           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 512),
       type: DriftSqlType.string,
-      requiredDuringInsert: false);
+      requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, transaction, path];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'file_paths';
+  static const String $name = 'drift_transaction_photos';
   @override
-  VerificationContext validateIntegrity(Insertable<FilePath> instance,
+  VerificationContext validateIntegrity(
+      Insertable<DriftTransactionPhoto> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -5022,6 +5037,8 @@ class $FilePathsTable extends FilePaths
     if (data.containsKey('path')) {
       context.handle(
           _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
+    } else if (isInserting) {
+      context.missing(_pathMeta);
     }
     return context;
   }
@@ -5029,55 +5046,55 @@ class $FilePathsTable extends FilePaths
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  FilePath map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftTransactionPhoto map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return FilePath(
+    return DriftTransactionPhoto(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       transaction: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}transaction'])!,
       path: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}path']),
+          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
     );
   }
 
   @override
-  $FilePathsTable createAlias(String alias) {
-    return $FilePathsTable(attachedDatabase, alias);
+  $DriftTransactionPhotosTable createAlias(String alias) {
+    return $DriftTransactionPhotosTable(attachedDatabase, alias);
   }
 }
 
-class FilePath extends DataClass implements Insertable<FilePath> {
+class DriftTransactionPhoto extends DataClass
+    implements Insertable<DriftTransactionPhoto> {
   final int id;
   final int transaction;
-  final String? path;
-  const FilePath({required this.id, required this.transaction, this.path});
+  final String path;
+  const DriftTransactionPhoto(
+      {required this.id, required this.transaction, required this.path});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['transaction'] = Variable<int>(transaction);
-    if (!nullToAbsent || path != null) {
-      map['path'] = Variable<String>(path);
-    }
+    map['path'] = Variable<String>(path);
     return map;
   }
 
-  FilePathsCompanion toCompanion(bool nullToAbsent) {
-    return FilePathsCompanion(
+  DriftTransactionPhotosCompanion toCompanion(bool nullToAbsent) {
+    return DriftTransactionPhotosCompanion(
       id: Value(id),
       transaction: Value(transaction),
-      path: path == null && nullToAbsent ? const Value.absent() : Value(path),
+      path: Value(path),
     );
   }
 
-  factory FilePath.fromJson(Map<String, dynamic> json,
+  factory DriftTransactionPhoto.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return FilePath(
+    return DriftTransactionPhoto(
       id: serializer.fromJson<int>(json['id']),
       transaction: serializer.fromJson<int>(json['transaction']),
-      path: serializer.fromJson<String?>(json['path']),
+      path: serializer.fromJson<String>(json['path']),
     );
   }
   @override
@@ -5086,21 +5103,19 @@ class FilePath extends DataClass implements Insertable<FilePath> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'transaction': serializer.toJson<int>(transaction),
-      'path': serializer.toJson<String?>(path),
+      'path': serializer.toJson<String>(path),
     };
   }
 
-  FilePath copyWith(
-          {int? id,
-          int? transaction,
-          Value<String?> path = const Value.absent()}) =>
-      FilePath(
+  DriftTransactionPhoto copyWith({int? id, int? transaction, String? path}) =>
+      DriftTransactionPhoto(
         id: id ?? this.id,
         transaction: transaction ?? this.transaction,
-        path: path.present ? path.value : this.path,
+        path: path ?? this.path,
       );
-  FilePath copyWithCompanion(FilePathsCompanion data) {
-    return FilePath(
+  DriftTransactionPhoto copyWithCompanion(
+      DriftTransactionPhotosCompanion data) {
+    return DriftTransactionPhoto(
       id: data.id.present ? data.id.value : this.id,
       transaction:
           data.transaction.present ? data.transaction.value : this.transaction,
@@ -5110,7 +5125,7 @@ class FilePath extends DataClass implements Insertable<FilePath> {
 
   @override
   String toString() {
-    return (StringBuffer('FilePath(')
+    return (StringBuffer('DriftTransactionPhoto(')
           ..write('id: $id, ')
           ..write('transaction: $transaction, ')
           ..write('path: $path')
@@ -5123,27 +5138,29 @@ class FilePath extends DataClass implements Insertable<FilePath> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is FilePath &&
+      (other is DriftTransactionPhoto &&
           other.id == this.id &&
           other.transaction == this.transaction &&
           other.path == this.path);
 }
 
-class FilePathsCompanion extends UpdateCompanion<FilePath> {
+class DriftTransactionPhotosCompanion
+    extends UpdateCompanion<DriftTransactionPhoto> {
   final Value<int> id;
   final Value<int> transaction;
-  final Value<String?> path;
-  const FilePathsCompanion({
+  final Value<String> path;
+  const DriftTransactionPhotosCompanion({
     this.id = const Value.absent(),
     this.transaction = const Value.absent(),
     this.path = const Value.absent(),
   });
-  FilePathsCompanion.insert({
+  DriftTransactionPhotosCompanion.insert({
     this.id = const Value.absent(),
     required int transaction,
-    this.path = const Value.absent(),
-  }) : transaction = Value(transaction);
-  static Insertable<FilePath> custom({
+    required String path,
+  })  : transaction = Value(transaction),
+        path = Value(path);
+  static Insertable<DriftTransactionPhoto> custom({
     Expression<int>? id,
     Expression<int>? transaction,
     Expression<String>? path,
@@ -5155,9 +5172,9 @@ class FilePathsCompanion extends UpdateCompanion<FilePath> {
     });
   }
 
-  FilePathsCompanion copyWith(
-      {Value<int>? id, Value<int>? transaction, Value<String?>? path}) {
-    return FilePathsCompanion(
+  DriftTransactionPhotosCompanion copyWith(
+      {Value<int>? id, Value<int>? transaction, Value<String>? path}) {
+    return DriftTransactionPhotosCompanion(
       id: id ?? this.id,
       transaction: transaction ?? this.transaction,
       path: path ?? this.path,
@@ -5181,7 +5198,7 @@ class FilePathsCompanion extends UpdateCompanion<FilePath> {
 
   @override
   String toString() {
-    return (StringBuffer('FilePathsCompanion(')
+    return (StringBuffer('DriftTransactionPhotosCompanion(')
           ..write('id: $id, ')
           ..write('transaction: $transaction, ')
           ..write('path: $path')
@@ -5190,12 +5207,12 @@ class FilePathsCompanion extends UpdateCompanion<FilePath> {
   }
 }
 
-class $BudgetAccountsTable extends BudgetAccounts
-    with TableInfo<$BudgetAccountsTable, BudgetAccount> {
+class $DriftBudgetAccountsTable extends DriftBudgetAccounts
+    with TableInfo<$DriftBudgetAccountsTable, DriftBudgetAccount> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $BudgetAccountsTable(this.attachedDatabase, [this._alias]);
+  $DriftBudgetAccountsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -5213,7 +5230,7 @@ class $BudgetAccountsTable extends BudgetAccounts
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES accounts (id) ON DELETE CASCADE'));
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
   static const VerificationMeta _budgetMeta = const VerificationMeta('budget');
   @override
   late final GeneratedColumn<int> budget = GeneratedColumn<int>(
@@ -5221,7 +5238,7 @@ class $BudgetAccountsTable extends BudgetAccounts
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES budgets (id) ON DELETE CASCADE'));
+          'REFERENCES drift_budgets (id) ON DELETE CASCADE'));
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
   late final GeneratedColumn<int> amount = GeneratedColumn<int>(
@@ -5235,9 +5252,9 @@ class $BudgetAccountsTable extends BudgetAccounts
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'budget_accounts';
+  static const String $name = 'drift_budget_accounts';
   @override
-  VerificationContext validateIntegrity(Insertable<BudgetAccount> instance,
+  VerificationContext validateIntegrity(Insertable<DriftBudgetAccount> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -5266,9 +5283,9 @@ class $BudgetAccountsTable extends BudgetAccounts
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  BudgetAccount map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftBudgetAccount map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BudgetAccount(
+    return DriftBudgetAccount(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       account: attachedDatabase.typeMapping
@@ -5281,17 +5298,18 @@ class $BudgetAccountsTable extends BudgetAccounts
   }
 
   @override
-  $BudgetAccountsTable createAlias(String alias) {
-    return $BudgetAccountsTable(attachedDatabase, alias);
+  $DriftBudgetAccountsTable createAlias(String alias) {
+    return $DriftBudgetAccountsTable(attachedDatabase, alias);
   }
 }
 
-class BudgetAccount extends DataClass implements Insertable<BudgetAccount> {
+class DriftBudgetAccount extends DataClass
+    implements Insertable<DriftBudgetAccount> {
   final int id;
   final int account;
   final int budget;
   final int amount;
-  const BudgetAccount(
+  const DriftBudgetAccount(
       {required this.id,
       required this.account,
       required this.budget,
@@ -5306,8 +5324,8 @@ class BudgetAccount extends DataClass implements Insertable<BudgetAccount> {
     return map;
   }
 
-  BudgetAccountsCompanion toCompanion(bool nullToAbsent) {
-    return BudgetAccountsCompanion(
+  DriftBudgetAccountsCompanion toCompanion(bool nullToAbsent) {
+    return DriftBudgetAccountsCompanion(
       id: Value(id),
       account: Value(account),
       budget: Value(budget),
@@ -5315,10 +5333,10 @@ class BudgetAccount extends DataClass implements Insertable<BudgetAccount> {
     );
   }
 
-  factory BudgetAccount.fromJson(Map<String, dynamic> json,
+  factory DriftBudgetAccount.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BudgetAccount(
+    return DriftBudgetAccount(
       id: serializer.fromJson<int>(json['id']),
       account: serializer.fromJson<int>(json['account']),
       budget: serializer.fromJson<int>(json['budget']),
@@ -5336,15 +5354,16 @@ class BudgetAccount extends DataClass implements Insertable<BudgetAccount> {
     };
   }
 
-  BudgetAccount copyWith({int? id, int? account, int? budget, int? amount}) =>
-      BudgetAccount(
+  DriftBudgetAccount copyWith(
+          {int? id, int? account, int? budget, int? amount}) =>
+      DriftBudgetAccount(
         id: id ?? this.id,
         account: account ?? this.account,
         budget: budget ?? this.budget,
         amount: amount ?? this.amount,
       );
-  BudgetAccount copyWithCompanion(BudgetAccountsCompanion data) {
-    return BudgetAccount(
+  DriftBudgetAccount copyWithCompanion(DriftBudgetAccountsCompanion data) {
+    return DriftBudgetAccount(
       id: data.id.present ? data.id.value : this.id,
       account: data.account.present ? data.account.value : this.account,
       budget: data.budget.present ? data.budget.value : this.budget,
@@ -5354,7 +5373,7 @@ class BudgetAccount extends DataClass implements Insertable<BudgetAccount> {
 
   @override
   String toString() {
-    return (StringBuffer('BudgetAccount(')
+    return (StringBuffer('DriftBudgetAccount(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('budget: $budget, ')
@@ -5368,32 +5387,32 @@ class BudgetAccount extends DataClass implements Insertable<BudgetAccount> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is BudgetAccount &&
+      (other is DriftBudgetAccount &&
           other.id == this.id &&
           other.account == this.account &&
           other.budget == this.budget &&
           other.amount == this.amount);
 }
 
-class BudgetAccountsCompanion extends UpdateCompanion<BudgetAccount> {
+class DriftBudgetAccountsCompanion extends UpdateCompanion<DriftBudgetAccount> {
   final Value<int> id;
   final Value<int> account;
   final Value<int> budget;
   final Value<int> amount;
-  const BudgetAccountsCompanion({
+  const DriftBudgetAccountsCompanion({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
     this.budget = const Value.absent(),
     this.amount = const Value.absent(),
   });
-  BudgetAccountsCompanion.insert({
+  DriftBudgetAccountsCompanion.insert({
     this.id = const Value.absent(),
     required int account,
     required int budget,
     this.amount = const Value.absent(),
   })  : account = Value(account),
         budget = Value(budget);
-  static Insertable<BudgetAccount> custom({
+  static Insertable<DriftBudgetAccount> custom({
     Expression<int>? id,
     Expression<int>? account,
     Expression<int>? budget,
@@ -5407,12 +5426,12 @@ class BudgetAccountsCompanion extends UpdateCompanion<BudgetAccount> {
     });
   }
 
-  BudgetAccountsCompanion copyWith(
+  DriftBudgetAccountsCompanion copyWith(
       {Value<int>? id,
       Value<int>? account,
       Value<int>? budget,
       Value<int>? amount}) {
-    return BudgetAccountsCompanion(
+    return DriftBudgetAccountsCompanion(
       id: id ?? this.id,
       account: account ?? this.account,
       budget: budget ?? this.budget,
@@ -5440,7 +5459,7 @@ class BudgetAccountsCompanion extends UpdateCompanion<BudgetAccount> {
 
   @override
   String toString() {
-    return (StringBuffer('BudgetAccountsCompanion(')
+    return (StringBuffer('DriftBudgetAccountsCompanion(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('budget: $budget, ')
@@ -5450,12 +5469,12 @@ class BudgetAccountsCompanion extends UpdateCompanion<BudgetAccount> {
   }
 }
 
-class $BudgetFundsTable extends BudgetFunds
-    with TableInfo<$BudgetFundsTable, BudgetFund> {
+class $DriftBudgetFundsTable extends DriftBudgetFunds
+    with TableInfo<$DriftBudgetFundsTable, DriftBudgetFund> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $BudgetFundsTable(this.attachedDatabase, [this._alias]);
+  $DriftBudgetFundsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -5473,7 +5492,7 @@ class $BudgetFundsTable extends BudgetFunds
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES accounts (id) ON DELETE CASCADE'));
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
   static const VerificationMeta _budgetMeta = const VerificationMeta('budget');
   @override
   late final GeneratedColumn<int> budget = GeneratedColumn<int>(
@@ -5481,16 +5500,16 @@ class $BudgetFundsTable extends BudgetFunds
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES budgets (id) ON DELETE CASCADE'));
+          'REFERENCES drift_budgets (id) ON DELETE CASCADE'));
   @override
   List<GeneratedColumn> get $columns => [id, account, budget];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'budget_funds';
+  static const String $name = 'drift_budget_funds';
   @override
-  VerificationContext validateIntegrity(Insertable<BudgetFund> instance,
+  VerificationContext validateIntegrity(Insertable<DriftBudgetFund> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -5515,9 +5534,9 @@ class $BudgetFundsTable extends BudgetFunds
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  BudgetFund map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftBudgetFund map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BudgetFund(
+    return DriftBudgetFund(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       account: attachedDatabase.typeMapping
@@ -5528,16 +5547,16 @@ class $BudgetFundsTable extends BudgetFunds
   }
 
   @override
-  $BudgetFundsTable createAlias(String alias) {
-    return $BudgetFundsTable(attachedDatabase, alias);
+  $DriftBudgetFundsTable createAlias(String alias) {
+    return $DriftBudgetFundsTable(attachedDatabase, alias);
   }
 }
 
-class BudgetFund extends DataClass implements Insertable<BudgetFund> {
+class DriftBudgetFund extends DataClass implements Insertable<DriftBudgetFund> {
   final int id;
   final int account;
   final int budget;
-  const BudgetFund(
+  const DriftBudgetFund(
       {required this.id, required this.account, required this.budget});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5548,18 +5567,18 @@ class BudgetFund extends DataClass implements Insertable<BudgetFund> {
     return map;
   }
 
-  BudgetFundsCompanion toCompanion(bool nullToAbsent) {
-    return BudgetFundsCompanion(
+  DriftBudgetFundsCompanion toCompanion(bool nullToAbsent) {
+    return DriftBudgetFundsCompanion(
       id: Value(id),
       account: Value(account),
       budget: Value(budget),
     );
   }
 
-  factory BudgetFund.fromJson(Map<String, dynamic> json,
+  factory DriftBudgetFund.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BudgetFund(
+    return DriftBudgetFund(
       id: serializer.fromJson<int>(json['id']),
       account: serializer.fromJson<int>(json['account']),
       budget: serializer.fromJson<int>(json['budget']),
@@ -5575,13 +5594,14 @@ class BudgetFund extends DataClass implements Insertable<BudgetFund> {
     };
   }
 
-  BudgetFund copyWith({int? id, int? account, int? budget}) => BudgetFund(
+  DriftBudgetFund copyWith({int? id, int? account, int? budget}) =>
+      DriftBudgetFund(
         id: id ?? this.id,
         account: account ?? this.account,
         budget: budget ?? this.budget,
       );
-  BudgetFund copyWithCompanion(BudgetFundsCompanion data) {
-    return BudgetFund(
+  DriftBudgetFund copyWithCompanion(DriftBudgetFundsCompanion data) {
+    return DriftBudgetFund(
       id: data.id.present ? data.id.value : this.id,
       account: data.account.present ? data.account.value : this.account,
       budget: data.budget.present ? data.budget.value : this.budget,
@@ -5590,7 +5610,7 @@ class BudgetFund extends DataClass implements Insertable<BudgetFund> {
 
   @override
   String toString() {
-    return (StringBuffer('BudgetFund(')
+    return (StringBuffer('DriftBudgetFund(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('budget: $budget')
@@ -5603,28 +5623,28 @@ class BudgetFund extends DataClass implements Insertable<BudgetFund> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is BudgetFund &&
+      (other is DriftBudgetFund &&
           other.id == this.id &&
           other.account == this.account &&
           other.budget == this.budget);
 }
 
-class BudgetFundsCompanion extends UpdateCompanion<BudgetFund> {
+class DriftBudgetFundsCompanion extends UpdateCompanion<DriftBudgetFund> {
   final Value<int> id;
   final Value<int> account;
   final Value<int> budget;
-  const BudgetFundsCompanion({
+  const DriftBudgetFundsCompanion({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
     this.budget = const Value.absent(),
   });
-  BudgetFundsCompanion.insert({
+  DriftBudgetFundsCompanion.insert({
     this.id = const Value.absent(),
     required int account,
     required int budget,
   })  : account = Value(account),
         budget = Value(budget);
-  static Insertable<BudgetFund> custom({
+  static Insertable<DriftBudgetFund> custom({
     Expression<int>? id,
     Expression<int>? account,
     Expression<int>? budget,
@@ -5636,9 +5656,9 @@ class BudgetFundsCompanion extends UpdateCompanion<BudgetFund> {
     });
   }
 
-  BudgetFundsCompanion copyWith(
+  DriftBudgetFundsCompanion copyWith(
       {Value<int>? id, Value<int>? account, Value<int>? budget}) {
-    return BudgetFundsCompanion(
+    return DriftBudgetFundsCompanion(
       id: id ?? this.id,
       account: account ?? this.account,
       budget: budget ?? this.budget,
@@ -5662,7 +5682,7 @@ class BudgetFundsCompanion extends UpdateCompanion<BudgetFund> {
 
   @override
   String toString() {
-    return (StringBuffer('BudgetFundsCompanion(')
+    return (StringBuffer('DriftBudgetFundsCompanion(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('budget: $budget')
@@ -5671,12 +5691,12 @@ class BudgetFundsCompanion extends UpdateCompanion<BudgetFund> {
   }
 }
 
-class $ProjectPhotosTable extends ProjectPhotos
-    with TableInfo<$ProjectPhotosTable, ProjectPhoto> {
+class $DriftProjectPhotosTable extends DriftProjectPhotos
+    with TableInfo<$DriftProjectPhotosTable, DriftProjectPhoto> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $ProjectPhotosTable(this.attachedDatabase, [this._alias]);
+  $DriftProjectPhotosTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -5694,7 +5714,7 @@ class $ProjectPhotosTable extends ProjectPhotos
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES projects (id) ON DELETE CASCADE'));
+          'REFERENCES drift_projects (id) ON DELETE CASCADE'));
   static const VerificationMeta _pathMeta = const VerificationMeta('path');
   @override
   late final GeneratedColumn<String> path = GeneratedColumn<String>(
@@ -5709,9 +5729,9 @@ class $ProjectPhotosTable extends ProjectPhotos
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'project_photos';
+  static const String $name = 'drift_project_photos';
   @override
-  VerificationContext validateIntegrity(Insertable<ProjectPhoto> instance,
+  VerificationContext validateIntegrity(Insertable<DriftProjectPhoto> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -5736,9 +5756,9 @@ class $ProjectPhotosTable extends ProjectPhotos
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  ProjectPhoto map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftProjectPhoto map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ProjectPhoto(
+    return DriftProjectPhoto(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       project: attachedDatabase.typeMapping
@@ -5749,16 +5769,17 @@ class $ProjectPhotosTable extends ProjectPhotos
   }
 
   @override
-  $ProjectPhotosTable createAlias(String alias) {
-    return $ProjectPhotosTable(attachedDatabase, alias);
+  $DriftProjectPhotosTable createAlias(String alias) {
+    return $DriftProjectPhotosTable(attachedDatabase, alias);
   }
 }
 
-class ProjectPhoto extends DataClass implements Insertable<ProjectPhoto> {
+class DriftProjectPhoto extends DataClass
+    implements Insertable<DriftProjectPhoto> {
   final int id;
   final int project;
   final String path;
-  const ProjectPhoto(
+  const DriftProjectPhoto(
       {required this.id, required this.project, required this.path});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5769,18 +5790,18 @@ class ProjectPhoto extends DataClass implements Insertable<ProjectPhoto> {
     return map;
   }
 
-  ProjectPhotosCompanion toCompanion(bool nullToAbsent) {
-    return ProjectPhotosCompanion(
+  DriftProjectPhotosCompanion toCompanion(bool nullToAbsent) {
+    return DriftProjectPhotosCompanion(
       id: Value(id),
       project: Value(project),
       path: Value(path),
     );
   }
 
-  factory ProjectPhoto.fromJson(Map<String, dynamic> json,
+  factory DriftProjectPhoto.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return ProjectPhoto(
+    return DriftProjectPhoto(
       id: serializer.fromJson<int>(json['id']),
       project: serializer.fromJson<int>(json['project']),
       path: serializer.fromJson<String>(json['path']),
@@ -5796,13 +5817,14 @@ class ProjectPhoto extends DataClass implements Insertable<ProjectPhoto> {
     };
   }
 
-  ProjectPhoto copyWith({int? id, int? project, String? path}) => ProjectPhoto(
+  DriftProjectPhoto copyWith({int? id, int? project, String? path}) =>
+      DriftProjectPhoto(
         id: id ?? this.id,
         project: project ?? this.project,
         path: path ?? this.path,
       );
-  ProjectPhoto copyWithCompanion(ProjectPhotosCompanion data) {
-    return ProjectPhoto(
+  DriftProjectPhoto copyWithCompanion(DriftProjectPhotosCompanion data) {
+    return DriftProjectPhoto(
       id: data.id.present ? data.id.value : this.id,
       project: data.project.present ? data.project.value : this.project,
       path: data.path.present ? data.path.value : this.path,
@@ -5811,7 +5833,7 @@ class ProjectPhoto extends DataClass implements Insertable<ProjectPhoto> {
 
   @override
   String toString() {
-    return (StringBuffer('ProjectPhoto(')
+    return (StringBuffer('DriftProjectPhoto(')
           ..write('id: $id, ')
           ..write('project: $project, ')
           ..write('path: $path')
@@ -5824,28 +5846,28 @@ class ProjectPhoto extends DataClass implements Insertable<ProjectPhoto> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ProjectPhoto &&
+      (other is DriftProjectPhoto &&
           other.id == this.id &&
           other.project == this.project &&
           other.path == this.path);
 }
 
-class ProjectPhotosCompanion extends UpdateCompanion<ProjectPhoto> {
+class DriftProjectPhotosCompanion extends UpdateCompanion<DriftProjectPhoto> {
   final Value<int> id;
   final Value<int> project;
   final Value<String> path;
-  const ProjectPhotosCompanion({
+  const DriftProjectPhotosCompanion({
     this.id = const Value.absent(),
     this.project = const Value.absent(),
     this.path = const Value.absent(),
   });
-  ProjectPhotosCompanion.insert({
+  DriftProjectPhotosCompanion.insert({
     this.id = const Value.absent(),
     required int project,
     required String path,
   })  : project = Value(project),
         path = Value(path);
-  static Insertable<ProjectPhoto> custom({
+  static Insertable<DriftProjectPhoto> custom({
     Expression<int>? id,
     Expression<int>? project,
     Expression<String>? path,
@@ -5857,9 +5879,9 @@ class ProjectPhotosCompanion extends UpdateCompanion<ProjectPhoto> {
     });
   }
 
-  ProjectPhotosCompanion copyWith(
+  DriftProjectPhotosCompanion copyWith(
       {Value<int>? id, Value<int>? project, Value<String>? path}) {
-    return ProjectPhotosCompanion(
+    return DriftProjectPhotosCompanion(
       id: id ?? this.id,
       project: project ?? this.project,
       path: path ?? this.path,
@@ -5883,7 +5905,7 @@ class ProjectPhotosCompanion extends UpdateCompanion<ProjectPhoto> {
 
   @override
   String toString() {
-    return (StringBuffer('ProjectPhotosCompanion(')
+    return (StringBuffer('DriftProjectPhotosCompanion(')
           ..write('id: $id, ')
           ..write('project: $project, ')
           ..write('path: $path')
@@ -5892,12 +5914,12 @@ class ProjectPhotosCompanion extends UpdateCompanion<ProjectPhoto> {
   }
 }
 
-class $SubscriptionsTable extends Subscriptions
-    with TableInfo<$SubscriptionsTable, Subscription> {
+class $DriftSubscriptionsTable extends DriftSubscriptions
+    with TableInfo<$DriftSubscriptionsTable, DriftSubscription> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $SubscriptionsTable(this.attachedDatabase, [this._alias]);
+  $DriftSubscriptionsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -5915,7 +5937,7 @@ class $SubscriptionsTable extends Subscriptions
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES accounts (id) ON DELETE CASCADE'));
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
   static const VerificationMeta _profileMeta =
       const VerificationMeta('profile');
   @override
@@ -5924,13 +5946,13 @@ class $SubscriptionsTable extends Subscriptions
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES profiles (id) ON DELETE CASCADE'));
+          'REFERENCES drift_profiles (id) ON DELETE CASCADE'));
   @override
   late final GeneratedColumnWithTypeConverter<BudgetInterval, int> interval =
       GeneratedColumn<int>('interval', aliasedName, false,
               type: DriftSqlType.int, requiredDuringInsert: true)
           .withConverter<BudgetInterval>(
-              $SubscriptionsTable.$converterinterval);
+              $DriftSubscriptionsTable.$converterinterval);
   static const VerificationMeta _dayMeta = const VerificationMeta('day');
   @override
   late final GeneratedColumn<int> day = GeneratedColumn<int>(
@@ -5968,9 +5990,9 @@ class $SubscriptionsTable extends Subscriptions
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'subscriptions';
+  static const String $name = 'drift_subscriptions';
   @override
-  VerificationContext validateIntegrity(Insertable<Subscription> instance,
+  VerificationContext validateIntegrity(Insertable<DriftSubscription> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -6013,18 +6035,18 @@ class $SubscriptionsTable extends Subscriptions
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Subscription map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftSubscription map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Subscription(
+    return DriftSubscription(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       account: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}account'])!,
       profile: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}profile'])!,
-      interval: $SubscriptionsTable.$converterinterval.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}interval'])!),
+      interval: $DriftSubscriptionsTable.$converterinterval.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.int, data['${effectivePrefix}interval'])!),
       day: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}day'])!,
       amount: attachedDatabase.typeMapping
@@ -6037,15 +6059,16 @@ class $SubscriptionsTable extends Subscriptions
   }
 
   @override
-  $SubscriptionsTable createAlias(String alias) {
-    return $SubscriptionsTable(attachedDatabase, alias);
+  $DriftSubscriptionsTable createAlias(String alias) {
+    return $DriftSubscriptionsTable(attachedDatabase, alias);
   }
 
   static JsonTypeConverter2<BudgetInterval, int, int> $converterinterval =
       const EnumIndexConverter<BudgetInterval>(BudgetInterval.values);
 }
 
-class Subscription extends DataClass implements Insertable<Subscription> {
+class DriftSubscription extends DataClass
+    implements Insertable<DriftSubscription> {
   final int id;
   final int account;
   final int profile;
@@ -6054,7 +6077,7 @@ class Subscription extends DataClass implements Insertable<Subscription> {
   final int amount;
   final DateTime addedDate;
   final DateTime updateDate;
-  const Subscription(
+  const DriftSubscription(
       {required this.id,
       required this.account,
       required this.profile,
@@ -6070,8 +6093,8 @@ class Subscription extends DataClass implements Insertable<Subscription> {
     map['account'] = Variable<int>(account);
     map['profile'] = Variable<int>(profile);
     {
-      map['interval'] =
-          Variable<int>($SubscriptionsTable.$converterinterval.toSql(interval));
+      map['interval'] = Variable<int>(
+          $DriftSubscriptionsTable.$converterinterval.toSql(interval));
     }
     map['day'] = Variable<int>(day);
     map['amount'] = Variable<int>(amount);
@@ -6080,8 +6103,8 @@ class Subscription extends DataClass implements Insertable<Subscription> {
     return map;
   }
 
-  SubscriptionsCompanion toCompanion(bool nullToAbsent) {
-    return SubscriptionsCompanion(
+  DriftSubscriptionsCompanion toCompanion(bool nullToAbsent) {
+    return DriftSubscriptionsCompanion(
       id: Value(id),
       account: Value(account),
       profile: Value(profile),
@@ -6093,14 +6116,14 @@ class Subscription extends DataClass implements Insertable<Subscription> {
     );
   }
 
-  factory Subscription.fromJson(Map<String, dynamic> json,
+  factory DriftSubscription.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Subscription(
+    return DriftSubscription(
       id: serializer.fromJson<int>(json['id']),
       account: serializer.fromJson<int>(json['account']),
       profile: serializer.fromJson<int>(json['profile']),
-      interval: $SubscriptionsTable.$converterinterval
+      interval: $DriftSubscriptionsTable.$converterinterval
           .fromJson(serializer.fromJson<int>(json['interval'])),
       day: serializer.fromJson<int>(json['day']),
       amount: serializer.fromJson<int>(json['amount']),
@@ -6115,8 +6138,8 @@ class Subscription extends DataClass implements Insertable<Subscription> {
       'id': serializer.toJson<int>(id),
       'account': serializer.toJson<int>(account),
       'profile': serializer.toJson<int>(profile),
-      'interval': serializer
-          .toJson<int>($SubscriptionsTable.$converterinterval.toJson(interval)),
+      'interval': serializer.toJson<int>(
+          $DriftSubscriptionsTable.$converterinterval.toJson(interval)),
       'day': serializer.toJson<int>(day),
       'amount': serializer.toJson<int>(amount),
       'addedDate': serializer.toJson<DateTime>(addedDate),
@@ -6124,7 +6147,7 @@ class Subscription extends DataClass implements Insertable<Subscription> {
     };
   }
 
-  Subscription copyWith(
+  DriftSubscription copyWith(
           {int? id,
           int? account,
           int? profile,
@@ -6133,7 +6156,7 @@ class Subscription extends DataClass implements Insertable<Subscription> {
           int? amount,
           DateTime? addedDate,
           DateTime? updateDate}) =>
-      Subscription(
+      DriftSubscription(
         id: id ?? this.id,
         account: account ?? this.account,
         profile: profile ?? this.profile,
@@ -6143,8 +6166,8 @@ class Subscription extends DataClass implements Insertable<Subscription> {
         addedDate: addedDate ?? this.addedDate,
         updateDate: updateDate ?? this.updateDate,
       );
-  Subscription copyWithCompanion(SubscriptionsCompanion data) {
-    return Subscription(
+  DriftSubscription copyWithCompanion(DriftSubscriptionsCompanion data) {
+    return DriftSubscription(
       id: data.id.present ? data.id.value : this.id,
       account: data.account.present ? data.account.value : this.account,
       profile: data.profile.present ? data.profile.value : this.profile,
@@ -6159,7 +6182,7 @@ class Subscription extends DataClass implements Insertable<Subscription> {
 
   @override
   String toString() {
-    return (StringBuffer('Subscription(')
+    return (StringBuffer('DriftSubscription(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('profile: $profile, ')
@@ -6178,7 +6201,7 @@ class Subscription extends DataClass implements Insertable<Subscription> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Subscription &&
+      (other is DriftSubscription &&
           other.id == this.id &&
           other.account == this.account &&
           other.profile == this.profile &&
@@ -6189,7 +6212,7 @@ class Subscription extends DataClass implements Insertable<Subscription> {
           other.updateDate == this.updateDate);
 }
 
-class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
+class DriftSubscriptionsCompanion extends UpdateCompanion<DriftSubscription> {
   final Value<int> id;
   final Value<int> account;
   final Value<int> profile;
@@ -6198,7 +6221,7 @@ class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
   final Value<int> amount;
   final Value<DateTime> addedDate;
   final Value<DateTime> updateDate;
-  const SubscriptionsCompanion({
+  const DriftSubscriptionsCompanion({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
     this.profile = const Value.absent(),
@@ -6208,7 +6231,7 @@ class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
   });
-  SubscriptionsCompanion.insert({
+  DriftSubscriptionsCompanion.insert({
     this.id = const Value.absent(),
     required int account,
     required int profile,
@@ -6220,7 +6243,7 @@ class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
   })  : account = Value(account),
         profile = Value(profile),
         interval = Value(interval);
-  static Insertable<Subscription> custom({
+  static Insertable<DriftSubscription> custom({
     Expression<int>? id,
     Expression<int>? account,
     Expression<int>? profile,
@@ -6242,7 +6265,7 @@ class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
     });
   }
 
-  SubscriptionsCompanion copyWith(
+  DriftSubscriptionsCompanion copyWith(
       {Value<int>? id,
       Value<int>? account,
       Value<int>? profile,
@@ -6251,7 +6274,7 @@ class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
       Value<int>? amount,
       Value<DateTime>? addedDate,
       Value<DateTime>? updateDate}) {
-    return SubscriptionsCompanion(
+    return DriftSubscriptionsCompanion(
       id: id ?? this.id,
       account: account ?? this.account,
       profile: profile ?? this.profile,
@@ -6277,7 +6300,7 @@ class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
     }
     if (interval.present) {
       map['interval'] = Variable<int>(
-          $SubscriptionsTable.$converterinterval.toSql(interval.value));
+          $DriftSubscriptionsTable.$converterinterval.toSql(interval.value));
     }
     if (day.present) {
       map['day'] = Variable<int>(day.value);
@@ -6296,7 +6319,7 @@ class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
 
   @override
   String toString() {
-    return (StringBuffer('SubscriptionsCompanion(')
+    return (StringBuffer('DriftSubscriptionsCompanion(')
           ..write('id: $id, ')
           ..write('account: $account, ')
           ..write('profile: $profile, ')
@@ -6313,208 +6336,215 @@ class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
 abstract class _$MyDatabase extends GeneratedDatabase {
   _$MyDatabase(QueryExecutor e) : super(e);
   $MyDatabaseManager get managers => $MyDatabaseManager(this);
-  late final $AccTypesTable accTypes = $AccTypesTable(this);
-  late final $ProfilesTable profiles = $ProfilesTable(this);
-  late final $AccountsTable accounts = $AccountsTable(this);
-  late final $BudgetsTable budgets = $BudgetsTable(this);
-  late final $ProjectsTable projects = $ProjectsTable(this);
-  late final $TransactionsTable transactions = $TransactionsTable(this);
-  late final $UsersTable users = $UsersTable(this);
-  late final $BanksTable banks = $BanksTable(this);
-  late final $WalletsTable wallets = $WalletsTable(this);
-  late final $LoansTable loans = $LoansTable(this);
-  late final $CCardsTable cCards = $CCardsTable(this);
-  late final $BalancesTable balances = $BalancesTable(this);
-  late final $FilePathsTable filePaths = $FilePathsTable(this);
-  late final $BudgetAccountsTable budgetAccounts = $BudgetAccountsTable(this);
-  late final $BudgetFundsTable budgetFunds = $BudgetFundsTable(this);
-  late final $ProjectPhotosTable projectPhotos = $ProjectPhotosTable(this);
-  late final $SubscriptionsTable subscriptions = $SubscriptionsTable(this);
+  late final $DriftAccTypesTable driftAccTypes = $DriftAccTypesTable(this);
+  late final $DriftProfilesTable driftProfiles = $DriftProfilesTable(this);
+  late final $DriftAccountsTable driftAccounts = $DriftAccountsTable(this);
+  late final $DriftBudgetsTable driftBudgets = $DriftBudgetsTable(this);
+  late final $DriftProjectsTable driftProjects = $DriftProjectsTable(this);
+  late final $DriftTransactionsTable driftTransactions =
+      $DriftTransactionsTable(this);
+  late final $DriftUsersTable driftUsers = $DriftUsersTable(this);
+  late final $DriftBanksTable driftBanks = $DriftBanksTable(this);
+  late final $DriftWalletsTable driftWallets = $DriftWalletsTable(this);
+  late final $DriftLoansTable driftLoans = $DriftLoansTable(this);
+  late final $DriftCCardsTable driftCCards = $DriftCCardsTable(this);
+  late final $DriftBalancesTable driftBalances = $DriftBalancesTable(this);
+  late final $DriftTransactionPhotosTable driftTransactionPhotos =
+      $DriftTransactionPhotosTable(this);
+  late final $DriftBudgetAccountsTable driftBudgetAccounts =
+      $DriftBudgetAccountsTable(this);
+  late final $DriftBudgetFundsTable driftBudgetFunds =
+      $DriftBudgetFundsTable(this);
+  late final $DriftProjectPhotosTable driftProjectPhotos =
+      $DriftProjectPhotosTable(this);
+  late final $DriftSubscriptionsTable driftSubscriptions =
+      $DriftSubscriptionsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-        accTypes,
-        profiles,
-        accounts,
-        budgets,
-        projects,
-        transactions,
-        users,
-        banks,
-        wallets,
-        loans,
-        cCards,
-        balances,
-        filePaths,
-        budgetAccounts,
-        budgetFunds,
-        projectPhotos,
-        subscriptions
+        driftAccTypes,
+        driftProfiles,
+        driftAccounts,
+        driftBudgets,
+        driftProjects,
+        driftTransactions,
+        driftUsers,
+        driftBanks,
+        driftWallets,
+        driftLoans,
+        driftCCards,
+        driftBalances,
+        driftTransactionPhotos,
+        driftBudgetAccounts,
+        driftBudgetFunds,
+        driftProjectPhotos,
+        driftSubscriptions
       ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
           WritePropagation(
-            on: TableUpdateQuery.onTableName('acc_types',
+            on: TableUpdateQuery.onTableName('drift_acc_types',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('accounts', kind: UpdateKind.delete),
+              TableUpdate('drift_accounts', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('profiles',
+            on: TableUpdateQuery.onTableName('drift_profiles',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('accounts', kind: UpdateKind.delete),
+              TableUpdate('drift_accounts', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('profiles',
+            on: TableUpdateQuery.onTableName('drift_profiles',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('budgets', kind: UpdateKind.delete),
+              TableUpdate('drift_budgets', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('profiles',
+            on: TableUpdateQuery.onTableName('drift_profiles',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('projects', kind: UpdateKind.delete),
+              TableUpdate('drift_projects', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('budgets',
+            on: TableUpdateQuery.onTableName('drift_budgets',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('projects', kind: UpdateKind.update),
+              TableUpdate('drift_projects', kind: UpdateKind.update),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
+            on: TableUpdateQuery.onTableName('drift_accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('transactions', kind: UpdateKind.delete),
+              TableUpdate('drift_transactions', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
+            on: TableUpdateQuery.onTableName('drift_accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('transactions', kind: UpdateKind.delete),
+              TableUpdate('drift_transactions', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('profiles',
+            on: TableUpdateQuery.onTableName('drift_profiles',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('transactions', kind: UpdateKind.delete),
+              TableUpdate('drift_transactions', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('projects',
+            on: TableUpdateQuery.onTableName('drift_projects',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('transactions', kind: UpdateKind.update),
+              TableUpdate('drift_transactions', kind: UpdateKind.update),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
+            on: TableUpdateQuery.onTableName('drift_accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('banks', kind: UpdateKind.delete),
+              TableUpdate('drift_banks', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
+            on: TableUpdateQuery.onTableName('drift_accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('wallets', kind: UpdateKind.delete),
+              TableUpdate('drift_wallets', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
+            on: TableUpdateQuery.onTableName('drift_accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('loans', kind: UpdateKind.delete),
+              TableUpdate('drift_loans', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
+            on: TableUpdateQuery.onTableName('drift_accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('c_cards', kind: UpdateKind.delete),
+              TableUpdate('drift_c_cards', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
+            on: TableUpdateQuery.onTableName('drift_accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('balances', kind: UpdateKind.delete),
+              TableUpdate('drift_balances', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('transactions',
+            on: TableUpdateQuery.onTableName('drift_transactions',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('file_paths', kind: UpdateKind.delete),
+              TableUpdate('drift_transaction_photos', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
+            on: TableUpdateQuery.onTableName('drift_accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('budget_accounts', kind: UpdateKind.delete),
+              TableUpdate('drift_budget_accounts', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('budgets',
+            on: TableUpdateQuery.onTableName('drift_budgets',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('budget_accounts', kind: UpdateKind.delete),
+              TableUpdate('drift_budget_accounts', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
+            on: TableUpdateQuery.onTableName('drift_accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('budget_funds', kind: UpdateKind.delete),
+              TableUpdate('drift_budget_funds', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('budgets',
+            on: TableUpdateQuery.onTableName('drift_budgets',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('budget_funds', kind: UpdateKind.delete),
+              TableUpdate('drift_budget_funds', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('projects',
+            on: TableUpdateQuery.onTableName('drift_projects',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('project_photos', kind: UpdateKind.delete),
+              TableUpdate('drift_project_photos', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts',
+            on: TableUpdateQuery.onTableName('drift_accounts',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('subscriptions', kind: UpdateKind.delete),
+              TableUpdate('drift_subscriptions', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
-            on: TableUpdateQuery.onTableName('profiles',
+            on: TableUpdateQuery.onTableName('drift_profiles',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('subscriptions', kind: UpdateKind.delete),
+              TableUpdate('drift_subscriptions', kind: UpdateKind.delete),
             ],
           ),
         ],
       );
 }
 
-typedef $$AccTypesTableCreateCompanionBuilder = AccTypesCompanion Function({
+typedef $$DriftAccTypesTableCreateCompanionBuilder = DriftAccTypesCompanion
+    Function({
   Value<int> id,
   required String name,
   required PrimaryType primary,
@@ -6522,7 +6552,8 @@ typedef $$AccTypesTableCreateCompanionBuilder = AccTypesCompanion Function({
   Value<DateTime> updateDate,
   Value<bool> isEditable,
 });
-typedef $$AccTypesTableUpdateCompanionBuilder = AccTypesCompanion Function({
+typedef $$DriftAccTypesTableUpdateCompanionBuilder = DriftAccTypesCompanion
+    Function({
   Value<int> id,
   Value<String> name,
   Value<PrimaryType> primary,
@@ -6531,28 +6562,30 @@ typedef $$AccTypesTableUpdateCompanionBuilder = AccTypesCompanion Function({
   Value<bool> isEditable,
 });
 
-final class $$AccTypesTableReferences
-    extends BaseReferences<_$MyDatabase, $AccTypesTable, AccType> {
-  $$AccTypesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftAccTypesTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftAccTypesTable, DriftAccType> {
+  $$DriftAccTypesTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$AccountsTable, List<Account>> _accountsRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.accounts,
-          aliasName: $_aliasNameGenerator(db.accTypes.id, db.accounts.accType));
+  static MultiTypedResultKey<$DriftAccountsTable, List<DriftAccount>>
+      _driftAccountsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftAccounts,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccTypes.id, db.driftAccounts.accType));
 
-  $$AccountsTableProcessedTableManager get accountsRefs {
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+  $$DriftAccountsTableProcessedTableManager get driftAccountsRefs {
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
         .filter((f) => f.accType.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_accountsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_driftAccountsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 }
 
-class $$AccTypesTableFilterComposer
-    extends Composer<_$MyDatabase, $AccTypesTable> {
-  $$AccTypesTableFilterComposer({
+class $$DriftAccTypesTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftAccTypesTable> {
+  $$DriftAccTypesTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -6579,19 +6612,19 @@ class $$AccTypesTableFilterComposer
   ColumnFilters<bool> get isEditable => $composableBuilder(
       column: $table.isEditable, builder: (column) => ColumnFilters(column));
 
-  Expression<bool> accountsRefs(
-      Expression<bool> Function($$AccountsTableFilterComposer f) f) {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftAccountsRefs(
+      Expression<bool> Function($$DriftAccountsTableFilterComposer f) f) {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.accType,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
+            $$DriftAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -6601,9 +6634,9 @@ class $$AccTypesTableFilterComposer
   }
 }
 
-class $$AccTypesTableOrderingComposer
-    extends Composer<_$MyDatabase, $AccTypesTable> {
-  $$AccTypesTableOrderingComposer({
+class $$DriftAccTypesTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftAccTypesTable> {
+  $$DriftAccTypesTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -6629,9 +6662,9 @@ class $$AccTypesTableOrderingComposer
       column: $table.isEditable, builder: (column) => ColumnOrderings(column));
 }
 
-class $$AccTypesTableAnnotationComposer
-    extends Composer<_$MyDatabase, $AccTypesTable> {
-  $$AccTypesTableAnnotationComposer({
+class $$DriftAccTypesTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftAccTypesTable> {
+  $$DriftAccTypesTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -6656,19 +6689,19 @@ class $$AccTypesTableAnnotationComposer
   GeneratedColumn<bool> get isEditable => $composableBuilder(
       column: $table.isEditable, builder: (column) => column);
 
-  Expression<T> accountsRefs<T extends Object>(
-      Expression<T> Function($$AccountsTableAnnotationComposer a) f) {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftAccountsRefs<T extends Object>(
+      Expression<T> Function($$DriftAccountsTableAnnotationComposer a) f) {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.accType,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
+            $$DriftAccountsTableAnnotationComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -6678,28 +6711,28 @@ class $$AccTypesTableAnnotationComposer
   }
 }
 
-class $$AccTypesTableTableManager extends RootTableManager<
+class $$DriftAccTypesTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $AccTypesTable,
-    AccType,
-    $$AccTypesTableFilterComposer,
-    $$AccTypesTableOrderingComposer,
-    $$AccTypesTableAnnotationComposer,
-    $$AccTypesTableCreateCompanionBuilder,
-    $$AccTypesTableUpdateCompanionBuilder,
-    (AccType, $$AccTypesTableReferences),
-    AccType,
-    PrefetchHooks Function({bool accountsRefs})> {
-  $$AccTypesTableTableManager(_$MyDatabase db, $AccTypesTable table)
+    $DriftAccTypesTable,
+    DriftAccType,
+    $$DriftAccTypesTableFilterComposer,
+    $$DriftAccTypesTableOrderingComposer,
+    $$DriftAccTypesTableAnnotationComposer,
+    $$DriftAccTypesTableCreateCompanionBuilder,
+    $$DriftAccTypesTableUpdateCompanionBuilder,
+    (DriftAccType, $$DriftAccTypesTableReferences),
+    DriftAccType,
+    PrefetchHooks Function({bool driftAccountsRefs})> {
+  $$DriftAccTypesTableTableManager(_$MyDatabase db, $DriftAccTypesTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$AccTypesTableFilterComposer($db: db, $table: table),
+              $$DriftAccTypesTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$AccTypesTableOrderingComposer($db: db, $table: table),
+              $$DriftAccTypesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$AccTypesTableAnnotationComposer($db: db, $table: table),
+              $$DriftAccTypesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -6708,7 +6741,7 @@ class $$AccTypesTableTableManager extends RootTableManager<
             Value<DateTime> updateDate = const Value.absent(),
             Value<bool> isEditable = const Value.absent(),
           }) =>
-              AccTypesCompanion(
+              DriftAccTypesCompanion(
             id: id,
             name: name,
             primary: primary,
@@ -6724,7 +6757,7 @@ class $$AccTypesTableTableManager extends RootTableManager<
             Value<DateTime> updateDate = const Value.absent(),
             Value<bool> isEditable = const Value.absent(),
           }) =>
-              AccTypesCompanion.insert(
+              DriftAccTypesCompanion.insert(
             id: id,
             name: name,
             primary: primary,
@@ -6733,24 +6766,29 @@ class $$AccTypesTableTableManager extends RootTableManager<
             isEditable: isEditable,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$AccTypesTableReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftAccTypesTableReferences(db, table, e)
+                  ))
               .toList(),
-          prefetchHooksCallback: ({accountsRefs = false}) {
+          prefetchHooksCallback: ({driftAccountsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (accountsRefs) db.accounts],
+              explicitlyWatchedTables: [
+                if (driftAccountsRefs) db.driftAccounts
+              ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (accountsRefs)
-                    await $_getPrefetchedData<AccType, $AccTypesTable, Account>(
+                  if (driftAccountsRefs)
+                    await $_getPrefetchedData<DriftAccType, $DriftAccTypesTable,
+                            DriftAccount>(
                         currentTable: table,
-                        referencedTable:
-                            $$AccTypesTableReferences._accountsRefsTable(db),
+                        referencedTable: $$DriftAccTypesTableReferences
+                            ._driftAccountsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccTypesTableReferences(db, table, p0)
-                                .accountsRefs,
+                            $$DriftAccTypesTableReferences(db, table, p0)
+                                .driftAccountsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.accType == item.id),
@@ -6762,19 +6800,20 @@ class $$AccTypesTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$AccTypesTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftAccTypesTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $AccTypesTable,
-    AccType,
-    $$AccTypesTableFilterComposer,
-    $$AccTypesTableOrderingComposer,
-    $$AccTypesTableAnnotationComposer,
-    $$AccTypesTableCreateCompanionBuilder,
-    $$AccTypesTableUpdateCompanionBuilder,
-    (AccType, $$AccTypesTableReferences),
-    AccType,
-    PrefetchHooks Function({bool accountsRefs})>;
-typedef $$ProfilesTableCreateCompanionBuilder = ProfilesCompanion Function({
+    $DriftAccTypesTable,
+    DriftAccType,
+    $$DriftAccTypesTableFilterComposer,
+    $$DriftAccTypesTableOrderingComposer,
+    $$DriftAccTypesTableAnnotationComposer,
+    $$DriftAccTypesTableCreateCompanionBuilder,
+    $$DriftAccTypesTableUpdateCompanionBuilder,
+    (DriftAccType, $$DriftAccTypesTableReferences),
+    DriftAccType,
+    PrefetchHooks Function({bool driftAccountsRefs})>;
+typedef $$DriftProfilesTableCreateCompanionBuilder = DriftProfilesCompanion
+    Function({
   Value<int> id,
   required String name,
   Value<String?> alias,
@@ -6790,7 +6829,8 @@ typedef $$ProfilesTableCreateCompanionBuilder = ProfilesCompanion Function({
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
 });
-typedef $$ProfilesTableUpdateCompanionBuilder = ProfilesCompanion Function({
+typedef $$DriftProfilesTableUpdateCompanionBuilder = DriftProfilesCompanion
+    Function({
   Value<int> id,
   Value<String> name,
   Value<String?> alias,
@@ -6807,86 +6847,94 @@ typedef $$ProfilesTableUpdateCompanionBuilder = ProfilesCompanion Function({
   Value<DateTime> updateDate,
 });
 
-final class $$ProfilesTableReferences
-    extends BaseReferences<_$MyDatabase, $ProfilesTable, Profile> {
-  $$ProfilesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftProfilesTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftProfilesTable, DriftProfile> {
+  $$DriftProfilesTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$AccountsTable, List<Account>> _accountsRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.accounts,
-          aliasName: $_aliasNameGenerator(db.profiles.id, db.accounts.profile));
+  static MultiTypedResultKey<$DriftAccountsTable, List<DriftAccount>>
+      _driftAccountsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftAccounts,
+              aliasName: $_aliasNameGenerator(
+                  db.driftProfiles.id, db.driftAccounts.profile));
 
-  $$AccountsTableProcessedTableManager get accountsRefs {
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+  $$DriftAccountsTableProcessedTableManager get driftAccountsRefs {
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
         .filter((f) => f.profile.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_accountsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_driftAccountsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$BudgetsTable, List<Budget>> _budgetsRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.budgets,
-          aliasName: $_aliasNameGenerator(db.profiles.id, db.budgets.profile));
+  static MultiTypedResultKey<$DriftBudgetsTable, List<DriftBudget>>
+      _driftBudgetsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftBudgets,
+              aliasName: $_aliasNameGenerator(
+                  db.driftProfiles.id, db.driftBudgets.profile));
 
-  $$BudgetsTableProcessedTableManager get budgetsRefs {
-    final manager = $$BudgetsTableTableManager($_db, $_db.budgets)
+  $$DriftBudgetsTableProcessedTableManager get driftBudgetsRefs {
+    final manager = $$DriftBudgetsTableTableManager($_db, $_db.driftBudgets)
         .filter((f) => f.profile.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_budgetsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_driftBudgetsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$ProjectsTable, List<Project>> _projectsRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.projects,
-          aliasName: $_aliasNameGenerator(db.profiles.id, db.projects.profile));
+  static MultiTypedResultKey<$DriftProjectsTable, List<DriftProject>>
+      _driftProjectsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftProjects,
+              aliasName: $_aliasNameGenerator(
+                  db.driftProfiles.id, db.driftProjects.profile));
 
-  $$ProjectsTableProcessedTableManager get projectsRefs {
-    final manager = $$ProjectsTableTableManager($_db, $_db.projects)
+  $$DriftProjectsTableProcessedTableManager get driftProjectsRefs {
+    final manager = $$DriftProjectsTableTableManager($_db, $_db.driftProjects)
         .filter((f) => f.profile.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_projectsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_driftProjectsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$TransactionsTable, List<Transaction>>
-      _transactionsRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
-          db.transactions,
-          aliasName:
-              $_aliasNameGenerator(db.profiles.id, db.transactions.profile));
+  static MultiTypedResultKey<$DriftTransactionsTable, List<DriftTransaction>>
+      _driftTransactionsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftTransactions,
+              aliasName: $_aliasNameGenerator(
+                  db.driftProfiles.id, db.driftTransactions.profile));
 
-  $$TransactionsTableProcessedTableManager get transactionsRefs {
-    final manager = $$TransactionsTableTableManager($_db, $_db.transactions)
-        .filter((f) => f.profile.id.sqlEquals($_itemColumn<int>('id')!));
+  $$DriftTransactionsTableProcessedTableManager get driftTransactionsRefs {
+    final manager =
+        $$DriftTransactionsTableTableManager($_db, $_db.driftTransactions)
+            .filter((f) => f.profile.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_transactionsRefsTable($_db));
+    final cache =
+        $_typedResult.readTableOrNull(_driftTransactionsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$SubscriptionsTable, List<Subscription>>
-      _subscriptionsRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
-          db.subscriptions,
-          aliasName:
-              $_aliasNameGenerator(db.profiles.id, db.subscriptions.profile));
+  static MultiTypedResultKey<$DriftSubscriptionsTable, List<DriftSubscription>>
+      _driftSubscriptionsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftSubscriptions,
+              aliasName: $_aliasNameGenerator(
+                  db.driftProfiles.id, db.driftSubscriptions.profile));
 
-  $$SubscriptionsTableProcessedTableManager get subscriptionsRefs {
-    final manager = $$SubscriptionsTableTableManager($_db, $_db.subscriptions)
-        .filter((f) => f.profile.id.sqlEquals($_itemColumn<int>('id')!));
+  $$DriftSubscriptionsTableProcessedTableManager get driftSubscriptionsRefs {
+    final manager =
+        $$DriftSubscriptionsTableTableManager($_db, $_db.driftSubscriptions)
+            .filter((f) => f.profile.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_subscriptionsRefsTable($_db));
+    final cache =
+        $_typedResult.readTableOrNull(_driftSubscriptionsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 }
 
-class $$ProfilesTableFilterComposer
-    extends Composer<_$MyDatabase, $ProfilesTable> {
-  $$ProfilesTableFilterComposer({
+class $$DriftProfilesTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftProfilesTable> {
+  $$DriftProfilesTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -6937,19 +6985,19 @@ class $$ProfilesTableFilterComposer
   ColumnFilters<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnFilters(column));
 
-  Expression<bool> accountsRefs(
-      Expression<bool> Function($$AccountsTableFilterComposer f) f) {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftAccountsRefs(
+      Expression<bool> Function($$DriftAccountsTableFilterComposer f) f) {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.profile,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
+            $$DriftAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -6958,19 +7006,19 @@ class $$ProfilesTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> budgetsRefs(
-      Expression<bool> Function($$BudgetsTableFilterComposer f) f) {
-    final $$BudgetsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftBudgetsRefs(
+      Expression<bool> Function($$DriftBudgetsTableFilterComposer f) f) {
+    final $$DriftBudgetsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.profile,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableFilterComposer(
+            $$DriftBudgetsTableFilterComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -6979,19 +7027,19 @@ class $$ProfilesTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> projectsRefs(
-      Expression<bool> Function($$ProjectsTableFilterComposer f) f) {
-    final $$ProjectsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftProjectsRefs(
+      Expression<bool> Function($$DriftProjectsTableFilterComposer f) f) {
+    final $$DriftProjectsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.projects,
+        referencedTable: $db.driftProjects,
         getReferencedColumn: (t) => t.profile,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectsTableFilterComposer(
+            $$DriftProjectsTableFilterComposer(
               $db: $db,
-              $table: $db.projects,
+              $table: $db.driftProjects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7000,19 +7048,19 @@ class $$ProfilesTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> transactionsRefs(
-      Expression<bool> Function($$TransactionsTableFilterComposer f) f) {
-    final $$TransactionsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftTransactionsRefs(
+      Expression<bool> Function($$DriftTransactionsTableFilterComposer f) f) {
+    final $$DriftTransactionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.transactions,
+        referencedTable: $db.driftTransactions,
         getReferencedColumn: (t) => t.profile,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableFilterComposer(
+            $$DriftTransactionsTableFilterComposer(
               $db: $db,
-              $table: $db.transactions,
+              $table: $db.driftTransactions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7021,19 +7069,19 @@ class $$ProfilesTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> subscriptionsRefs(
-      Expression<bool> Function($$SubscriptionsTableFilterComposer f) f) {
-    final $$SubscriptionsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftSubscriptionsRefs(
+      Expression<bool> Function($$DriftSubscriptionsTableFilterComposer f) f) {
+    final $$DriftSubscriptionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.subscriptions,
+        referencedTable: $db.driftSubscriptions,
         getReferencedColumn: (t) => t.profile,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$SubscriptionsTableFilterComposer(
+            $$DriftSubscriptionsTableFilterComposer(
               $db: $db,
-              $table: $db.subscriptions,
+              $table: $db.driftSubscriptions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7043,9 +7091,9 @@ class $$ProfilesTableFilterComposer
   }
 }
 
-class $$ProfilesTableOrderingComposer
-    extends Composer<_$MyDatabase, $ProfilesTable> {
-  $$ProfilesTableOrderingComposer({
+class $$DriftProfilesTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftProfilesTable> {
+  $$DriftProfilesTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -7095,9 +7143,9 @@ class $$ProfilesTableOrderingComposer
       column: $table.updateDate, builder: (column) => ColumnOrderings(column));
 }
 
-class $$ProfilesTableAnnotationComposer
-    extends Composer<_$MyDatabase, $ProfilesTable> {
-  $$ProfilesTableAnnotationComposer({
+class $$DriftProfilesTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftProfilesTable> {
+  $$DriftProfilesTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -7146,19 +7194,19 @@ class $$ProfilesTableAnnotationComposer
   GeneratedColumn<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => column);
 
-  Expression<T> accountsRefs<T extends Object>(
-      Expression<T> Function($$AccountsTableAnnotationComposer a) f) {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftAccountsRefs<T extends Object>(
+      Expression<T> Function($$DriftAccountsTableAnnotationComposer a) f) {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.profile,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
+            $$DriftAccountsTableAnnotationComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7167,19 +7215,19 @@ class $$ProfilesTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> budgetsRefs<T extends Object>(
-      Expression<T> Function($$BudgetsTableAnnotationComposer a) f) {
-    final $$BudgetsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftBudgetsRefs<T extends Object>(
+      Expression<T> Function($$DriftBudgetsTableAnnotationComposer a) f) {
+    final $$DriftBudgetsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.profile,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableAnnotationComposer(
+            $$DriftBudgetsTableAnnotationComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7188,19 +7236,19 @@ class $$ProfilesTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> projectsRefs<T extends Object>(
-      Expression<T> Function($$ProjectsTableAnnotationComposer a) f) {
-    final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftProjectsRefs<T extends Object>(
+      Expression<T> Function($$DriftProjectsTableAnnotationComposer a) f) {
+    final $$DriftProjectsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.projects,
+        referencedTable: $db.driftProjects,
         getReferencedColumn: (t) => t.profile,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectsTableAnnotationComposer(
+            $$DriftProjectsTableAnnotationComposer(
               $db: $db,
-              $table: $db.projects,
+              $table: $db.driftProjects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7209,76 +7257,78 @@ class $$ProfilesTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> transactionsRefs<T extends Object>(
-      Expression<T> Function($$TransactionsTableAnnotationComposer a) f) {
-    final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.transactions,
-        getReferencedColumn: (t) => t.profile,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.transactions,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+  Expression<T> driftTransactionsRefs<T extends Object>(
+      Expression<T> Function($$DriftTransactionsTableAnnotationComposer a) f) {
+    final $$DriftTransactionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftTransactions,
+            getReferencedColumn: (t) => t.profile,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftTransactionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftTransactions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 
-  Expression<T> subscriptionsRefs<T extends Object>(
-      Expression<T> Function($$SubscriptionsTableAnnotationComposer a) f) {
-    final $$SubscriptionsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.subscriptions,
-        getReferencedColumn: (t) => t.profile,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$SubscriptionsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.subscriptions,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+  Expression<T> driftSubscriptionsRefs<T extends Object>(
+      Expression<T> Function($$DriftSubscriptionsTableAnnotationComposer a) f) {
+    final $$DriftSubscriptionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftSubscriptions,
+            getReferencedColumn: (t) => t.profile,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftSubscriptionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftSubscriptions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
 
-class $$ProfilesTableTableManager extends RootTableManager<
+class $$DriftProfilesTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $ProfilesTable,
-    Profile,
-    $$ProfilesTableFilterComposer,
-    $$ProfilesTableOrderingComposer,
-    $$ProfilesTableAnnotationComposer,
-    $$ProfilesTableCreateCompanionBuilder,
-    $$ProfilesTableUpdateCompanionBuilder,
-    (Profile, $$ProfilesTableReferences),
-    Profile,
+    $DriftProfilesTable,
+    DriftProfile,
+    $$DriftProfilesTableFilterComposer,
+    $$DriftProfilesTableOrderingComposer,
+    $$DriftProfilesTableAnnotationComposer,
+    $$DriftProfilesTableCreateCompanionBuilder,
+    $$DriftProfilesTableUpdateCompanionBuilder,
+    (DriftProfile, $$DriftProfilesTableReferences),
+    DriftProfile,
     PrefetchHooks Function(
-        {bool accountsRefs,
-        bool budgetsRefs,
-        bool projectsRefs,
-        bool transactionsRefs,
-        bool subscriptionsRefs})> {
-  $$ProfilesTableTableManager(_$MyDatabase db, $ProfilesTable table)
+        {bool driftAccountsRefs,
+        bool driftBudgetsRefs,
+        bool driftProjectsRefs,
+        bool driftTransactionsRefs,
+        bool driftSubscriptionsRefs})> {
+  $$DriftProfilesTableTableManager(_$MyDatabase db, $DriftProfilesTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$ProfilesTableFilterComposer($db: db, $table: table),
+              $$DriftProfilesTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$ProfilesTableOrderingComposer($db: db, $table: table),
+              $$DriftProfilesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$ProfilesTableAnnotationComposer($db: db, $table: table),
+              $$DriftProfilesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -7295,7 +7345,7 @@ class $$ProfilesTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              ProfilesCompanion(
+              DriftProfilesCompanion(
             id: id,
             name: name,
             alias: alias,
@@ -7327,7 +7377,7 @@ class $$ProfilesTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              ProfilesCompanion.insert(
+              DriftProfilesCompanion.insert(
             id: id,
             name: name,
             alias: alias,
@@ -7344,85 +7394,90 @@ class $$ProfilesTableTableManager extends RootTableManager<
             updateDate: updateDate,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$ProfilesTableReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftProfilesTableReferences(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: (
-              {accountsRefs = false,
-              budgetsRefs = false,
-              projectsRefs = false,
-              transactionsRefs = false,
-              subscriptionsRefs = false}) {
+              {driftAccountsRefs = false,
+              driftBudgetsRefs = false,
+              driftProjectsRefs = false,
+              driftTransactionsRefs = false,
+              driftSubscriptionsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (accountsRefs) db.accounts,
-                if (budgetsRefs) db.budgets,
-                if (projectsRefs) db.projects,
-                if (transactionsRefs) db.transactions,
-                if (subscriptionsRefs) db.subscriptions
+                if (driftAccountsRefs) db.driftAccounts,
+                if (driftBudgetsRefs) db.driftBudgets,
+                if (driftProjectsRefs) db.driftProjects,
+                if (driftTransactionsRefs) db.driftTransactions,
+                if (driftSubscriptionsRefs) db.driftSubscriptions
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (accountsRefs)
-                    await $_getPrefetchedData<Profile, $ProfilesTable, Account>(
+                  if (driftAccountsRefs)
+                    await $_getPrefetchedData<DriftProfile, $DriftProfilesTable,
+                            DriftAccount>(
                         currentTable: table,
-                        referencedTable:
-                            $$ProfilesTableReferences._accountsRefsTable(db),
+                        referencedTable: $$DriftProfilesTableReferences
+                            ._driftAccountsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$ProfilesTableReferences(db, table, p0)
-                                .accountsRefs,
+                            $$DriftProfilesTableReferences(db, table, p0)
+                                .driftAccountsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.profile == item.id),
                         typedResults: items),
-                  if (budgetsRefs)
-                    await $_getPrefetchedData<Profile, $ProfilesTable, Budget>(
+                  if (driftBudgetsRefs)
+                    await $_getPrefetchedData<DriftProfile, $DriftProfilesTable,
+                            DriftBudget>(
                         currentTable: table,
-                        referencedTable:
-                            $$ProfilesTableReferences._budgetsRefsTable(db),
+                        referencedTable: $$DriftProfilesTableReferences
+                            ._driftBudgetsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$ProfilesTableReferences(db, table, p0)
-                                .budgetsRefs,
+                            $$DriftProfilesTableReferences(db, table, p0)
+                                .driftBudgetsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.profile == item.id),
                         typedResults: items),
-                  if (projectsRefs)
-                    await $_getPrefetchedData<Profile, $ProfilesTable, Project>(
+                  if (driftProjectsRefs)
+                    await $_getPrefetchedData<DriftProfile, $DriftProfilesTable,
+                            DriftProject>(
                         currentTable: table,
-                        referencedTable:
-                            $$ProfilesTableReferences._projectsRefsTable(db),
+                        referencedTable: $$DriftProfilesTableReferences
+                            ._driftProjectsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$ProfilesTableReferences(db, table, p0)
-                                .projectsRefs,
+                            $$DriftProfilesTableReferences(db, table, p0)
+                                .driftProjectsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.profile == item.id),
                         typedResults: items),
-                  if (transactionsRefs)
-                    await $_getPrefetchedData<Profile, $ProfilesTable,
-                            Transaction>(
+                  if (driftTransactionsRefs)
+                    await $_getPrefetchedData<DriftProfile, $DriftProfilesTable,
+                            DriftTransaction>(
                         currentTable: table,
-                        referencedTable: $$ProfilesTableReferences
-                            ._transactionsRefsTable(db),
+                        referencedTable: $$DriftProfilesTableReferences
+                            ._driftTransactionsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$ProfilesTableReferences(db, table, p0)
-                                .transactionsRefs,
+                            $$DriftProfilesTableReferences(db, table, p0)
+                                .driftTransactionsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.profile == item.id),
                         typedResults: items),
-                  if (subscriptionsRefs)
-                    await $_getPrefetchedData<Profile, $ProfilesTable,
-                            Subscription>(
+                  if (driftSubscriptionsRefs)
+                    await $_getPrefetchedData<DriftProfile, $DriftProfilesTable,
+                            DriftSubscription>(
                         currentTable: table,
-                        referencedTable: $$ProfilesTableReferences
-                            ._subscriptionsRefsTable(db),
+                        referencedTable: $$DriftProfilesTableReferences
+                            ._driftSubscriptionsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$ProfilesTableReferences(db, table, p0)
-                                .subscriptionsRefs,
+                            $$DriftProfilesTableReferences(db, table, p0)
+                                .driftSubscriptionsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.profile == item.id),
@@ -7434,24 +7489,25 @@ class $$ProfilesTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$ProfilesTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftProfilesTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $ProfilesTable,
-    Profile,
-    $$ProfilesTableFilterComposer,
-    $$ProfilesTableOrderingComposer,
-    $$ProfilesTableAnnotationComposer,
-    $$ProfilesTableCreateCompanionBuilder,
-    $$ProfilesTableUpdateCompanionBuilder,
-    (Profile, $$ProfilesTableReferences),
-    Profile,
+    $DriftProfilesTable,
+    DriftProfile,
+    $$DriftProfilesTableFilterComposer,
+    $$DriftProfilesTableOrderingComposer,
+    $$DriftProfilesTableAnnotationComposer,
+    $$DriftProfilesTableCreateCompanionBuilder,
+    $$DriftProfilesTableUpdateCompanionBuilder,
+    (DriftProfile, $$DriftProfilesTableReferences),
+    DriftProfile,
     PrefetchHooks Function(
-        {bool accountsRefs,
-        bool budgetsRefs,
-        bool projectsRefs,
-        bool transactionsRefs,
-        bool subscriptionsRefs})>;
-typedef $$AccountsTableCreateCompanionBuilder = AccountsCompanion Function({
+        {bool driftAccountsRefs,
+        bool driftBudgetsRefs,
+        bool driftProjectsRefs,
+        bool driftTransactionsRefs,
+        bool driftSubscriptionsRefs})>;
+typedef $$DriftAccountsTableCreateCompanionBuilder = DriftAccountsCompanion
+    Function({
   Value<int> id,
   required String name,
   Value<int> openBal,
@@ -7462,7 +7518,8 @@ typedef $$AccountsTableCreateCompanionBuilder = AccountsCompanion Function({
   Value<bool> isEditable,
   required int profile,
 });
-typedef $$AccountsTableUpdateCompanionBuilder = AccountsCompanion Function({
+typedef $$DriftAccountsTableUpdateCompanionBuilder = DriftAccountsCompanion
+    Function({
   Value<int> id,
   Value<String> name,
   Value<int> openBal,
@@ -7474,17 +7531,19 @@ typedef $$AccountsTableUpdateCompanionBuilder = AccountsCompanion Function({
   Value<int> profile,
 });
 
-final class $$AccountsTableReferences
-    extends BaseReferences<_$MyDatabase, $AccountsTable, Account> {
-  $$AccountsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftAccountsTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftAccountsTable, DriftAccount> {
+  $$DriftAccountsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
 
-  static $AccTypesTable _accTypeTable(_$MyDatabase db) => db.accTypes
-      .createAlias($_aliasNameGenerator(db.accounts.accType, db.accTypes.id));
+  static $DriftAccTypesTable _accTypeTable(_$MyDatabase db) =>
+      db.driftAccTypes.createAlias(
+          $_aliasNameGenerator(db.driftAccounts.accType, db.driftAccTypes.id));
 
-  $$AccTypesTableProcessedTableManager get accType {
+  $$DriftAccTypesTableProcessedTableManager get accType {
     final $_column = $_itemColumn<int>('acc_type')!;
 
-    final manager = $$AccTypesTableTableManager($_db, $_db.accTypes)
+    final manager = $$DriftAccTypesTableTableManager($_db, $_db.driftAccTypes)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_accTypeTable($_db));
     if (item == null) return manager;
@@ -7492,13 +7551,14 @@ final class $$AccountsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $ProfilesTable _profileTable(_$MyDatabase db) => db.profiles
-      .createAlias($_aliasNameGenerator(db.accounts.profile, db.profiles.id));
+  static $DriftProfilesTable _profileTable(_$MyDatabase db) =>
+      db.driftProfiles.createAlias(
+          $_aliasNameGenerator(db.driftAccounts.profile, db.driftProfiles.id));
 
-  $$ProfilesTableProcessedTableManager get profile {
+  $$DriftProfilesTableProcessedTableManager get profile {
     final $_column = $_itemColumn<int>('profile')!;
 
-    final manager = $$ProfilesTableTableManager($_db, $_db.profiles)
+    final manager = $$DriftProfilesTableTableManager($_db, $_db.driftProfiles)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_profileTable($_db));
     if (item == null) return manager;
@@ -7506,153 +7566,169 @@ final class $$AccountsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static MultiTypedResultKey<$TransactionsTable, List<Transaction>>
-      _drAccountTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
-          db.transactions,
-          aliasName: $_aliasNameGenerator(db.accounts.id, db.transactions.dr));
+  static MultiTypedResultKey<$DriftTransactionsTable, List<DriftTransaction>>
+      _drAccountTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftTransactions,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftTransactions.dr));
 
-  $$TransactionsTableProcessedTableManager get drAccount {
-    final manager = $$TransactionsTableTableManager($_db, $_db.transactions)
-        .filter((f) => f.dr.id.sqlEquals($_itemColumn<int>('id')!));
+  $$DriftTransactionsTableProcessedTableManager get drAccount {
+    final manager =
+        $$DriftTransactionsTableTableManager($_db, $_db.driftTransactions)
+            .filter((f) => f.dr.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_drAccountTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$TransactionsTable, List<Transaction>>
-      _crAccountTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
-          db.transactions,
-          aliasName: $_aliasNameGenerator(db.accounts.id, db.transactions.cr));
+  static MultiTypedResultKey<$DriftTransactionsTable, List<DriftTransaction>>
+      _crAccountTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftTransactions,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftTransactions.cr));
 
-  $$TransactionsTableProcessedTableManager get crAccount {
-    final manager = $$TransactionsTableTableManager($_db, $_db.transactions)
-        .filter((f) => f.cr.id.sqlEquals($_itemColumn<int>('id')!));
+  $$DriftTransactionsTableProcessedTableManager get crAccount {
+    final manager =
+        $$DriftTransactionsTableTableManager($_db, $_db.driftTransactions)
+            .filter((f) => f.cr.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_crAccountTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$BanksTable, List<Bank>> _banksRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.banks,
-          aliasName: $_aliasNameGenerator(db.accounts.id, db.banks.account));
-
-  $$BanksTableProcessedTableManager get banksRefs {
-    final manager = $$BanksTableTableManager($_db, $_db.banks)
-        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_banksRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$WalletsTable, List<Wallet>> _walletsRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.wallets,
-          aliasName: $_aliasNameGenerator(db.accounts.id, db.wallets.account));
-
-  $$WalletsTableProcessedTableManager get walletsRefs {
-    final manager = $$WalletsTableTableManager($_db, $_db.wallets)
-        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_walletsRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$LoansTable, List<Loan>> _loansRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.loans,
-          aliasName: $_aliasNameGenerator(db.accounts.id, db.loans.account));
-
-  $$LoansTableProcessedTableManager get loansRefs {
-    final manager = $$LoansTableTableManager($_db, $_db.loans)
-        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_loansRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$CCardsTable, List<CCard>> _cCardsRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.cCards,
-          aliasName: $_aliasNameGenerator(db.accounts.id, db.cCards.account));
-
-  $$CCardsTableProcessedTableManager get cCardsRefs {
-    final manager = $$CCardsTableTableManager($_db, $_db.cCards)
-        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_cCardsRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$BalancesTable, List<Balance>> _balancesRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.balances,
-          aliasName: $_aliasNameGenerator(db.accounts.id, db.balances.account));
-
-  $$BalancesTableProcessedTableManager get balancesRefs {
-    final manager = $$BalancesTableTableManager($_db, $_db.balances)
-        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_balancesRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$BudgetAccountsTable, List<BudgetAccount>>
-      _budgetAccountsRefsTable(_$MyDatabase db) =>
-          MultiTypedResultKey.fromTable(db.budgetAccounts,
-              aliasName: $_aliasNameGenerator(
-                  db.accounts.id, db.budgetAccounts.account));
-
-  $$BudgetAccountsTableProcessedTableManager get budgetAccountsRefs {
-    final manager = $$BudgetAccountsTableTableManager($_db, $_db.budgetAccounts)
-        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_budgetAccountsRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$BudgetFundsTable, List<BudgetFund>>
-      _budgetFundsRefsTable(_$MyDatabase db) =>
-          MultiTypedResultKey.fromTable(db.budgetFunds,
-              aliasName:
-                  $_aliasNameGenerator(db.accounts.id, db.budgetFunds.account));
-
-  $$BudgetFundsTableProcessedTableManager get budgetFundsRefs {
-    final manager = $$BudgetFundsTableTableManager($_db, $_db.budgetFunds)
-        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_budgetFundsRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$SubscriptionsTable, List<Subscription>>
-      _subscriptionsRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
-          db.subscriptions,
+  static MultiTypedResultKey<$DriftBanksTable, List<DriftBank>>
+      _driftBanksRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
+          db.driftBanks,
           aliasName:
-              $_aliasNameGenerator(db.accounts.id, db.subscriptions.account));
+              $_aliasNameGenerator(db.driftAccounts.id, db.driftBanks.account));
 
-  $$SubscriptionsTableProcessedTableManager get subscriptionsRefs {
-    final manager = $$SubscriptionsTableTableManager($_db, $_db.subscriptions)
+  $$DriftBanksTableProcessedTableManager get driftBanksRefs {
+    final manager = $$DriftBanksTableTableManager($_db, $_db.driftBanks)
         .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_subscriptionsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_driftBanksRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DriftWalletsTable, List<DriftWallet>>
+      _driftWalletsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftWallets,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftWallets.account));
+
+  $$DriftWalletsTableProcessedTableManager get driftWalletsRefs {
+    final manager = $$DriftWalletsTableTableManager($_db, $_db.driftWallets)
+        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_driftWalletsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DriftLoansTable, List<DriftLoan>>
+      _driftLoansRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
+          db.driftLoans,
+          aliasName:
+              $_aliasNameGenerator(db.driftAccounts.id, db.driftLoans.account));
+
+  $$DriftLoansTableProcessedTableManager get driftLoansRefs {
+    final manager = $$DriftLoansTableTableManager($_db, $_db.driftLoans)
+        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_driftLoansRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DriftCCardsTable, List<DriftCCard>>
+      _driftCCardsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftCCards,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftCCards.account));
+
+  $$DriftCCardsTableProcessedTableManager get driftCCardsRefs {
+    final manager = $$DriftCCardsTableTableManager($_db, $_db.driftCCards)
+        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_driftCCardsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DriftBalancesTable, List<DriftBalance>>
+      _driftBalancesRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftBalances,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftBalances.account));
+
+  $$DriftBalancesTableProcessedTableManager get driftBalancesRefs {
+    final manager = $$DriftBalancesTableTableManager($_db, $_db.driftBalances)
+        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_driftBalancesRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DriftBudgetAccountsTable,
+      List<DriftBudgetAccount>> _driftBudgetAccountsRefsTable(
+          _$MyDatabase db) =>
+      MultiTypedResultKey.fromTable(db.driftBudgetAccounts,
+          aliasName: $_aliasNameGenerator(
+              db.driftAccounts.id, db.driftBudgetAccounts.account));
+
+  $$DriftBudgetAccountsTableProcessedTableManager get driftBudgetAccountsRefs {
+    final manager =
+        $$DriftBudgetAccountsTableTableManager($_db, $_db.driftBudgetAccounts)
+            .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_driftBudgetAccountsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DriftBudgetFundsTable, List<DriftBudgetFund>>
+      _driftBudgetFundsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftBudgetFunds,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftBudgetFunds.account));
+
+  $$DriftBudgetFundsTableProcessedTableManager get driftBudgetFundsRefs {
+    final manager =
+        $$DriftBudgetFundsTableTableManager($_db, $_db.driftBudgetFunds)
+            .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_driftBudgetFundsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DriftSubscriptionsTable, List<DriftSubscription>>
+      _driftSubscriptionsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftSubscriptions,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftSubscriptions.account));
+
+  $$DriftSubscriptionsTableProcessedTableManager get driftSubscriptionsRefs {
+    final manager =
+        $$DriftSubscriptionsTableTableManager($_db, $_db.driftSubscriptions)
+            .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_driftSubscriptionsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 }
 
-class $$AccountsTableFilterComposer
-    extends Composer<_$MyDatabase, $AccountsTable> {
-  $$AccountsTableFilterComposer({
+class $$DriftAccountsTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftAccountsTable> {
+  $$DriftAccountsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -7680,18 +7756,18 @@ class $$AccountsTableFilterComposer
   ColumnFilters<bool> get isEditable => $composableBuilder(
       column: $table.isEditable, builder: (column) => ColumnFilters(column));
 
-  $$AccTypesTableFilterComposer get accType {
-    final $$AccTypesTableFilterComposer composer = $composerBuilder(
+  $$DriftAccTypesTableFilterComposer get accType {
+    final $$DriftAccTypesTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.accType,
-        referencedTable: $db.accTypes,
+        referencedTable: $db.driftAccTypes,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccTypesTableFilterComposer(
+            $$DriftAccTypesTableFilterComposer(
               $db: $db,
-              $table: $db.accTypes,
+              $table: $db.driftAccTypes,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7700,18 +7776,18 @@ class $$AccountsTableFilterComposer
     return composer;
   }
 
-  $$ProfilesTableFilterComposer get profile {
-    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+  $$DriftProfilesTableFilterComposer get profile {
+    final $$DriftProfilesTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableFilterComposer(
+            $$DriftProfilesTableFilterComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7721,18 +7797,18 @@ class $$AccountsTableFilterComposer
   }
 
   Expression<bool> drAccount(
-      Expression<bool> Function($$TransactionsTableFilterComposer f) f) {
-    final $$TransactionsTableFilterComposer composer = $composerBuilder(
+      Expression<bool> Function($$DriftTransactionsTableFilterComposer f) f) {
+    final $$DriftTransactionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.transactions,
+        referencedTable: $db.driftTransactions,
         getReferencedColumn: (t) => t.dr,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableFilterComposer(
+            $$DriftTransactionsTableFilterComposer(
               $db: $db,
-              $table: $db.transactions,
+              $table: $db.driftTransactions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7742,18 +7818,18 @@ class $$AccountsTableFilterComposer
   }
 
   Expression<bool> crAccount(
-      Expression<bool> Function($$TransactionsTableFilterComposer f) f) {
-    final $$TransactionsTableFilterComposer composer = $composerBuilder(
+      Expression<bool> Function($$DriftTransactionsTableFilterComposer f) f) {
+    final $$DriftTransactionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.transactions,
+        referencedTable: $db.driftTransactions,
         getReferencedColumn: (t) => t.cr,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableFilterComposer(
+            $$DriftTransactionsTableFilterComposer(
               $db: $db,
-              $table: $db.transactions,
+              $table: $db.driftTransactions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7762,19 +7838,19 @@ class $$AccountsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> banksRefs(
-      Expression<bool> Function($$BanksTableFilterComposer f) f) {
-    final $$BanksTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftBanksRefs(
+      Expression<bool> Function($$DriftBanksTableFilterComposer f) f) {
+    final $$DriftBanksTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.banks,
+        referencedTable: $db.driftBanks,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BanksTableFilterComposer(
+            $$DriftBanksTableFilterComposer(
               $db: $db,
-              $table: $db.banks,
+              $table: $db.driftBanks,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7783,19 +7859,19 @@ class $$AccountsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> walletsRefs(
-      Expression<bool> Function($$WalletsTableFilterComposer f) f) {
-    final $$WalletsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftWalletsRefs(
+      Expression<bool> Function($$DriftWalletsTableFilterComposer f) f) {
+    final $$DriftWalletsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.wallets,
+        referencedTable: $db.driftWallets,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$WalletsTableFilterComposer(
+            $$DriftWalletsTableFilterComposer(
               $db: $db,
-              $table: $db.wallets,
+              $table: $db.driftWallets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7804,19 +7880,19 @@ class $$AccountsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> loansRefs(
-      Expression<bool> Function($$LoansTableFilterComposer f) f) {
-    final $$LoansTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftLoansRefs(
+      Expression<bool> Function($$DriftLoansTableFilterComposer f) f) {
+    final $$DriftLoansTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.loans,
+        referencedTable: $db.driftLoans,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$LoansTableFilterComposer(
+            $$DriftLoansTableFilterComposer(
               $db: $db,
-              $table: $db.loans,
+              $table: $db.driftLoans,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7825,19 +7901,19 @@ class $$AccountsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> cCardsRefs(
-      Expression<bool> Function($$CCardsTableFilterComposer f) f) {
-    final $$CCardsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftCCardsRefs(
+      Expression<bool> Function($$DriftCCardsTableFilterComposer f) f) {
+    final $$DriftCCardsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.cCards,
+        referencedTable: $db.driftCCards,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$CCardsTableFilterComposer(
+            $$DriftCCardsTableFilterComposer(
               $db: $db,
-              $table: $db.cCards,
+              $table: $db.driftCCards,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7846,19 +7922,19 @@ class $$AccountsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> balancesRefs(
-      Expression<bool> Function($$BalancesTableFilterComposer f) f) {
-    final $$BalancesTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftBalancesRefs(
+      Expression<bool> Function($$DriftBalancesTableFilterComposer f) f) {
+    final $$DriftBalancesTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.balances,
+        referencedTable: $db.driftBalances,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BalancesTableFilterComposer(
+            $$DriftBalancesTableFilterComposer(
               $db: $db,
-              $table: $db.balances,
+              $table: $db.driftBalances,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7867,19 +7943,19 @@ class $$AccountsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> budgetAccountsRefs(
-      Expression<bool> Function($$BudgetAccountsTableFilterComposer f) f) {
-    final $$BudgetAccountsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftBudgetAccountsRefs(
+      Expression<bool> Function($$DriftBudgetAccountsTableFilterComposer f) f) {
+    final $$DriftBudgetAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetAccounts,
+        referencedTable: $db.driftBudgetAccounts,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetAccountsTableFilterComposer(
+            $$DriftBudgetAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.budgetAccounts,
+              $table: $db.driftBudgetAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7888,19 +7964,19 @@ class $$AccountsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> budgetFundsRefs(
-      Expression<bool> Function($$BudgetFundsTableFilterComposer f) f) {
-    final $$BudgetFundsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftBudgetFundsRefs(
+      Expression<bool> Function($$DriftBudgetFundsTableFilterComposer f) f) {
+    final $$DriftBudgetFundsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetFunds,
+        referencedTable: $db.driftBudgetFunds,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetFundsTableFilterComposer(
+            $$DriftBudgetFundsTableFilterComposer(
               $db: $db,
-              $table: $db.budgetFunds,
+              $table: $db.driftBudgetFunds,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7909,19 +7985,19 @@ class $$AccountsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> subscriptionsRefs(
-      Expression<bool> Function($$SubscriptionsTableFilterComposer f) f) {
-    final $$SubscriptionsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftSubscriptionsRefs(
+      Expression<bool> Function($$DriftSubscriptionsTableFilterComposer f) f) {
+    final $$DriftSubscriptionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.subscriptions,
+        referencedTable: $db.driftSubscriptions,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$SubscriptionsTableFilterComposer(
+            $$DriftSubscriptionsTableFilterComposer(
               $db: $db,
-              $table: $db.subscriptions,
+              $table: $db.driftSubscriptions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7931,9 +8007,9 @@ class $$AccountsTableFilterComposer
   }
 }
 
-class $$AccountsTableOrderingComposer
-    extends Composer<_$MyDatabase, $AccountsTable> {
-  $$AccountsTableOrderingComposer({
+class $$DriftAccountsTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftAccountsTable> {
+  $$DriftAccountsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -7961,18 +8037,18 @@ class $$AccountsTableOrderingComposer
   ColumnOrderings<bool> get isEditable => $composableBuilder(
       column: $table.isEditable, builder: (column) => ColumnOrderings(column));
 
-  $$AccTypesTableOrderingComposer get accType {
-    final $$AccTypesTableOrderingComposer composer = $composerBuilder(
+  $$DriftAccTypesTableOrderingComposer get accType {
+    final $$DriftAccTypesTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.accType,
-        referencedTable: $db.accTypes,
+        referencedTable: $db.driftAccTypes,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccTypesTableOrderingComposer(
+            $$DriftAccTypesTableOrderingComposer(
               $db: $db,
-              $table: $db.accTypes,
+              $table: $db.driftAccTypes,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7981,18 +8057,18 @@ class $$AccountsTableOrderingComposer
     return composer;
   }
 
-  $$ProfilesTableOrderingComposer get profile {
-    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+  $$DriftProfilesTableOrderingComposer get profile {
+    final $$DriftProfilesTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableOrderingComposer(
+            $$DriftProfilesTableOrderingComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8002,9 +8078,9 @@ class $$AccountsTableOrderingComposer
   }
 }
 
-class $$AccountsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $AccountsTable> {
-  $$AccountsTableAnnotationComposer({
+class $$DriftAccountsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftAccountsTable> {
+  $$DriftAccountsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -8032,18 +8108,18 @@ class $$AccountsTableAnnotationComposer
   GeneratedColumn<bool> get isEditable => $composableBuilder(
       column: $table.isEditable, builder: (column) => column);
 
-  $$AccTypesTableAnnotationComposer get accType {
-    final $$AccTypesTableAnnotationComposer composer = $composerBuilder(
+  $$DriftAccTypesTableAnnotationComposer get accType {
+    final $$DriftAccTypesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.accType,
-        referencedTable: $db.accTypes,
+        referencedTable: $db.driftAccTypes,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccTypesTableAnnotationComposer(
+            $$DriftAccTypesTableAnnotationComposer(
               $db: $db,
-              $table: $db.accTypes,
+              $table: $db.driftAccTypes,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8052,18 +8128,18 @@ class $$AccountsTableAnnotationComposer
     return composer;
   }
 
-  $$ProfilesTableAnnotationComposer get profile {
-    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+  $$DriftProfilesTableAnnotationComposer get profile {
+    final $$DriftProfilesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableAnnotationComposer(
+            $$DriftProfilesTableAnnotationComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8073,39 +8149,62 @@ class $$AccountsTableAnnotationComposer
   }
 
   Expression<T> drAccount<T extends Object>(
-      Expression<T> Function($$TransactionsTableAnnotationComposer a) f) {
-    final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.transactions,
-        getReferencedColumn: (t) => t.dr,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.transactions,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      Expression<T> Function($$DriftTransactionsTableAnnotationComposer a) f) {
+    final $$DriftTransactionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftTransactions,
+            getReferencedColumn: (t) => t.dr,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftTransactionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftTransactions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 
   Expression<T> crAccount<T extends Object>(
-      Expression<T> Function($$TransactionsTableAnnotationComposer a) f) {
-    final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
+      Expression<T> Function($$DriftTransactionsTableAnnotationComposer a) f) {
+    final $$DriftTransactionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftTransactions,
+            getReferencedColumn: (t) => t.cr,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftTransactionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftTransactions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<T> driftBanksRefs<T extends Object>(
+      Expression<T> Function($$DriftBanksTableAnnotationComposer a) f) {
+    final $$DriftBanksTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.transactions,
-        getReferencedColumn: (t) => t.cr,
+        referencedTable: $db.driftBanks,
+        getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableAnnotationComposer(
+            $$DriftBanksTableAnnotationComposer(
               $db: $db,
-              $table: $db.transactions,
+              $table: $db.driftBanks,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8114,19 +8213,19 @@ class $$AccountsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> banksRefs<T extends Object>(
-      Expression<T> Function($$BanksTableAnnotationComposer a) f) {
-    final $$BanksTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftWalletsRefs<T extends Object>(
+      Expression<T> Function($$DriftWalletsTableAnnotationComposer a) f) {
+    final $$DriftWalletsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.banks,
+        referencedTable: $db.driftWallets,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BanksTableAnnotationComposer(
+            $$DriftWalletsTableAnnotationComposer(
               $db: $db,
-              $table: $db.banks,
+              $table: $db.driftWallets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8135,19 +8234,19 @@ class $$AccountsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> walletsRefs<T extends Object>(
-      Expression<T> Function($$WalletsTableAnnotationComposer a) f) {
-    final $$WalletsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftLoansRefs<T extends Object>(
+      Expression<T> Function($$DriftLoansTableAnnotationComposer a) f) {
+    final $$DriftLoansTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.wallets,
+        referencedTable: $db.driftLoans,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$WalletsTableAnnotationComposer(
+            $$DriftLoansTableAnnotationComposer(
               $db: $db,
-              $table: $db.wallets,
+              $table: $db.driftLoans,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8156,19 +8255,19 @@ class $$AccountsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> loansRefs<T extends Object>(
-      Expression<T> Function($$LoansTableAnnotationComposer a) f) {
-    final $$LoansTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftCCardsRefs<T extends Object>(
+      Expression<T> Function($$DriftCCardsTableAnnotationComposer a) f) {
+    final $$DriftCCardsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.loans,
+        referencedTable: $db.driftCCards,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$LoansTableAnnotationComposer(
+            $$DriftCCardsTableAnnotationComposer(
               $db: $db,
-              $table: $db.loans,
+              $table: $db.driftCCards,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8177,19 +8276,19 @@ class $$AccountsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> cCardsRefs<T extends Object>(
-      Expression<T> Function($$CCardsTableAnnotationComposer a) f) {
-    final $$CCardsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftBalancesRefs<T extends Object>(
+      Expression<T> Function($$DriftBalancesTableAnnotationComposer a) f) {
+    final $$DriftBalancesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.cCards,
+        referencedTable: $db.driftBalances,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$CCardsTableAnnotationComposer(
+            $$DriftBalancesTableAnnotationComposer(
               $db: $db,
-              $table: $db.cCards,
+              $table: $db.driftBalances,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8198,19 +8297,42 @@ class $$AccountsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> balancesRefs<T extends Object>(
-      Expression<T> Function($$BalancesTableAnnotationComposer a) f) {
-    final $$BalancesTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftBudgetAccountsRefs<T extends Object>(
+      Expression<T> Function($$DriftBudgetAccountsTableAnnotationComposer a)
+          f) {
+    final $$DriftBudgetAccountsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftBudgetAccounts,
+            getReferencedColumn: (t) => t.account,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftBudgetAccountsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftBudgetAccounts,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<T> driftBudgetFundsRefs<T extends Object>(
+      Expression<T> Function($$DriftBudgetFundsTableAnnotationComposer a) f) {
+    final $$DriftBudgetFundsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.balances,
+        referencedTable: $db.driftBudgetFunds,
         getReferencedColumn: (t) => t.account,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BalancesTableAnnotationComposer(
+            $$DriftBudgetFundsTableAnnotationComposer(
               $db: $db,
-              $table: $db.balances,
+              $table: $db.driftBudgetFunds,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8219,104 +8341,63 @@ class $$AccountsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> budgetAccountsRefs<T extends Object>(
-      Expression<T> Function($$BudgetAccountsTableAnnotationComposer a) f) {
-    final $$BudgetAccountsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetAccounts,
-        getReferencedColumn: (t) => t.account,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetAccountsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.budgetAccounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<T> budgetFundsRefs<T extends Object>(
-      Expression<T> Function($$BudgetFundsTableAnnotationComposer a) f) {
-    final $$BudgetFundsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetFunds,
-        getReferencedColumn: (t) => t.account,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetFundsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.budgetFunds,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<T> subscriptionsRefs<T extends Object>(
-      Expression<T> Function($$SubscriptionsTableAnnotationComposer a) f) {
-    final $$SubscriptionsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.subscriptions,
-        getReferencedColumn: (t) => t.account,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$SubscriptionsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.subscriptions,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+  Expression<T> driftSubscriptionsRefs<T extends Object>(
+      Expression<T> Function($$DriftSubscriptionsTableAnnotationComposer a) f) {
+    final $$DriftSubscriptionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftSubscriptions,
+            getReferencedColumn: (t) => t.account,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftSubscriptionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftSubscriptions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
 
-class $$AccountsTableTableManager extends RootTableManager<
+class $$DriftAccountsTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $AccountsTable,
-    Account,
-    $$AccountsTableFilterComposer,
-    $$AccountsTableOrderingComposer,
-    $$AccountsTableAnnotationComposer,
-    $$AccountsTableCreateCompanionBuilder,
-    $$AccountsTableUpdateCompanionBuilder,
-    (Account, $$AccountsTableReferences),
-    Account,
+    $DriftAccountsTable,
+    DriftAccount,
+    $$DriftAccountsTableFilterComposer,
+    $$DriftAccountsTableOrderingComposer,
+    $$DriftAccountsTableAnnotationComposer,
+    $$DriftAccountsTableCreateCompanionBuilder,
+    $$DriftAccountsTableUpdateCompanionBuilder,
+    (DriftAccount, $$DriftAccountsTableReferences),
+    DriftAccount,
     PrefetchHooks Function(
         {bool accType,
         bool profile,
         bool drAccount,
         bool crAccount,
-        bool banksRefs,
-        bool walletsRefs,
-        bool loansRefs,
-        bool cCardsRefs,
-        bool balancesRefs,
-        bool budgetAccountsRefs,
-        bool budgetFundsRefs,
-        bool subscriptionsRefs})> {
-  $$AccountsTableTableManager(_$MyDatabase db, $AccountsTable table)
+        bool driftBanksRefs,
+        bool driftWalletsRefs,
+        bool driftLoansRefs,
+        bool driftCCardsRefs,
+        bool driftBalancesRefs,
+        bool driftBudgetAccountsRefs,
+        bool driftBudgetFundsRefs,
+        bool driftSubscriptionsRefs})> {
+  $$DriftAccountsTableTableManager(_$MyDatabase db, $DriftAccountsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$AccountsTableFilterComposer($db: db, $table: table),
+              $$DriftAccountsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$AccountsTableOrderingComposer($db: db, $table: table),
+              $$DriftAccountsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$AccountsTableAnnotationComposer($db: db, $table: table),
+              $$DriftAccountsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -8328,7 +8409,7 @@ class $$AccountsTableTableManager extends RootTableManager<
             Value<bool> isEditable = const Value.absent(),
             Value<int> profile = const Value.absent(),
           }) =>
-              AccountsCompanion(
+              DriftAccountsCompanion(
             id: id,
             name: name,
             openBal: openBal,
@@ -8350,7 +8431,7 @@ class $$AccountsTableTableManager extends RootTableManager<
             Value<bool> isEditable = const Value.absent(),
             required int profile,
           }) =>
-              AccountsCompanion.insert(
+              DriftAccountsCompanion.insert(
             id: id,
             name: name,
             openBal: openBal,
@@ -8362,35 +8443,37 @@ class $$AccountsTableTableManager extends RootTableManager<
             profile: profile,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$AccountsTableReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftAccountsTableReferences(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: (
               {accType = false,
               profile = false,
               drAccount = false,
               crAccount = false,
-              banksRefs = false,
-              walletsRefs = false,
-              loansRefs = false,
-              cCardsRefs = false,
-              balancesRefs = false,
-              budgetAccountsRefs = false,
-              budgetFundsRefs = false,
-              subscriptionsRefs = false}) {
+              driftBanksRefs = false,
+              driftWalletsRefs = false,
+              driftLoansRefs = false,
+              driftCCardsRefs = false,
+              driftBalancesRefs = false,
+              driftBudgetAccountsRefs = false,
+              driftBudgetFundsRefs = false,
+              driftSubscriptionsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (drAccount) db.transactions,
-                if (crAccount) db.transactions,
-                if (banksRefs) db.banks,
-                if (walletsRefs) db.wallets,
-                if (loansRefs) db.loans,
-                if (cCardsRefs) db.cCards,
-                if (balancesRefs) db.balances,
-                if (budgetAccountsRefs) db.budgetAccounts,
-                if (budgetFundsRefs) db.budgetFunds,
-                if (subscriptionsRefs) db.subscriptions
+                if (drAccount) db.driftTransactions,
+                if (crAccount) db.driftTransactions,
+                if (driftBanksRefs) db.driftBanks,
+                if (driftWalletsRefs) db.driftWallets,
+                if (driftLoansRefs) db.driftLoans,
+                if (driftCCardsRefs) db.driftCCards,
+                if (driftBalancesRefs) db.driftBalances,
+                if (driftBudgetAccountsRefs) db.driftBudgetAccounts,
+                if (driftBudgetFundsRefs) db.driftBudgetFunds,
+                if (driftSubscriptionsRefs) db.driftSubscriptions
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -8410,9 +8493,9 @@ class $$AccountsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.accType,
                     referencedTable:
-                        $$AccountsTableReferences._accTypeTable(db),
+                        $$DriftAccountsTableReferences._accTypeTable(db),
                     referencedColumn:
-                        $$AccountsTableReferences._accTypeTable(db).id,
+                        $$DriftAccountsTableReferences._accTypeTable(db).id,
                   ) as T;
                 }
                 if (profile) {
@@ -8420,9 +8503,9 @@ class $$AccountsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.profile,
                     referencedTable:
-                        $$AccountsTableReferences._profileTable(db),
+                        $$DriftAccountsTableReferences._profileTable(db),
                     referencedColumn:
-                        $$AccountsTableReferences._profileTable(db).id,
+                        $$DriftAccountsTableReferences._profileTable(db).id,
                   ) as T;
                 }
 
@@ -8431,121 +8514,131 @@ class $$AccountsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (drAccount)
-                    await $_getPrefetchedData<Account, $AccountsTable,
-                            Transaction>(
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftTransaction>(
                         currentTable: table,
                         referencedTable:
-                            $$AccountsTableReferences._drAccountTable(db),
+                            $$DriftAccountsTableReferences._drAccountTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccountsTableReferences(db, table, p0).drAccount,
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .drAccount,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) =>
                                 referencedItems.where((e) => e.dr == item.id),
                         typedResults: items),
                   if (crAccount)
-                    await $_getPrefetchedData<Account, $AccountsTable,
-                            Transaction>(
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftTransaction>(
                         currentTable: table,
                         referencedTable:
-                            $$AccountsTableReferences._crAccountTable(db),
+                            $$DriftAccountsTableReferences._crAccountTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccountsTableReferences(db, table, p0).crAccount,
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .crAccount,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) =>
                                 referencedItems.where((e) => e.cr == item.id),
                         typedResults: items),
-                  if (banksRefs)
-                    await $_getPrefetchedData<Account, $AccountsTable, Bank>(
+                  if (driftBanksRefs)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftBank>(
                         currentTable: table,
-                        referencedTable:
-                            $$AccountsTableReferences._banksRefsTable(db),
+                        referencedTable: $$DriftAccountsTableReferences
+                            ._driftBanksRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccountsTableReferences(db, table, p0).banksRefs,
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .driftBanksRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.account == item.id),
                         typedResults: items),
-                  if (walletsRefs)
-                    await $_getPrefetchedData<Account, $AccountsTable, Wallet>(
+                  if (driftWalletsRefs)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftWallet>(
                         currentTable: table,
-                        referencedTable:
-                            $$AccountsTableReferences._walletsRefsTable(db),
+                        referencedTable: $$DriftAccountsTableReferences
+                            ._driftWalletsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccountsTableReferences(db, table, p0)
-                                .walletsRefs,
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .driftWalletsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.account == item.id),
                         typedResults: items),
-                  if (loansRefs)
-                    await $_getPrefetchedData<Account, $AccountsTable, Loan>(
+                  if (driftLoansRefs)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftLoan>(
                         currentTable: table,
-                        referencedTable:
-                            $$AccountsTableReferences._loansRefsTable(db),
+                        referencedTable: $$DriftAccountsTableReferences
+                            ._driftLoansRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccountsTableReferences(db, table, p0).loansRefs,
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .driftLoansRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.account == item.id),
                         typedResults: items),
-                  if (cCardsRefs)
-                    await $_getPrefetchedData<Account, $AccountsTable, CCard>(
+                  if (driftCCardsRefs)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftCCard>(
                         currentTable: table,
-                        referencedTable:
-                            $$AccountsTableReferences._cCardsRefsTable(db),
+                        referencedTable: $$DriftAccountsTableReferences
+                            ._driftCCardsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccountsTableReferences(db, table, p0).cCardsRefs,
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .driftCCardsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.account == item.id),
                         typedResults: items),
-                  if (balancesRefs)
-                    await $_getPrefetchedData<Account, $AccountsTable, Balance>(
+                  if (driftBalancesRefs)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftBalance>(
                         currentTable: table,
-                        referencedTable:
-                            $$AccountsTableReferences._balancesRefsTable(db),
+                        referencedTable: $$DriftAccountsTableReferences
+                            ._driftBalancesRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccountsTableReferences(db, table, p0)
-                                .balancesRefs,
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .driftBalancesRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.account == item.id),
                         typedResults: items),
-                  if (budgetAccountsRefs)
-                    await $_getPrefetchedData<Account, $AccountsTable,
-                            BudgetAccount>(
+                  if (driftBudgetAccountsRefs)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftBudgetAccount>(
                         currentTable: table,
-                        referencedTable: $$AccountsTableReferences
-                            ._budgetAccountsRefsTable(db),
+                        referencedTable: $$DriftAccountsTableReferences
+                            ._driftBudgetAccountsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccountsTableReferences(db, table, p0)
-                                .budgetAccountsRefs,
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .driftBudgetAccountsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.account == item.id),
                         typedResults: items),
-                  if (budgetFundsRefs)
-                    await $_getPrefetchedData<Account, $AccountsTable,
-                            BudgetFund>(
+                  if (driftBudgetFundsRefs)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftBudgetFund>(
                         currentTable: table,
-                        referencedTable:
-                            $$AccountsTableReferences._budgetFundsRefsTable(db),
+                        referencedTable: $$DriftAccountsTableReferences
+                            ._driftBudgetFundsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccountsTableReferences(db, table, p0)
-                                .budgetFundsRefs,
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .driftBudgetFundsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.account == item.id),
                         typedResults: items),
-                  if (subscriptionsRefs)
-                    await $_getPrefetchedData<Account, $AccountsTable,
-                            Subscription>(
+                  if (driftSubscriptionsRefs)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftSubscription>(
                         currentTable: table,
-                        referencedTable: $$AccountsTableReferences
-                            ._subscriptionsRefsTable(db),
+                        referencedTable: $$DriftAccountsTableReferences
+                            ._driftSubscriptionsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$AccountsTableReferences(db, table, p0)
-                                .subscriptionsRefs,
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .driftSubscriptionsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.account == item.id),
@@ -8557,31 +8650,32 @@ class $$AccountsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$AccountsTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftAccountsTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $AccountsTable,
-    Account,
-    $$AccountsTableFilterComposer,
-    $$AccountsTableOrderingComposer,
-    $$AccountsTableAnnotationComposer,
-    $$AccountsTableCreateCompanionBuilder,
-    $$AccountsTableUpdateCompanionBuilder,
-    (Account, $$AccountsTableReferences),
-    Account,
+    $DriftAccountsTable,
+    DriftAccount,
+    $$DriftAccountsTableFilterComposer,
+    $$DriftAccountsTableOrderingComposer,
+    $$DriftAccountsTableAnnotationComposer,
+    $$DriftAccountsTableCreateCompanionBuilder,
+    $$DriftAccountsTableUpdateCompanionBuilder,
+    (DriftAccount, $$DriftAccountsTableReferences),
+    DriftAccount,
     PrefetchHooks Function(
         {bool accType,
         bool profile,
         bool drAccount,
         bool crAccount,
-        bool banksRefs,
-        bool walletsRefs,
-        bool loansRefs,
-        bool cCardsRefs,
-        bool balancesRefs,
-        bool budgetAccountsRefs,
-        bool budgetFundsRefs,
-        bool subscriptionsRefs})>;
-typedef $$BudgetsTableCreateCompanionBuilder = BudgetsCompanion Function({
+        bool driftBanksRefs,
+        bool driftWalletsRefs,
+        bool driftLoansRefs,
+        bool driftCCardsRefs,
+        bool driftBalancesRefs,
+        bool driftBudgetAccountsRefs,
+        bool driftBudgetFundsRefs,
+        bool driftSubscriptionsRefs})>;
+typedef $$DriftBudgetsTableCreateCompanionBuilder = DriftBudgetsCompanion
+    Function({
   Value<int> id,
   required String name,
   required BudgetInterval interval,
@@ -8592,7 +8686,8 @@ typedef $$BudgetsTableCreateCompanionBuilder = BudgetsCompanion Function({
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
 });
-typedef $$BudgetsTableUpdateCompanionBuilder = BudgetsCompanion Function({
+typedef $$DriftBudgetsTableUpdateCompanionBuilder = DriftBudgetsCompanion
+    Function({
   Value<int> id,
   Value<String> name,
   Value<BudgetInterval> interval,
@@ -8604,17 +8699,18 @@ typedef $$BudgetsTableUpdateCompanionBuilder = BudgetsCompanion Function({
   Value<DateTime> updateDate,
 });
 
-final class $$BudgetsTableReferences
-    extends BaseReferences<_$MyDatabase, $BudgetsTable, Budget> {
-  $$BudgetsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftBudgetsTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftBudgetsTable, DriftBudget> {
+  $$DriftBudgetsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $ProfilesTable _profileTable(_$MyDatabase db) => db.profiles
-      .createAlias($_aliasNameGenerator(db.budgets.profile, db.profiles.id));
+  static $DriftProfilesTable _profileTable(_$MyDatabase db) =>
+      db.driftProfiles.createAlias(
+          $_aliasNameGenerator(db.driftBudgets.profile, db.driftProfiles.id));
 
-  $$ProfilesTableProcessedTableManager get profile {
+  $$DriftProfilesTableProcessedTableManager get profile {
     final $_column = $_itemColumn<int>('profile')!;
 
-    final manager = $$ProfilesTableTableManager($_db, $_db.profiles)
+    final manager = $$DriftProfilesTableTableManager($_db, $_db.driftProfiles)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_profileTable($_db));
     if (item == null) return manager;
@@ -8622,54 +8718,60 @@ final class $$BudgetsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static MultiTypedResultKey<$ProjectsTable, List<Project>> _projectsRefsTable(
-          _$MyDatabase db) =>
-      MultiTypedResultKey.fromTable(db.projects,
-          aliasName: $_aliasNameGenerator(db.budgets.id, db.projects.budget));
-
-  $$ProjectsTableProcessedTableManager get projectsRefs {
-    final manager = $$ProjectsTableTableManager($_db, $_db.projects)
-        .filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_projectsRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$BudgetAccountsTable, List<BudgetAccount>>
-      _budgetAccountsRefsTable(_$MyDatabase db) =>
-          MultiTypedResultKey.fromTable(db.budgetAccounts,
+  static MultiTypedResultKey<$DriftProjectsTable, List<DriftProject>>
+      _driftProjectsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftProjects,
               aliasName: $_aliasNameGenerator(
-                  db.budgets.id, db.budgetAccounts.budget));
+                  db.driftBudgets.id, db.driftProjects.budget));
 
-  $$BudgetAccountsTableProcessedTableManager get budgetAccountsRefs {
-    final manager = $$BudgetAccountsTableTableManager($_db, $_db.budgetAccounts)
+  $$DriftProjectsTableProcessedTableManager get driftProjectsRefs {
+    final manager = $$DriftProjectsTableTableManager($_db, $_db.driftProjects)
         .filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_budgetAccountsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_driftProjectsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$BudgetFundsTable, List<BudgetFund>>
-      _budgetFundsRefsTable(_$MyDatabase db) =>
-          MultiTypedResultKey.fromTable(db.budgetFunds,
-              aliasName:
-                  $_aliasNameGenerator(db.budgets.id, db.budgetFunds.budget));
+  static MultiTypedResultKey<$DriftBudgetAccountsTable,
+      List<DriftBudgetAccount>> _driftBudgetAccountsRefsTable(
+          _$MyDatabase db) =>
+      MultiTypedResultKey.fromTable(db.driftBudgetAccounts,
+          aliasName: $_aliasNameGenerator(
+              db.driftBudgets.id, db.driftBudgetAccounts.budget));
 
-  $$BudgetFundsTableProcessedTableManager get budgetFundsRefs {
-    final manager = $$BudgetFundsTableTableManager($_db, $_db.budgetFunds)
-        .filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
+  $$DriftBudgetAccountsTableProcessedTableManager get driftBudgetAccountsRefs {
+    final manager =
+        $$DriftBudgetAccountsTableTableManager($_db, $_db.driftBudgetAccounts)
+            .filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_budgetFundsRefsTable($_db));
+    final cache =
+        $_typedResult.readTableOrNull(_driftBudgetAccountsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DriftBudgetFundsTable, List<DriftBudgetFund>>
+      _driftBudgetFundsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftBudgetFunds,
+              aliasName: $_aliasNameGenerator(
+                  db.driftBudgets.id, db.driftBudgetFunds.budget));
+
+  $$DriftBudgetFundsTableProcessedTableManager get driftBudgetFundsRefs {
+    final manager =
+        $$DriftBudgetFundsTableTableManager($_db, $_db.driftBudgetFunds)
+            .filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_driftBudgetFundsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 }
 
-class $$BudgetsTableFilterComposer
-    extends Composer<_$MyDatabase, $BudgetsTable> {
-  $$BudgetsTableFilterComposer({
+class $$DriftBudgetsTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftBudgetsTable> {
+  $$DriftBudgetsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -8702,18 +8804,18 @@ class $$BudgetsTableFilterComposer
   ColumnFilters<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnFilters(column));
 
-  $$ProfilesTableFilterComposer get profile {
-    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+  $$DriftProfilesTableFilterComposer get profile {
+    final $$DriftProfilesTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableFilterComposer(
+            $$DriftProfilesTableFilterComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8722,19 +8824,19 @@ class $$BudgetsTableFilterComposer
     return composer;
   }
 
-  Expression<bool> projectsRefs(
-      Expression<bool> Function($$ProjectsTableFilterComposer f) f) {
-    final $$ProjectsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftProjectsRefs(
+      Expression<bool> Function($$DriftProjectsTableFilterComposer f) f) {
+    final $$DriftProjectsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.projects,
+        referencedTable: $db.driftProjects,
         getReferencedColumn: (t) => t.budget,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectsTableFilterComposer(
+            $$DriftProjectsTableFilterComposer(
               $db: $db,
-              $table: $db.projects,
+              $table: $db.driftProjects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8743,19 +8845,19 @@ class $$BudgetsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> budgetAccountsRefs(
-      Expression<bool> Function($$BudgetAccountsTableFilterComposer f) f) {
-    final $$BudgetAccountsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftBudgetAccountsRefs(
+      Expression<bool> Function($$DriftBudgetAccountsTableFilterComposer f) f) {
+    final $$DriftBudgetAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetAccounts,
+        referencedTable: $db.driftBudgetAccounts,
         getReferencedColumn: (t) => t.budget,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetAccountsTableFilterComposer(
+            $$DriftBudgetAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.budgetAccounts,
+              $table: $db.driftBudgetAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8764,19 +8866,19 @@ class $$BudgetsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> budgetFundsRefs(
-      Expression<bool> Function($$BudgetFundsTableFilterComposer f) f) {
-    final $$BudgetFundsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftBudgetFundsRefs(
+      Expression<bool> Function($$DriftBudgetFundsTableFilterComposer f) f) {
+    final $$DriftBudgetFundsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetFunds,
+        referencedTable: $db.driftBudgetFunds,
         getReferencedColumn: (t) => t.budget,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetFundsTableFilterComposer(
+            $$DriftBudgetFundsTableFilterComposer(
               $db: $db,
-              $table: $db.budgetFunds,
+              $table: $db.driftBudgetFunds,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8786,9 +8888,9 @@ class $$BudgetsTableFilterComposer
   }
 }
 
-class $$BudgetsTableOrderingComposer
-    extends Composer<_$MyDatabase, $BudgetsTable> {
-  $$BudgetsTableOrderingComposer({
+class $$DriftBudgetsTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftBudgetsTable> {
+  $$DriftBudgetsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -8819,18 +8921,18 @@ class $$BudgetsTableOrderingComposer
   ColumnOrderings<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnOrderings(column));
 
-  $$ProfilesTableOrderingComposer get profile {
-    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+  $$DriftProfilesTableOrderingComposer get profile {
+    final $$DriftProfilesTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableOrderingComposer(
+            $$DriftProfilesTableOrderingComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8840,9 +8942,9 @@ class $$BudgetsTableOrderingComposer
   }
 }
 
-class $$BudgetsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $BudgetsTable> {
-  $$BudgetsTableAnnotationComposer({
+class $$DriftBudgetsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftBudgetsTable> {
+  $$DriftBudgetsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -8873,18 +8975,18 @@ class $$BudgetsTableAnnotationComposer
   GeneratedColumn<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => column);
 
-  $$ProfilesTableAnnotationComposer get profile {
-    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+  $$DriftProfilesTableAnnotationComposer get profile {
+    final $$DriftProfilesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableAnnotationComposer(
+            $$DriftProfilesTableAnnotationComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8893,19 +8995,19 @@ class $$BudgetsTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> projectsRefs<T extends Object>(
-      Expression<T> Function($$ProjectsTableAnnotationComposer a) f) {
-    final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftProjectsRefs<T extends Object>(
+      Expression<T> Function($$DriftProjectsTableAnnotationComposer a) f) {
+    final $$DriftProjectsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.projects,
+        referencedTable: $db.driftProjects,
         getReferencedColumn: (t) => t.budget,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectsTableAnnotationComposer(
+            $$DriftProjectsTableAnnotationComposer(
               $db: $db,
-              $table: $db.projects,
+              $table: $db.driftProjects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8914,40 +9016,42 @@ class $$BudgetsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> budgetAccountsRefs<T extends Object>(
-      Expression<T> Function($$BudgetAccountsTableAnnotationComposer a) f) {
-    final $$BudgetAccountsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetAccounts,
-        getReferencedColumn: (t) => t.budget,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetAccountsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.budgetAccounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+  Expression<T> driftBudgetAccountsRefs<T extends Object>(
+      Expression<T> Function($$DriftBudgetAccountsTableAnnotationComposer a)
+          f) {
+    final $$DriftBudgetAccountsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftBudgetAccounts,
+            getReferencedColumn: (t) => t.budget,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftBudgetAccountsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftBudgetAccounts,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 
-  Expression<T> budgetFundsRefs<T extends Object>(
-      Expression<T> Function($$BudgetFundsTableAnnotationComposer a) f) {
-    final $$BudgetFundsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> driftBudgetFundsRefs<T extends Object>(
+      Expression<T> Function($$DriftBudgetFundsTableAnnotationComposer a) f) {
+    final $$DriftBudgetFundsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.budgetFunds,
+        referencedTable: $db.driftBudgetFunds,
         getReferencedColumn: (t) => t.budget,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetFundsTableAnnotationComposer(
+            $$DriftBudgetFundsTableAnnotationComposer(
               $db: $db,
-              $table: $db.budgetFunds,
+              $table: $db.driftBudgetFunds,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8957,32 +9061,32 @@ class $$BudgetsTableAnnotationComposer
   }
 }
 
-class $$BudgetsTableTableManager extends RootTableManager<
+class $$DriftBudgetsTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $BudgetsTable,
-    Budget,
-    $$BudgetsTableFilterComposer,
-    $$BudgetsTableOrderingComposer,
-    $$BudgetsTableAnnotationComposer,
-    $$BudgetsTableCreateCompanionBuilder,
-    $$BudgetsTableUpdateCompanionBuilder,
-    (Budget, $$BudgetsTableReferences),
-    Budget,
+    $DriftBudgetsTable,
+    DriftBudget,
+    $$DriftBudgetsTableFilterComposer,
+    $$DriftBudgetsTableOrderingComposer,
+    $$DriftBudgetsTableAnnotationComposer,
+    $$DriftBudgetsTableCreateCompanionBuilder,
+    $$DriftBudgetsTableUpdateCompanionBuilder,
+    (DriftBudget, $$DriftBudgetsTableReferences),
+    DriftBudget,
     PrefetchHooks Function(
         {bool profile,
-        bool projectsRefs,
-        bool budgetAccountsRefs,
-        bool budgetFundsRefs})> {
-  $$BudgetsTableTableManager(_$MyDatabase db, $BudgetsTable table)
+        bool driftProjectsRefs,
+        bool driftBudgetAccountsRefs,
+        bool driftBudgetFundsRefs})> {
+  $$DriftBudgetsTableTableManager(_$MyDatabase db, $DriftBudgetsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$BudgetsTableFilterComposer($db: db, $table: table),
+              $$DriftBudgetsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$BudgetsTableOrderingComposer($db: db, $table: table),
+              $$DriftBudgetsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$BudgetsTableAnnotationComposer($db: db, $table: table),
+              $$DriftBudgetsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -8994,7 +9098,7 @@ class $$BudgetsTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              BudgetsCompanion(
+              DriftBudgetsCompanion(
             id: id,
             name: name,
             interval: interval,
@@ -9016,7 +9120,7 @@ class $$BudgetsTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              BudgetsCompanion.insert(
+              DriftBudgetsCompanion.insert(
             id: id,
             name: name,
             interval: interval,
@@ -9028,20 +9132,22 @@ class $$BudgetsTableTableManager extends RootTableManager<
             updateDate: updateDate,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$BudgetsTableReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftBudgetsTableReferences(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: (
               {profile = false,
-              projectsRefs = false,
-              budgetAccountsRefs = false,
-              budgetFundsRefs = false}) {
+              driftProjectsRefs = false,
+              driftBudgetAccountsRefs = false,
+              driftBudgetFundsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (projectsRefs) db.projects,
-                if (budgetAccountsRefs) db.budgetAccounts,
-                if (budgetFundsRefs) db.budgetFunds
+                if (driftProjectsRefs) db.driftProjects,
+                if (driftBudgetAccountsRefs) db.driftBudgetAccounts,
+                if (driftBudgetFundsRefs) db.driftBudgetFunds
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -9060,9 +9166,10 @@ class $$BudgetsTableTableManager extends RootTableManager<
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.profile,
-                    referencedTable: $$BudgetsTableReferences._profileTable(db),
+                    referencedTable:
+                        $$DriftBudgetsTableReferences._profileTable(db),
                     referencedColumn:
-                        $$BudgetsTableReferences._profileTable(db).id,
+                        $$DriftBudgetsTableReferences._profileTable(db).id,
                   ) as T;
                 }
 
@@ -9070,40 +9177,41 @@ class $$BudgetsTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (projectsRefs)
-                    await $_getPrefetchedData<Budget, $BudgetsTable, Project>(
+                  if (driftProjectsRefs)
+                    await $_getPrefetchedData<DriftBudget, $DriftBudgetsTable,
+                            DriftProject>(
                         currentTable: table,
-                        referencedTable:
-                            $$BudgetsTableReferences._projectsRefsTable(db),
+                        referencedTable: $$DriftBudgetsTableReferences
+                            ._driftProjectsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$BudgetsTableReferences(db, table, p0)
-                                .projectsRefs,
+                            $$DriftBudgetsTableReferences(db, table, p0)
+                                .driftProjectsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.budget == item.id),
                         typedResults: items),
-                  if (budgetAccountsRefs)
-                    await $_getPrefetchedData<Budget, $BudgetsTable,
-                            BudgetAccount>(
+                  if (driftBudgetAccountsRefs)
+                    await $_getPrefetchedData<DriftBudget, $DriftBudgetsTable,
+                            DriftBudgetAccount>(
                         currentTable: table,
-                        referencedTable: $$BudgetsTableReferences
-                            ._budgetAccountsRefsTable(db),
+                        referencedTable: $$DriftBudgetsTableReferences
+                            ._driftBudgetAccountsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$BudgetsTableReferences(db, table, p0)
-                                .budgetAccountsRefs,
+                            $$DriftBudgetsTableReferences(db, table, p0)
+                                .driftBudgetAccountsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.budget == item.id),
                         typedResults: items),
-                  if (budgetFundsRefs)
-                    await $_getPrefetchedData<Budget, $BudgetsTable,
-                            BudgetFund>(
+                  if (driftBudgetFundsRefs)
+                    await $_getPrefetchedData<DriftBudget, $DriftBudgetsTable,
+                            DriftBudgetFund>(
                         currentTable: table,
-                        referencedTable:
-                            $$BudgetsTableReferences._budgetFundsRefsTable(db),
+                        referencedTable: $$DriftBudgetsTableReferences
+                            ._driftBudgetFundsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$BudgetsTableReferences(db, table, p0)
-                                .budgetFundsRefs,
+                            $$DriftBudgetsTableReferences(db, table, p0)
+                                .driftBudgetFundsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.budget == item.id),
@@ -9115,23 +9223,24 @@ class $$BudgetsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$BudgetsTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftBudgetsTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $BudgetsTable,
-    Budget,
-    $$BudgetsTableFilterComposer,
-    $$BudgetsTableOrderingComposer,
-    $$BudgetsTableAnnotationComposer,
-    $$BudgetsTableCreateCompanionBuilder,
-    $$BudgetsTableUpdateCompanionBuilder,
-    (Budget, $$BudgetsTableReferences),
-    Budget,
+    $DriftBudgetsTable,
+    DriftBudget,
+    $$DriftBudgetsTableFilterComposer,
+    $$DriftBudgetsTableOrderingComposer,
+    $$DriftBudgetsTableAnnotationComposer,
+    $$DriftBudgetsTableCreateCompanionBuilder,
+    $$DriftBudgetsTableUpdateCompanionBuilder,
+    (DriftBudget, $$DriftBudgetsTableReferences),
+    DriftBudget,
     PrefetchHooks Function(
         {bool profile,
-        bool projectsRefs,
-        bool budgetAccountsRefs,
-        bool budgetFundsRefs})>;
-typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
+        bool driftProjectsRefs,
+        bool driftBudgetAccountsRefs,
+        bool driftBudgetFundsRefs})>;
+typedef $$DriftProjectsTableCreateCompanionBuilder = DriftProjectsCompanion
+    Function({
   Value<int> id,
   required String name,
   Value<String?> description,
@@ -9143,7 +9252,8 @@ typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
 });
-typedef $$ProjectsTableUpdateCompanionBuilder = ProjectsCompanion Function({
+typedef $$DriftProjectsTableUpdateCompanionBuilder = DriftProjectsCompanion
+    Function({
   Value<int> id,
   Value<String> name,
   Value<String?> description,
@@ -9156,17 +9266,19 @@ typedef $$ProjectsTableUpdateCompanionBuilder = ProjectsCompanion Function({
   Value<DateTime> updateDate,
 });
 
-final class $$ProjectsTableReferences
-    extends BaseReferences<_$MyDatabase, $ProjectsTable, Project> {
-  $$ProjectsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftProjectsTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftProjectsTable, DriftProject> {
+  $$DriftProjectsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
 
-  static $ProfilesTable _profileTable(_$MyDatabase db) => db.profiles
-      .createAlias($_aliasNameGenerator(db.projects.profile, db.profiles.id));
+  static $DriftProfilesTable _profileTable(_$MyDatabase db) =>
+      db.driftProfiles.createAlias(
+          $_aliasNameGenerator(db.driftProjects.profile, db.driftProfiles.id));
 
-  $$ProfilesTableProcessedTableManager get profile {
+  $$DriftProfilesTableProcessedTableManager get profile {
     final $_column = $_itemColumn<int>('profile')!;
 
-    final manager = $$ProfilesTableTableManager($_db, $_db.profiles)
+    final manager = $$DriftProfilesTableTableManager($_db, $_db.driftProfiles)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_profileTable($_db));
     if (item == null) return manager;
@@ -9174,13 +9286,14 @@ final class $$ProjectsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $BudgetsTable _budgetTable(_$MyDatabase db) => db.budgets
-      .createAlias($_aliasNameGenerator(db.projects.budget, db.budgets.id));
+  static $DriftBudgetsTable _budgetTable(_$MyDatabase db) =>
+      db.driftBudgets.createAlias(
+          $_aliasNameGenerator(db.driftProjects.budget, db.driftBudgets.id));
 
-  $$BudgetsTableProcessedTableManager? get budget {
+  $$DriftBudgetsTableProcessedTableManager? get budget {
     final $_column = $_itemColumn<int>('budget');
     if ($_column == null) return null;
-    final manager = $$BudgetsTableTableManager($_db, $_db.budgets)
+    final manager = $$DriftBudgetsTableTableManager($_db, $_db.driftBudgets)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_budgetTable($_db));
     if (item == null) return manager;
@@ -9188,40 +9301,44 @@ final class $$ProjectsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static MultiTypedResultKey<$TransactionsTable, List<Transaction>>
-      _transactionsRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
-          db.transactions,
-          aliasName:
-              $_aliasNameGenerator(db.projects.id, db.transactions.project));
+  static MultiTypedResultKey<$DriftTransactionsTable, List<DriftTransaction>>
+      _driftTransactionsRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftTransactions,
+              aliasName: $_aliasNameGenerator(
+                  db.driftProjects.id, db.driftTransactions.project));
 
-  $$TransactionsTableProcessedTableManager get transactionsRefs {
-    final manager = $$TransactionsTableTableManager($_db, $_db.transactions)
-        .filter((f) => f.project.id.sqlEquals($_itemColumn<int>('id')!));
+  $$DriftTransactionsTableProcessedTableManager get driftTransactionsRefs {
+    final manager =
+        $$DriftTransactionsTableTableManager($_db, $_db.driftTransactions)
+            .filter((f) => f.project.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_transactionsRefsTable($_db));
+    final cache =
+        $_typedResult.readTableOrNull(_driftTransactionsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$ProjectPhotosTable, List<ProjectPhoto>>
-      _projectPhotosRefsTable(_$MyDatabase db) => MultiTypedResultKey.fromTable(
-          db.projectPhotos,
-          aliasName:
-              $_aliasNameGenerator(db.projects.id, db.projectPhotos.project));
+  static MultiTypedResultKey<$DriftProjectPhotosTable, List<DriftProjectPhoto>>
+      _driftProjectPhotosRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftProjectPhotos,
+              aliasName: $_aliasNameGenerator(
+                  db.driftProjects.id, db.driftProjectPhotos.project));
 
-  $$ProjectPhotosTableProcessedTableManager get projectPhotosRefs {
-    final manager = $$ProjectPhotosTableTableManager($_db, $_db.projectPhotos)
-        .filter((f) => f.project.id.sqlEquals($_itemColumn<int>('id')!));
+  $$DriftProjectPhotosTableProcessedTableManager get driftProjectPhotosRefs {
+    final manager =
+        $$DriftProjectPhotosTableTableManager($_db, $_db.driftProjectPhotos)
+            .filter((f) => f.project.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_projectPhotosRefsTable($_db));
+    final cache =
+        $_typedResult.readTableOrNull(_driftProjectPhotosRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 }
 
-class $$ProjectsTableFilterComposer
-    extends Composer<_$MyDatabase, $ProjectsTable> {
-  $$ProjectsTableFilterComposer({
+class $$DriftProjectsTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftProjectsTable> {
+  $$DriftProjectsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -9254,18 +9371,18 @@ class $$ProjectsTableFilterComposer
   ColumnFilters<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnFilters(column));
 
-  $$ProfilesTableFilterComposer get profile {
-    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+  $$DriftProfilesTableFilterComposer get profile {
+    final $$DriftProfilesTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableFilterComposer(
+            $$DriftProfilesTableFilterComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9274,18 +9391,18 @@ class $$ProjectsTableFilterComposer
     return composer;
   }
 
-  $$BudgetsTableFilterComposer get budget {
-    final $$BudgetsTableFilterComposer composer = $composerBuilder(
+  $$DriftBudgetsTableFilterComposer get budget {
+    final $$DriftBudgetsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.budget,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableFilterComposer(
+            $$DriftBudgetsTableFilterComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9294,19 +9411,19 @@ class $$ProjectsTableFilterComposer
     return composer;
   }
 
-  Expression<bool> transactionsRefs(
-      Expression<bool> Function($$TransactionsTableFilterComposer f) f) {
-    final $$TransactionsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftTransactionsRefs(
+      Expression<bool> Function($$DriftTransactionsTableFilterComposer f) f) {
+    final $$DriftTransactionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.transactions,
+        referencedTable: $db.driftTransactions,
         getReferencedColumn: (t) => t.project,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableFilterComposer(
+            $$DriftTransactionsTableFilterComposer(
               $db: $db,
-              $table: $db.transactions,
+              $table: $db.driftTransactions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9315,19 +9432,19 @@ class $$ProjectsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> projectPhotosRefs(
-      Expression<bool> Function($$ProjectPhotosTableFilterComposer f) f) {
-    final $$ProjectPhotosTableFilterComposer composer = $composerBuilder(
+  Expression<bool> driftProjectPhotosRefs(
+      Expression<bool> Function($$DriftProjectPhotosTableFilterComposer f) f) {
+    final $$DriftProjectPhotosTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.projectPhotos,
+        referencedTable: $db.driftProjectPhotos,
         getReferencedColumn: (t) => t.project,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectPhotosTableFilterComposer(
+            $$DriftProjectPhotosTableFilterComposer(
               $db: $db,
-              $table: $db.projectPhotos,
+              $table: $db.driftProjectPhotos,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9337,9 +9454,9 @@ class $$ProjectsTableFilterComposer
   }
 }
 
-class $$ProjectsTableOrderingComposer
-    extends Composer<_$MyDatabase, $ProjectsTable> {
-  $$ProjectsTableOrderingComposer({
+class $$DriftProjectsTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftProjectsTable> {
+  $$DriftProjectsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -9370,18 +9487,18 @@ class $$ProjectsTableOrderingComposer
   ColumnOrderings<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnOrderings(column));
 
-  $$ProfilesTableOrderingComposer get profile {
-    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+  $$DriftProfilesTableOrderingComposer get profile {
+    final $$DriftProfilesTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableOrderingComposer(
+            $$DriftProfilesTableOrderingComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9390,18 +9507,18 @@ class $$ProjectsTableOrderingComposer
     return composer;
   }
 
-  $$BudgetsTableOrderingComposer get budget {
-    final $$BudgetsTableOrderingComposer composer = $composerBuilder(
+  $$DriftBudgetsTableOrderingComposer get budget {
+    final $$DriftBudgetsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.budget,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableOrderingComposer(
+            $$DriftBudgetsTableOrderingComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9411,9 +9528,9 @@ class $$ProjectsTableOrderingComposer
   }
 }
 
-class $$ProjectsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $ProjectsTable> {
-  $$ProjectsTableAnnotationComposer({
+class $$DriftProjectsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftProjectsTable> {
+  $$DriftProjectsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -9444,18 +9561,18 @@ class $$ProjectsTableAnnotationComposer
   GeneratedColumn<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => column);
 
-  $$ProfilesTableAnnotationComposer get profile {
-    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+  $$DriftProfilesTableAnnotationComposer get profile {
+    final $$DriftProfilesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableAnnotationComposer(
+            $$DriftProfilesTableAnnotationComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9464,18 +9581,18 @@ class $$ProjectsTableAnnotationComposer
     return composer;
   }
 
-  $$BudgetsTableAnnotationComposer get budget {
-    final $$BudgetsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftBudgetsTableAnnotationComposer get budget {
+    final $$DriftBudgetsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.budget,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableAnnotationComposer(
+            $$DriftBudgetsTableAnnotationComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9484,75 +9601,77 @@ class $$ProjectsTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> transactionsRefs<T extends Object>(
-      Expression<T> Function($$TransactionsTableAnnotationComposer a) f) {
-    final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.transactions,
-        getReferencedColumn: (t) => t.project,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.transactions,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+  Expression<T> driftTransactionsRefs<T extends Object>(
+      Expression<T> Function($$DriftTransactionsTableAnnotationComposer a) f) {
+    final $$DriftTransactionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftTransactions,
+            getReferencedColumn: (t) => t.project,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftTransactionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftTransactions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 
-  Expression<T> projectPhotosRefs<T extends Object>(
-      Expression<T> Function($$ProjectPhotosTableAnnotationComposer a) f) {
-    final $$ProjectPhotosTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.projectPhotos,
-        getReferencedColumn: (t) => t.project,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectPhotosTableAnnotationComposer(
-              $db: $db,
-              $table: $db.projectPhotos,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+  Expression<T> driftProjectPhotosRefs<T extends Object>(
+      Expression<T> Function($$DriftProjectPhotosTableAnnotationComposer a) f) {
+    final $$DriftProjectPhotosTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftProjectPhotos,
+            getReferencedColumn: (t) => t.project,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftProjectPhotosTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftProjectPhotos,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
 
-class $$ProjectsTableTableManager extends RootTableManager<
+class $$DriftProjectsTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $ProjectsTable,
-    Project,
-    $$ProjectsTableFilterComposer,
-    $$ProjectsTableOrderingComposer,
-    $$ProjectsTableAnnotationComposer,
-    $$ProjectsTableCreateCompanionBuilder,
-    $$ProjectsTableUpdateCompanionBuilder,
-    (Project, $$ProjectsTableReferences),
-    Project,
+    $DriftProjectsTable,
+    DriftProject,
+    $$DriftProjectsTableFilterComposer,
+    $$DriftProjectsTableOrderingComposer,
+    $$DriftProjectsTableAnnotationComposer,
+    $$DriftProjectsTableCreateCompanionBuilder,
+    $$DriftProjectsTableUpdateCompanionBuilder,
+    (DriftProject, $$DriftProjectsTableReferences),
+    DriftProject,
     PrefetchHooks Function(
         {bool profile,
         bool budget,
-        bool transactionsRefs,
-        bool projectPhotosRefs})> {
-  $$ProjectsTableTableManager(_$MyDatabase db, $ProjectsTable table)
+        bool driftTransactionsRefs,
+        bool driftProjectPhotosRefs})> {
+  $$DriftProjectsTableTableManager(_$MyDatabase db, $DriftProjectsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$ProjectsTableFilterComposer($db: db, $table: table),
+              $$DriftProjectsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$ProjectsTableOrderingComposer($db: db, $table: table),
+              $$DriftProjectsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$ProjectsTableAnnotationComposer($db: db, $table: table),
+              $$DriftProjectsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -9565,7 +9684,7 @@ class $$ProjectsTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              ProjectsCompanion(
+              DriftProjectsCompanion(
             id: id,
             name: name,
             description: description,
@@ -9589,7 +9708,7 @@ class $$ProjectsTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              ProjectsCompanion.insert(
+              DriftProjectsCompanion.insert(
             id: id,
             name: name,
             description: description,
@@ -9602,19 +9721,21 @@ class $$ProjectsTableTableManager extends RootTableManager<
             updateDate: updateDate,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$ProjectsTableReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftProjectsTableReferences(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: (
               {profile = false,
               budget = false,
-              transactionsRefs = false,
-              projectPhotosRefs = false}) {
+              driftTransactionsRefs = false,
+              driftProjectPhotosRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (transactionsRefs) db.transactions,
-                if (projectPhotosRefs) db.projectPhotos
+                if (driftTransactionsRefs) db.driftTransactions,
+                if (driftProjectPhotosRefs) db.driftProjectPhotos
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -9634,18 +9755,19 @@ class $$ProjectsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.profile,
                     referencedTable:
-                        $$ProjectsTableReferences._profileTable(db),
+                        $$DriftProjectsTableReferences._profileTable(db),
                     referencedColumn:
-                        $$ProjectsTableReferences._profileTable(db).id,
+                        $$DriftProjectsTableReferences._profileTable(db).id,
                   ) as T;
                 }
                 if (budget) {
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.budget,
-                    referencedTable: $$ProjectsTableReferences._budgetTable(db),
+                    referencedTable:
+                        $$DriftProjectsTableReferences._budgetTable(db),
                     referencedColumn:
-                        $$ProjectsTableReferences._budgetTable(db).id,
+                        $$DriftProjectsTableReferences._budgetTable(db).id,
                   ) as T;
                 }
 
@@ -9653,28 +9775,28 @@ class $$ProjectsTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (transactionsRefs)
-                    await $_getPrefetchedData<Project, $ProjectsTable,
-                            Transaction>(
+                  if (driftTransactionsRefs)
+                    await $_getPrefetchedData<DriftProject, $DriftProjectsTable,
+                            DriftTransaction>(
                         currentTable: table,
-                        referencedTable: $$ProjectsTableReferences
-                            ._transactionsRefsTable(db),
+                        referencedTable: $$DriftProjectsTableReferences
+                            ._driftTransactionsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$ProjectsTableReferences(db, table, p0)
-                                .transactionsRefs,
+                            $$DriftProjectsTableReferences(db, table, p0)
+                                .driftTransactionsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.project == item.id),
                         typedResults: items),
-                  if (projectPhotosRefs)
-                    await $_getPrefetchedData<Project, $ProjectsTable,
-                            ProjectPhoto>(
+                  if (driftProjectPhotosRefs)
+                    await $_getPrefetchedData<DriftProject, $DriftProjectsTable,
+                            DriftProjectPhoto>(
                         currentTable: table,
-                        referencedTable: $$ProjectsTableReferences
-                            ._projectPhotosRefsTable(db),
+                        referencedTable: $$DriftProjectsTableReferences
+                            ._driftProjectPhotosRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$ProjectsTableReferences(db, table, p0)
-                                .projectPhotosRefs,
+                            $$DriftProjectsTableReferences(db, table, p0)
+                                .driftProjectPhotosRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.project == item.id),
@@ -9686,24 +9808,24 @@ class $$ProjectsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$ProjectsTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftProjectsTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $ProjectsTable,
-    Project,
-    $$ProjectsTableFilterComposer,
-    $$ProjectsTableOrderingComposer,
-    $$ProjectsTableAnnotationComposer,
-    $$ProjectsTableCreateCompanionBuilder,
-    $$ProjectsTableUpdateCompanionBuilder,
-    (Project, $$ProjectsTableReferences),
-    Project,
+    $DriftProjectsTable,
+    DriftProject,
+    $$DriftProjectsTableFilterComposer,
+    $$DriftProjectsTableOrderingComposer,
+    $$DriftProjectsTableAnnotationComposer,
+    $$DriftProjectsTableCreateCompanionBuilder,
+    $$DriftProjectsTableUpdateCompanionBuilder,
+    (DriftProject, $$DriftProjectsTableReferences),
+    DriftProject,
     PrefetchHooks Function(
         {bool profile,
         bool budget,
-        bool transactionsRefs,
-        bool projectPhotosRefs})>;
-typedef $$TransactionsTableCreateCompanionBuilder = TransactionsCompanion
-    Function({
+        bool driftTransactionsRefs,
+        bool driftProjectPhotosRefs})>;
+typedef $$DriftTransactionsTableCreateCompanionBuilder
+    = DriftTransactionsCompanion Function({
   Value<int> id,
   required DateTime vchDate,
   required String narr,
@@ -9717,8 +9839,8 @@ typedef $$TransactionsTableCreateCompanionBuilder = TransactionsCompanion
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
 });
-typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
-    Function({
+typedef $$DriftTransactionsTableUpdateCompanionBuilder
+    = DriftTransactionsCompanion Function({
   Value<int> id,
   Value<DateTime> vchDate,
   Value<String> narr,
@@ -9733,17 +9855,19 @@ typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
   Value<DateTime> updateDate,
 });
 
-final class $$TransactionsTableReferences
-    extends BaseReferences<_$MyDatabase, $TransactionsTable, Transaction> {
-  $$TransactionsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftTransactionsTableReferences extends BaseReferences<
+    _$MyDatabase, $DriftTransactionsTable, DriftTransaction> {
+  $$DriftTransactionsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
 
-  static $AccountsTable _drTable(_$MyDatabase db) => db.accounts
-      .createAlias($_aliasNameGenerator(db.transactions.dr, db.accounts.id));
+  static $DriftAccountsTable _drTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias(
+          $_aliasNameGenerator(db.driftTransactions.dr, db.driftAccounts.id));
 
-  $$AccountsTableProcessedTableManager get dr {
+  $$DriftAccountsTableProcessedTableManager get dr {
     final $_column = $_itemColumn<int>('dr')!;
 
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_drTable($_db));
     if (item == null) return manager;
@@ -9751,13 +9875,14 @@ final class $$TransactionsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $AccountsTable _crTable(_$MyDatabase db) => db.accounts
-      .createAlias($_aliasNameGenerator(db.transactions.cr, db.accounts.id));
+  static $DriftAccountsTable _crTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias(
+          $_aliasNameGenerator(db.driftTransactions.cr, db.driftAccounts.id));
 
-  $$AccountsTableProcessedTableManager get cr {
+  $$DriftAccountsTableProcessedTableManager get cr {
     final $_column = $_itemColumn<int>('cr')!;
 
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_crTable($_db));
     if (item == null) return manager;
@@ -9765,14 +9890,14 @@ final class $$TransactionsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $ProfilesTable _profileTable(_$MyDatabase db) =>
-      db.profiles.createAlias(
-          $_aliasNameGenerator(db.transactions.profile, db.profiles.id));
+  static $DriftProfilesTable _profileTable(_$MyDatabase db) =>
+      db.driftProfiles.createAlias($_aliasNameGenerator(
+          db.driftTransactions.profile, db.driftProfiles.id));
 
-  $$ProfilesTableProcessedTableManager get profile {
+  $$DriftProfilesTableProcessedTableManager get profile {
     final $_column = $_itemColumn<int>('profile')!;
 
-    final manager = $$ProfilesTableTableManager($_db, $_db.profiles)
+    final manager = $$DriftProfilesTableTableManager($_db, $_db.driftProfiles)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_profileTable($_db));
     if (item == null) return manager;
@@ -9780,14 +9905,14 @@ final class $$TransactionsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $ProjectsTable _projectTable(_$MyDatabase db) =>
-      db.projects.createAlias(
-          $_aliasNameGenerator(db.transactions.project, db.projects.id));
+  static $DriftProjectsTable _projectTable(_$MyDatabase db) =>
+      db.driftProjects.createAlias($_aliasNameGenerator(
+          db.driftTransactions.project, db.driftProjects.id));
 
-  $$ProjectsTableProcessedTableManager? get project {
+  $$DriftProjectsTableProcessedTableManager? get project {
     final $_column = $_itemColumn<int>('project');
     if ($_column == null) return null;
-    final manager = $$ProjectsTableTableManager($_db, $_db.projects)
+    final manager = $$DriftProjectsTableTableManager($_db, $_db.driftProjects)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_projectTable($_db));
     if (item == null) return manager;
@@ -9795,25 +9920,29 @@ final class $$TransactionsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static MultiTypedResultKey<$FilePathsTable, List<FilePath>>
-      _filePathsRefsTable(_$MyDatabase db) =>
-          MultiTypedResultKey.fromTable(db.filePaths,
-              aliasName: $_aliasNameGenerator(
-                  db.transactions.id, db.filePaths.transaction));
+  static MultiTypedResultKey<$DriftTransactionPhotosTable,
+      List<DriftTransactionPhoto>> _driftTransactionPhotosRefsTable(
+          _$MyDatabase db) =>
+      MultiTypedResultKey.fromTable(db.driftTransactionPhotos,
+          aliasName: $_aliasNameGenerator(
+              db.driftTransactions.id, db.driftTransactionPhotos.transaction));
 
-  $$FilePathsTableProcessedTableManager get filePathsRefs {
-    final manager = $$FilePathsTableTableManager($_db, $_db.filePaths)
+  $$DriftTransactionPhotosTableProcessedTableManager
+      get driftTransactionPhotosRefs {
+    final manager = $$DriftTransactionPhotosTableTableManager(
+            $_db, $_db.driftTransactionPhotos)
         .filter((f) => f.transaction.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_filePathsRefsTable($_db));
+    final cache =
+        $_typedResult.readTableOrNull(_driftTransactionPhotosRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 }
 
-class $$TransactionsTableFilterComposer
-    extends Composer<_$MyDatabase, $TransactionsTable> {
-  $$TransactionsTableFilterComposer({
+class $$DriftTransactionsTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftTransactionsTable> {
+  $$DriftTransactionsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -9846,18 +9975,18 @@ class $$TransactionsTableFilterComposer
   ColumnFilters<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnFilters(column));
 
-  $$AccountsTableFilterComposer get dr {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
+  $$DriftAccountsTableFilterComposer get dr {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.dr,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
+            $$DriftAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9866,18 +9995,18 @@ class $$TransactionsTableFilterComposer
     return composer;
   }
 
-  $$AccountsTableFilterComposer get cr {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
+  $$DriftAccountsTableFilterComposer get cr {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.cr,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
+            $$DriftAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9886,18 +10015,18 @@ class $$TransactionsTableFilterComposer
     return composer;
   }
 
-  $$ProfilesTableFilterComposer get profile {
-    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+  $$DriftProfilesTableFilterComposer get profile {
+    final $$DriftProfilesTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableFilterComposer(
+            $$DriftProfilesTableFilterComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9906,18 +10035,18 @@ class $$TransactionsTableFilterComposer
     return composer;
   }
 
-  $$ProjectsTableFilterComposer get project {
-    final $$ProjectsTableFilterComposer composer = $composerBuilder(
+  $$DriftProjectsTableFilterComposer get project {
+    final $$DriftProjectsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.project,
-        referencedTable: $db.projects,
+        referencedTable: $db.driftProjects,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectsTableFilterComposer(
+            $$DriftProjectsTableFilterComposer(
               $db: $db,
-              $table: $db.projects,
+              $table: $db.driftProjects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9926,31 +10055,33 @@ class $$TransactionsTableFilterComposer
     return composer;
   }
 
-  Expression<bool> filePathsRefs(
-      Expression<bool> Function($$FilePathsTableFilterComposer f) f) {
-    final $$FilePathsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.filePaths,
-        getReferencedColumn: (t) => t.transaction,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$FilePathsTableFilterComposer(
-              $db: $db,
-              $table: $db.filePaths,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+  Expression<bool> driftTransactionPhotosRefs(
+      Expression<bool> Function($$DriftTransactionPhotosTableFilterComposer f)
+          f) {
+    final $$DriftTransactionPhotosTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftTransactionPhotos,
+            getReferencedColumn: (t) => t.transaction,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftTransactionPhotosTableFilterComposer(
+                  $db: $db,
+                  $table: $db.driftTransactionPhotos,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
 
-class $$TransactionsTableOrderingComposer
-    extends Composer<_$MyDatabase, $TransactionsTable> {
-  $$TransactionsTableOrderingComposer({
+class $$DriftTransactionsTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftTransactionsTable> {
+  $$DriftTransactionsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -9981,18 +10112,18 @@ class $$TransactionsTableOrderingComposer
   ColumnOrderings<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnOrderings(column));
 
-  $$AccountsTableOrderingComposer get dr {
-    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+  $$DriftAccountsTableOrderingComposer get dr {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.dr,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableOrderingComposer(
+            $$DriftAccountsTableOrderingComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10001,18 +10132,18 @@ class $$TransactionsTableOrderingComposer
     return composer;
   }
 
-  $$AccountsTableOrderingComposer get cr {
-    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+  $$DriftAccountsTableOrderingComposer get cr {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.cr,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableOrderingComposer(
+            $$DriftAccountsTableOrderingComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10021,18 +10152,18 @@ class $$TransactionsTableOrderingComposer
     return composer;
   }
 
-  $$ProfilesTableOrderingComposer get profile {
-    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+  $$DriftProfilesTableOrderingComposer get profile {
+    final $$DriftProfilesTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableOrderingComposer(
+            $$DriftProfilesTableOrderingComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10041,18 +10172,18 @@ class $$TransactionsTableOrderingComposer
     return composer;
   }
 
-  $$ProjectsTableOrderingComposer get project {
-    final $$ProjectsTableOrderingComposer composer = $composerBuilder(
+  $$DriftProjectsTableOrderingComposer get project {
+    final $$DriftProjectsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.project,
-        referencedTable: $db.projects,
+        referencedTable: $db.driftProjects,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectsTableOrderingComposer(
+            $$DriftProjectsTableOrderingComposer(
               $db: $db,
-              $table: $db.projects,
+              $table: $db.driftProjects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10062,9 +10193,9 @@ class $$TransactionsTableOrderingComposer
   }
 }
 
-class $$TransactionsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $TransactionsTable> {
-  $$TransactionsTableAnnotationComposer({
+class $$DriftTransactionsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftTransactionsTable> {
+  $$DriftTransactionsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10095,18 +10226,18 @@ class $$TransactionsTableAnnotationComposer
   GeneratedColumn<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => column);
 
-  $$AccountsTableAnnotationComposer get dr {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftAccountsTableAnnotationComposer get dr {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.dr,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
+            $$DriftAccountsTableAnnotationComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10115,18 +10246,18 @@ class $$TransactionsTableAnnotationComposer
     return composer;
   }
 
-  $$AccountsTableAnnotationComposer get cr {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftAccountsTableAnnotationComposer get cr {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.cr,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
+            $$DriftAccountsTableAnnotationComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10135,18 +10266,18 @@ class $$TransactionsTableAnnotationComposer
     return composer;
   }
 
-  $$ProfilesTableAnnotationComposer get profile {
-    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+  $$DriftProfilesTableAnnotationComposer get profile {
+    final $$DriftProfilesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableAnnotationComposer(
+            $$DriftProfilesTableAnnotationComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10155,18 +10286,18 @@ class $$TransactionsTableAnnotationComposer
     return composer;
   }
 
-  $$ProjectsTableAnnotationComposer get project {
-    final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftProjectsTableAnnotationComposer get project {
+    final $$DriftProjectsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.project,
-        referencedTable: $db.projects,
+        referencedTable: $db.driftProjects,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectsTableAnnotationComposer(
+            $$DriftProjectsTableAnnotationComposer(
               $db: $db,
-              $table: $db.projects,
+              $table: $db.driftProjects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10175,51 +10306,59 @@ class $$TransactionsTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> filePathsRefs<T extends Object>(
-      Expression<T> Function($$FilePathsTableAnnotationComposer a) f) {
-    final $$FilePathsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.filePaths,
-        getReferencedColumn: (t) => t.transaction,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$FilePathsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.filePaths,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+  Expression<T> driftTransactionPhotosRefs<T extends Object>(
+      Expression<T> Function($$DriftTransactionPhotosTableAnnotationComposer a)
+          f) {
+    final $$DriftTransactionPhotosTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftTransactionPhotos,
+            getReferencedColumn: (t) => t.transaction,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftTransactionPhotosTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftTransactionPhotos,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
 
-class $$TransactionsTableTableManager extends RootTableManager<
+class $$DriftTransactionsTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $TransactionsTable,
-    Transaction,
-    $$TransactionsTableFilterComposer,
-    $$TransactionsTableOrderingComposer,
-    $$TransactionsTableAnnotationComposer,
-    $$TransactionsTableCreateCompanionBuilder,
-    $$TransactionsTableUpdateCompanionBuilder,
-    (Transaction, $$TransactionsTableReferences),
-    Transaction,
+    $DriftTransactionsTable,
+    DriftTransaction,
+    $$DriftTransactionsTableFilterComposer,
+    $$DriftTransactionsTableOrderingComposer,
+    $$DriftTransactionsTableAnnotationComposer,
+    $$DriftTransactionsTableCreateCompanionBuilder,
+    $$DriftTransactionsTableUpdateCompanionBuilder,
+    (DriftTransaction, $$DriftTransactionsTableReferences),
+    DriftTransaction,
     PrefetchHooks Function(
-        {bool dr, bool cr, bool profile, bool project, bool filePathsRefs})> {
-  $$TransactionsTableTableManager(_$MyDatabase db, $TransactionsTable table)
+        {bool dr,
+        bool cr,
+        bool profile,
+        bool project,
+        bool driftTransactionPhotosRefs})> {
+  $$DriftTransactionsTableTableManager(
+      _$MyDatabase db, $DriftTransactionsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$TransactionsTableFilterComposer($db: db, $table: table),
+              $$DriftTransactionsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$TransactionsTableOrderingComposer($db: db, $table: table),
+              $$DriftTransactionsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$TransactionsTableAnnotationComposer($db: db, $table: table),
+              $$DriftTransactionsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<DateTime> vchDate = const Value.absent(),
@@ -10234,7 +10373,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              TransactionsCompanion(
+              DriftTransactionsCompanion(
             id: id,
             vchDate: vchDate,
             narr: narr,
@@ -10262,7 +10401,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              TransactionsCompanion.insert(
+              DriftTransactionsCompanion.insert(
             id: id,
             vchDate: vchDate,
             narr: narr,
@@ -10279,7 +10418,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
           withReferenceMapper: (p0) => p0
               .map((e) => (
                     e.readTable(table),
-                    $$TransactionsTableReferences(db, table, e)
+                    $$DriftTransactionsTableReferences(db, table, e)
                   ))
               .toList(),
           prefetchHooksCallback: (
@@ -10287,10 +10426,12 @@ class $$TransactionsTableTableManager extends RootTableManager<
               cr = false,
               profile = false,
               project = false,
-              filePathsRefs = false}) {
+              driftTransactionPhotosRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (filePathsRefs) db.filePaths],
+              explicitlyWatchedTables: [
+                if (driftTransactionPhotosRefs) db.driftTransactionPhotos
+              ],
               addJoins: <
                   T extends TableManagerState<
                       dynamic,
@@ -10308,18 +10449,20 @@ class $$TransactionsTableTableManager extends RootTableManager<
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.dr,
-                    referencedTable: $$TransactionsTableReferences._drTable(db),
+                    referencedTable:
+                        $$DriftTransactionsTableReferences._drTable(db),
                     referencedColumn:
-                        $$TransactionsTableReferences._drTable(db).id,
+                        $$DriftTransactionsTableReferences._drTable(db).id,
                   ) as T;
                 }
                 if (cr) {
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.cr,
-                    referencedTable: $$TransactionsTableReferences._crTable(db),
+                    referencedTable:
+                        $$DriftTransactionsTableReferences._crTable(db),
                     referencedColumn:
-                        $$TransactionsTableReferences._crTable(db).id,
+                        $$DriftTransactionsTableReferences._crTable(db).id,
                   ) as T;
                 }
                 if (profile) {
@@ -10327,9 +10470,9 @@ class $$TransactionsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.profile,
                     referencedTable:
-                        $$TransactionsTableReferences._profileTable(db),
+                        $$DriftTransactionsTableReferences._profileTable(db),
                     referencedColumn:
-                        $$TransactionsTableReferences._profileTable(db).id,
+                        $$DriftTransactionsTableReferences._profileTable(db).id,
                   ) as T;
                 }
                 if (project) {
@@ -10337,9 +10480,9 @@ class $$TransactionsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.project,
                     referencedTable:
-                        $$TransactionsTableReferences._projectTable(db),
+                        $$DriftTransactionsTableReferences._projectTable(db),
                     referencedColumn:
-                        $$TransactionsTableReferences._projectTable(db).id,
+                        $$DriftTransactionsTableReferences._projectTable(db).id,
                   ) as T;
                 }
 
@@ -10347,15 +10490,15 @@ class $$TransactionsTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (filePathsRefs)
-                    await $_getPrefetchedData<Transaction, $TransactionsTable,
-                            FilePath>(
+                  if (driftTransactionPhotosRefs)
+                    await $_getPrefetchedData<DriftTransaction,
+                            $DriftTransactionsTable, DriftTransactionPhoto>(
                         currentTable: table,
-                        referencedTable: $$TransactionsTableReferences
-                            ._filePathsRefsTable(db),
+                        referencedTable: $$DriftTransactionsTableReferences
+                            ._driftTransactionPhotosRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$TransactionsTableReferences(db, table, p0)
-                                .filePathsRefs,
+                            $$DriftTransactionsTableReferences(db, table, p0)
+                                .driftTransactionPhotosRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.transaction == item.id),
@@ -10367,32 +10510,37 @@ class $$TransactionsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$TransactionsTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftTransactionsTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $TransactionsTable,
-    Transaction,
-    $$TransactionsTableFilterComposer,
-    $$TransactionsTableOrderingComposer,
-    $$TransactionsTableAnnotationComposer,
-    $$TransactionsTableCreateCompanionBuilder,
-    $$TransactionsTableUpdateCompanionBuilder,
-    (Transaction, $$TransactionsTableReferences),
-    Transaction,
+    $DriftTransactionsTable,
+    DriftTransaction,
+    $$DriftTransactionsTableFilterComposer,
+    $$DriftTransactionsTableOrderingComposer,
+    $$DriftTransactionsTableAnnotationComposer,
+    $$DriftTransactionsTableCreateCompanionBuilder,
+    $$DriftTransactionsTableUpdateCompanionBuilder,
+    (DriftTransaction, $$DriftTransactionsTableReferences),
+    DriftTransaction,
     PrefetchHooks Function(
-        {bool dr, bool cr, bool profile, bool project, bool filePathsRefs})>;
-typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
+        {bool dr,
+        bool cr,
+        bool profile,
+        bool project,
+        bool driftTransactionPhotosRefs})>;
+typedef $$DriftUsersTableCreateCompanionBuilder = DriftUsersCompanion Function({
   Value<int> id,
   required String name,
   required String deviceID,
 });
-typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
+typedef $$DriftUsersTableUpdateCompanionBuilder = DriftUsersCompanion Function({
   Value<int> id,
   Value<String> name,
   Value<String> deviceID,
 });
 
-class $$UsersTableFilterComposer extends Composer<_$MyDatabase, $UsersTable> {
-  $$UsersTableFilterComposer({
+class $$DriftUsersTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftUsersTable> {
+  $$DriftUsersTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10409,8 +10557,9 @@ class $$UsersTableFilterComposer extends Composer<_$MyDatabase, $UsersTable> {
       column: $table.deviceID, builder: (column) => ColumnFilters(column));
 }
 
-class $$UsersTableOrderingComposer extends Composer<_$MyDatabase, $UsersTable> {
-  $$UsersTableOrderingComposer({
+class $$DriftUsersTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftUsersTable> {
+  $$DriftUsersTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10427,9 +10576,9 @@ class $$UsersTableOrderingComposer extends Composer<_$MyDatabase, $UsersTable> {
       column: $table.deviceID, builder: (column) => ColumnOrderings(column));
 }
 
-class $$UsersTableAnnotationComposer
-    extends Composer<_$MyDatabase, $UsersTable> {
-  $$UsersTableAnnotationComposer({
+class $$DriftUsersTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftUsersTable> {
+  $$DriftUsersTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10446,34 +10595,34 @@ class $$UsersTableAnnotationComposer
       $composableBuilder(column: $table.deviceID, builder: (column) => column);
 }
 
-class $$UsersTableTableManager extends RootTableManager<
+class $$DriftUsersTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $UsersTable,
-    User,
-    $$UsersTableFilterComposer,
-    $$UsersTableOrderingComposer,
-    $$UsersTableAnnotationComposer,
-    $$UsersTableCreateCompanionBuilder,
-    $$UsersTableUpdateCompanionBuilder,
-    (User, BaseReferences<_$MyDatabase, $UsersTable, User>),
-    User,
+    $DriftUsersTable,
+    DriftUser,
+    $$DriftUsersTableFilterComposer,
+    $$DriftUsersTableOrderingComposer,
+    $$DriftUsersTableAnnotationComposer,
+    $$DriftUsersTableCreateCompanionBuilder,
+    $$DriftUsersTableUpdateCompanionBuilder,
+    (DriftUser, BaseReferences<_$MyDatabase, $DriftUsersTable, DriftUser>),
+    DriftUser,
     PrefetchHooks Function()> {
-  $$UsersTableTableManager(_$MyDatabase db, $UsersTable table)
+  $$DriftUsersTableTableManager(_$MyDatabase db, $DriftUsersTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$UsersTableFilterComposer($db: db, $table: table),
+              $$DriftUsersTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$UsersTableOrderingComposer($db: db, $table: table),
+              $$DriftUsersTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$UsersTableAnnotationComposer($db: db, $table: table),
+              $$DriftUsersTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> deviceID = const Value.absent(),
           }) =>
-              UsersCompanion(
+              DriftUsersCompanion(
             id: id,
             name: name,
             deviceID: deviceID,
@@ -10483,7 +10632,7 @@ class $$UsersTableTableManager extends RootTableManager<
             required String name,
             required String deviceID,
           }) =>
-              UsersCompanion.insert(
+              DriftUsersCompanion.insert(
             id: id,
             name: name,
             deviceID: deviceID,
@@ -10495,19 +10644,19 @@ class $$UsersTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$UsersTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftUsersTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $UsersTable,
-    User,
-    $$UsersTableFilterComposer,
-    $$UsersTableOrderingComposer,
-    $$UsersTableAnnotationComposer,
-    $$UsersTableCreateCompanionBuilder,
-    $$UsersTableUpdateCompanionBuilder,
-    (User, BaseReferences<_$MyDatabase, $UsersTable, User>),
-    User,
+    $DriftUsersTable,
+    DriftUser,
+    $$DriftUsersTableFilterComposer,
+    $$DriftUsersTableOrderingComposer,
+    $$DriftUsersTableAnnotationComposer,
+    $$DriftUsersTableCreateCompanionBuilder,
+    $$DriftUsersTableUpdateCompanionBuilder,
+    (DriftUser, BaseReferences<_$MyDatabase, $DriftUsersTable, DriftUser>),
+    DriftUser,
     PrefetchHooks Function()>;
-typedef $$BanksTableCreateCompanionBuilder = BanksCompanion Function({
+typedef $$DriftBanksTableCreateCompanionBuilder = DriftBanksCompanion Function({
   Value<int> id,
   required int account,
   Value<String?> holderName,
@@ -10516,7 +10665,7 @@ typedef $$BanksTableCreateCompanionBuilder = BanksCompanion Function({
   Value<String?> branchCode,
   Value<String?> accountNo,
 });
-typedef $$BanksTableUpdateCompanionBuilder = BanksCompanion Function({
+typedef $$DriftBanksTableUpdateCompanionBuilder = DriftBanksCompanion Function({
   Value<int> id,
   Value<int> account,
   Value<String?> holderName,
@@ -10526,17 +10675,18 @@ typedef $$BanksTableUpdateCompanionBuilder = BanksCompanion Function({
   Value<String?> accountNo,
 });
 
-final class $$BanksTableReferences
-    extends BaseReferences<_$MyDatabase, $BanksTable, Bank> {
-  $$BanksTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftBanksTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftBanksTable, DriftBank> {
+  $$DriftBanksTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $AccountsTable _accountTable(_$MyDatabase db) => db.accounts
-      .createAlias($_aliasNameGenerator(db.banks.account, db.accounts.id));
+  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias(
+          $_aliasNameGenerator(db.driftBanks.account, db.driftAccounts.id));
 
-  $$AccountsTableProcessedTableManager get account {
+  $$DriftAccountsTableProcessedTableManager get account {
     final $_column = $_itemColumn<int>('account')!;
 
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_accountTable($_db));
     if (item == null) return manager;
@@ -10545,8 +10695,9 @@ final class $$BanksTableReferences
   }
 }
 
-class $$BanksTableFilterComposer extends Composer<_$MyDatabase, $BanksTable> {
-  $$BanksTableFilterComposer({
+class $$DriftBanksTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftBanksTable> {
+  $$DriftBanksTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10571,18 +10722,18 @@ class $$BanksTableFilterComposer extends Composer<_$MyDatabase, $BanksTable> {
   ColumnFilters<String> get accountNo => $composableBuilder(
       column: $table.accountNo, builder: (column) => ColumnFilters(column));
 
-  $$AccountsTableFilterComposer get account {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
+  $$DriftAccountsTableFilterComposer get account {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
+            $$DriftAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10592,8 +10743,9 @@ class $$BanksTableFilterComposer extends Composer<_$MyDatabase, $BanksTable> {
   }
 }
 
-class $$BanksTableOrderingComposer extends Composer<_$MyDatabase, $BanksTable> {
-  $$BanksTableOrderingComposer({
+class $$DriftBanksTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftBanksTable> {
+  $$DriftBanksTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10618,18 +10770,18 @@ class $$BanksTableOrderingComposer extends Composer<_$MyDatabase, $BanksTable> {
   ColumnOrderings<String> get accountNo => $composableBuilder(
       column: $table.accountNo, builder: (column) => ColumnOrderings(column));
 
-  $$AccountsTableOrderingComposer get account {
-    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+  $$DriftAccountsTableOrderingComposer get account {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableOrderingComposer(
+            $$DriftAccountsTableOrderingComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10639,9 +10791,9 @@ class $$BanksTableOrderingComposer extends Composer<_$MyDatabase, $BanksTable> {
   }
 }
 
-class $$BanksTableAnnotationComposer
-    extends Composer<_$MyDatabase, $BanksTable> {
-  $$BanksTableAnnotationComposer({
+class $$DriftBanksTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftBanksTable> {
+  $$DriftBanksTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10666,18 +10818,18 @@ class $$BanksTableAnnotationComposer
   GeneratedColumn<String> get accountNo =>
       $composableBuilder(column: $table.accountNo, builder: (column) => column);
 
-  $$AccountsTableAnnotationComposer get account {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftAccountsTableAnnotationComposer get account {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
+            $$DriftAccountsTableAnnotationComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10687,28 +10839,28 @@ class $$BanksTableAnnotationComposer
   }
 }
 
-class $$BanksTableTableManager extends RootTableManager<
+class $$DriftBanksTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $BanksTable,
-    Bank,
-    $$BanksTableFilterComposer,
-    $$BanksTableOrderingComposer,
-    $$BanksTableAnnotationComposer,
-    $$BanksTableCreateCompanionBuilder,
-    $$BanksTableUpdateCompanionBuilder,
-    (Bank, $$BanksTableReferences),
-    Bank,
+    $DriftBanksTable,
+    DriftBank,
+    $$DriftBanksTableFilterComposer,
+    $$DriftBanksTableOrderingComposer,
+    $$DriftBanksTableAnnotationComposer,
+    $$DriftBanksTableCreateCompanionBuilder,
+    $$DriftBanksTableUpdateCompanionBuilder,
+    (DriftBank, $$DriftBanksTableReferences),
+    DriftBank,
     PrefetchHooks Function({bool account})> {
-  $$BanksTableTableManager(_$MyDatabase db, $BanksTable table)
+  $$DriftBanksTableTableManager(_$MyDatabase db, $DriftBanksTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$BanksTableFilterComposer($db: db, $table: table),
+              $$DriftBanksTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$BanksTableOrderingComposer($db: db, $table: table),
+              $$DriftBanksTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$BanksTableAnnotationComposer($db: db, $table: table),
+              $$DriftBanksTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> account = const Value.absent(),
@@ -10718,7 +10870,7 @@ class $$BanksTableTableManager extends RootTableManager<
             Value<String?> branchCode = const Value.absent(),
             Value<String?> accountNo = const Value.absent(),
           }) =>
-              BanksCompanion(
+              DriftBanksCompanion(
             id: id,
             account: account,
             holderName: holderName,
@@ -10736,7 +10888,7 @@ class $$BanksTableTableManager extends RootTableManager<
             Value<String?> branchCode = const Value.absent(),
             Value<String?> accountNo = const Value.absent(),
           }) =>
-              BanksCompanion.insert(
+              DriftBanksCompanion.insert(
             id: id,
             account: account,
             holderName: holderName,
@@ -10746,8 +10898,10 @@ class $$BanksTableTableManager extends RootTableManager<
             accountNo: accountNo,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$BanksTableReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftBanksTableReferences(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: ({account = false}) {
             return PrefetchHooks(
@@ -10770,9 +10924,10 @@ class $$BanksTableTableManager extends RootTableManager<
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.account,
-                    referencedTable: $$BanksTableReferences._accountTable(db),
+                    referencedTable:
+                        $$DriftBanksTableReferences._accountTable(db),
                     referencedColumn:
-                        $$BanksTableReferences._accountTable(db).id,
+                        $$DriftBanksTableReferences._accountTable(db).id,
                   ) as T;
                 }
 
@@ -10786,42 +10941,45 @@ class $$BanksTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$BanksTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftBanksTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $BanksTable,
-    Bank,
-    $$BanksTableFilterComposer,
-    $$BanksTableOrderingComposer,
-    $$BanksTableAnnotationComposer,
-    $$BanksTableCreateCompanionBuilder,
-    $$BanksTableUpdateCompanionBuilder,
-    (Bank, $$BanksTableReferences),
-    Bank,
+    $DriftBanksTable,
+    DriftBank,
+    $$DriftBanksTableFilterComposer,
+    $$DriftBanksTableOrderingComposer,
+    $$DriftBanksTableAnnotationComposer,
+    $$DriftBanksTableCreateCompanionBuilder,
+    $$DriftBanksTableUpdateCompanionBuilder,
+    (DriftBank, $$DriftBanksTableReferences),
+    DriftBank,
     PrefetchHooks Function({bool account})>;
-typedef $$WalletsTableCreateCompanionBuilder = WalletsCompanion Function({
+typedef $$DriftWalletsTableCreateCompanionBuilder = DriftWalletsCompanion
+    Function({
   Value<int> id,
   required int account,
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
 });
-typedef $$WalletsTableUpdateCompanionBuilder = WalletsCompanion Function({
+typedef $$DriftWalletsTableUpdateCompanionBuilder = DriftWalletsCompanion
+    Function({
   Value<int> id,
   Value<int> account,
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
 });
 
-final class $$WalletsTableReferences
-    extends BaseReferences<_$MyDatabase, $WalletsTable, Wallet> {
-  $$WalletsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftWalletsTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftWalletsTable, DriftWallet> {
+  $$DriftWalletsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $AccountsTable _accountTable(_$MyDatabase db) => db.accounts
-      .createAlias($_aliasNameGenerator(db.wallets.account, db.accounts.id));
+  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias(
+          $_aliasNameGenerator(db.driftWallets.account, db.driftAccounts.id));
 
-  $$AccountsTableProcessedTableManager get account {
+  $$DriftAccountsTableProcessedTableManager get account {
     final $_column = $_itemColumn<int>('account')!;
 
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_accountTable($_db));
     if (item == null) return manager;
@@ -10830,9 +10988,9 @@ final class $$WalletsTableReferences
   }
 }
 
-class $$WalletsTableFilterComposer
-    extends Composer<_$MyDatabase, $WalletsTable> {
-  $$WalletsTableFilterComposer({
+class $$DriftWalletsTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftWalletsTable> {
+  $$DriftWalletsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10848,18 +11006,18 @@ class $$WalletsTableFilterComposer
   ColumnFilters<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnFilters(column));
 
-  $$AccountsTableFilterComposer get account {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
+  $$DriftAccountsTableFilterComposer get account {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
+            $$DriftAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10869,9 +11027,9 @@ class $$WalletsTableFilterComposer
   }
 }
 
-class $$WalletsTableOrderingComposer
-    extends Composer<_$MyDatabase, $WalletsTable> {
-  $$WalletsTableOrderingComposer({
+class $$DriftWalletsTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftWalletsTable> {
+  $$DriftWalletsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10887,18 +11045,18 @@ class $$WalletsTableOrderingComposer
   ColumnOrderings<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnOrderings(column));
 
-  $$AccountsTableOrderingComposer get account {
-    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+  $$DriftAccountsTableOrderingComposer get account {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableOrderingComposer(
+            $$DriftAccountsTableOrderingComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10908,9 +11066,9 @@ class $$WalletsTableOrderingComposer
   }
 }
 
-class $$WalletsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $WalletsTable> {
-  $$WalletsTableAnnotationComposer({
+class $$DriftWalletsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftWalletsTable> {
+  $$DriftWalletsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10926,18 +11084,18 @@ class $$WalletsTableAnnotationComposer
   GeneratedColumn<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => column);
 
-  $$AccountsTableAnnotationComposer get account {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftAccountsTableAnnotationComposer get account {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
+            $$DriftAccountsTableAnnotationComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -10947,35 +11105,35 @@ class $$WalletsTableAnnotationComposer
   }
 }
 
-class $$WalletsTableTableManager extends RootTableManager<
+class $$DriftWalletsTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $WalletsTable,
-    Wallet,
-    $$WalletsTableFilterComposer,
-    $$WalletsTableOrderingComposer,
-    $$WalletsTableAnnotationComposer,
-    $$WalletsTableCreateCompanionBuilder,
-    $$WalletsTableUpdateCompanionBuilder,
-    (Wallet, $$WalletsTableReferences),
-    Wallet,
+    $DriftWalletsTable,
+    DriftWallet,
+    $$DriftWalletsTableFilterComposer,
+    $$DriftWalletsTableOrderingComposer,
+    $$DriftWalletsTableAnnotationComposer,
+    $$DriftWalletsTableCreateCompanionBuilder,
+    $$DriftWalletsTableUpdateCompanionBuilder,
+    (DriftWallet, $$DriftWalletsTableReferences),
+    DriftWallet,
     PrefetchHooks Function({bool account})> {
-  $$WalletsTableTableManager(_$MyDatabase db, $WalletsTable table)
+  $$DriftWalletsTableTableManager(_$MyDatabase db, $DriftWalletsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$WalletsTableFilterComposer($db: db, $table: table),
+              $$DriftWalletsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$WalletsTableOrderingComposer($db: db, $table: table),
+              $$DriftWalletsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$WalletsTableAnnotationComposer($db: db, $table: table),
+              $$DriftWalletsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> account = const Value.absent(),
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              WalletsCompanion(
+              DriftWalletsCompanion(
             id: id,
             account: account,
             addedDate: addedDate,
@@ -10987,15 +11145,17 @@ class $$WalletsTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              WalletsCompanion.insert(
+              DriftWalletsCompanion.insert(
             id: id,
             account: account,
             addedDate: addedDate,
             updateDate: updateDate,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$WalletsTableReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftWalletsTableReferences(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: ({account = false}) {
             return PrefetchHooks(
@@ -11018,9 +11178,10 @@ class $$WalletsTableTableManager extends RootTableManager<
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.account,
-                    referencedTable: $$WalletsTableReferences._accountTable(db),
+                    referencedTable:
+                        $$DriftWalletsTableReferences._accountTable(db),
                     referencedColumn:
-                        $$WalletsTableReferences._accountTable(db).id,
+                        $$DriftWalletsTableReferences._accountTable(db).id,
                   ) as T;
                 }
 
@@ -11034,19 +11195,19 @@ class $$WalletsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$WalletsTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftWalletsTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $WalletsTable,
-    Wallet,
-    $$WalletsTableFilterComposer,
-    $$WalletsTableOrderingComposer,
-    $$WalletsTableAnnotationComposer,
-    $$WalletsTableCreateCompanionBuilder,
-    $$WalletsTableUpdateCompanionBuilder,
-    (Wallet, $$WalletsTableReferences),
-    Wallet,
+    $DriftWalletsTable,
+    DriftWallet,
+    $$DriftWalletsTableFilterComposer,
+    $$DriftWalletsTableOrderingComposer,
+    $$DriftWalletsTableAnnotationComposer,
+    $$DriftWalletsTableCreateCompanionBuilder,
+    $$DriftWalletsTableUpdateCompanionBuilder,
+    (DriftWallet, $$DriftWalletsTableReferences),
+    DriftWallet,
     PrefetchHooks Function({bool account})>;
-typedef $$LoansTableCreateCompanionBuilder = LoansCompanion Function({
+typedef $$DriftLoansTableCreateCompanionBuilder = DriftLoansCompanion Function({
   Value<int> id,
   required int account,
   Value<String?> institution,
@@ -11056,7 +11217,7 @@ typedef $$LoansTableCreateCompanionBuilder = LoansCompanion Function({
   Value<String?> agreementNo,
   Value<String?> accountNo,
 });
-typedef $$LoansTableUpdateCompanionBuilder = LoansCompanion Function({
+typedef $$DriftLoansTableUpdateCompanionBuilder = DriftLoansCompanion Function({
   Value<int> id,
   Value<int> account,
   Value<String?> institution,
@@ -11067,17 +11228,18 @@ typedef $$LoansTableUpdateCompanionBuilder = LoansCompanion Function({
   Value<String?> accountNo,
 });
 
-final class $$LoansTableReferences
-    extends BaseReferences<_$MyDatabase, $LoansTable, Loan> {
-  $$LoansTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftLoansTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftLoansTable, DriftLoan> {
+  $$DriftLoansTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $AccountsTable _accountTable(_$MyDatabase db) => db.accounts
-      .createAlias($_aliasNameGenerator(db.loans.account, db.accounts.id));
+  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias(
+          $_aliasNameGenerator(db.driftLoans.account, db.driftAccounts.id));
 
-  $$AccountsTableProcessedTableManager get account {
+  $$DriftAccountsTableProcessedTableManager get account {
     final $_column = $_itemColumn<int>('account')!;
 
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_accountTable($_db));
     if (item == null) return manager;
@@ -11086,8 +11248,9 @@ final class $$LoansTableReferences
   }
 }
 
-class $$LoansTableFilterComposer extends Composer<_$MyDatabase, $LoansTable> {
-  $$LoansTableFilterComposer({
+class $$DriftLoansTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftLoansTable> {
+  $$DriftLoansTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -11115,18 +11278,18 @@ class $$LoansTableFilterComposer extends Composer<_$MyDatabase, $LoansTable> {
   ColumnFilters<String> get accountNo => $composableBuilder(
       column: $table.accountNo, builder: (column) => ColumnFilters(column));
 
-  $$AccountsTableFilterComposer get account {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
+  $$DriftAccountsTableFilterComposer get account {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
+            $$DriftAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -11136,8 +11299,9 @@ class $$LoansTableFilterComposer extends Composer<_$MyDatabase, $LoansTable> {
   }
 }
 
-class $$LoansTableOrderingComposer extends Composer<_$MyDatabase, $LoansTable> {
-  $$LoansTableOrderingComposer({
+class $$DriftLoansTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftLoansTable> {
+  $$DriftLoansTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -11166,18 +11330,18 @@ class $$LoansTableOrderingComposer extends Composer<_$MyDatabase, $LoansTable> {
   ColumnOrderings<String> get accountNo => $composableBuilder(
       column: $table.accountNo, builder: (column) => ColumnOrderings(column));
 
-  $$AccountsTableOrderingComposer get account {
-    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+  $$DriftAccountsTableOrderingComposer get account {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableOrderingComposer(
+            $$DriftAccountsTableOrderingComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -11187,9 +11351,9 @@ class $$LoansTableOrderingComposer extends Composer<_$MyDatabase, $LoansTable> {
   }
 }
 
-class $$LoansTableAnnotationComposer
-    extends Composer<_$MyDatabase, $LoansTable> {
-  $$LoansTableAnnotationComposer({
+class $$DriftLoansTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftLoansTable> {
+  $$DriftLoansTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -11217,18 +11381,18 @@ class $$LoansTableAnnotationComposer
   GeneratedColumn<String> get accountNo =>
       $composableBuilder(column: $table.accountNo, builder: (column) => column);
 
-  $$AccountsTableAnnotationComposer get account {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftAccountsTableAnnotationComposer get account {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
+            $$DriftAccountsTableAnnotationComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -11238,28 +11402,28 @@ class $$LoansTableAnnotationComposer
   }
 }
 
-class $$LoansTableTableManager extends RootTableManager<
+class $$DriftLoansTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $LoansTable,
-    Loan,
-    $$LoansTableFilterComposer,
-    $$LoansTableOrderingComposer,
-    $$LoansTableAnnotationComposer,
-    $$LoansTableCreateCompanionBuilder,
-    $$LoansTableUpdateCompanionBuilder,
-    (Loan, $$LoansTableReferences),
-    Loan,
+    $DriftLoansTable,
+    DriftLoan,
+    $$DriftLoansTableFilterComposer,
+    $$DriftLoansTableOrderingComposer,
+    $$DriftLoansTableAnnotationComposer,
+    $$DriftLoansTableCreateCompanionBuilder,
+    $$DriftLoansTableUpdateCompanionBuilder,
+    (DriftLoan, $$DriftLoansTableReferences),
+    DriftLoan,
     PrefetchHooks Function({bool account})> {
-  $$LoansTableTableManager(_$MyDatabase db, $LoansTable table)
+  $$DriftLoansTableTableManager(_$MyDatabase db, $DriftLoansTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$LoansTableFilterComposer($db: db, $table: table),
+              $$DriftLoansTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$LoansTableOrderingComposer($db: db, $table: table),
+              $$DriftLoansTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$LoansTableAnnotationComposer($db: db, $table: table),
+              $$DriftLoansTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> account = const Value.absent(),
@@ -11270,7 +11434,7 @@ class $$LoansTableTableManager extends RootTableManager<
             Value<String?> agreementNo = const Value.absent(),
             Value<String?> accountNo = const Value.absent(),
           }) =>
-              LoansCompanion(
+              DriftLoansCompanion(
             id: id,
             account: account,
             institution: institution,
@@ -11290,7 +11454,7 @@ class $$LoansTableTableManager extends RootTableManager<
             Value<String?> agreementNo = const Value.absent(),
             Value<String?> accountNo = const Value.absent(),
           }) =>
-              LoansCompanion.insert(
+              DriftLoansCompanion.insert(
             id: id,
             account: account,
             institution: institution,
@@ -11301,519 +11465,10 @@ class $$LoansTableTableManager extends RootTableManager<
             accountNo: accountNo,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$LoansTableReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: ({account = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (account) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.account,
-                    referencedTable: $$LoansTableReferences._accountTable(db),
-                    referencedColumn:
-                        $$LoansTableReferences._accountTable(db).id,
-                  ) as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$LoansTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
-    $LoansTable,
-    Loan,
-    $$LoansTableFilterComposer,
-    $$LoansTableOrderingComposer,
-    $$LoansTableAnnotationComposer,
-    $$LoansTableCreateCompanionBuilder,
-    $$LoansTableUpdateCompanionBuilder,
-    (Loan, $$LoansTableReferences),
-    Loan,
-    PrefetchHooks Function({bool account})>;
-typedef $$CCardsTableCreateCompanionBuilder = CCardsCompanion Function({
-  Value<int> id,
-  required int account,
-  Value<String?> institution,
-  Value<int?> statementDate,
-  Value<String?> cardNo,
-  Value<String?> cardNetwork,
-});
-typedef $$CCardsTableUpdateCompanionBuilder = CCardsCompanion Function({
-  Value<int> id,
-  Value<int> account,
-  Value<String?> institution,
-  Value<int?> statementDate,
-  Value<String?> cardNo,
-  Value<String?> cardNetwork,
-});
-
-final class $$CCardsTableReferences
-    extends BaseReferences<_$MyDatabase, $CCardsTable, CCard> {
-  $$CCardsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $AccountsTable _accountTable(_$MyDatabase db) => db.accounts
-      .createAlias($_aliasNameGenerator(db.cCards.account, db.accounts.id));
-
-  $$AccountsTableProcessedTableManager get account {
-    final $_column = $_itemColumn<int>('account')!;
-
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_accountTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-}
-
-class $$CCardsTableFilterComposer extends Composer<_$MyDatabase, $CCardsTable> {
-  $$CCardsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get institution => $composableBuilder(
-      column: $table.institution, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get statementDate => $composableBuilder(
-      column: $table.statementDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get cardNo => $composableBuilder(
-      column: $table.cardNo, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get cardNetwork => $composableBuilder(
-      column: $table.cardNetwork, builder: (column) => ColumnFilters(column));
-
-  $$AccountsTableFilterComposer get account {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
-              $db: $db,
-              $table: $db.accounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$CCardsTableOrderingComposer
-    extends Composer<_$MyDatabase, $CCardsTable> {
-  $$CCardsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get institution => $composableBuilder(
-      column: $table.institution, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get statementDate => $composableBuilder(
-      column: $table.statementDate,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get cardNo => $composableBuilder(
-      column: $table.cardNo, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get cardNetwork => $composableBuilder(
-      column: $table.cardNetwork, builder: (column) => ColumnOrderings(column));
-
-  $$AccountsTableOrderingComposer get account {
-    final $$AccountsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableOrderingComposer(
-              $db: $db,
-              $table: $db.accounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$CCardsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $CCardsTable> {
-  $$CCardsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get institution => $composableBuilder(
-      column: $table.institution, builder: (column) => column);
-
-  GeneratedColumn<int> get statementDate => $composableBuilder(
-      column: $table.statementDate, builder: (column) => column);
-
-  GeneratedColumn<String> get cardNo =>
-      $composableBuilder(column: $table.cardNo, builder: (column) => column);
-
-  GeneratedColumn<String> get cardNetwork => $composableBuilder(
-      column: $table.cardNetwork, builder: (column) => column);
-
-  $$AccountsTableAnnotationComposer get account {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.accounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$CCardsTableTableManager extends RootTableManager<
-    _$MyDatabase,
-    $CCardsTable,
-    CCard,
-    $$CCardsTableFilterComposer,
-    $$CCardsTableOrderingComposer,
-    $$CCardsTableAnnotationComposer,
-    $$CCardsTableCreateCompanionBuilder,
-    $$CCardsTableUpdateCompanionBuilder,
-    (CCard, $$CCardsTableReferences),
-    CCard,
-    PrefetchHooks Function({bool account})> {
-  $$CCardsTableTableManager(_$MyDatabase db, $CCardsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$CCardsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$CCardsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$CCardsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> account = const Value.absent(),
-            Value<String?> institution = const Value.absent(),
-            Value<int?> statementDate = const Value.absent(),
-            Value<String?> cardNo = const Value.absent(),
-            Value<String?> cardNetwork = const Value.absent(),
-          }) =>
-              CCardsCompanion(
-            id: id,
-            account: account,
-            institution: institution,
-            statementDate: statementDate,
-            cardNo: cardNo,
-            cardNetwork: cardNetwork,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int account,
-            Value<String?> institution = const Value.absent(),
-            Value<int?> statementDate = const Value.absent(),
-            Value<String?> cardNo = const Value.absent(),
-            Value<String?> cardNetwork = const Value.absent(),
-          }) =>
-              CCardsCompanion.insert(
-            id: id,
-            account: account,
-            institution: institution,
-            statementDate: statementDate,
-            cardNo: cardNo,
-            cardNetwork: cardNetwork,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$CCardsTableReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: ({account = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (account) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.account,
-                    referencedTable: $$CCardsTableReferences._accountTable(db),
-                    referencedColumn:
-                        $$CCardsTableReferences._accountTable(db).id,
-                  ) as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$CCardsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
-    $CCardsTable,
-    CCard,
-    $$CCardsTableFilterComposer,
-    $$CCardsTableOrderingComposer,
-    $$CCardsTableAnnotationComposer,
-    $$CCardsTableCreateCompanionBuilder,
-    $$CCardsTableUpdateCompanionBuilder,
-    (CCard, $$CCardsTableReferences),
-    CCard,
-    PrefetchHooks Function({bool account})>;
-typedef $$BalancesTableCreateCompanionBuilder = BalancesCompanion Function({
-  Value<int> id,
-  required int account,
-  Value<int> amount,
-});
-typedef $$BalancesTableUpdateCompanionBuilder = BalancesCompanion Function({
-  Value<int> id,
-  Value<int> account,
-  Value<int> amount,
-});
-
-final class $$BalancesTableReferences
-    extends BaseReferences<_$MyDatabase, $BalancesTable, Balance> {
-  $$BalancesTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $AccountsTable _accountTable(_$MyDatabase db) => db.accounts
-      .createAlias($_aliasNameGenerator(db.balances.account, db.accounts.id));
-
-  $$AccountsTableProcessedTableManager get account {
-    final $_column = $_itemColumn<int>('account')!;
-
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_accountTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-}
-
-class $$BalancesTableFilterComposer
-    extends Composer<_$MyDatabase, $BalancesTable> {
-  $$BalancesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get amount => $composableBuilder(
-      column: $table.amount, builder: (column) => ColumnFilters(column));
-
-  $$AccountsTableFilterComposer get account {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
-              $db: $db,
-              $table: $db.accounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$BalancesTableOrderingComposer
-    extends Composer<_$MyDatabase, $BalancesTable> {
-  $$BalancesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get amount => $composableBuilder(
-      column: $table.amount, builder: (column) => ColumnOrderings(column));
-
-  $$AccountsTableOrderingComposer get account {
-    final $$AccountsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableOrderingComposer(
-              $db: $db,
-              $table: $db.accounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$BalancesTableAnnotationComposer
-    extends Composer<_$MyDatabase, $BalancesTable> {
-  $$BalancesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<int> get amount =>
-      $composableBuilder(column: $table.amount, builder: (column) => column);
-
-  $$AccountsTableAnnotationComposer get account {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.accounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$BalancesTableTableManager extends RootTableManager<
-    _$MyDatabase,
-    $BalancesTable,
-    Balance,
-    $$BalancesTableFilterComposer,
-    $$BalancesTableOrderingComposer,
-    $$BalancesTableAnnotationComposer,
-    $$BalancesTableCreateCompanionBuilder,
-    $$BalancesTableUpdateCompanionBuilder,
-    (Balance, $$BalancesTableReferences),
-    Balance,
-    PrefetchHooks Function({bool account})> {
-  $$BalancesTableTableManager(_$MyDatabase db, $BalancesTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$BalancesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$BalancesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$BalancesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> account = const Value.absent(),
-            Value<int> amount = const Value.absent(),
-          }) =>
-              BalancesCompanion(
-            id: id,
-            account: account,
-            amount: amount,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int account,
-            Value<int> amount = const Value.absent(),
-          }) =>
-              BalancesCompanion.insert(
-            id: id,
-            account: account,
-            amount: amount,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$BalancesTableReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftLoansTableReferences(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: ({account = false}) {
             return PrefetchHooks(
@@ -11837,9 +11492,9 @@ class $$BalancesTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.account,
                     referencedTable:
-                        $$BalancesTableReferences._accountTable(db),
+                        $$DriftLoansTableReferences._accountTable(db),
                     referencedColumn:
-                        $$BalancesTableReferences._accountTable(db).id,
+                        $$DriftLoansTableReferences._accountTable(db).id,
                   ) as T;
                 }
 
@@ -11853,42 +11508,571 @@ class $$BalancesTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$BalancesTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftLoansTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $BalancesTable,
-    Balance,
-    $$BalancesTableFilterComposer,
-    $$BalancesTableOrderingComposer,
-    $$BalancesTableAnnotationComposer,
-    $$BalancesTableCreateCompanionBuilder,
-    $$BalancesTableUpdateCompanionBuilder,
-    (Balance, $$BalancesTableReferences),
-    Balance,
+    $DriftLoansTable,
+    DriftLoan,
+    $$DriftLoansTableFilterComposer,
+    $$DriftLoansTableOrderingComposer,
+    $$DriftLoansTableAnnotationComposer,
+    $$DriftLoansTableCreateCompanionBuilder,
+    $$DriftLoansTableUpdateCompanionBuilder,
+    (DriftLoan, $$DriftLoansTableReferences),
+    DriftLoan,
     PrefetchHooks Function({bool account})>;
-typedef $$FilePathsTableCreateCompanionBuilder = FilePathsCompanion Function({
+typedef $$DriftCCardsTableCreateCompanionBuilder = DriftCCardsCompanion
+    Function({
+  Value<int> id,
+  required int account,
+  Value<String?> institution,
+  Value<int?> statementDate,
+  Value<String?> cardNo,
+  Value<String?> cardNetwork,
+});
+typedef $$DriftCCardsTableUpdateCompanionBuilder = DriftCCardsCompanion
+    Function({
+  Value<int> id,
+  Value<int> account,
+  Value<String?> institution,
+  Value<int?> statementDate,
+  Value<String?> cardNo,
+  Value<String?> cardNetwork,
+});
+
+final class $$DriftCCardsTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftCCardsTable, DriftCCard> {
+  $$DriftCCardsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias(
+          $_aliasNameGenerator(db.driftCCards.account, db.driftAccounts.id));
+
+  $$DriftAccountsTableProcessedTableManager get account {
+    final $_column = $_itemColumn<int>('account')!;
+
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$DriftCCardsTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftCCardsTable> {
+  $$DriftCCardsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get institution => $composableBuilder(
+      column: $table.institution, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get statementDate => $composableBuilder(
+      column: $table.statementDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get cardNo => $composableBuilder(
+      column: $table.cardNo, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get cardNetwork => $composableBuilder(
+      column: $table.cardNetwork, builder: (column) => ColumnFilters(column));
+
+  $$DriftAccountsTableFilterComposer get account {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.account,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableFilterComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftCCardsTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftCCardsTable> {
+  $$DriftCCardsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get institution => $composableBuilder(
+      column: $table.institution, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get statementDate => $composableBuilder(
+      column: $table.statementDate,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get cardNo => $composableBuilder(
+      column: $table.cardNo, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get cardNetwork => $composableBuilder(
+      column: $table.cardNetwork, builder: (column) => ColumnOrderings(column));
+
+  $$DriftAccountsTableOrderingComposer get account {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.account,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableOrderingComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftCCardsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftCCardsTable> {
+  $$DriftCCardsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get institution => $composableBuilder(
+      column: $table.institution, builder: (column) => column);
+
+  GeneratedColumn<int> get statementDate => $composableBuilder(
+      column: $table.statementDate, builder: (column) => column);
+
+  GeneratedColumn<String> get cardNo =>
+      $composableBuilder(column: $table.cardNo, builder: (column) => column);
+
+  GeneratedColumn<String> get cardNetwork => $composableBuilder(
+      column: $table.cardNetwork, builder: (column) => column);
+
+  $$DriftAccountsTableAnnotationComposer get account {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.account,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftCCardsTableTableManager extends RootTableManager<
+    _$MyDatabase,
+    $DriftCCardsTable,
+    DriftCCard,
+    $$DriftCCardsTableFilterComposer,
+    $$DriftCCardsTableOrderingComposer,
+    $$DriftCCardsTableAnnotationComposer,
+    $$DriftCCardsTableCreateCompanionBuilder,
+    $$DriftCCardsTableUpdateCompanionBuilder,
+    (DriftCCard, $$DriftCCardsTableReferences),
+    DriftCCard,
+    PrefetchHooks Function({bool account})> {
+  $$DriftCCardsTableTableManager(_$MyDatabase db, $DriftCCardsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DriftCCardsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DriftCCardsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DriftCCardsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> account = const Value.absent(),
+            Value<String?> institution = const Value.absent(),
+            Value<int?> statementDate = const Value.absent(),
+            Value<String?> cardNo = const Value.absent(),
+            Value<String?> cardNetwork = const Value.absent(),
+          }) =>
+              DriftCCardsCompanion(
+            id: id,
+            account: account,
+            institution: institution,
+            statementDate: statementDate,
+            cardNo: cardNo,
+            cardNetwork: cardNetwork,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int account,
+            Value<String?> institution = const Value.absent(),
+            Value<int?> statementDate = const Value.absent(),
+            Value<String?> cardNo = const Value.absent(),
+            Value<String?> cardNetwork = const Value.absent(),
+          }) =>
+              DriftCCardsCompanion.insert(
+            id: id,
+            account: account,
+            institution: institution,
+            statementDate: statementDate,
+            cardNo: cardNo,
+            cardNetwork: cardNetwork,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftCCardsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({account = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (account) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.account,
+                    referencedTable:
+                        $$DriftCCardsTableReferences._accountTable(db),
+                    referencedColumn:
+                        $$DriftCCardsTableReferences._accountTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$DriftCCardsTableProcessedTableManager = ProcessedTableManager<
+    _$MyDatabase,
+    $DriftCCardsTable,
+    DriftCCard,
+    $$DriftCCardsTableFilterComposer,
+    $$DriftCCardsTableOrderingComposer,
+    $$DriftCCardsTableAnnotationComposer,
+    $$DriftCCardsTableCreateCompanionBuilder,
+    $$DriftCCardsTableUpdateCompanionBuilder,
+    (DriftCCard, $$DriftCCardsTableReferences),
+    DriftCCard,
+    PrefetchHooks Function({bool account})>;
+typedef $$DriftBalancesTableCreateCompanionBuilder = DriftBalancesCompanion
+    Function({
+  Value<int> id,
+  required int account,
+  Value<int> amount,
+});
+typedef $$DriftBalancesTableUpdateCompanionBuilder = DriftBalancesCompanion
+    Function({
+  Value<int> id,
+  Value<int> account,
+  Value<int> amount,
+});
+
+final class $$DriftBalancesTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftBalancesTable, DriftBalance> {
+  $$DriftBalancesTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias(
+          $_aliasNameGenerator(db.driftBalances.account, db.driftAccounts.id));
+
+  $$DriftAccountsTableProcessedTableManager get account {
+    final $_column = $_itemColumn<int>('account')!;
+
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$DriftBalancesTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftBalancesTable> {
+  $$DriftBalancesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get amount => $composableBuilder(
+      column: $table.amount, builder: (column) => ColumnFilters(column));
+
+  $$DriftAccountsTableFilterComposer get account {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.account,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableFilterComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftBalancesTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftBalancesTable> {
+  $$DriftBalancesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+      column: $table.amount, builder: (column) => ColumnOrderings(column));
+
+  $$DriftAccountsTableOrderingComposer get account {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.account,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableOrderingComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftBalancesTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftBalancesTable> {
+  $$DriftBalancesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  $$DriftAccountsTableAnnotationComposer get account {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.account,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftBalancesTableTableManager extends RootTableManager<
+    _$MyDatabase,
+    $DriftBalancesTable,
+    DriftBalance,
+    $$DriftBalancesTableFilterComposer,
+    $$DriftBalancesTableOrderingComposer,
+    $$DriftBalancesTableAnnotationComposer,
+    $$DriftBalancesTableCreateCompanionBuilder,
+    $$DriftBalancesTableUpdateCompanionBuilder,
+    (DriftBalance, $$DriftBalancesTableReferences),
+    DriftBalance,
+    PrefetchHooks Function({bool account})> {
+  $$DriftBalancesTableTableManager(_$MyDatabase db, $DriftBalancesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DriftBalancesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DriftBalancesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DriftBalancesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> account = const Value.absent(),
+            Value<int> amount = const Value.absent(),
+          }) =>
+              DriftBalancesCompanion(
+            id: id,
+            account: account,
+            amount: amount,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int account,
+            Value<int> amount = const Value.absent(),
+          }) =>
+              DriftBalancesCompanion.insert(
+            id: id,
+            account: account,
+            amount: amount,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftBalancesTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({account = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (account) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.account,
+                    referencedTable:
+                        $$DriftBalancesTableReferences._accountTable(db),
+                    referencedColumn:
+                        $$DriftBalancesTableReferences._accountTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$DriftBalancesTableProcessedTableManager = ProcessedTableManager<
+    _$MyDatabase,
+    $DriftBalancesTable,
+    DriftBalance,
+    $$DriftBalancesTableFilterComposer,
+    $$DriftBalancesTableOrderingComposer,
+    $$DriftBalancesTableAnnotationComposer,
+    $$DriftBalancesTableCreateCompanionBuilder,
+    $$DriftBalancesTableUpdateCompanionBuilder,
+    (DriftBalance, $$DriftBalancesTableReferences),
+    DriftBalance,
+    PrefetchHooks Function({bool account})>;
+typedef $$DriftTransactionPhotosTableCreateCompanionBuilder
+    = DriftTransactionPhotosCompanion Function({
   Value<int> id,
   required int transaction,
-  Value<String?> path,
+  required String path,
 });
-typedef $$FilePathsTableUpdateCompanionBuilder = FilePathsCompanion Function({
+typedef $$DriftTransactionPhotosTableUpdateCompanionBuilder
+    = DriftTransactionPhotosCompanion Function({
   Value<int> id,
   Value<int> transaction,
-  Value<String?> path,
+  Value<String> path,
 });
 
-final class $$FilePathsTableReferences
-    extends BaseReferences<_$MyDatabase, $FilePathsTable, FilePath> {
-  $$FilePathsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftTransactionPhotosTableReferences extends BaseReferences<
+    _$MyDatabase, $DriftTransactionPhotosTable, DriftTransactionPhoto> {
+  $$DriftTransactionPhotosTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
 
-  static $TransactionsTable _transactionTable(_$MyDatabase db) =>
-      db.transactions.createAlias(
-          $_aliasNameGenerator(db.filePaths.transaction, db.transactions.id));
+  static $DriftTransactionsTable _transactionTable(_$MyDatabase db) =>
+      db.driftTransactions.createAlias($_aliasNameGenerator(
+          db.driftTransactionPhotos.transaction, db.driftTransactions.id));
 
-  $$TransactionsTableProcessedTableManager get transaction {
+  $$DriftTransactionsTableProcessedTableManager get transaction {
     final $_column = $_itemColumn<int>('transaction')!;
 
-    final manager = $$TransactionsTableTableManager($_db, $_db.transactions)
-        .filter((f) => f.id.sqlEquals($_column));
+    final manager =
+        $$DriftTransactionsTableTableManager($_db, $_db.driftTransactions)
+            .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_transactionTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -11896,9 +12080,9 @@ final class $$FilePathsTableReferences
   }
 }
 
-class $$FilePathsTableFilterComposer
-    extends Composer<_$MyDatabase, $FilePathsTable> {
-  $$FilePathsTableFilterComposer({
+class $$DriftTransactionPhotosTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftTransactionPhotosTable> {
+  $$DriftTransactionPhotosTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -11911,18 +12095,18 @@ class $$FilePathsTableFilterComposer
   ColumnFilters<String> get path => $composableBuilder(
       column: $table.path, builder: (column) => ColumnFilters(column));
 
-  $$TransactionsTableFilterComposer get transaction {
-    final $$TransactionsTableFilterComposer composer = $composerBuilder(
+  $$DriftTransactionsTableFilterComposer get transaction {
+    final $$DriftTransactionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.transaction,
-        referencedTable: $db.transactions,
+        referencedTable: $db.driftTransactions,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableFilterComposer(
+            $$DriftTransactionsTableFilterComposer(
               $db: $db,
-              $table: $db.transactions,
+              $table: $db.driftTransactions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -11932,9 +12116,9 @@ class $$FilePathsTableFilterComposer
   }
 }
 
-class $$FilePathsTableOrderingComposer
-    extends Composer<_$MyDatabase, $FilePathsTable> {
-  $$FilePathsTableOrderingComposer({
+class $$DriftTransactionPhotosTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftTransactionPhotosTable> {
+  $$DriftTransactionPhotosTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -11947,18 +12131,18 @@ class $$FilePathsTableOrderingComposer
   ColumnOrderings<String> get path => $composableBuilder(
       column: $table.path, builder: (column) => ColumnOrderings(column));
 
-  $$TransactionsTableOrderingComposer get transaction {
-    final $$TransactionsTableOrderingComposer composer = $composerBuilder(
+  $$DriftTransactionsTableOrderingComposer get transaction {
+    final $$DriftTransactionsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.transaction,
-        referencedTable: $db.transactions,
+        referencedTable: $db.driftTransactions,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableOrderingComposer(
+            $$DriftTransactionsTableOrderingComposer(
               $db: $db,
-              $table: $db.transactions,
+              $table: $db.driftTransactions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -11968,9 +12152,9 @@ class $$FilePathsTableOrderingComposer
   }
 }
 
-class $$FilePathsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $FilePathsTable> {
-  $$FilePathsTableAnnotationComposer({
+class $$DriftTransactionPhotosTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftTransactionPhotosTable> {
+  $$DriftTransactionPhotosTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -11983,55 +12167,60 @@ class $$FilePathsTableAnnotationComposer
   GeneratedColumn<String> get path =>
       $composableBuilder(column: $table.path, builder: (column) => column);
 
-  $$TransactionsTableAnnotationComposer get transaction {
-    final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.transaction,
-        referencedTable: $db.transactions,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TransactionsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.transactions,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+  $$DriftTransactionsTableAnnotationComposer get transaction {
+    final $$DriftTransactionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.transaction,
+            referencedTable: $db.driftTransactions,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftTransactionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftTransactions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return composer;
   }
 }
 
-class $$FilePathsTableTableManager extends RootTableManager<
+class $$DriftTransactionPhotosTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $FilePathsTable,
-    FilePath,
-    $$FilePathsTableFilterComposer,
-    $$FilePathsTableOrderingComposer,
-    $$FilePathsTableAnnotationComposer,
-    $$FilePathsTableCreateCompanionBuilder,
-    $$FilePathsTableUpdateCompanionBuilder,
-    (FilePath, $$FilePathsTableReferences),
-    FilePath,
+    $DriftTransactionPhotosTable,
+    DriftTransactionPhoto,
+    $$DriftTransactionPhotosTableFilterComposer,
+    $$DriftTransactionPhotosTableOrderingComposer,
+    $$DriftTransactionPhotosTableAnnotationComposer,
+    $$DriftTransactionPhotosTableCreateCompanionBuilder,
+    $$DriftTransactionPhotosTableUpdateCompanionBuilder,
+    (DriftTransactionPhoto, $$DriftTransactionPhotosTableReferences),
+    DriftTransactionPhoto,
     PrefetchHooks Function({bool transaction})> {
-  $$FilePathsTableTableManager(_$MyDatabase db, $FilePathsTable table)
+  $$DriftTransactionPhotosTableTableManager(
+      _$MyDatabase db, $DriftTransactionPhotosTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$FilePathsTableFilterComposer($db: db, $table: table),
+              $$DriftTransactionPhotosTableFilterComposer(
+                  $db: db, $table: table),
           createOrderingComposer: () =>
-              $$FilePathsTableOrderingComposer($db: db, $table: table),
+              $$DriftTransactionPhotosTableOrderingComposer(
+                  $db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$FilePathsTableAnnotationComposer($db: db, $table: table),
+              $$DriftTransactionPhotosTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> transaction = const Value.absent(),
-            Value<String?> path = const Value.absent(),
+            Value<String> path = const Value.absent(),
           }) =>
-              FilePathsCompanion(
+              DriftTransactionPhotosCompanion(
             id: id,
             transaction: transaction,
             path: path,
@@ -12039,9 +12228,9 @@ class $$FilePathsTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required int transaction,
-            Value<String?> path = const Value.absent(),
+            required String path,
           }) =>
-              FilePathsCompanion.insert(
+              DriftTransactionPhotosCompanion.insert(
             id: id,
             transaction: transaction,
             path: path,
@@ -12049,7 +12238,7 @@ class $$FilePathsTableTableManager extends RootTableManager<
           withReferenceMapper: (p0) => p0
               .map((e) => (
                     e.readTable(table),
-                    $$FilePathsTableReferences(db, table, e)
+                    $$DriftTransactionPhotosTableReferences(db, table, e)
                   ))
               .toList(),
           prefetchHooksCallback: ({transaction = false}) {
@@ -12073,10 +12262,11 @@ class $$FilePathsTableTableManager extends RootTableManager<
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.transaction,
-                    referencedTable:
-                        $$FilePathsTableReferences._transactionTable(db),
-                    referencedColumn:
-                        $$FilePathsTableReferences._transactionTable(db).id,
+                    referencedTable: $$DriftTransactionPhotosTableReferences
+                        ._transactionTable(db),
+                    referencedColumn: $$DriftTransactionPhotosTableReferences
+                        ._transactionTable(db)
+                        .id,
                   ) as T;
                 }
 
@@ -12090,46 +12280,47 @@ class $$FilePathsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$FilePathsTableProcessedTableManager = ProcessedTableManager<
-    _$MyDatabase,
-    $FilePathsTable,
-    FilePath,
-    $$FilePathsTableFilterComposer,
-    $$FilePathsTableOrderingComposer,
-    $$FilePathsTableAnnotationComposer,
-    $$FilePathsTableCreateCompanionBuilder,
-    $$FilePathsTableUpdateCompanionBuilder,
-    (FilePath, $$FilePathsTableReferences),
-    FilePath,
-    PrefetchHooks Function({bool transaction})>;
-typedef $$BudgetAccountsTableCreateCompanionBuilder = BudgetAccountsCompanion
-    Function({
+typedef $$DriftTransactionPhotosTableProcessedTableManager
+    = ProcessedTableManager<
+        _$MyDatabase,
+        $DriftTransactionPhotosTable,
+        DriftTransactionPhoto,
+        $$DriftTransactionPhotosTableFilterComposer,
+        $$DriftTransactionPhotosTableOrderingComposer,
+        $$DriftTransactionPhotosTableAnnotationComposer,
+        $$DriftTransactionPhotosTableCreateCompanionBuilder,
+        $$DriftTransactionPhotosTableUpdateCompanionBuilder,
+        (DriftTransactionPhoto, $$DriftTransactionPhotosTableReferences),
+        DriftTransactionPhoto,
+        PrefetchHooks Function({bool transaction})>;
+typedef $$DriftBudgetAccountsTableCreateCompanionBuilder
+    = DriftBudgetAccountsCompanion Function({
   Value<int> id,
   required int account,
   required int budget,
   Value<int> amount,
 });
-typedef $$BudgetAccountsTableUpdateCompanionBuilder = BudgetAccountsCompanion
-    Function({
+typedef $$DriftBudgetAccountsTableUpdateCompanionBuilder
+    = DriftBudgetAccountsCompanion Function({
   Value<int> id,
   Value<int> account,
   Value<int> budget,
   Value<int> amount,
 });
 
-final class $$BudgetAccountsTableReferences
-    extends BaseReferences<_$MyDatabase, $BudgetAccountsTable, BudgetAccount> {
-  $$BudgetAccountsTableReferences(
+final class $$DriftBudgetAccountsTableReferences extends BaseReferences<
+    _$MyDatabase, $DriftBudgetAccountsTable, DriftBudgetAccount> {
+  $$DriftBudgetAccountsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $AccountsTable _accountTable(_$MyDatabase db) =>
-      db.accounts.createAlias(
-          $_aliasNameGenerator(db.budgetAccounts.account, db.accounts.id));
+  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias($_aliasNameGenerator(
+          db.driftBudgetAccounts.account, db.driftAccounts.id));
 
-  $$AccountsTableProcessedTableManager get account {
+  $$DriftAccountsTableProcessedTableManager get account {
     final $_column = $_itemColumn<int>('account')!;
 
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_accountTable($_db));
     if (item == null) return manager;
@@ -12137,13 +12328,14 @@ final class $$BudgetAccountsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $BudgetsTable _budgetTable(_$MyDatabase db) => db.budgets.createAlias(
-      $_aliasNameGenerator(db.budgetAccounts.budget, db.budgets.id));
+  static $DriftBudgetsTable _budgetTable(_$MyDatabase db) =>
+      db.driftBudgets.createAlias($_aliasNameGenerator(
+          db.driftBudgetAccounts.budget, db.driftBudgets.id));
 
-  $$BudgetsTableProcessedTableManager get budget {
+  $$DriftBudgetsTableProcessedTableManager get budget {
     final $_column = $_itemColumn<int>('budget')!;
 
-    final manager = $$BudgetsTableTableManager($_db, $_db.budgets)
+    final manager = $$DriftBudgetsTableTableManager($_db, $_db.driftBudgets)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_budgetTable($_db));
     if (item == null) return manager;
@@ -12152,9 +12344,9 @@ final class $$BudgetAccountsTableReferences
   }
 }
 
-class $$BudgetAccountsTableFilterComposer
-    extends Composer<_$MyDatabase, $BudgetAccountsTable> {
-  $$BudgetAccountsTableFilterComposer({
+class $$DriftBudgetAccountsTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftBudgetAccountsTable> {
+  $$DriftBudgetAccountsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -12167,18 +12359,18 @@ class $$BudgetAccountsTableFilterComposer
   ColumnFilters<int> get amount => $composableBuilder(
       column: $table.amount, builder: (column) => ColumnFilters(column));
 
-  $$AccountsTableFilterComposer get account {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
+  $$DriftAccountsTableFilterComposer get account {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
+            $$DriftAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12187,18 +12379,18 @@ class $$BudgetAccountsTableFilterComposer
     return composer;
   }
 
-  $$BudgetsTableFilterComposer get budget {
-    final $$BudgetsTableFilterComposer composer = $composerBuilder(
+  $$DriftBudgetsTableFilterComposer get budget {
+    final $$DriftBudgetsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.budget,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableFilterComposer(
+            $$DriftBudgetsTableFilterComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12208,9 +12400,9 @@ class $$BudgetAccountsTableFilterComposer
   }
 }
 
-class $$BudgetAccountsTableOrderingComposer
-    extends Composer<_$MyDatabase, $BudgetAccountsTable> {
-  $$BudgetAccountsTableOrderingComposer({
+class $$DriftBudgetAccountsTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftBudgetAccountsTable> {
+  $$DriftBudgetAccountsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -12223,18 +12415,18 @@ class $$BudgetAccountsTableOrderingComposer
   ColumnOrderings<int> get amount => $composableBuilder(
       column: $table.amount, builder: (column) => ColumnOrderings(column));
 
-  $$AccountsTableOrderingComposer get account {
-    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+  $$DriftAccountsTableOrderingComposer get account {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableOrderingComposer(
+            $$DriftAccountsTableOrderingComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12243,18 +12435,18 @@ class $$BudgetAccountsTableOrderingComposer
     return composer;
   }
 
-  $$BudgetsTableOrderingComposer get budget {
-    final $$BudgetsTableOrderingComposer composer = $composerBuilder(
+  $$DriftBudgetsTableOrderingComposer get budget {
+    final $$DriftBudgetsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.budget,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableOrderingComposer(
+            $$DriftBudgetsTableOrderingComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12264,9 +12456,9 @@ class $$BudgetAccountsTableOrderingComposer
   }
 }
 
-class $$BudgetAccountsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $BudgetAccountsTable> {
-  $$BudgetAccountsTableAnnotationComposer({
+class $$DriftBudgetAccountsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftBudgetAccountsTable> {
+  $$DriftBudgetAccountsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -12279,18 +12471,18 @@ class $$BudgetAccountsTableAnnotationComposer
   GeneratedColumn<int> get amount =>
       $composableBuilder(column: $table.amount, builder: (column) => column);
 
-  $$AccountsTableAnnotationComposer get account {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftAccountsTableAnnotationComposer get account {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
+            $$DriftAccountsTableAnnotationComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12299,18 +12491,18 @@ class $$BudgetAccountsTableAnnotationComposer
     return composer;
   }
 
-  $$BudgetsTableAnnotationComposer get budget {
-    final $$BudgetsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftBudgetsTableAnnotationComposer get budget {
+    final $$DriftBudgetsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.budget,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableAnnotationComposer(
+            $$DriftBudgetsTableAnnotationComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12320,35 +12512,38 @@ class $$BudgetAccountsTableAnnotationComposer
   }
 }
 
-class $$BudgetAccountsTableTableManager extends RootTableManager<
+class $$DriftBudgetAccountsTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $BudgetAccountsTable,
-    BudgetAccount,
-    $$BudgetAccountsTableFilterComposer,
-    $$BudgetAccountsTableOrderingComposer,
-    $$BudgetAccountsTableAnnotationComposer,
-    $$BudgetAccountsTableCreateCompanionBuilder,
-    $$BudgetAccountsTableUpdateCompanionBuilder,
-    (BudgetAccount, $$BudgetAccountsTableReferences),
-    BudgetAccount,
+    $DriftBudgetAccountsTable,
+    DriftBudgetAccount,
+    $$DriftBudgetAccountsTableFilterComposer,
+    $$DriftBudgetAccountsTableOrderingComposer,
+    $$DriftBudgetAccountsTableAnnotationComposer,
+    $$DriftBudgetAccountsTableCreateCompanionBuilder,
+    $$DriftBudgetAccountsTableUpdateCompanionBuilder,
+    (DriftBudgetAccount, $$DriftBudgetAccountsTableReferences),
+    DriftBudgetAccount,
     PrefetchHooks Function({bool account, bool budget})> {
-  $$BudgetAccountsTableTableManager(_$MyDatabase db, $BudgetAccountsTable table)
+  $$DriftBudgetAccountsTableTableManager(
+      _$MyDatabase db, $DriftBudgetAccountsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$BudgetAccountsTableFilterComposer($db: db, $table: table),
+              $$DriftBudgetAccountsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$BudgetAccountsTableOrderingComposer($db: db, $table: table),
+              $$DriftBudgetAccountsTableOrderingComposer(
+                  $db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$BudgetAccountsTableAnnotationComposer($db: db, $table: table),
+              $$DriftBudgetAccountsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> account = const Value.absent(),
             Value<int> budget = const Value.absent(),
             Value<int> amount = const Value.absent(),
           }) =>
-              BudgetAccountsCompanion(
+              DriftBudgetAccountsCompanion(
             id: id,
             account: account,
             budget: budget,
@@ -12360,7 +12555,7 @@ class $$BudgetAccountsTableTableManager extends RootTableManager<
             required int budget,
             Value<int> amount = const Value.absent(),
           }) =>
-              BudgetAccountsCompanion.insert(
+              DriftBudgetAccountsCompanion.insert(
             id: id,
             account: account,
             budget: budget,
@@ -12369,7 +12564,7 @@ class $$BudgetAccountsTableTableManager extends RootTableManager<
           withReferenceMapper: (p0) => p0
               .map((e) => (
                     e.readTable(table),
-                    $$BudgetAccountsTableReferences(db, table, e)
+                    $$DriftBudgetAccountsTableReferences(db, table, e)
                   ))
               .toList(),
           prefetchHooksCallback: ({account = false, budget = false}) {
@@ -12394,9 +12589,10 @@ class $$BudgetAccountsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.account,
                     referencedTable:
-                        $$BudgetAccountsTableReferences._accountTable(db),
-                    referencedColumn:
-                        $$BudgetAccountsTableReferences._accountTable(db).id,
+                        $$DriftBudgetAccountsTableReferences._accountTable(db),
+                    referencedColumn: $$DriftBudgetAccountsTableReferences
+                        ._accountTable(db)
+                        .id,
                   ) as T;
                 }
                 if (budget) {
@@ -12404,9 +12600,10 @@ class $$BudgetAccountsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.budget,
                     referencedTable:
-                        $$BudgetAccountsTableReferences._budgetTable(db),
-                    referencedColumn:
-                        $$BudgetAccountsTableReferences._budgetTable(db).id,
+                        $$DriftBudgetAccountsTableReferences._budgetTable(db),
+                    referencedColumn: $$DriftBudgetAccountsTableReferences
+                        ._budgetTable(db)
+                        .id,
                   ) as T;
                 }
 
@@ -12420,43 +12617,44 @@ class $$BudgetAccountsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$BudgetAccountsTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftBudgetAccountsTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $BudgetAccountsTable,
-    BudgetAccount,
-    $$BudgetAccountsTableFilterComposer,
-    $$BudgetAccountsTableOrderingComposer,
-    $$BudgetAccountsTableAnnotationComposer,
-    $$BudgetAccountsTableCreateCompanionBuilder,
-    $$BudgetAccountsTableUpdateCompanionBuilder,
-    (BudgetAccount, $$BudgetAccountsTableReferences),
-    BudgetAccount,
+    $DriftBudgetAccountsTable,
+    DriftBudgetAccount,
+    $$DriftBudgetAccountsTableFilterComposer,
+    $$DriftBudgetAccountsTableOrderingComposer,
+    $$DriftBudgetAccountsTableAnnotationComposer,
+    $$DriftBudgetAccountsTableCreateCompanionBuilder,
+    $$DriftBudgetAccountsTableUpdateCompanionBuilder,
+    (DriftBudgetAccount, $$DriftBudgetAccountsTableReferences),
+    DriftBudgetAccount,
     PrefetchHooks Function({bool account, bool budget})>;
-typedef $$BudgetFundsTableCreateCompanionBuilder = BudgetFundsCompanion
-    Function({
+typedef $$DriftBudgetFundsTableCreateCompanionBuilder
+    = DriftBudgetFundsCompanion Function({
   Value<int> id,
   required int account,
   required int budget,
 });
-typedef $$BudgetFundsTableUpdateCompanionBuilder = BudgetFundsCompanion
-    Function({
+typedef $$DriftBudgetFundsTableUpdateCompanionBuilder
+    = DriftBudgetFundsCompanion Function({
   Value<int> id,
   Value<int> account,
   Value<int> budget,
 });
 
-final class $$BudgetFundsTableReferences
-    extends BaseReferences<_$MyDatabase, $BudgetFundsTable, BudgetFund> {
-  $$BudgetFundsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$DriftBudgetFundsTableReferences extends BaseReferences<
+    _$MyDatabase, $DriftBudgetFundsTable, DriftBudgetFund> {
+  $$DriftBudgetFundsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
 
-  static $AccountsTable _accountTable(_$MyDatabase db) =>
-      db.accounts.createAlias(
-          $_aliasNameGenerator(db.budgetFunds.account, db.accounts.id));
+  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias($_aliasNameGenerator(
+          db.driftBudgetFunds.account, db.driftAccounts.id));
 
-  $$AccountsTableProcessedTableManager get account {
+  $$DriftAccountsTableProcessedTableManager get account {
     final $_column = $_itemColumn<int>('account')!;
 
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_accountTable($_db));
     if (item == null) return manager;
@@ -12464,13 +12662,14 @@ final class $$BudgetFundsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $BudgetsTable _budgetTable(_$MyDatabase db) => db.budgets
-      .createAlias($_aliasNameGenerator(db.budgetFunds.budget, db.budgets.id));
+  static $DriftBudgetsTable _budgetTable(_$MyDatabase db) =>
+      db.driftBudgets.createAlias(
+          $_aliasNameGenerator(db.driftBudgetFunds.budget, db.driftBudgets.id));
 
-  $$BudgetsTableProcessedTableManager get budget {
+  $$DriftBudgetsTableProcessedTableManager get budget {
     final $_column = $_itemColumn<int>('budget')!;
 
-    final manager = $$BudgetsTableTableManager($_db, $_db.budgets)
+    final manager = $$DriftBudgetsTableTableManager($_db, $_db.driftBudgets)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_budgetTable($_db));
     if (item == null) return manager;
@@ -12479,9 +12678,9 @@ final class $$BudgetFundsTableReferences
   }
 }
 
-class $$BudgetFundsTableFilterComposer
-    extends Composer<_$MyDatabase, $BudgetFundsTable> {
-  $$BudgetFundsTableFilterComposer({
+class $$DriftBudgetFundsTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftBudgetFundsTable> {
+  $$DriftBudgetFundsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -12491,18 +12690,18 @@ class $$BudgetFundsTableFilterComposer
   ColumnFilters<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  $$AccountsTableFilterComposer get account {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
+  $$DriftAccountsTableFilterComposer get account {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
+            $$DriftAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12511,18 +12710,18 @@ class $$BudgetFundsTableFilterComposer
     return composer;
   }
 
-  $$BudgetsTableFilterComposer get budget {
-    final $$BudgetsTableFilterComposer composer = $composerBuilder(
+  $$DriftBudgetsTableFilterComposer get budget {
+    final $$DriftBudgetsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.budget,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableFilterComposer(
+            $$DriftBudgetsTableFilterComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12532,9 +12731,9 @@ class $$BudgetFundsTableFilterComposer
   }
 }
 
-class $$BudgetFundsTableOrderingComposer
-    extends Composer<_$MyDatabase, $BudgetFundsTable> {
-  $$BudgetFundsTableOrderingComposer({
+class $$DriftBudgetFundsTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftBudgetFundsTable> {
+  $$DriftBudgetFundsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -12544,18 +12743,18 @@ class $$BudgetFundsTableOrderingComposer
   ColumnOrderings<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  $$AccountsTableOrderingComposer get account {
-    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+  $$DriftAccountsTableOrderingComposer get account {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableOrderingComposer(
+            $$DriftAccountsTableOrderingComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12564,18 +12763,18 @@ class $$BudgetFundsTableOrderingComposer
     return composer;
   }
 
-  $$BudgetsTableOrderingComposer get budget {
-    final $$BudgetsTableOrderingComposer composer = $composerBuilder(
+  $$DriftBudgetsTableOrderingComposer get budget {
+    final $$DriftBudgetsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.budget,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableOrderingComposer(
+            $$DriftBudgetsTableOrderingComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12585,9 +12784,9 @@ class $$BudgetFundsTableOrderingComposer
   }
 }
 
-class $$BudgetFundsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $BudgetFundsTable> {
-  $$BudgetFundsTableAnnotationComposer({
+class $$DriftBudgetFundsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftBudgetFundsTable> {
+  $$DriftBudgetFundsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -12597,18 +12796,18 @@ class $$BudgetFundsTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  $$AccountsTableAnnotationComposer get account {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftAccountsTableAnnotationComposer get account {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
+            $$DriftAccountsTableAnnotationComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12617,18 +12816,18 @@ class $$BudgetFundsTableAnnotationComposer
     return composer;
   }
 
-  $$BudgetsTableAnnotationComposer get budget {
-    final $$BudgetsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftBudgetsTableAnnotationComposer get budget {
+    final $$DriftBudgetsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.budget,
-        referencedTable: $db.budgets,
+        referencedTable: $db.driftBudgets,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$BudgetsTableAnnotationComposer(
+            $$DriftBudgetsTableAnnotationComposer(
               $db: $db,
-              $table: $db.budgets,
+              $table: $db.driftBudgets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12638,34 +12837,35 @@ class $$BudgetFundsTableAnnotationComposer
   }
 }
 
-class $$BudgetFundsTableTableManager extends RootTableManager<
+class $$DriftBudgetFundsTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $BudgetFundsTable,
-    BudgetFund,
-    $$BudgetFundsTableFilterComposer,
-    $$BudgetFundsTableOrderingComposer,
-    $$BudgetFundsTableAnnotationComposer,
-    $$BudgetFundsTableCreateCompanionBuilder,
-    $$BudgetFundsTableUpdateCompanionBuilder,
-    (BudgetFund, $$BudgetFundsTableReferences),
-    BudgetFund,
+    $DriftBudgetFundsTable,
+    DriftBudgetFund,
+    $$DriftBudgetFundsTableFilterComposer,
+    $$DriftBudgetFundsTableOrderingComposer,
+    $$DriftBudgetFundsTableAnnotationComposer,
+    $$DriftBudgetFundsTableCreateCompanionBuilder,
+    $$DriftBudgetFundsTableUpdateCompanionBuilder,
+    (DriftBudgetFund, $$DriftBudgetFundsTableReferences),
+    DriftBudgetFund,
     PrefetchHooks Function({bool account, bool budget})> {
-  $$BudgetFundsTableTableManager(_$MyDatabase db, $BudgetFundsTable table)
+  $$DriftBudgetFundsTableTableManager(
+      _$MyDatabase db, $DriftBudgetFundsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$BudgetFundsTableFilterComposer($db: db, $table: table),
+              $$DriftBudgetFundsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$BudgetFundsTableOrderingComposer($db: db, $table: table),
+              $$DriftBudgetFundsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$BudgetFundsTableAnnotationComposer($db: db, $table: table),
+              $$DriftBudgetFundsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> account = const Value.absent(),
             Value<int> budget = const Value.absent(),
           }) =>
-              BudgetFundsCompanion(
+              DriftBudgetFundsCompanion(
             id: id,
             account: account,
             budget: budget,
@@ -12675,7 +12875,7 @@ class $$BudgetFundsTableTableManager extends RootTableManager<
             required int account,
             required int budget,
           }) =>
-              BudgetFundsCompanion.insert(
+              DriftBudgetFundsCompanion.insert(
             id: id,
             account: account,
             budget: budget,
@@ -12683,7 +12883,7 @@ class $$BudgetFundsTableTableManager extends RootTableManager<
           withReferenceMapper: (p0) => p0
               .map((e) => (
                     e.readTable(table),
-                    $$BudgetFundsTableReferences(db, table, e)
+                    $$DriftBudgetFundsTableReferences(db, table, e)
                   ))
               .toList(),
           prefetchHooksCallback: ({account = false, budget = false}) {
@@ -12708,9 +12908,9 @@ class $$BudgetFundsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.account,
                     referencedTable:
-                        $$BudgetFundsTableReferences._accountTable(db),
+                        $$DriftBudgetFundsTableReferences._accountTable(db),
                     referencedColumn:
-                        $$BudgetFundsTableReferences._accountTable(db).id,
+                        $$DriftBudgetFundsTableReferences._accountTable(db).id,
                   ) as T;
                 }
                 if (budget) {
@@ -12718,9 +12918,9 @@ class $$BudgetFundsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.budget,
                     referencedTable:
-                        $$BudgetFundsTableReferences._budgetTable(db),
+                        $$DriftBudgetFundsTableReferences._budgetTable(db),
                     referencedColumn:
-                        $$BudgetFundsTableReferences._budgetTable(db).id,
+                        $$DriftBudgetFundsTableReferences._budgetTable(db).id,
                   ) as T;
                 }
 
@@ -12734,44 +12934,44 @@ class $$BudgetFundsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$BudgetFundsTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftBudgetFundsTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $BudgetFundsTable,
-    BudgetFund,
-    $$BudgetFundsTableFilterComposer,
-    $$BudgetFundsTableOrderingComposer,
-    $$BudgetFundsTableAnnotationComposer,
-    $$BudgetFundsTableCreateCompanionBuilder,
-    $$BudgetFundsTableUpdateCompanionBuilder,
-    (BudgetFund, $$BudgetFundsTableReferences),
-    BudgetFund,
+    $DriftBudgetFundsTable,
+    DriftBudgetFund,
+    $$DriftBudgetFundsTableFilterComposer,
+    $$DriftBudgetFundsTableOrderingComposer,
+    $$DriftBudgetFundsTableAnnotationComposer,
+    $$DriftBudgetFundsTableCreateCompanionBuilder,
+    $$DriftBudgetFundsTableUpdateCompanionBuilder,
+    (DriftBudgetFund, $$DriftBudgetFundsTableReferences),
+    DriftBudgetFund,
     PrefetchHooks Function({bool account, bool budget})>;
-typedef $$ProjectPhotosTableCreateCompanionBuilder = ProjectPhotosCompanion
-    Function({
+typedef $$DriftProjectPhotosTableCreateCompanionBuilder
+    = DriftProjectPhotosCompanion Function({
   Value<int> id,
   required int project,
   required String path,
 });
-typedef $$ProjectPhotosTableUpdateCompanionBuilder = ProjectPhotosCompanion
-    Function({
+typedef $$DriftProjectPhotosTableUpdateCompanionBuilder
+    = DriftProjectPhotosCompanion Function({
   Value<int> id,
   Value<int> project,
   Value<String> path,
 });
 
-final class $$ProjectPhotosTableReferences
-    extends BaseReferences<_$MyDatabase, $ProjectPhotosTable, ProjectPhoto> {
-  $$ProjectPhotosTableReferences(
+final class $$DriftProjectPhotosTableReferences extends BaseReferences<
+    _$MyDatabase, $DriftProjectPhotosTable, DriftProjectPhoto> {
+  $$DriftProjectPhotosTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $ProjectsTable _projectTable(_$MyDatabase db) =>
-      db.projects.createAlias(
-          $_aliasNameGenerator(db.projectPhotos.project, db.projects.id));
+  static $DriftProjectsTable _projectTable(_$MyDatabase db) =>
+      db.driftProjects.createAlias($_aliasNameGenerator(
+          db.driftProjectPhotos.project, db.driftProjects.id));
 
-  $$ProjectsTableProcessedTableManager get project {
+  $$DriftProjectsTableProcessedTableManager get project {
     final $_column = $_itemColumn<int>('project')!;
 
-    final manager = $$ProjectsTableTableManager($_db, $_db.projects)
+    final manager = $$DriftProjectsTableTableManager($_db, $_db.driftProjects)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_projectTable($_db));
     if (item == null) return manager;
@@ -12780,9 +12980,9 @@ final class $$ProjectPhotosTableReferences
   }
 }
 
-class $$ProjectPhotosTableFilterComposer
-    extends Composer<_$MyDatabase, $ProjectPhotosTable> {
-  $$ProjectPhotosTableFilterComposer({
+class $$DriftProjectPhotosTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftProjectPhotosTable> {
+  $$DriftProjectPhotosTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -12795,18 +12995,18 @@ class $$ProjectPhotosTableFilterComposer
   ColumnFilters<String> get path => $composableBuilder(
       column: $table.path, builder: (column) => ColumnFilters(column));
 
-  $$ProjectsTableFilterComposer get project {
-    final $$ProjectsTableFilterComposer composer = $composerBuilder(
+  $$DriftProjectsTableFilterComposer get project {
+    final $$DriftProjectsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.project,
-        referencedTable: $db.projects,
+        referencedTable: $db.driftProjects,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectsTableFilterComposer(
+            $$DriftProjectsTableFilterComposer(
               $db: $db,
-              $table: $db.projects,
+              $table: $db.driftProjects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12816,9 +13016,9 @@ class $$ProjectPhotosTableFilterComposer
   }
 }
 
-class $$ProjectPhotosTableOrderingComposer
-    extends Composer<_$MyDatabase, $ProjectPhotosTable> {
-  $$ProjectPhotosTableOrderingComposer({
+class $$DriftProjectPhotosTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftProjectPhotosTable> {
+  $$DriftProjectPhotosTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -12831,18 +13031,18 @@ class $$ProjectPhotosTableOrderingComposer
   ColumnOrderings<String> get path => $composableBuilder(
       column: $table.path, builder: (column) => ColumnOrderings(column));
 
-  $$ProjectsTableOrderingComposer get project {
-    final $$ProjectsTableOrderingComposer composer = $composerBuilder(
+  $$DriftProjectsTableOrderingComposer get project {
+    final $$DriftProjectsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.project,
-        referencedTable: $db.projects,
+        referencedTable: $db.driftProjects,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectsTableOrderingComposer(
+            $$DriftProjectsTableOrderingComposer(
               $db: $db,
-              $table: $db.projects,
+              $table: $db.driftProjects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12852,9 +13052,9 @@ class $$ProjectPhotosTableOrderingComposer
   }
 }
 
-class $$ProjectPhotosTableAnnotationComposer
-    extends Composer<_$MyDatabase, $ProjectPhotosTable> {
-  $$ProjectPhotosTableAnnotationComposer({
+class $$DriftProjectPhotosTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftProjectPhotosTable> {
+  $$DriftProjectPhotosTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -12867,18 +13067,18 @@ class $$ProjectPhotosTableAnnotationComposer
   GeneratedColumn<String> get path =>
       $composableBuilder(column: $table.path, builder: (column) => column);
 
-  $$ProjectsTableAnnotationComposer get project {
-    final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftProjectsTableAnnotationComposer get project {
+    final $$DriftProjectsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.project,
-        referencedTable: $db.projects,
+        referencedTable: $db.driftProjects,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProjectsTableAnnotationComposer(
+            $$DriftProjectsTableAnnotationComposer(
               $db: $db,
-              $table: $db.projects,
+              $table: $db.driftProjects,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -12888,34 +13088,36 @@ class $$ProjectPhotosTableAnnotationComposer
   }
 }
 
-class $$ProjectPhotosTableTableManager extends RootTableManager<
+class $$DriftProjectPhotosTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $ProjectPhotosTable,
-    ProjectPhoto,
-    $$ProjectPhotosTableFilterComposer,
-    $$ProjectPhotosTableOrderingComposer,
-    $$ProjectPhotosTableAnnotationComposer,
-    $$ProjectPhotosTableCreateCompanionBuilder,
-    $$ProjectPhotosTableUpdateCompanionBuilder,
-    (ProjectPhoto, $$ProjectPhotosTableReferences),
-    ProjectPhoto,
+    $DriftProjectPhotosTable,
+    DriftProjectPhoto,
+    $$DriftProjectPhotosTableFilterComposer,
+    $$DriftProjectPhotosTableOrderingComposer,
+    $$DriftProjectPhotosTableAnnotationComposer,
+    $$DriftProjectPhotosTableCreateCompanionBuilder,
+    $$DriftProjectPhotosTableUpdateCompanionBuilder,
+    (DriftProjectPhoto, $$DriftProjectPhotosTableReferences),
+    DriftProjectPhoto,
     PrefetchHooks Function({bool project})> {
-  $$ProjectPhotosTableTableManager(_$MyDatabase db, $ProjectPhotosTable table)
+  $$DriftProjectPhotosTableTableManager(
+      _$MyDatabase db, $DriftProjectPhotosTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$ProjectPhotosTableFilterComposer($db: db, $table: table),
+              $$DriftProjectPhotosTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$ProjectPhotosTableOrderingComposer($db: db, $table: table),
+              $$DriftProjectPhotosTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$ProjectPhotosTableAnnotationComposer($db: db, $table: table),
+              $$DriftProjectPhotosTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> project = const Value.absent(),
             Value<String> path = const Value.absent(),
           }) =>
-              ProjectPhotosCompanion(
+              DriftProjectPhotosCompanion(
             id: id,
             project: project,
             path: path,
@@ -12925,7 +13127,7 @@ class $$ProjectPhotosTableTableManager extends RootTableManager<
             required int project,
             required String path,
           }) =>
-              ProjectPhotosCompanion.insert(
+              DriftProjectPhotosCompanion.insert(
             id: id,
             project: project,
             path: path,
@@ -12933,7 +13135,7 @@ class $$ProjectPhotosTableTableManager extends RootTableManager<
           withReferenceMapper: (p0) => p0
               .map((e) => (
                     e.readTable(table),
-                    $$ProjectPhotosTableReferences(db, table, e)
+                    $$DriftProjectPhotosTableReferences(db, table, e)
                   ))
               .toList(),
           prefetchHooksCallback: ({project = false}) {
@@ -12958,9 +13160,10 @@ class $$ProjectPhotosTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.project,
                     referencedTable:
-                        $$ProjectPhotosTableReferences._projectTable(db),
-                    referencedColumn:
-                        $$ProjectPhotosTableReferences._projectTable(db).id,
+                        $$DriftProjectPhotosTableReferences._projectTable(db),
+                    referencedColumn: $$DriftProjectPhotosTableReferences
+                        ._projectTable(db)
+                        .id,
                   ) as T;
                 }
 
@@ -12974,20 +13177,20 @@ class $$ProjectPhotosTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$ProjectPhotosTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftProjectPhotosTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $ProjectPhotosTable,
-    ProjectPhoto,
-    $$ProjectPhotosTableFilterComposer,
-    $$ProjectPhotosTableOrderingComposer,
-    $$ProjectPhotosTableAnnotationComposer,
-    $$ProjectPhotosTableCreateCompanionBuilder,
-    $$ProjectPhotosTableUpdateCompanionBuilder,
-    (ProjectPhoto, $$ProjectPhotosTableReferences),
-    ProjectPhoto,
+    $DriftProjectPhotosTable,
+    DriftProjectPhoto,
+    $$DriftProjectPhotosTableFilterComposer,
+    $$DriftProjectPhotosTableOrderingComposer,
+    $$DriftProjectPhotosTableAnnotationComposer,
+    $$DriftProjectPhotosTableCreateCompanionBuilder,
+    $$DriftProjectPhotosTableUpdateCompanionBuilder,
+    (DriftProjectPhoto, $$DriftProjectPhotosTableReferences),
+    DriftProjectPhoto,
     PrefetchHooks Function({bool project})>;
-typedef $$SubscriptionsTableCreateCompanionBuilder = SubscriptionsCompanion
-    Function({
+typedef $$DriftSubscriptionsTableCreateCompanionBuilder
+    = DriftSubscriptionsCompanion Function({
   Value<int> id,
   required int account,
   required int profile,
@@ -12997,8 +13200,8 @@ typedef $$SubscriptionsTableCreateCompanionBuilder = SubscriptionsCompanion
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
 });
-typedef $$SubscriptionsTableUpdateCompanionBuilder = SubscriptionsCompanion
-    Function({
+typedef $$DriftSubscriptionsTableUpdateCompanionBuilder
+    = DriftSubscriptionsCompanion Function({
   Value<int> id,
   Value<int> account,
   Value<int> profile,
@@ -13009,19 +13212,19 @@ typedef $$SubscriptionsTableUpdateCompanionBuilder = SubscriptionsCompanion
   Value<DateTime> updateDate,
 });
 
-final class $$SubscriptionsTableReferences
-    extends BaseReferences<_$MyDatabase, $SubscriptionsTable, Subscription> {
-  $$SubscriptionsTableReferences(
+final class $$DriftSubscriptionsTableReferences extends BaseReferences<
+    _$MyDatabase, $DriftSubscriptionsTable, DriftSubscription> {
+  $$DriftSubscriptionsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $AccountsTable _accountTable(_$MyDatabase db) =>
-      db.accounts.createAlias(
-          $_aliasNameGenerator(db.subscriptions.account, db.accounts.id));
+  static $DriftAccountsTable _accountTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias($_aliasNameGenerator(
+          db.driftSubscriptions.account, db.driftAccounts.id));
 
-  $$AccountsTableProcessedTableManager get account {
+  $$DriftAccountsTableProcessedTableManager get account {
     final $_column = $_itemColumn<int>('account')!;
 
-    final manager = $$AccountsTableTableManager($_db, $_db.accounts)
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_accountTable($_db));
     if (item == null) return manager;
@@ -13029,14 +13232,14 @@ final class $$SubscriptionsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $ProfilesTable _profileTable(_$MyDatabase db) =>
-      db.profiles.createAlias(
-          $_aliasNameGenerator(db.subscriptions.profile, db.profiles.id));
+  static $DriftProfilesTable _profileTable(_$MyDatabase db) =>
+      db.driftProfiles.createAlias($_aliasNameGenerator(
+          db.driftSubscriptions.profile, db.driftProfiles.id));
 
-  $$ProfilesTableProcessedTableManager get profile {
+  $$DriftProfilesTableProcessedTableManager get profile {
     final $_column = $_itemColumn<int>('profile')!;
 
-    final manager = $$ProfilesTableTableManager($_db, $_db.profiles)
+    final manager = $$DriftProfilesTableTableManager($_db, $_db.driftProfiles)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_profileTable($_db));
     if (item == null) return manager;
@@ -13045,9 +13248,9 @@ final class $$SubscriptionsTableReferences
   }
 }
 
-class $$SubscriptionsTableFilterComposer
-    extends Composer<_$MyDatabase, $SubscriptionsTable> {
-  $$SubscriptionsTableFilterComposer({
+class $$DriftSubscriptionsTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftSubscriptionsTable> {
+  $$DriftSubscriptionsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -13074,18 +13277,18 @@ class $$SubscriptionsTableFilterComposer
   ColumnFilters<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnFilters(column));
 
-  $$AccountsTableFilterComposer get account {
-    final $$AccountsTableFilterComposer composer = $composerBuilder(
+  $$DriftAccountsTableFilterComposer get account {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableFilterComposer(
+            $$DriftAccountsTableFilterComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13094,18 +13297,18 @@ class $$SubscriptionsTableFilterComposer
     return composer;
   }
 
-  $$ProfilesTableFilterComposer get profile {
-    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+  $$DriftProfilesTableFilterComposer get profile {
+    final $$DriftProfilesTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableFilterComposer(
+            $$DriftProfilesTableFilterComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13115,9 +13318,9 @@ class $$SubscriptionsTableFilterComposer
   }
 }
 
-class $$SubscriptionsTableOrderingComposer
-    extends Composer<_$MyDatabase, $SubscriptionsTable> {
-  $$SubscriptionsTableOrderingComposer({
+class $$DriftSubscriptionsTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftSubscriptionsTable> {
+  $$DriftSubscriptionsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -13142,18 +13345,18 @@ class $$SubscriptionsTableOrderingComposer
   ColumnOrderings<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnOrderings(column));
 
-  $$AccountsTableOrderingComposer get account {
-    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+  $$DriftAccountsTableOrderingComposer get account {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableOrderingComposer(
+            $$DriftAccountsTableOrderingComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13162,18 +13365,18 @@ class $$SubscriptionsTableOrderingComposer
     return composer;
   }
 
-  $$ProfilesTableOrderingComposer get profile {
-    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+  $$DriftProfilesTableOrderingComposer get profile {
+    final $$DriftProfilesTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableOrderingComposer(
+            $$DriftProfilesTableOrderingComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13183,9 +13386,9 @@ class $$SubscriptionsTableOrderingComposer
   }
 }
 
-class $$SubscriptionsTableAnnotationComposer
-    extends Composer<_$MyDatabase, $SubscriptionsTable> {
-  $$SubscriptionsTableAnnotationComposer({
+class $$DriftSubscriptionsTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftSubscriptionsTable> {
+  $$DriftSubscriptionsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -13210,18 +13413,18 @@ class $$SubscriptionsTableAnnotationComposer
   GeneratedColumn<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => column);
 
-  $$AccountsTableAnnotationComposer get account {
-    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+  $$DriftAccountsTableAnnotationComposer get account {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.account,
-        referencedTable: $db.accounts,
+        referencedTable: $db.driftAccounts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AccountsTableAnnotationComposer(
+            $$DriftAccountsTableAnnotationComposer(
               $db: $db,
-              $table: $db.accounts,
+              $table: $db.driftAccounts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13230,18 +13433,18 @@ class $$SubscriptionsTableAnnotationComposer
     return composer;
   }
 
-  $$ProfilesTableAnnotationComposer get profile {
-    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+  $$DriftProfilesTableAnnotationComposer get profile {
+    final $$DriftProfilesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.profile,
-        referencedTable: $db.profiles,
+        referencedTable: $db.driftProfiles,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$ProfilesTableAnnotationComposer(
+            $$DriftProfilesTableAnnotationComposer(
               $db: $db,
-              $table: $db.profiles,
+              $table: $db.driftProfiles,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13251,28 +13454,30 @@ class $$SubscriptionsTableAnnotationComposer
   }
 }
 
-class $$SubscriptionsTableTableManager extends RootTableManager<
+class $$DriftSubscriptionsTableTableManager extends RootTableManager<
     _$MyDatabase,
-    $SubscriptionsTable,
-    Subscription,
-    $$SubscriptionsTableFilterComposer,
-    $$SubscriptionsTableOrderingComposer,
-    $$SubscriptionsTableAnnotationComposer,
-    $$SubscriptionsTableCreateCompanionBuilder,
-    $$SubscriptionsTableUpdateCompanionBuilder,
-    (Subscription, $$SubscriptionsTableReferences),
-    Subscription,
+    $DriftSubscriptionsTable,
+    DriftSubscription,
+    $$DriftSubscriptionsTableFilterComposer,
+    $$DriftSubscriptionsTableOrderingComposer,
+    $$DriftSubscriptionsTableAnnotationComposer,
+    $$DriftSubscriptionsTableCreateCompanionBuilder,
+    $$DriftSubscriptionsTableUpdateCompanionBuilder,
+    (DriftSubscription, $$DriftSubscriptionsTableReferences),
+    DriftSubscription,
     PrefetchHooks Function({bool account, bool profile})> {
-  $$SubscriptionsTableTableManager(_$MyDatabase db, $SubscriptionsTable table)
+  $$DriftSubscriptionsTableTableManager(
+      _$MyDatabase db, $DriftSubscriptionsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$SubscriptionsTableFilterComposer($db: db, $table: table),
+              $$DriftSubscriptionsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$SubscriptionsTableOrderingComposer($db: db, $table: table),
+              $$DriftSubscriptionsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$SubscriptionsTableAnnotationComposer($db: db, $table: table),
+              $$DriftSubscriptionsTableAnnotationComposer(
+                  $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> account = const Value.absent(),
@@ -13283,7 +13488,7 @@ class $$SubscriptionsTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              SubscriptionsCompanion(
+              DriftSubscriptionsCompanion(
             id: id,
             account: account,
             profile: profile,
@@ -13303,7 +13508,7 @@ class $$SubscriptionsTableTableManager extends RootTableManager<
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
           }) =>
-              SubscriptionsCompanion.insert(
+              DriftSubscriptionsCompanion.insert(
             id: id,
             account: account,
             profile: profile,
@@ -13316,7 +13521,7 @@ class $$SubscriptionsTableTableManager extends RootTableManager<
           withReferenceMapper: (p0) => p0
               .map((e) => (
                     e.readTable(table),
-                    $$SubscriptionsTableReferences(db, table, e)
+                    $$DriftSubscriptionsTableReferences(db, table, e)
                   ))
               .toList(),
           prefetchHooksCallback: ({account = false, profile = false}) {
@@ -13341,9 +13546,10 @@ class $$SubscriptionsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.account,
                     referencedTable:
-                        $$SubscriptionsTableReferences._accountTable(db),
-                    referencedColumn:
-                        $$SubscriptionsTableReferences._accountTable(db).id,
+                        $$DriftSubscriptionsTableReferences._accountTable(db),
+                    referencedColumn: $$DriftSubscriptionsTableReferences
+                        ._accountTable(db)
+                        .id,
                   ) as T;
                 }
                 if (profile) {
@@ -13351,9 +13557,10 @@ class $$SubscriptionsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.profile,
                     referencedTable:
-                        $$SubscriptionsTableReferences._profileTable(db),
-                    referencedColumn:
-                        $$SubscriptionsTableReferences._profileTable(db).id,
+                        $$DriftSubscriptionsTableReferences._profileTable(db),
+                    referencedColumn: $$DriftSubscriptionsTableReferences
+                        ._profileTable(db)
+                        .id,
                   ) as T;
                 }
 
@@ -13367,54 +13574,55 @@ class $$SubscriptionsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$SubscriptionsTableProcessedTableManager = ProcessedTableManager<
+typedef $$DriftSubscriptionsTableProcessedTableManager = ProcessedTableManager<
     _$MyDatabase,
-    $SubscriptionsTable,
-    Subscription,
-    $$SubscriptionsTableFilterComposer,
-    $$SubscriptionsTableOrderingComposer,
-    $$SubscriptionsTableAnnotationComposer,
-    $$SubscriptionsTableCreateCompanionBuilder,
-    $$SubscriptionsTableUpdateCompanionBuilder,
-    (Subscription, $$SubscriptionsTableReferences),
-    Subscription,
+    $DriftSubscriptionsTable,
+    DriftSubscription,
+    $$DriftSubscriptionsTableFilterComposer,
+    $$DriftSubscriptionsTableOrderingComposer,
+    $$DriftSubscriptionsTableAnnotationComposer,
+    $$DriftSubscriptionsTableCreateCompanionBuilder,
+    $$DriftSubscriptionsTableUpdateCompanionBuilder,
+    (DriftSubscription, $$DriftSubscriptionsTableReferences),
+    DriftSubscription,
     PrefetchHooks Function({bool account, bool profile})>;
 
 class $MyDatabaseManager {
   final _$MyDatabase _db;
   $MyDatabaseManager(this._db);
-  $$AccTypesTableTableManager get accTypes =>
-      $$AccTypesTableTableManager(_db, _db.accTypes);
-  $$ProfilesTableTableManager get profiles =>
-      $$ProfilesTableTableManager(_db, _db.profiles);
-  $$AccountsTableTableManager get accounts =>
-      $$AccountsTableTableManager(_db, _db.accounts);
-  $$BudgetsTableTableManager get budgets =>
-      $$BudgetsTableTableManager(_db, _db.budgets);
-  $$ProjectsTableTableManager get projects =>
-      $$ProjectsTableTableManager(_db, _db.projects);
-  $$TransactionsTableTableManager get transactions =>
-      $$TransactionsTableTableManager(_db, _db.transactions);
-  $$UsersTableTableManager get users =>
-      $$UsersTableTableManager(_db, _db.users);
-  $$BanksTableTableManager get banks =>
-      $$BanksTableTableManager(_db, _db.banks);
-  $$WalletsTableTableManager get wallets =>
-      $$WalletsTableTableManager(_db, _db.wallets);
-  $$LoansTableTableManager get loans =>
-      $$LoansTableTableManager(_db, _db.loans);
-  $$CCardsTableTableManager get cCards =>
-      $$CCardsTableTableManager(_db, _db.cCards);
-  $$BalancesTableTableManager get balances =>
-      $$BalancesTableTableManager(_db, _db.balances);
-  $$FilePathsTableTableManager get filePaths =>
-      $$FilePathsTableTableManager(_db, _db.filePaths);
-  $$BudgetAccountsTableTableManager get budgetAccounts =>
-      $$BudgetAccountsTableTableManager(_db, _db.budgetAccounts);
-  $$BudgetFundsTableTableManager get budgetFunds =>
-      $$BudgetFundsTableTableManager(_db, _db.budgetFunds);
-  $$ProjectPhotosTableTableManager get projectPhotos =>
-      $$ProjectPhotosTableTableManager(_db, _db.projectPhotos);
-  $$SubscriptionsTableTableManager get subscriptions =>
-      $$SubscriptionsTableTableManager(_db, _db.subscriptions);
+  $$DriftAccTypesTableTableManager get driftAccTypes =>
+      $$DriftAccTypesTableTableManager(_db, _db.driftAccTypes);
+  $$DriftProfilesTableTableManager get driftProfiles =>
+      $$DriftProfilesTableTableManager(_db, _db.driftProfiles);
+  $$DriftAccountsTableTableManager get driftAccounts =>
+      $$DriftAccountsTableTableManager(_db, _db.driftAccounts);
+  $$DriftBudgetsTableTableManager get driftBudgets =>
+      $$DriftBudgetsTableTableManager(_db, _db.driftBudgets);
+  $$DriftProjectsTableTableManager get driftProjects =>
+      $$DriftProjectsTableTableManager(_db, _db.driftProjects);
+  $$DriftTransactionsTableTableManager get driftTransactions =>
+      $$DriftTransactionsTableTableManager(_db, _db.driftTransactions);
+  $$DriftUsersTableTableManager get driftUsers =>
+      $$DriftUsersTableTableManager(_db, _db.driftUsers);
+  $$DriftBanksTableTableManager get driftBanks =>
+      $$DriftBanksTableTableManager(_db, _db.driftBanks);
+  $$DriftWalletsTableTableManager get driftWallets =>
+      $$DriftWalletsTableTableManager(_db, _db.driftWallets);
+  $$DriftLoansTableTableManager get driftLoans =>
+      $$DriftLoansTableTableManager(_db, _db.driftLoans);
+  $$DriftCCardsTableTableManager get driftCCards =>
+      $$DriftCCardsTableTableManager(_db, _db.driftCCards);
+  $$DriftBalancesTableTableManager get driftBalances =>
+      $$DriftBalancesTableTableManager(_db, _db.driftBalances);
+  $$DriftTransactionPhotosTableTableManager get driftTransactionPhotos =>
+      $$DriftTransactionPhotosTableTableManager(
+          _db, _db.driftTransactionPhotos);
+  $$DriftBudgetAccountsTableTableManager get driftBudgetAccounts =>
+      $$DriftBudgetAccountsTableTableManager(_db, _db.driftBudgetAccounts);
+  $$DriftBudgetFundsTableTableManager get driftBudgetFunds =>
+      $$DriftBudgetFundsTableTableManager(_db, _db.driftBudgetFunds);
+  $$DriftProjectPhotosTableTableManager get driftProjectPhotos =>
+      $$DriftProjectPhotosTableTableManager(_db, _db.driftProjectPhotos);
+  $$DriftSubscriptionsTableTableManager get driftSubscriptions =>
+      $$DriftSubscriptionsTableTableManager(_db, _db.driftSubscriptions);
 }

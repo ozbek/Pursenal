@@ -1,12 +1,15 @@
 import 'package:drift/drift.dart';
-import 'package:pursenal/core/abstracts/base_repository.dart';
+import 'package:pursenal/app/extensions/drift_models.dart';
+import 'package:pursenal/core/abstracts/credit_cards_repository.dart';
 import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/credit_card.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
-class CCardsDriftRepository implements BaseRepository<CCard, CCardsCompanion> {
+class CCardsDriftRepository implements CreditCardsRepository {
   CCardsDriftRepository(this.db);
   final MyDatabase db;
 
+  @override
   Future<int> insertCCard({
     required int account,
     required String? institution,
@@ -15,7 +18,7 @@ class CCardsDriftRepository implements BaseRepository<CCard, CCardsCompanion> {
     required int? statementDate,
   }) async {
     try {
-      final card = CCardsCompanion(
+      final card = DriftCCardsCompanion(
         account: Value(account),
         institution: Value(institution),
         cardNetwork: Value(cardNetwork),
@@ -29,6 +32,7 @@ class CCardsDriftRepository implements BaseRepository<CCard, CCardsCompanion> {
     }
   }
 
+  @override
   Future<bool> updateCCard({
     required int id,
     required int account,
@@ -38,7 +42,7 @@ class CCardsDriftRepository implements BaseRepository<CCard, CCardsCompanion> {
     required int? statementDate,
   }) async {
     try {
-      final card = CCardsCompanion(
+      final card = DriftCCardsCompanion(
         id: Value(id),
         account: Value(account),
         institution: Value(institution),
@@ -64,9 +68,10 @@ class CCardsDriftRepository implements BaseRepository<CCard, CCardsCompanion> {
   }
 
   @override
-  Future<CCard> getById(int id) async {
+  Future<CreditCard> getById(int id) async {
     try {
-      return await db.getCCardById(id);
+      final account = (await db.getAccountbyId(id)).toDomain();
+      return (await db.getCCardById(id)).toDomain(account);
     } catch (e) {
       AppLogger.instance.error("Failed to get card. ${e.toString()}");
       rethrow;

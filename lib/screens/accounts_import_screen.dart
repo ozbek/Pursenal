@@ -6,6 +6,7 @@ import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/main_screen.dart';
 import 'package:pursenal/viewmodels/accounts_import_viewmodel.dart';
 import 'package:pursenal/widgets/shared/calculated_field.dart';

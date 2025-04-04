@@ -11,7 +11,10 @@ import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
-import 'package:pursenal/core/models/double_entry.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/project.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/transaction_entry_viewmodel.dart';
 import 'package:pursenal/widgets/shared/acc_type_dialog.dart';
@@ -25,13 +28,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class TransactionEntryScreen extends StatelessWidget {
   const TransactionEntryScreen(
       {super.key,
-      this.doubleEntry,
+      this.transaction,
       required this.profile,
       this.selectedFund,
       this.selectedAccount,
       this.voucherType,
       this.dupeTransaction});
-  final DoubleEntry? doubleEntry;
+  final Transaction? transaction;
   final Profile profile;
   final Account? selectedFund;
   final Account? selectedAccount;
@@ -45,7 +48,7 @@ class TransactionEntryScreen extends StatelessWidget {
     return ChangeNotifierProvider<TransactionEntryViewmodel>(
       create: (context) => TransactionEntryViewmodel(
         db: db,
-        doubleEntry: doubleEntry,
+        transaction: transaction,
         profile: profile,
         selectedAccount: selectedAccount,
         selectedFund: selectedFund,
@@ -56,7 +59,7 @@ class TransactionEntryScreen extends StatelessWidget {
         appBar: AppBar(
           title: Consumer<TransactionEntryViewmodel>(
             builder: (context, viewmodel, child) => Text(
-              "${doubleEntry != null ? AppLocalizations.of(context)!.edit : dupeTransaction != null ? AppLocalizations.of(context)!.copy : AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.transactionNo(
+              "${transaction != null ? AppLocalizations.of(context)!.edit : dupeTransaction != null ? AppLocalizations.of(context)!.copy : AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.transactionNo(
                 viewmodel.vchNo.toString(),
               )}",
             ),
@@ -71,7 +74,7 @@ class TransactionEntryScreen extends StatelessWidget {
                 viewmodel.resetErrorText();
               },
               widget: TransactionForm(
-                doubleEntry: doubleEntry,
+                transaction: transaction,
                 profile: profile,
                 viewmodel: viewmodel,
                 autoFocusAmount: (voucherType != null &&
@@ -89,12 +92,12 @@ class TransactionEntryScreen extends StatelessWidget {
 class TransactionForm extends StatelessWidget {
   const TransactionForm(
       {super.key,
-      required this.doubleEntry,
+      required this.transaction,
       required this.viewmodel,
       this.autoFocusAmount = false,
       required this.profile});
 
-  final DoubleEntry? doubleEntry;
+  final Transaction? transaction;
   final TransactionEntryViewmodel viewmodel;
   final bool autoFocusAmount;
   final Profile profile;
@@ -401,16 +404,18 @@ class TransactionForm extends StatelessWidget {
                                       onTap: () {
                                         showDialog(
                                           context: context,
-                                          builder: (context) => AccTypeDialog(
-                                              profile: profile,
-                                              initFn: () {
-                                                viewmodel.getAccounts();
-                                              },
-                                              accTypes:
-                                                  viewmodel.accTypes.where((a) {
-                                                return fundingAccountIDs
-                                                    .contains(a.id);
-                                              }).toList()),
+                                          builder: (context) =>
+                                              AccountTypeDialog(
+                                                  profile: profile,
+                                                  initFn: () {
+                                                    viewmodel.getAccounts();
+                                                  },
+                                                  accountTypes: viewmodel
+                                                      .accountTypes
+                                                      .where((a) {
+                                                    return fundingAccountIDs
+                                                        .contains(a.dbID);
+                                                  }).toList()),
                                         );
                                       },
                                       child: Container(
@@ -529,12 +534,14 @@ class TransactionForm extends StatelessWidget {
                                       onTap: () {
                                         showDialog(
                                           context: context,
-                                          builder: (context) => AccTypeDialog(
-                                              profile: profile,
-                                              initFn: () {
-                                                viewmodel.getAccounts();
-                                              },
-                                              accTypes: viewmodel.accTypes),
+                                          builder: (context) =>
+                                              AccountTypeDialog(
+                                                  profile: profile,
+                                                  initFn: () {
+                                                    viewmodel.getAccounts();
+                                                  },
+                                                  accountTypes:
+                                                      viewmodel.accountTypes),
                                         );
                                       },
                                       child: MouseRegion(
@@ -629,7 +636,7 @@ class TransactionForm extends StatelessWidget {
                             maxLines: 3,
                             maxLength: 128,
                             initialValue:
-                                doubleEntry?.transaction.narr ?? viewmodel.narr,
+                                transaction?.narration ?? viewmodel.narr,
                             onChanged: (value) => viewmodel.narr = value,
                             decoration: InputDecoration(
                                 counterText: '',
@@ -650,8 +657,7 @@ class TransactionForm extends StatelessWidget {
                               vertical: 4, horizontal: 8),
                           child: TextFormField(
                             maxLength: 32,
-                            initialValue: doubleEntry?.transaction.refNo ??
-                                viewmodel.refNo,
+                            initialValue: transaction?.refNo ?? viewmodel.refNo,
                             onChanged: (value) => viewmodel.refNo = value,
                             decoration: InputDecoration(
                                 counterText: '',
@@ -704,10 +710,11 @@ class TransactionForm extends StatelessWidget {
                   IconButton(
                       onPressed: () async {
                         final exps = viewmodel.fAccounts
-                            .where((a) => a.account.accType == 5)
+                            .where(
+                                (a) => a.account.accountType == expenseTypeID)
                             .toList();
                         final incs = viewmodel.fAccounts
-                            .where((a) => a.account.accType == 4)
+                            .where((a) => a.account.accountType == incomeTypeID)
                             .toList();
                         const noOfTransactionsToInsert = 10000;
                         const maxNoOfDaysBack = 800;

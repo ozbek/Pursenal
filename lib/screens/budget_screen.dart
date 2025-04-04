@@ -3,7 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/db/database.dart';
-import 'package:pursenal/core/models/budget_plan.dart';
+import 'package:pursenal/core/models/domain/budget.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/budget_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/budget_viewmodel.dart';
@@ -16,10 +17,9 @@ import 'package:pursenal/widgets/shared/loading_body.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BudgetScreen extends StatelessWidget {
-  const BudgetScreen(
-      {super.key, required this.profile, required this.budgetPlan});
+  const BudgetScreen({super.key, required this.profile, required this.budget});
   final Profile profile;
-  final BudgetPlan budgetPlan;
+  final Budget budget;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,7 @@ class BudgetScreen extends StatelessWidget {
     final appViewmodel = Provider.of<AppViewmodel>(context);
     return ChangeNotifierProvider<BudgetViewmodel>(
       create: (context) =>
-          BudgetViewmodel(db: db, profile: profile, budgetPlan: budgetPlan)
-            ..init(),
+          BudgetViewmodel(db: db, profile: profile, budget: budget)..init(),
       builder: (context, child) => Consumer<BudgetViewmodel>(
         builder: (context, viewmodel, child) => Scaffold(
             appBar: AppBar(
@@ -40,7 +39,7 @@ class BudgetScreen extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => BudgetEntryScreen(
                               profile: profile,
-                              budgetPlan: viewmodel.budgetPlan,
+                              budget: viewmodel.budget,
                             ),
                           )).then((_) => viewmodel.refetchBudget());
                     },
@@ -109,14 +108,14 @@ class BudgetScreen extends StatelessWidget {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            viewmodel.budgetPlan.budget.name,
+                                            viewmodel.budget.name,
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headlineMedium,
                                           ),
                                           Text(
-                                            viewmodel.budgetPlan.budget.details,
+                                            viewmodel.budget.details,
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
                                                 .textTheme
@@ -130,8 +129,7 @@ class BudgetScreen extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Chip(
                                         label: Text(
-                                      viewmodel
-                                          .budgetPlan.budget.interval.label,
+                                      viewmodel.budget.interval.label,
                                       overflow: TextOverflow.ellipsis,
                                     )),
                                   )
@@ -145,12 +143,12 @@ class BudgetScreen extends StatelessWidget {
                                   child: Row(
                                     children: [
                                       const Text("Tracked Funds : "),
-                                      ...viewmodel.budgetPlan.funds.map(
+                                      ...viewmodel.budget.funds.map(
                                         (f) => Padding(
                                           padding: const EdgeInsets.all(1.0),
                                           child: Chip(
                                             avatar: Icon(
-                                              getAccTypeIcon(f.accType),
+                                              getAccTypeIcon(f.accountType),
                                               color: Colors.white,
                                             ),
                                             shape: RoundedRectangleBorder(

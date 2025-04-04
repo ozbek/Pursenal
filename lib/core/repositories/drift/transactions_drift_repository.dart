@@ -1,15 +1,16 @@
 import 'package:drift/drift.dart';
-import 'package:pursenal/core/abstracts/base_repository.dart';
+import 'package:pursenal/app/extensions/drift_models.dart';
+import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
-import 'package:pursenal/core/models/double_entry.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
-class TransactionsDriftRepository
-    implements BaseRepository<Transaction, TransactionsCompanion> {
+class TransactionsDriftRepository implements TransactionsRepository {
   TransactionsDriftRepository(this.db);
   final MyDatabase db;
 
+  @override
   Future<int> insertTransaction(
       {required DateTime vchDate,
       required String narr,
@@ -21,7 +22,7 @@ class TransactionsDriftRepository
       required int profile,
       int? project}) async {
     try {
-      final transaction = TransactionsCompanion(
+      final transaction = DriftTransactionsCompanion(
           vchDate: Value(vchDate),
           narr: Value(narr),
           refNo: Value(refNo),
@@ -39,6 +40,7 @@ class TransactionsDriftRepository
     }
   }
 
+  @override
   Future<bool> updateTransaction(
       {required int id,
       required DateTime vchDate,
@@ -51,7 +53,7 @@ class TransactionsDriftRepository
       required int profile,
       int? project}) async {
     try {
-      final transaction = TransactionsCompanion(
+      final transaction = DriftTransactionsCompanion(
           id: Value(id),
           vchDate: Value(vchDate),
           narr: Value(narr),
@@ -83,25 +85,40 @@ class TransactionsDriftRepository
   }
 
   @override
-  Future<Transaction> getById(int id) async {
+  Future<Transaction> getTransactionById({required int transactionID}) async {
     try {
-      return await db.getTransactionById(id);
+      final t = await db.getTransactionById(transactionID);
+
+      return t.item1.toDomain(
+          t.item2.toDomain(),
+          t.item3.toDomain(),
+          t.item5?.toDomain(photoPaths: []),
+          t.item4.map((p) => p.path).toList());
     } catch (e) {
       AppLogger.instance.error("Failed to get transaction. ${e.toString()}");
       rethrow;
     }
   }
 
-  Future<List<DoubleEntry>> getDoubleEntries(
+  @override
+  Future<List<Transaction>> getTransactions(
       {required DateTime startDate,
       required DateTime endDate,
       required int profileId}) async {
     try {
       AppLogger.instance.info("Loading Transactions");
-      return await db.getDoubleEntries(
+      final transactionsTuples = await db.getTransactions(
           startDate: startDate.copyWith(hour: 0, minute: 0, second: 0),
           endDate: endDate.copyWith(hour: 23, minute: 59, second: 59),
           profileId: profileId);
+
+      return transactionsTuples
+          .map((t) => t.item1.toDomain(
+              t.item2.toDomain(),
+              t.item3.toDomain(),
+              t.item5?.toDomain(photoPaths: []),
+              t.item4.map((p) => p.path).toList()))
+          .toList();
     } catch (e) {
       AppLogger.instance
           .error("Failed to get transactions list. ${e.toString()}");
@@ -109,7 +126,8 @@ class TransactionsDriftRepository
     }
   }
 
-  Future<List<DoubleEntry>> getDoubleEntriesbyAccount(
+  @override
+  Future<List<Transaction>> getTransactionsbyAccount(
       {required DateTime startDate,
       required DateTime endDate,
       required int profileId,
@@ -118,13 +136,20 @@ class TransactionsDriftRepository
     try {
       AppLogger.instance.info("Loading Transactions for account : $accountId");
 
-      return await db.getDoubleEntriesbyAccount(
+      final transactionsTuples = await db.getTransactionsbyAccount(
         startDate: startDate.copyWith(hour: 0, minute: 0, second: 0),
         endDate: endDate.copyWith(hour: 23, minute: 59, second: 59),
         profileId: profileId,
         accountId: accountId,
         reversed: reversed,
       );
+      return transactionsTuples
+          .map((t) => t.item1.toDomain(
+              t.item2.toDomain(),
+              t.item3.toDomain(),
+              t.item5?.toDomain(photoPaths: []),
+              t.item4.map((p) => p.path).toList()))
+          .toList();
     } catch (e) {
       AppLogger.instance
           .error("Failed to get transactions list. ${e.toString()}");
@@ -132,6 +157,7 @@ class TransactionsDriftRepository
     }
   }
 
+  @override
   Future<int?> getLastTransactionID() async {
     try {
       return await db.getLastTransactionID();
@@ -141,12 +167,21 @@ class TransactionsDriftRepository
     }
   }
 
-  Future<List<DoubleEntry>> getNDoubleEntries(
+  @override
+  Future<List<Transaction>> getNTransactions(
       {required int n, required int profileId}) async {
     try {
       AppLogger.instance.info("Loading $n Transactions");
 
-      return await db.getNDoubleEntries(n, profileId);
+      final transactionsTuples = await db.getNTransactions(n, profileId);
+
+      return transactionsTuples
+          .map((t) => t.item1.toDomain(
+              t.item2.toDomain(),
+              t.item3.toDomain(),
+              t.item5?.toDomain(photoPaths: []),
+              t.item4.map((p) => p.path).toList()))
+          .toList();
     } catch (e) {
       AppLogger.instance
           .error("Failed to get transactions list. ${e.toString()}");
@@ -154,29 +189,83 @@ class TransactionsDriftRepository
     }
   }
 
-  Future<DoubleEntry> getDoubleEntryById({required int transactionID}) async {
-    try {
-      AppLogger.instance.info("Loading Transaction");
-
-      return await db.getDoubleEntryById(transactionID);
-    } catch (e) {
-      AppLogger.instance.error("Failed to get transaction. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future<List<DoubleEntry>> getDoubleEntriesbyProject({
+  @override
+  Future<List<Transaction>> getTransactionsbyProject({
     required int profileID,
     required int projectID,
   }) async {
     try {
       AppLogger.instance.info("Loading Transactions for project : $projectID");
 
-      return await db.getDoubleEntriesbyProject(
+      final transactionsTuples = await db.getTransactionsbyProject(
           profileID: profileID, projectID: projectID);
+
+      return transactionsTuples
+          .map((t) => t.item1.toDomain(
+              t.item2.toDomain(),
+              t.item3.toDomain(),
+              t.item5?.toDomain(photoPaths: []),
+              t.item4.map((p) => p.path).toList()))
+          .toList();
     } catch (e) {
       AppLogger.instance
           .error("Failed to get transactions list. ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<int> insertPhotoPath(
+      {required String path, required int transaction}) async {
+    try {
+      final filePath = DriftTransactionPhotosCompanion(
+          path: Value(path), transaction: Value(transaction));
+      return await db.insertDriftTransactionPhoto(filePath);
+    } catch (e) {
+      AppLogger.instance.error("Failed to insert filePath. ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> updatePhotoPath(
+      {required String path, required int transaction, required int id}) async {
+    try {
+      final filePath = DriftTransactionPhotosCompanion(
+          id: Value(id), path: Value(path), transaction: Value(transaction));
+      return await db.updateDriftTransactionPhoto(filePath);
+    } catch (e) {
+      AppLogger.instance.error("Failed to update filePath. ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<int> deletePath(int id) async {
+    try {
+      return await db.deleteDriftTransactionPhoto(id);
+    } catch (e) {
+      AppLogger.instance.error("Failed to delete filePath. ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> getById(int id) async {
+    try {
+      return (await db.getDriftTransactionPhotoById(id)).path;
+    } catch (e) {
+      AppLogger.instance.error("Failed to get filePath. ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<int> deletePhotoPathbyPath(String path) async {
+    try {
+      return await db.deletePath(path);
+    } catch (e) {
+      AppLogger.instance.error("Failed to delete filePath. ${e.toString()}");
       rethrow;
     }
   }

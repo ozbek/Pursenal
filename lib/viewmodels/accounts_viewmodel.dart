@@ -1,21 +1,23 @@
 import 'package:flutter/foundation.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/models/ledger.dart';
-import 'package:pursenal/core/repositories/acc_types_drift_repository.dart';
-import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
+import 'package:pursenal/core/models/domain/account_type.dart';
+import 'package:pursenal/core/models/domain/ledger.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class AccountsViewmodel extends ChangeNotifier {
   final AccountsDriftRepository _accountsDriftRepository;
-  final AccTypesDriftRepository _accTypesDriftRepository;
+  final AccountTypesDriftRepository _accountTypesDriftRepository;
 
   AccountsViewmodel(
       {required MyDatabase db, required Profile profile, int accTypeID = 4})
       : _profile = profile,
         _accTypeID = accTypeID,
         _accountsDriftRepository = AccountsDriftRepository(db),
-        _accTypesDriftRepository = AccTypesDriftRepository(db);
+        _accountTypesDriftRepository = AccountTypesDriftRepository(db);
 
   int _accTypeID;
 
@@ -29,10 +31,10 @@ class AccountsViewmodel extends ChangeNotifier {
   List<Ledger> _ledgers = [];
   List<Ledger> _fLedgers = [];
 
-  AccType? _accType;
+  AccountType? _accType;
   get accType => _accType;
 
-  List<AccType> accTypes = [];
+  List<AccountType> accTypes = [];
 
   set accType(value) => _accType = value;
 
@@ -74,9 +76,9 @@ class AccountsViewmodel extends ChangeNotifier {
     try {
       accTypes = [];
       _ledgers = await _accountsDriftRepository.getLedgersByAccType(
-          profileId: _profile.id, accTypeID: _accTypeID);
+          profileId: _profile.dbID, accTypeID: _accTypeID);
       for (int a in [4, 5]) {
-        accTypes.add(await _accTypesDriftRepository.getById(a));
+        accTypes.add(await _accountTypesDriftRepository.getById(a));
       }
 
       AppLogger.instance.info("Ledgers loaded from database");
@@ -104,7 +106,7 @@ class AccountsViewmodel extends ChangeNotifier {
   }
 
   setAccType(int id) async {
-    _accType = await _accTypesDriftRepository.getById(id);
+    _accType = await _accountTypesDriftRepository.getById(id);
     notifyListeners();
     await getAccounts();
     _filterAccounts();

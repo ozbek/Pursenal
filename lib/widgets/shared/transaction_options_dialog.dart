@@ -3,10 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
-import 'package:pursenal/core/models/ledger.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/ledger.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/transaction_entry_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
@@ -54,8 +55,9 @@ class _TransactionOptionsDialogState extends State<TransactionOptionsDialog> {
     selectedFund = widget.fAcc;
     selectedAccount = widget.oAcc;
 
-    funds =
-        widget.ledgers.where((a) => fundIDs.contains(a.accType.id)).toList();
+    funds = widget.ledgers
+        .where((a) => fundIDs.contains(a.accountType.dbID))
+        .toList();
     if (voucherType != null) {
       pageNo = 1;
     }
@@ -164,15 +166,12 @@ class _TransactionOptionsDialogState extends State<TransactionOptionsDialog> {
               overflow: TextOverflow.ellipsis,
             ),
             subtitle: Text(
-              funds[index].accType.name,
+              funds[index].accountType.name,
               style: const TextStyle(fontSize: 12),
               overflow: TextOverflow.ellipsis,
             ),
             trailing: Text(
-              funds[index]
-                  .balance
-                  .amount
-                  .toCurrencyStringWSymbol(widget.currency),
+              funds[index].balance.toCurrencyStringWSymbol(widget.currency),
               style: Theme.of(context).textTheme.bodyMedium,
               overflow: TextOverflow.ellipsis,
             ),
@@ -200,14 +199,13 @@ class _TransactionOptionsDialogState extends State<TransactionOptionsDialog> {
                 overflow: TextOverflow.ellipsis,
               ),
               subtitle: Text(
-                fOtherAccounts[index].accType.name,
+                fOtherAccounts[index].accountType.name,
                 style: const TextStyle(fontSize: 12),
                 overflow: TextOverflow.ellipsis,
               ),
               trailing: Text(
                 fOtherAccounts[index]
                     .balance
-                    .amount
                     .toCurrencyStringWSymbol(widget.currency),
                 style: Theme.of(context).textTheme.bodyMedium,
                 overflow: TextOverflow.ellipsis,
@@ -244,18 +242,18 @@ class _TransactionOptionsDialogState extends State<TransactionOptionsDialog> {
 
   sortOtherAccounts() {
     otherAccounts = widget.ledgers.where((a) {
-      return (selectedFund != null && a.account.id != selectedFund!.id);
+      return (selectedFund != null && a.account.dbID != selectedFund!.dbID);
     }).toList();
 
     otherAccounts.sort((a, b) {
       if (voucherType == VoucherType.payment) {
-        if (a.accType.id == 5) {
+        if (a.accountType.dbID == expenseTypeID) {
           return -1;
         }
       }
 
       if (voucherType == VoucherType.receipt) {
-        if (a.accType.id == 4) {
+        if (a.accountType.dbID == incomeTypeID) {
           return -1;
         }
       }

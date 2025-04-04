@@ -2,8 +2,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/models/budget_plan.dart';
-import 'package:pursenal/core/repositories/budgets_drift_repository.dart';
+import 'package:pursenal/core/models/domain/budget.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class BudgetsViewmodel extends ChangeNotifier {
@@ -17,8 +18,8 @@ class BudgetsViewmodel extends ChangeNotifier {
   final Profile _profile;
   Profile get profile => _profile;
 
-  List<BudgetPlan> _budgetPlans = [];
-  List<BudgetPlan> _fBudgetPlans = [];
+  List<Budget> _budgets = [];
+  List<Budget> _fBudgets = [];
 
   LoadingStatus loadingStatus = LoadingStatus.idle;
   LoadingStatus searchLoadingStatus = LoadingStatus.idle;
@@ -26,7 +27,7 @@ class BudgetsViewmodel extends ChangeNotifier {
   String _searchTerm = "";
 
   String get searchTerm => _searchTerm;
-  List<BudgetPlan> get fBudgetPlans => _fBudgetPlans;
+  List<Budget> get fBudgets => _fBudgets;
 
   Future<void> init() async {
     try {
@@ -52,12 +53,11 @@ class BudgetsViewmodel extends ChangeNotifier {
 
   Future<void> _getBudgets() async {
     try {
-      _budgetPlans =
-          await _budgetsDriftRepository.getAllBudgetPlans(profile.id);
+      _budgets = await _budgetsDriftRepository.getAll(profile.dbID);
 
-      AppLogger.instance.info("BudgetPlans loaded from database");
+      AppLogger.instance.info("Budgets loaded from database");
     } catch (e) {
-      AppLogger.instance.error("Error loading budgetPlans ${e.toString()}");
+      AppLogger.instance.error("Error loading budgets ${e.toString()}");
     }
     notifyListeners();
   }
@@ -66,10 +66,9 @@ class BudgetsViewmodel extends ChangeNotifier {
     searchLoadingStatus = LoadingStatus.loading;
     notifyListeners();
     try {
-      _fBudgetPlans = List.from(_budgetPlans);
-      _fBudgetPlans = _fBudgetPlans
-          .where((a) => a.toString().contains(_searchTerm))
-          .toList();
+      _fBudgets = List.from(_budgets);
+      _fBudgets =
+          _fBudgets.where((a) => a.toString().contains(_searchTerm)).toList();
 
       searchLoadingStatus = LoadingStatus.completed;
     } catch (e) {
@@ -93,7 +92,7 @@ class BudgetsViewmodel extends ChangeNotifier {
   void updateHeaderVisibility() {
     if (scrollController.position.userScrollDirection ==
         ScrollDirection.reverse) {
-      if (!isHidden && _fBudgetPlans.length > 3) {
+      if (!isHidden && _fBudgets.length > 3) {
         isHidden = true;
         headerHeight = 0;
         notifyListeners();

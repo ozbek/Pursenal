@@ -15,8 +15,4 @@ class DailyTotalTransaction {
   addReceipt(int i) {
     receiptsTotal += i;
   }
-
-  @override
-  String toString() =>
-      'DailyTotalTransaction(dateTime: $dateTime, paymentsTotal: $paymentsTotal, receiptsTotal: $receiptsTotal)';
 }

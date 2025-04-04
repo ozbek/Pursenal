@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:pursenal/app/global/dimensions.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/account_type.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/viewmodels/dashboard_viewmodel.dart';
 import 'package:pursenal/widgets/shared/acc_type_icon.dart';
@@ -42,7 +43,7 @@ class AddNewAccountCard extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              ...viewmodel.fAccTypes.map((a) => _createAddNewAccountBtn(
+              ...viewmodel.fAccountTypes.map((a) => _createAddNewAccountBtn(
                   context, viewmodel.selectedProfile, a.name, a)),
               const SizedBox(
                 height: 12,
@@ -57,8 +58,8 @@ class AddNewAccountCard extends StatelessWidget {
     );
   }
 
-  Padding _createAddNewAccountBtn(
-      BuildContext context, Profile profile, String label, AccType acctype) {
+  Padding _createAddNewAccountBtn(BuildContext context, Profile profile,
+      String label, AccountType accountType) {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: SizedBox(
@@ -84,7 +85,7 @@ class AddNewAccountCard extends StatelessWidget {
                 .push(MaterialPageRoute(
               builder: (context) => AccountEntryScreen(
                 profile: profile,
-                accType: acctype,
+                accountType: accountType,
               ),
             ))
                 .then((_) {
@@ -102,7 +103,7 @@ class AddNewAccountCard extends StatelessWidget {
                     ?.copyWith(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Icon(
-                getAccTypeIcon(acctype.id),
+                getAccTypeIcon(accountType.dbID),
                 size: 24,
                 color: Theme.of(context).textTheme.bodyLarge?.color,
               )

@@ -1,12 +1,15 @@
 import 'package:drift/drift.dart';
-import 'package:pursenal/core/abstracts/base_repository.dart';
+import 'package:pursenal/app/extensions/drift_models.dart';
+import 'package:pursenal/core/abstracts/loans_repository.dart';
 import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/loan.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
-class LoansDriftRepository implements BaseRepository<Loan, LoansCompanion> {
+class LoansDriftRepository implements LoansRepository {
   LoansDriftRepository(this.db);
   final MyDatabase db;
 
+  @override
   Future<int> insertLoan(
       {required int account,
       required String? institution,
@@ -16,7 +19,7 @@ class LoansDriftRepository implements BaseRepository<Loan, LoansCompanion> {
       required DateTime? startDate,
       required DateTime? endDate}) async {
     try {
-      final loan = LoansCompanion(
+      final loan = DriftLoansCompanion(
           account: Value(account),
           institution: Value(institution),
           accountNo: Value(accountNo),
@@ -31,6 +34,7 @@ class LoansDriftRepository implements BaseRepository<Loan, LoansCompanion> {
     }
   }
 
+  @override
   Future<bool> updateLoan(
       {required int id,
       required int account,
@@ -41,7 +45,7 @@ class LoansDriftRepository implements BaseRepository<Loan, LoansCompanion> {
       required DateTime? startDate,
       required DateTime? endDate}) async {
     try {
-      final loan = LoansCompanion(
+      final loan = DriftLoansCompanion(
         id: Value(id),
         account: Value(account),
         institution: Value(institution),
@@ -71,7 +75,8 @@ class LoansDriftRepository implements BaseRepository<Loan, LoansCompanion> {
   @override
   Future<Loan> getById(int id) async {
     try {
-      return await db.getLoanById(id);
+      final account = (await db.getAccountbyId(id)).toDomain();
+      return (await db.getLoanById(id)).toDomain(account);
     } catch (e) {
       AppLogger.instance.error("Failed to get loan. ${e.toString()}");
       rethrow;

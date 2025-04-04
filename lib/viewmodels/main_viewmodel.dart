@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/profiles_drift_repository.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,7 +54,7 @@ class MainViewmodel extends ChangeNotifier {
 
   set selectedProfile(Profile value) {
     _selectedProfile = value;
-    _profilesDriftRepository.setSelectedProfile(value.id);
+    _profilesDriftRepository.setSelectedProfile(value.dbID);
     notifyListeners();
   }
 
@@ -68,7 +69,7 @@ class MainViewmodel extends ChangeNotifier {
       _profiles = await _profilesDriftRepository.getAll();
       try {
         _selectedProfile =
-            _profiles.firstWhere((p) => p.id == _selectedProfile.id);
+            _profiles.firstWhere((p) => p.dbID == _selectedProfile.dbID);
       } catch (e) {
         AppLogger.instance.error("Failed to set profile");
         errorText = "Failed to set profile";
@@ -93,10 +94,10 @@ class MainViewmodel extends ChangeNotifier {
 
   _getAccCounts() async {
     cashCountinProfile = (await _accountsDriftRepository.getAccountsByAccType(
-            _selectedProfile.id, 0))
+            _selectedProfile.dbID, 0))
         .length;
     bankCountinProfile = (await _accountsDriftRepository.getAccountsByAccType(
-            _selectedProfile.id, 1))
+            _selectedProfile.dbID, 1))
         .length;
     notifyListeners();
   }

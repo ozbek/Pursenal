@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/models/double_entry.dart';
-import 'package:pursenal/core/repositories/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/projects_drift_repository.dart';
-import 'package:pursenal/core/repositories/transactions_drift_repository.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/project.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,15 +18,15 @@ class TransactionViewmodel extends ChangeNotifier {
   TransactionViewmodel({
     required Profile profile,
     required MyDatabase db,
-    required DoubleEntry doubleEntry,
+    required Transaction transaction,
   })  : _profile = profile,
-        _doubleEntry = doubleEntry,
+        _transaction = transaction,
         _transactionsDriftRepository = TransactionsDriftRepository(db),
         _projectsDriftRepository = ProjectsDriftRepository(db),
         _balancesDriftRepository = BalancesDriftRepository(db);
 
-  DoubleEntry _doubleEntry;
-  DoubleEntry get doubleEntry => _doubleEntry;
+  Transaction _transaction;
+  Transaction get transaction => _transaction;
 
   final Profile _profile;
   get profile => _profile;
@@ -58,11 +60,11 @@ class TransactionViewmodel extends ChangeNotifier {
 
   deleteTransaction() async {
     try {
-      await _transactionsDriftRepository.delete(_doubleEntry.transaction.id);
+      await _transactionsDriftRepository.delete(_transaction.dbID);
       await _balancesDriftRepository.updateBalanceByAccount(
-          account: _doubleEntry.transaction.cr);
+          account: _transaction.crAccount.dbID);
       await _balancesDriftRepository.updateBalanceByAccount(
-          account: _doubleEntry.transaction.dr);
+          account: _transaction.drAccount.dbID);
       notifyListeners();
       await setLastUpdatedTimeStamp();
       return true;
@@ -80,9 +82,9 @@ class TransactionViewmodel extends ChangeNotifier {
 
   _getProject() async {
     try {
-      if (doubleEntry.transaction.project != null) {
-        project = await _projectsDriftRepository
-            .getById(doubleEntry.transaction.project!);
+      if (transaction.project != null) {
+        project =
+            await _projectsDriftRepository.getById(transaction.project!.dbID);
       }
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
@@ -105,8 +107,8 @@ class TransactionViewmodel extends ChangeNotifier {
     try {
       loadingStatus = LoadingStatus.loading;
       notifyListeners();
-      _doubleEntry = await _transactionsDriftRepository.getDoubleEntryById(
-          transactionID: doubleEntry.transaction.id);
+      _transaction = await _transactionsDriftRepository.getTransactionById(
+          transactionID: transaction.dbID);
       _getProject();
       loadingStatus = LoadingStatus.completed;
     } catch (e) {

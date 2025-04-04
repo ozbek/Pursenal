@@ -5,6 +5,7 @@ import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/enums/date_filter_type.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/insights_viewmodel.dart';
 import 'package:pursenal/widgets/insights/average_transactions_bar_chart_card.dart';
@@ -179,13 +180,13 @@ class InsightsList extends StatelessWidget {
                               ExpensesSplitPieChartCard(viewmodel: viewmodel),
                         ),
                         Visibility(
-                          visible: viewmodel.dailyTotalTransactions.length > 4,
+                          visible: viewmodel.dailyTotalTransactions.length > 1,
                           child: DailyTransactionsBarChartCard(
                               viewmodel: viewmodel),
                         ),
                         Visibility(
                           visible: viewmodel.fundBalances.isNotEmpty &&
-                              viewmodel.fundBalances.values.first.length > 4,
+                              viewmodel.fundBalances.values.first.length > 1,
                           child:
                               FundBalancesLineChartCard(viewmodel: viewmodel),
                         ),

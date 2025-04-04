@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/project_entry_screen.dart';
 import 'package:pursenal/screens/project_screen.dart';
 import 'package:pursenal/viewmodels/projects_viewmodel.dart';
@@ -142,7 +143,7 @@ class ProjectsList extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => ProjectScreen(
                                 profile: viewmodel.profile,
-                                projectID: p.id,
+                                projectID: p.dbID,
                               ),
                             )).then((_) {
                           viewmodel.init();
@@ -160,7 +161,7 @@ class ProjectsList extends StatelessWidget {
                             p.status.label,
                             overflow: TextOverflow.ellipsis,
                           )),
-                      subtitle: Text(p.description ?? ""),
+                      subtitle: Text(p.description),
                     );
                   },
                 )

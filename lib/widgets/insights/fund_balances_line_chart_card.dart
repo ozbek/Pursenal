@@ -44,9 +44,9 @@ class FundBalancesLineChartCard extends StatelessWidget {
                           ],
                         ),
                         value: !viewmodel.selectedFundsForBalanceChart
-                            .contains(f.id),
+                            .contains(f.dbID),
                         onChanged: (_) {
-                          viewmodel.addToFilter(a: f.id);
+                          viewmodel.addToFilter(a: f.dbID);
                           setState(() {});
                         });
                   }),

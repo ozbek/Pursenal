@@ -2,20 +2,23 @@ import 'package:flutter/foundation.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
-import 'package:pursenal/core/repositories/acc_types_drift_repository.dart';
-import 'package:pursenal/core/repositories/projects_drift_repository.dart';
+import 'package:pursenal/core/models/domain/account_type.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/project.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class ProjectsViewmodel extends ChangeNotifier {
   final ProjectsDriftRepository _projectsDriftRepository;
-  final AccTypesDriftRepository _accTypesDriftRepository;
+  final AccountTypesDriftRepository _accountTypesDriftRepository;
 
   ProjectsViewmodel(
       {required MyDatabase db, required Profile profile, int accTypeID = 4})
       : _profile = profile,
         _accTypeID = accTypeID,
         _projectsDriftRepository = ProjectsDriftRepository(db),
-        _accTypesDriftRepository = AccTypesDriftRepository(db);
+        _accountTypesDriftRepository = AccountTypesDriftRepository(db);
 
   int _accTypeID;
 
@@ -29,10 +32,10 @@ class ProjectsViewmodel extends ChangeNotifier {
   List<Project> _projects = [];
   List<Project> _fProjects = [];
 
-  AccType? _accType;
+  AccountType? _accType;
   get accType => _accType;
 
-  List<AccType> accTypes = [];
+  List<AccountType> accTypes = [];
 
   set accType(value) => _accType = value;
 
@@ -50,7 +53,7 @@ class ProjectsViewmodel extends ChangeNotifier {
   Future<void> init() async {
     loadingStatus = LoadingStatus.loading;
     try {
-      await setAccType(_accTypeID);
+      await setAccountType(_accTypeID);
       loadingStatus = LoadingStatus.completed;
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
@@ -69,13 +72,13 @@ class ProjectsViewmodel extends ChangeNotifier {
 
   set accTypeID(final value) {
     _accTypeID = value;
-    setAccType(_accTypeID);
+    setAccountType(_accTypeID);
     notifyListeners();
   }
 
   Future<void> getProjects() async {
     try {
-      _projects = await _projectsDriftRepository.getAllProjects(profile.id);
+      _projects = await _projectsDriftRepository.getAllProjects(profile.dbID);
       _projects.sort(
         (a, b) => a.status.index.compareTo(b.status.index),
       );
@@ -119,8 +122,8 @@ class ProjectsViewmodel extends ChangeNotifier {
     _filterProjects();
   }
 
-  setAccType(int id) async {
-    _accType = await _accTypesDriftRepository.getById(id);
+  setAccountType(int id) async {
+    _accType = await _accountTypesDriftRepository.getById(id);
     notifyListeners();
     await getProjects();
     _filterProjects();

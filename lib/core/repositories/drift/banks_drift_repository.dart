@@ -1,12 +1,15 @@
 import 'package:drift/drift.dart';
-import 'package:pursenal/core/abstracts/base_repository.dart';
+import 'package:pursenal/app/extensions/drift_models.dart';
+import 'package:pursenal/core/abstracts/banks_repository.dart';
 import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/bank.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
-class BanksDriftRepository implements BaseRepository<Bank, BanksCompanion> {
+class BanksDriftRepository implements BanksRepository {
   BanksDriftRepository(this.db);
   final MyDatabase db;
 
+  @override
   Future<int> insertBank(
       {required int account,
       required String? branch,
@@ -15,7 +18,7 @@ class BanksDriftRepository implements BaseRepository<Bank, BanksCompanion> {
       required String? accountNo,
       required String? institution}) async {
     try {
-      final bank = BanksCompanion(
+      final bank = DriftBanksCompanion(
         account: Value(account),
         accountNo: Value(accountNo),
         branch: Value(branch),
@@ -30,6 +33,7 @@ class BanksDriftRepository implements BaseRepository<Bank, BanksCompanion> {
     }
   }
 
+  @override
   Future<bool> updateBank(
       {required int id,
       required int account,
@@ -39,7 +43,7 @@ class BanksDriftRepository implements BaseRepository<Bank, BanksCompanion> {
       required String? holderName,
       required String? institution}) async {
     try {
-      final bank = BanksCompanion(
+      final bank = DriftBanksCompanion(
         id: Value(id),
         account: Value(account),
         accountNo: Value(accountNo),
@@ -70,7 +74,8 @@ class BanksDriftRepository implements BaseRepository<Bank, BanksCompanion> {
   @override
   Future<Bank> getById(int id) async {
     try {
-      return await db.getBankById(id);
+      final account = (await db.getAccountbyId(id)).toDomain();
+      return (await db.getBankById(id)).toDomain(account);
     } catch (e) {
       AppLogger.instance.error("Failed to get bank. ${e.toString()}");
       rethrow;

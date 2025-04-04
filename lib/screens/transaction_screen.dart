@@ -9,7 +9,8 @@ import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
-import 'package:pursenal/core/models/double_entry.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/screens/transaction_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/transaction_viewmodel.dart';
@@ -20,11 +21,10 @@ class TransactionScreen extends StatelessWidget {
   const TransactionScreen({
     super.key,
     required this.profile,
-    required this.doubleEntry,
+    required this.transaction,
   });
   final Profile profile;
-
-  final DoubleEntry doubleEntry;
+  final Transaction transaction;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +32,11 @@ class TransactionScreen extends StatelessWidget {
     final appViewmodel = Provider.of<AppViewmodel>(context);
     return ChangeNotifierProvider<TransactionViewmodel>(
       create: (context) => TransactionViewmodel(
-          profile: profile, db: db, doubleEntry: doubleEntry)
+          profile: profile, db: db, transaction: transaction)
         ..init(),
       child: Consumer<TransactionViewmodel>(
         builder: (context, viewmodel, child) {
-          final Transaction transaction = viewmodel.doubleEntry.transaction;
+          final Transaction transaction = viewmodel.transaction;
 
           return LoadingBody(
               loadingStatus: viewmodel.loadingStatus,
@@ -47,7 +47,7 @@ class TransactionScreen extends StatelessWidget {
               widget: Scaffold(
                 appBar: AppBar(
                   title: Text(AppLocalizations.of(context)!
-                      .transactionNo(transaction.id)),
+                      .transactionNo(transaction.dbID)),
                   actions: [
                     Padding(
                       padding: const EdgeInsets.all(2.0),
@@ -56,7 +56,7 @@ class TransactionScreen extends StatelessWidget {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(
                               builder: (context) => TransactionEntryScreen(
-                                doubleEntry: viewmodel.doubleEntry,
+                                transaction: viewmodel.transaction,
                                 profile: profile,
                               ),
                             ))
@@ -133,7 +133,7 @@ class TransactionScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          viewmodel.doubleEntry.filePaths.isNotEmpty
+                          viewmodel.transaction.filePaths.isNotEmpty
                               ? Padding(
                                   padding: const EdgeInsets.all(14.0),
                                   child: SingleChildScrollView(
@@ -143,7 +143,7 @@ class TransactionScreen extends StatelessWidget {
                                       spacing: 8,
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
-                                      children: viewmodel.doubleEntry.filePaths
+                                      children: viewmodel.transaction.filePaths
                                           .mapIndexed((index, filePath) {
                                         return Material(
                                           elevation: 3,
@@ -175,8 +175,7 @@ class TransactionScreen extends StatelessWidget {
                                                                     "Media error"),
                                                               ),
                                                             ),
-                                                            File(
-                                                                filePath.path!),
+                                                            File(filePath),
                                                             fit:
                                                                 BoxFit.fitWidth,
                                                           ),
@@ -221,7 +220,7 @@ class TransactionScreen extends StatelessWidget {
                                                           Text("Media error"),
                                                     ),
                                                   ),
-                                                  File(filePath.path!),
+                                                  File(filePath),
                                                   fit: BoxFit.cover,
                                                 ),
                                               )
@@ -245,8 +244,8 @@ class TransactionScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    transaction.narr.isNotEmpty
-                                        ? '"${transaction.narr}"'
+                                    transaction.narration.isNotEmpty
+                                        ? '"${transaction.narration}"'
                                         : "",
                                     style:
                                         Theme.of(context).textTheme.titleMedium,
@@ -258,12 +257,12 @@ class TransactionScreen extends StatelessWidget {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          transaction.vchType ==
+                                          transaction.voucherType ==
                                                   VoucherType.payment
                                               ? viewmodel
-                                                  .doubleEntry.drAccount.name
+                                                  .transaction.drAccount.name
                                               : viewmodel
-                                                  .doubleEntry.crAccount.name,
+                                                  .transaction.crAccount.name,
                                           overflow: TextOverflow.ellipsis,
                                           style: Theme.of(context)
                                               .textTheme
@@ -302,23 +301,24 @@ class TransactionScreen extends StatelessWidget {
                                         Theme.of(context).textTheme.titleLarge,
                                   ),
                                   Text(
-                                    transaction.vchType != VoucherType.payment
+                                    transaction.voucherType !=
+                                            VoucherType.payment
                                         ? AppLocalizations.of(context)!
                                             .receivedIn(viewmodel
-                                                .doubleEntry.drAccount.name)
+                                                .transaction.drAccount.name)
                                         : fundingAccountIDs.contains(viewmodel
-                                                    .doubleEntry
+                                                    .transaction
                                                     .crAccount
-                                                    .accType) &&
+                                                    .accountType) &&
                                                 fundingAccountIDs.contains(viewmodel
-                                                    .doubleEntry
+                                                    .transaction
                                                     .drAccount
-                                                    .accType)
+                                                    .accountType)
                                             ? AppLocalizations.of(context)!
                                                 .transferFrom(viewmodel
-                                                    .doubleEntry.crAccount.name)
-                                            : AppLocalizations.of(context)!.paidFrom(
-                                                viewmodel.doubleEntry.crAccount.name),
+                                                    .transaction.crAccount.name)
+                                            : AppLocalizations.of(context)!
+                                                .paidFrom(viewmodel.transaction.crAccount.name),
                                     overflow: TextOverflow.ellipsis,
                                     style:
                                         Theme.of(context).textTheme.titleMedium,
@@ -344,8 +344,8 @@ class TransactionScreen extends StatelessWidget {
                                         padding: const EdgeInsets.all(2.0),
                                         child: Text(
                                           "${appViewmodel.dateFormat.format(
-                                            transaction.vchDate,
-                                          )}, ${timeFormat.format(transaction.vchDate)}",
+                                            transaction.voucherDate,
+                                          )}, ${timeFormat.format(transaction.voucherDate)}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleSmall,

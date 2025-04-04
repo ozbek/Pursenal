@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/enums/currency.dart';
-import 'package:pursenal/core/models/ledger.dart';
+import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/widgets/shared/search_field.dart';
 
 class AccountsSearchDialog extends StatefulWidget {
@@ -74,7 +74,7 @@ class AccountsSearchDialogState extends State<AccountsSearchDialog> {
                                           CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          a.balance.amount.toCurrencyString(
+                                          a.balance.toCurrencyString(
                                               widget.currency),
                                           style: Theme.of(context)
                                               .textTheme
@@ -83,7 +83,7 @@ class AccountsSearchDialogState extends State<AccountsSearchDialog> {
                                                   fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          a.accType.name,
+                                          a.accountType.name,
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelSmall,

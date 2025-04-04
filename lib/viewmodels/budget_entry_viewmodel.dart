@@ -4,9 +4,11 @@ import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/models/budget_plan.dart';
-import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/budgets_drift_repository.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/budget.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class BudgetEntryViewmodel extends ChangeNotifier {
@@ -17,18 +19,14 @@ class BudgetEntryViewmodel extends ChangeNotifier {
     required MyDatabase db,
     required Profile profile,
     Budget? budget,
-    BudgetPlan? budgetPlan,
   })  : _profile = profile,
         _budget = budget,
-        _budgetPlan = budgetPlan,
         _accountsDriftRepository = AccountsDriftRepository(db),
         _budgetsDriftRepository = BudgetsDriftRepository(db);
 
   LoadingStatus loadingStatus = LoadingStatus.idle;
 
   Budget? _budget;
-
-  final BudgetPlan? _budgetPlan;
 
   final Profile _profile;
 
@@ -108,33 +106,33 @@ class BudgetEntryViewmodel extends ChangeNotifier {
   }
 
   void setDefaults() {
-    if (_budgetPlan != null) {
-      _budget = _budgetPlan.budget;
+    if (_budget != null) {
+      _budget = _budget;
       _name = budget!.name;
       _details = _budget!.details;
       _interval = budget!.interval;
       _startDate = budget!.startDate;
-      selectedExpenses = _budgetPlan.expenses.map((k, v) => MapEntry(k.id, -v));
-      selectedFunds = _budgetPlan.funds.map((f) => f.id).toSet();
-      selectedIncomes = _budgetPlan.incomes.map((k, v) => MapEntry(k.id, v));
+      selectedExpenses = _budget!.expenses.map((k, v) => MapEntry(k.dbID, -v));
+      selectedFunds = _budget!.funds.map((f) => f.dbID).toSet();
+      selectedIncomes = _budget!.incomes.map((k, v) => MapEntry(k.dbID, v));
     }
     notifyListeners();
   }
 
   getAccounts() async {
     expenses =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.id, 5);
+        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 5);
     incomes =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.id, 4);
+        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 4);
 
     int accType = 0;
     do {
       funds.addAll(await _accountsDriftRepository.getAccountsByAccType(
-          _profile.id, accType));
+          _profile.dbID, accType));
       accType++;
     } while (fundingAccountIDs.contains(accType));
 
-    selectedFunds = funds.map((f) => f.id).toSet();
+    selectedFunds = funds.map((f) => f.dbID).toSet();
 
     notifyListeners();
   }
@@ -189,11 +187,11 @@ class BudgetEntryViewmodel extends ChangeNotifier {
 
   Future<void> getBudgets() async {
     try {
-      _budgets = await _budgetsDriftRepository.getAllBudgets(_profile.id);
+      _budgets = await _budgetsDriftRepository.getAll(_profile.dbID);
 
-      AppLogger.instance.info("BudgetPlans loaded from database");
+      AppLogger.instance.info("Budgets loaded from database");
     } catch (e) {
-      AppLogger.instance.error("Error loading budgetPlans ${e.toString()}");
+      AppLogger.instance.error("Error loading budgets ${e.toString()}");
     }
     notifyListeners();
   }
@@ -252,12 +250,12 @@ class BudgetEntryViewmodel extends ChangeNotifier {
           Map.from(selectedExpenses.map((k, v) => MapEntry(k, -v)));
       acc.addAll(selectedIncomes);
 
-      if (_budgetPlan == null) {
-        await _budgetsDriftRepository.insertBudget(
-            name, details, selectedFunds.toList(), acc, interval, _profile.id);
+      if (_budget == null) {
+        await _budgetsDriftRepository.insertBudget(name, details,
+            selectedFunds.toList(), acc, interval, _profile.dbID);
       } else {
-        await _budgetsDriftRepository.updateBudget(_budgetPlan.budget.id, name,
-            details, selectedFunds.toList(), acc, interval, _profile.id);
+        await _budgetsDriftRepository.updateBudget(_budget!.dbID, name, details,
+            selectedFunds.toList(), acc, interval, _profile.dbID);
       }
 
       loadingStatus = LoadingStatus.submitted;
@@ -275,9 +273,9 @@ class BudgetEntryViewmodel extends ChangeNotifier {
   }
 
   Future<bool> deleteBudget() async {
-    if (_budgetPlan != null && _budget != null) {
+    if (_budget != null && _budget != null) {
       try {
-        await _budgetsDriftRepository.delete(_budget!.id);
+        await _budgetsDriftRepository.delete(_budget!.dbID);
         return true;
       } catch (e) {
         AppLogger.instance.error(' ${e.toString()}');

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
@@ -6,35 +7,32 @@ import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/core/enums/primary_type.dart';
 import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
-import 'package:pursenal/core/models/budget_plan.dart';
-import 'package:pursenal/core/models/double_entry.dart';
-import 'package:pursenal/core/models/drift_models.dart';
-import 'package:pursenal/core/models/ledger.dart';
-import 'package:pursenal/core/models/project_plan.dart';
+import 'package:pursenal/core/models/drift/models.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:pursenal/utils/db_utils.dart';
+import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
 part 'database.g.dart';
 
 @DriftDatabase(tables: [
-  AccTypes,
-  Accounts,
-  Transactions,
-  Users,
-  Banks,
-  Wallets,
-  Loans,
-  CCards,
-  Balances,
-  FilePaths,
-  Profiles,
-  Budgets,
-  BudgetAccounts,
-  BudgetFunds,
-  Projects,
-  ProjectPhotos,
-  Subscriptions,
+  DriftAccTypes,
+  DriftAccounts,
+  DriftTransactions,
+  DriftUsers,
+  DriftBanks,
+  DriftWallets,
+  DriftLoans,
+  DriftCCards,
+  DriftBalances,
+  DriftTransactionPhotos,
+  DriftProfiles,
+  DriftBudgets,
+  DriftBudgetAccounts,
+  DriftBudgetFunds,
+  DriftProjects,
+  DriftProjectPhotos,
+  DriftSubscriptions,
 ])
 class MyDatabase extends _$MyDatabase {
   // we tell the database where to store the data with this constructor
@@ -50,35 +48,35 @@ class MyDatabase extends _$MyDatabase {
       await customStatement('PRAGMA foreign_keys = ON');
     }, onCreate: (Migrator m) async {
       await m.createAll();
-      await insertAccType(const AccTypesCompanion(
+      await insertAccType(const DriftAccTypesCompanion(
           id: Value(cashTypeID),
           name: Value("Wallets"),
           primary: Value(PrimaryType.asset)));
-      await insertAccType(const AccTypesCompanion(
+      await insertAccType(const DriftAccTypesCompanion(
           id: Value(bankTypeID),
           name: Value("Banks"),
           primary: Value(PrimaryType.asset)));
-      await insertAccType(const AccTypesCompanion(
+      await insertAccType(const DriftAccTypesCompanion(
           id: Value(cCardTypeID),
           name: Value("Credit Cards"),
           primary: Value(PrimaryType.liability)));
-      await insertAccType(const AccTypesCompanion(
+      await insertAccType(const DriftAccTypesCompanion(
           id: Value(loanTypeID),
           name: Value("Loans"),
           primary: Value(PrimaryType.liability)));
-      await insertAccType(const AccTypesCompanion(
+      await insertAccType(const DriftAccTypesCompanion(
           id: Value(incomeTypeID),
           name: Value("Incomes"),
           primary: Value(PrimaryType.income)));
-      await insertAccType(const AccTypesCompanion(
+      await insertAccType(const DriftAccTypesCompanion(
           id: Value(expenseTypeID),
           name: Value("Expenses"),
           primary: Value(PrimaryType.expense)));
-      await insertAccType(const AccTypesCompanion(
+      await insertAccType(const DriftAccTypesCompanion(
           id: Value(advanceTypeID),
           name: Value("Receivables"),
           primary: Value(PrimaryType.asset)));
-      await insertAccType(const AccTypesCompanion(
+      await insertAccType(const DriftAccTypesCompanion(
           id: Value(peopleTypeID),
           name: Value("People"),
           primary: Value(PrimaryType.asset)));
@@ -95,148 +93,159 @@ class MyDatabase extends _$MyDatabase {
   }
 
   Future<void> deleteAll(int id) async {
-    await (delete(transactions)).go();
-    await (delete(accounts)).go();
-    await (delete(accTypes)).go();
+    await (delete(driftTransactions)).go();
+    await (delete(driftAccounts)).go();
+    await (delete(driftAccTypes)).go();
   }
 
-  Future<List<AccType>> getAccTypes() async {
-    return await select(accTypes).get();
+  Future<List<DriftAccType>> getAccTypes() async {
+    return await select(driftAccTypes).get();
   }
 
-  Future<AccType> getAccTypeById(int id) async {
-    return await (select(accTypes)..where((tbl) => tbl.id.equals(id)))
+  Future<DriftAccType> getAccTypeById(int id) async {
+    return await (select(driftAccTypes)..where((tbl) => tbl.id.equals(id)))
         .getSingle();
   }
 
-  Future<AccType> getAccTypeByType(int type) async {
-    return await (select(accTypes)..where((tbl) => tbl.primary.equals(type)))
+  Future<DriftAccType> getAccTypeByType(int type) async {
+    return await (select(driftAccTypes)
+          ..where((tbl) => tbl.primary.equals(type)))
         .getSingle();
   }
 
-  // Future<bool> updateAccType(AccTypesCompanion companion) async {
-  //   return await update(accTypes).replace(companion);
+  // Future<bool> updateAccType(DriftAccTypesCompanion companion) async {
+  //   return await update(driftAccTypes).replace(companion);
   // }
 
-  Future<int> insertAccType(AccTypesCompanion companion) async {
-    return await into(accTypes).insert(companion);
+  Future<int> insertAccType(DriftAccTypesCompanion companion) async {
+    return await into(driftAccTypes).insert(companion);
   }
 
   // Future<int> deleteAccType(int id) async {
-  //   return await (delete(accTypes)..where((tbl) => tbl.id.equals(id))).go();
+  //   return await (delete(driftAccTypes)..where((tbl) => tbl.id.equals(id))).go();
   // }
 
-  Future<Account> getAccountbyId(int id) async {
-    return await (select(accounts)..where((tbl) => tbl.id.equals(id)))
+  Future<DriftAccount> getAccountbyId(int id) async {
+    return await (select(driftAccounts)..where((tbl) => tbl.id.equals(id)))
         .getSingle();
   }
 
-  Future<void> insertAccounts(List<AccountsCompanion> accountsList) async {
+  Future<void> insertAccounts(List<DriftAccountsCompanion> accountsList) async {
     await transaction(() async {
       final insertedIds = <int>[];
 
       for (final account in accountsList) {
         // Check if the account already exists for the profile
-        final existingAccount = await (select(accounts)
+        final existingAccount = await (select(driftAccounts)
               ..where((a) => a.name.equals(account.name.value))
               ..where((a) => a.profile.equals(account.profile.value)))
             .getSingleOrNull();
 
         if (existingAccount == null) {
           // Insert if no duplicate exists
-          final id = await into(accounts).insert(account);
+          final id = await into(driftAccounts).insert(account);
           insertedIds.add(id);
         }
       }
 
-      // Insert balances for newly added accounts
+      // Insert driftBalances for newly added driftAccounts
       if (insertedIds.isNotEmpty) {
         final balancesList = insertedIds.map((accountId) {
-          return BalancesCompanion(
+          return DriftBalancesCompanion(
             account: Value(accountId),
             amount: const Value(0),
           );
         }).toList();
 
         await batch((batch) {
-          batch.insertAll(balances, balancesList);
+          batch.insertAll(driftBalances, balancesList);
         });
       }
     });
   }
 
-  Future<List<Account>> getAccountsByProfile(int id) async {
-    return await (select(accounts)
+  Future<List<DriftAccount>> getAccountsByProfile(int id) async {
+    return await (select(driftAccounts)
           ..where((tbl) => tbl.profile.equals(id))
           ..orderBy([(tbl) => OrderingTerm(expression: tbl.name)]))
         .get();
   }
 
-  Future<List<Account>> getAccountsByAccType(int id, int accType) async {
-    return await (select(accounts)
+  Future<List<DriftAccount>> getAccountsByAccType(int id, int accType) async {
+    return await (select(driftAccounts)
           ..where((tbl) => tbl.profile.equals(id) & tbl.accType.equals(accType))
           ..orderBy([(tbl) => OrderingTerm(expression: tbl.name)]))
         .get();
   }
 
-  Future<List<Account>> getFundingAccounts(int profile) async {
-    return await (select(accounts)
+  Future<List<DriftAccount>> getFundingAccounts(int profile) async {
+    return await (select(driftAccounts)
           ..where((tbl) =>
               tbl.profile.equals(profile) & tbl.accType.isIn(fundingAccountIDs))
           ..orderBy([(tbl) => OrderingTerm(expression: tbl.name)]))
         .get();
   }
 
-  Future<List<Account>> getFundAccounts(int profile) async {
-    return await (select(accounts)
+  Future<List<DriftAccount>> getAccountsByCategory(
+      {required int profileID, required List<int> accTypeIDs}) async {
+    return await (select(driftAccounts)
+          ..where((tbl) =>
+              tbl.profile.equals(profileID) & tbl.accType.isIn(accTypeIDs))
+          ..orderBy([(tbl) => OrderingTerm(expression: tbl.name)]))
+        .get();
+  }
+
+  Future<List<DriftAccount>> getFundAccounts(int profile) async {
+    return await (select(driftAccounts)
           ..where(
               (tbl) => tbl.profile.equals(profile) & tbl.accType.isIn(fundIDs))
           ..orderBy([(tbl) => OrderingTerm(expression: tbl.name)]))
         .get();
   }
 
-  Future<List<Account>> getCreditAccounts(int profile) async {
-    return await (select(accounts)
+  Future<List<DriftAccount>> getCreditAccounts(int profile) async {
+    return await (select(driftAccounts)
           ..where((tbl) =>
               tbl.profile.equals(profile) & tbl.accType.isIn(creditIDs))
           ..orderBy([(tbl) => OrderingTerm(expression: tbl.name)]))
         .get();
   }
 
-  Future<bool> updateAccount(AccountsCompanion companion) async {
-    return await update(accounts).replace(companion);
+  Future<bool> updateAccount(DriftAccountsCompanion companion) async {
+    return await update(driftAccounts).replace(companion);
   }
 
-  Future<int> insertAccount(AccountsCompanion companion) async {
-    return await into(accounts).insert(companion);
+  Future<int> insertAccount(DriftAccountsCompanion companion) async {
+    return await into(driftAccounts).insert(companion);
   }
 
   Future<int> deleteAccount(int id) async {
-    return await (delete(accounts)..where((tbl) => tbl.id.equals(id))).go();
+    return await (delete(driftAccounts)..where((tbl) => tbl.id.equals(id)))
+        .go();
   }
 
-  Future<Transaction> getTransactionById(int id) async {
-    return await (select(transactions)..where((tbl) => tbl.id.equals(id)))
-        .getSingle();
+  // Future<DriftTransaction> getTransactionById(int id) async {
+  //   return await (select(driftTransactions)..where((tbl) => tbl.id.equals(id)))
+  //       .getSingle();
+  // }
+
+  Future<bool> updateTransaction(DriftTransactionsCompanion companion) async {
+    return await update(driftTransactions).replace(companion);
   }
 
-  Future<bool> updateTransaction(TransactionsCompanion companion) async {
-    return await update(transactions).replace(companion);
-  }
-
-  Future<int> insertTransaction(TransactionsCompanion companion) async {
-    return await into(transactions).insert(companion);
+  Future<int> insertTransaction(DriftTransactionsCompanion companion) async {
+    return await into(driftTransactions).insert(companion);
   }
 
   Future<int> deleteTransaction(int id) async {
-    final fps = await (select(filePaths)
+    final fps = await (select(driftTransactionPhotos)
           ..where((tbl) => tbl.transaction.equals(id)))
         .get();
 
-    // Delete files from FilePaths before deleting the transaction
+    // Delete files from DriftTransactionPhotos before deleting the transaction
     for (final filePath in fps) {
       try {
-        final file = File(filePath.path!);
+        final file = File(filePath.path);
         if (await file.exists()) {
           await file.delete();
         }
@@ -245,214 +254,242 @@ class MyDatabase extends _$MyDatabase {
       }
     }
 
-    return await (delete(transactions)..where((tbl) => tbl.id.equals(id))).go();
-  }
-
-  Future<int> deleteTransactionsByProject(int id) async {
-    return await (delete(transactions)..where((tbl) => tbl.project.equals(id)))
+    return await (delete(driftTransactions)..where((tbl) => tbl.id.equals(id)))
         .go();
   }
 
-  Future<List<Transaction>> getTransactionsByProfile(int id) async {
-    return await (select(transactions)..where((tbl) => tbl.profile.equals(id)))
+  Future<int> deleteTransactionsByProject(int id) async {
+    return await (delete(driftTransactions)
+          ..where((tbl) => tbl.project.equals(id)))
+        .go();
+  }
+
+  Future<List<DriftTransaction>> getTransactionsByProfile(int id) async {
+    return await (select(driftTransactions)
+          ..where((tbl) => tbl.profile.equals(id)))
         .get();
   }
 
-  Future<List<Profile>> getProfiles() async => select(profiles).get();
+  Future<List<DriftProfile>> getProfiles() async => select(driftProfiles).get();
 
-  Future<int> insertProfile(ProfilesCompanion business) =>
-      into(profiles).insert(business);
+  Future<int> insertProfile(DriftProfilesCompanion business) =>
+      into(driftProfiles).insert(business);
 
-  Future<bool> updateProfile(ProfilesCompanion business) =>
-      update(profiles).replace(business);
+  Future<bool> updateProfile(DriftProfilesCompanion business) =>
+      update(driftProfiles).replace(business);
 
   Future<int> deleteProfile(int id) =>
-      (delete(profiles)..where((tbl) => tbl.id.equals(id))).go();
+      (delete(driftProfiles)..where((tbl) => tbl.id.equals(id))).go();
 
-  Future<Profile> getProfileById(int id) =>
-      (select(profiles)..where((tbl) => tbl.id.equals(id))).getSingle();
+  Future<DriftProfile> getProfileById(int id) =>
+      (select(driftProfiles)..where((tbl) => tbl.id.equals(id))).getSingle();
 
-  Future<Profile?> getSelectedProfile() async {
-    final selectedProfile = await (select(profiles)
+  Future<DriftProfile?> getSelectedProfile() async {
+    final selectedProfile = await (select(driftProfiles)
           ..where((tbl) => tbl.isSelected.equals(true)))
         .getSingleOrNull();
     if (selectedProfile != null) {
       return selectedProfile;
     }
-    final firstProfile = await (select(profiles)..limit(1)).getSingleOrNull();
+    final firstProfile =
+        await (select(driftProfiles)..limit(1)).getSingleOrNull();
     return firstProfile;
   }
 
   Future<void> setSelectedProfile(int id) async {
-    await (update(profiles)..where((tbl) => tbl.isSelected.equals(true)))
-        .write(const ProfilesCompanion(isSelected: Value(false)));
-    await (update(profiles)..where((tbl) => tbl.id.equals(id)))
-        .write(const ProfilesCompanion(isSelected: Value(true)));
+    await (update(driftProfiles)..where((tbl) => tbl.isSelected.equals(true)))
+        .write(const DriftProfilesCompanion(isSelected: Value(false)));
+    await (update(driftProfiles)..where((tbl) => tbl.id.equals(id)))
+        .write(const DriftProfilesCompanion(isSelected: Value(true)));
   }
 
-  Future<int> insertBank(BanksCompanion bank) => into(banks).insert(bank);
-  Future<bool> updateBank(BanksCompanion bank) => update(banks).replace(bank);
+  Future<int> insertBank(DriftBanksCompanion bank) =>
+      into(driftBanks).insert(bank);
+  Future<bool> updateBank(DriftBanksCompanion bank) =>
+      update(driftBanks).replace(bank);
   Future<int> deleteBank(int id) =>
-      (delete(banks)..where((t) => t.id.equals(id))).go();
-  Future<Bank> getBankById(int id) =>
-      (select(banks)..where((t) => t.id.equals(id))).getSingle();
+      (delete(driftBanks)..where((t) => t.id.equals(id))).go();
+  Future<DriftBank> getBankById(int id) =>
+      (select(driftBanks)..where((t) => t.id.equals(id))).getSingle();
 
-  Future<Bank> getBankByAccount(int id) =>
-      (select(banks)..where((t) => t.account.equals(id))).getSingle();
+  Future<DriftBank> getBankByAccount(int id) =>
+      (select(driftBanks)..where((t) => t.account.equals(id))).getSingle();
 
-  Future<int> insertCCard(CCardsCompanion card) => into(cCards).insert(card);
-  Future<bool> updateCCard(CCardsCompanion card) =>
-      update(cCards).replace(card);
+  Future<int> insertCCard(DriftCCardsCompanion card) =>
+      into(driftCCards).insert(card);
+  Future<bool> updateCCard(DriftCCardsCompanion card) =>
+      update(driftCCards).replace(card);
   Future<int> deleteCCard(int id) =>
-      (delete(cCards)..where((t) => t.id.equals(id))).go();
-  Future<CCard> getCCardById(int id) =>
-      (select(cCards)..where((t) => t.id.equals(id))).getSingle();
-  Future<CCard> getCCardByAccount(int id) =>
-      (select(cCards)..where((t) => t.account.equals(id))).getSingle();
+      (delete(driftCCards)..where((t) => t.id.equals(id))).go();
+  Future<DriftCCard> getCCardById(int id) =>
+      (select(driftCCards)..where((t) => t.id.equals(id))).getSingle();
+  Future<DriftCCard> getCCardByAccount(int id) =>
+      (select(driftCCards)..where((t) => t.account.equals(id))).getSingle();
 
-  Future<int> insertLoan(LoansCompanion loan) => into(loans).insert(loan);
-  Future<bool> updateLoan(LoansCompanion loan) => update(loans).replace(loan);
+  Future<int> insertLoan(DriftLoansCompanion loan) =>
+      into(driftLoans).insert(loan);
+  Future<bool> updateLoan(DriftLoansCompanion loan) =>
+      update(driftLoans).replace(loan);
   Future<int> deleteLoan(int id) =>
-      (delete(loans)..where((t) => t.id.equals(id))).go();
-  Future<Loan> getLoanById(int id) =>
-      (select(loans)..where((t) => t.id.equals(id))).getSingle();
-  Future<Loan> getLoanByAccount(int id) =>
-      (select(loans)..where((t) => t.account.equals(id))).getSingle();
+      (delete(driftLoans)..where((t) => t.id.equals(id))).go();
+  Future<DriftLoan> getLoanById(int id) =>
+      (select(driftLoans)..where((t) => t.id.equals(id))).getSingle();
+  Future<DriftLoan> getLoanByAccount(int id) =>
+      (select(driftLoans)..where((t) => t.account.equals(id))).getSingle();
 
-  Future<int> insertWallet(WalletsCompanion wallet) =>
-      into(wallets).insert(wallet);
-  Future<bool> updateWallet(WalletsCompanion wallet) =>
-      update(wallets).replace(wallet);
+  Future<int> insertWallet(DriftWalletsCompanion wallet) =>
+      into(driftWallets).insert(wallet);
+  Future<bool> updateWallet(DriftWalletsCompanion wallet) =>
+      update(driftWallets).replace(wallet);
   Future<int> deleteWallet(int id) =>
-      (delete(wallets)..where((t) => t.id.equals(id))).go();
-  Future<Wallet> getWalletById(int id) =>
-      (select(wallets)..where((t) => t.id.equals(id))).getSingle();
-  Future<Wallet> getWalletByAccount(int id) =>
-      (select(wallets)..where((t) => t.account.equals(id))).getSingle();
+      (delete(driftWallets)..where((t) => t.id.equals(id))).go();
+  Future<DriftWallet> getWalletById(int id) =>
+      (select(driftWallets)..where((t) => t.id.equals(id))).getSingle();
+  Future<DriftWallet> getWalletByAccount(int id) =>
+      (select(driftWallets)..where((t) => t.account.equals(id))).getSingle();
 
-  Future<int> insertBalance(BalancesCompanion balance) =>
-      into(balances).insert(balance);
-  Future<bool> updateBalance(BalancesCompanion balance) =>
-      update(balances).replace(balance);
+  Future<int> insertBalance(DriftBalancesCompanion balance) =>
+      into(driftBalances).insert(balance);
+  Future<bool> updateBalance(DriftBalancesCompanion balance) =>
+      update(driftBalances).replace(balance);
   Future<int> deleteBalance(int id) =>
-      (delete(balances)..where((t) => t.id.equals(id))).go();
-  Future<Balance> getBalanceById(int id) =>
-      (select(balances)..where((t) => t.id.equals(id))).getSingle();
-  Future<Balance> getBalanceByAccount(int id) =>
-      (select(balances)..where((t) => t.account.equals(id))).getSingle();
+      (delete(driftBalances)..where((t) => t.id.equals(id))).go();
+  Future<DriftBalance> getBalanceById(int id) =>
+      (select(driftBalances)..where((t) => t.id.equals(id))).getSingle();
+  Future<DriftBalance> getBalanceByAccount(int id) =>
+      (select(driftBalances)..where((t) => t.account.equals(id))).getSingle();
 
-  Future<int> insertFilePath(FilePathsCompanion filePath) =>
-      into(filePaths).insert(filePath);
-  Future<bool> updateFilePath(FilePathsCompanion filePath) =>
-      update(filePaths).replace(filePath);
-  Future<int> deleteFilePath(int id) =>
-      (delete(filePaths)..where((t) => t.id.equals(id))).go();
+  Future<int> insertDriftTransactionPhoto(
+          DriftTransactionPhotosCompanion filePath) =>
+      into(driftTransactionPhotos).insert(filePath);
+  Future<bool> updateDriftTransactionPhoto(
+          DriftTransactionPhotosCompanion filePath) =>
+      update(driftTransactionPhotos).replace(filePath);
+  Future<int> deleteDriftTransactionPhoto(int id) =>
+      (delete(driftTransactionPhotos)..where((t) => t.id.equals(id))).go();
   Future<int> deletePath(String path) =>
-      (delete(filePaths)..where((t) => t.path.equals(path))).go();
-  Future<FilePath> getFilePathById(int id) =>
-      (select(filePaths)..where((t) => t.id.equals(id))).getSingle();
+      (delete(driftTransactionPhotos)..where((t) => t.path.equals(path))).go();
+  Future<DriftTransactionPhoto> getDriftTransactionPhotoById(int id) =>
+      (select(driftTransactionPhotos)..where((t) => t.id.equals(id)))
+          .getSingle();
 
-  Future<List<DoubleEntry>> getDoubleEntries(
+  Future<
+      List<
+          Tuple5<DriftTransaction, DriftAccount, DriftAccount,
+              List<DriftTransactionPhoto>, DriftProject?>>> getTransactions(
       {required DateTime startDate,
       required DateTime endDate,
       required int profileId}) async {
-    // Define aliases for accounts table to handle 'dr' and 'cr'
-    final drAccounts = alias(accounts, 'drAccounts');
-    final crAccounts = alias(accounts, 'crAccounts');
+    // Define aliases for driftAccounts table to handle 'dr' and 'cr'
+    final drAccounts = alias(driftAccounts, 'drAccounts');
+    final crAccounts = alias(driftAccounts, 'crAccounts');
 
-    // Query to fetch transactions and their related accounts
-    final query = select(transactions).join([
-      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(transactions.dr)),
-      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(transactions.cr)),
+    // Query to fetch driftTransactions and their related driftAccounts
+    final query = select(driftTransactions).join([
+      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(driftTransactions.dr)),
+      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(driftTransactions.cr)),
     ])
       ..where(
-        transactions.vchDate.isBetweenValues(startDate, endDate) &
-            transactions.profile.equals(profileId),
+        driftTransactions.vchDate.isBetweenValues(startDate, endDate) &
+            driftTransactions.profile.equals(profileId),
       )
-      ..orderBy([OrderingTerm.desc(transactions.vchDate)]);
+      ..orderBy([OrderingTerm.desc(driftTransactions.vchDate)]);
 
     // Get transaction results
     final transactionResults = await query.get();
 
     // Extract transaction IDs to fetch related file paths
     final transactionIds = transactionResults.map((row) {
-      final transaction = row.readTable(transactions);
+      final transaction = row.readTable(driftTransactions);
       return transaction.id;
     }).toList();
 
     // Query to fetch all file paths related to the transaction IDs
-    final filePathResults = await (select(filePaths)
+    final filePathResults = await (select(driftTransactionPhotos)
           ..where((filePath) => filePath.transaction.isIn(transactionIds)))
         .get();
 
     // Map transaction ID to its related file paths
-    final filePathMap = <int, List<FilePath>>{};
+    final filePathMap = <int, List<DriftTransactionPhoto>>{};
     for (final filePath in filePathResults) {
       filePathMap.putIfAbsent(filePath.transaction, () => []).add(filePath);
     }
-
+    final allProjects = await getProjectsByProfile(profileId);
     // Map the results to the DoubleEntry model
     return transactionResults.map((row) {
-      final transaction = row.readTable(transactions);
+      final transaction = row.readTable(driftTransactions);
       final drAccount = row.readTable(drAccounts);
       final crAccount = row.readTable(crAccounts);
 
-      return DoubleEntry(
-        transaction: transaction,
-        drAccount: drAccount,
-        crAccount: crAccount,
-        filePaths: filePathMap[transaction.id] ?? [],
-      );
+      return Tuple5(
+          transaction,
+          drAccount,
+          crAccount,
+          filePathMap[transaction.id] ?? [],
+          allProjects.firstWhereOrNull((p) => p.id == transaction.project));
     }).toList();
   }
 
-  Future<DoubleEntry> getDoubleEntryById(int transactionId) async {
-    // Define aliases for accounts table to handle 'dr' and 'cr'
-    final drAccounts = alias(accounts, 'drAccounts');
-    final crAccounts = alias(accounts, 'crAccounts');
+  Future<
+      Tuple5<
+          DriftTransaction,
+          DriftAccount,
+          DriftAccount,
+          List<DriftTransactionPhoto>,
+          DriftProject?>> getTransactionById(int transactionId) async {
+    // Define aliases for driftAccounts table to handle 'dr' and 'cr'
+    final drAccounts = alias(driftAccounts, 'drAccounts');
+    final crAccounts = alias(driftAccounts, 'crAccounts');
 
-    // Query to fetch the transaction and its related accounts
-    final query = select(transactions).join([
-      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(transactions.dr)),
-      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(transactions.cr)),
+    // Query to fetch the transaction and its related driftAccounts
+    final query = select(driftTransactions).join([
+      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(driftTransactions.dr)),
+      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(driftTransactions.cr)),
     ])
-      ..where(transactions.id.equals(transactionId));
+      ..where(driftTransactions.id.equals(transactionId));
 
     // Get the transaction result
     final row = await query.getSingle();
 
     // Query to fetch all file paths related to the transaction ID
-    final filePathResults = await (select(filePaths)
+    final filePathResults = await (select(driftTransactionPhotos)
           ..where((filePath) => filePath.transaction.equals(transactionId)))
         .get();
 
     // Map the result to the DoubleEntry model
-    final transaction = row.readTable(transactions);
+    final transaction = row.readTable(driftTransactions);
     final drAccount = row.readTable(drAccounts);
     final crAccount = row.readTable(crAccounts);
+    final project = transaction.project != null
+        ? await (select(driftProjects)
+              ..where((tbl) => tbl.id.equals(transaction.project!)))
+            .getSingleOrNull()
+        : null;
 
-    return DoubleEntry(
-      transaction: transaction,
-      drAccount: drAccount,
-      crAccount: crAccount,
-      filePaths: filePathResults,
-    );
+    return Tuple5(transaction, drAccount, crAccount, filePathResults, project);
   }
 
-  Future<List<DoubleEntry>> getNDoubleEntries(int n, int profileId) async {
-    // Define aliases for accounts table to handle 'dr' and 'cr'
-    final drAccounts = alias(accounts, 'drAccounts');
-    final crAccounts = alias(accounts, 'crAccounts');
+  Future<
+      List<
+          Tuple5<
+              DriftTransaction,
+              DriftAccount,
+              DriftAccount,
+              List<DriftTransactionPhoto>,
+              DriftProject?>>> getNTransactions(int n, int profileId) async {
+    // Define aliases for driftAccounts table to handle 'dr' and 'cr'
+    final drAccounts = alias(driftAccounts, 'drAccounts');
+    final crAccounts = alias(driftAccounts, 'crAccounts');
 
-    // Query to fetch transactions and their related accounts
-    final query = select(transactions).join([
-      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(transactions.dr)),
-      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(transactions.cr)),
+    // Query to fetch driftTransactions and their related driftAccounts
+    final query = select(driftTransactions).join([
+      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(driftTransactions.dr)),
+      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(driftTransactions.cr)),
     ])
       ..where(
-        transactions.profile.equals(profileId),
+        driftTransactions.profile.equals(profileId),
       )
-      ..orderBy([OrderingTerm.desc(transactions.vchDate)])
+      ..orderBy([OrderingTerm.desc(driftTransactions.vchDate)])
       ..limit(n);
 
     // Get transaction results
@@ -460,59 +497,66 @@ class MyDatabase extends _$MyDatabase {
 
     // Extract transaction IDs to fetch related file paths
     final transactionIds = transactionResults.map((row) {
-      final transaction = row.readTable(transactions);
+      final transaction = row.readTable(driftTransactions);
       return transaction.id;
     }).toList();
 
     // Query to fetch all file paths related to the transaction IDs
-    final filePathResults = await (select(filePaths)
+    final filePathResults = await (select(driftTransactionPhotos)
           ..where((filePath) => filePath.transaction.isIn(transactionIds)))
         .get();
 
     // Map transaction ID to its related file paths
-    final filePathMap = <int, List<FilePath>>{};
+    final filePathMap = <int, List<DriftTransactionPhoto>>{};
     for (final filePath in filePathResults) {
       filePathMap.putIfAbsent(filePath.transaction, () => []).add(filePath);
     }
-
+    final allProjects = await getProjectsByProfile(profileId);
     // Map the results to the DoubleEntry model
     return transactionResults.map((row) {
-      final transaction = row.readTable(transactions);
+      final transaction = row.readTable(driftTransactions);
       final drAccount = row.readTable(drAccounts);
       final crAccount = row.readTable(crAccounts);
 
-      return DoubleEntry(
-        transaction: transaction,
-        drAccount: drAccount,
-        crAccount: crAccount,
-        filePaths: filePathMap[transaction.id] ?? [],
-      );
+      return Tuple5(
+          transaction,
+          drAccount,
+          crAccount,
+          filePathMap[transaction.id] ?? [],
+          allProjects.firstWhereOrNull((p) => p.id == transaction.project));
     }).toList();
   }
 
-  Future<List<DoubleEntry>> getDoubleEntriesbyAccount(
+  Future<
+      List<
+          Tuple5<
+              DriftTransaction,
+              DriftAccount,
+              DriftAccount,
+              List<DriftTransactionPhoto>,
+              DriftProject?>>> getTransactionsbyAccount(
       {required DateTime startDate,
       required DateTime endDate,
       required int profileId,
       required int accountId,
       reversed = true}) async {
-    // Define aliases for accounts table to handle 'dr' and 'cr'
-    final drAccounts = alias(accounts, 'drAccounts');
-    final crAccounts = alias(accounts, 'crAccounts');
+    // Define aliases for driftAccounts table to handle 'dr' and 'cr'
+    final drAccounts = alias(driftAccounts, 'drAccounts');
+    final crAccounts = alias(driftAccounts, 'crAccounts');
 
-    // Query to fetch transactions and their related accounts
-    final query = select(transactions).join([
-      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(transactions.dr)),
-      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(transactions.cr)),
+    // Query to fetch driftTransactions and their related driftAccounts
+    final query = select(driftTransactions).join([
+      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(driftTransactions.dr)),
+      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(driftTransactions.cr)),
     ])
-      ..where(transactions.vchDate.isBetweenValues(startDate, endDate) &
-          transactions.profile.equals(profileId) &
-          (transactions.dr.equals(accountId) |
-              transactions.cr.equals(accountId)))
+      ..where(driftTransactions.vchDate.isBetweenValues(startDate, endDate) &
+          driftTransactions.profile.equals(profileId) &
+          (driftTransactions.dr.equals(accountId) |
+              driftTransactions.cr.equals(accountId)))
       ..orderBy([
         reversed
-            ? OrderingTerm.desc(transactions.vchDate)
-            : OrderingTerm.asc(transactions.vchDate)
+            ? OrderingTerm.desc(driftTransactions.vchDate)
+            : OrderingTerm.asc(driftTransactions.vchDate)
       ]);
 
     // Get transaction results
@@ -520,172 +564,194 @@ class MyDatabase extends _$MyDatabase {
 
     // Extract transaction IDs to fetch related file paths
     final transactionIds = transactionResults.map((row) {
-      final transaction = row.readTable(transactions);
+      final transaction = row.readTable(driftTransactions);
       return transaction.id;
     }).toList();
 
     // Query to fetch all file paths related to the transaction IDs
-    final filePathResults = await (select(filePaths)
+    final filePathResults = await (select(driftTransactionPhotos)
           ..where((filePath) => filePath.transaction.isIn(transactionIds)))
         .get();
 
     // Map transaction ID to its related file paths
-    final filePathMap = <int, List<FilePath>>{};
+    final filePathMap = <int, List<DriftTransactionPhoto>>{};
     for (final filePath in filePathResults) {
       filePathMap.putIfAbsent(filePath.transaction, () => []).add(filePath);
     }
-
+    final allProjects = await getProjectsByProfile(profileId);
     // Map the results to the DoubleEntry model
     return transactionResults.map((row) {
-      final transaction = row.readTable(transactions);
+      final transaction = row.readTable(driftTransactions);
       final drAccount = row.readTable(drAccounts);
       final crAccount = row.readTable(crAccounts);
 
-      return DoubleEntry(
-        transaction: transaction,
-        drAccount: drAccount,
-        crAccount: crAccount,
-        filePaths: filePathMap[transaction.id] ?? [],
-      );
+      return Tuple5(
+          transaction,
+          drAccount,
+          crAccount,
+          filePathMap[transaction.id] ?? [],
+          allProjects.firstWhereOrNull((p) => p.id == transaction.project));
     }).toList();
   }
 
-  Future<List<Ledger>> getLedgers({required int profileId}) async {
-    final query = select(accounts).join([
-      innerJoin(accTypes, accTypes.id.equalsExp(accounts.accType)),
-      leftOuterJoin(balances, balances.account.equalsExp(accounts.id)),
+  Future<List<Tuple3<DriftAccount, DriftAccType, DriftBalance>>> getLedgers(
+      {required int profileId}) async {
+    final query = select(driftAccounts).join([
+      innerJoin(
+          driftAccTypes, driftAccTypes.id.equalsExp(driftAccounts.accType)),
+      leftOuterJoin(
+          driftBalances, driftBalances.account.equalsExp(driftAccounts.id)),
     ])
-      ..where(accounts.profile.equals(profileId));
+      ..where(driftAccounts.profile.equals(profileId));
 
     final results = await query.get();
 
     return results.map((row) {
-      final account = row.readTable(accounts);
-      final accType = row.readTable(accTypes);
-      final balance = row.readTable(balances);
+      final account = row.readTable(driftAccounts);
+      final accType = row.readTable(driftAccTypes);
+      final balance = row.readTable(driftBalances);
 
-      return Ledger(
-        account: account,
-        accType: accType,
-        balance: balance,
+      return Tuple3(
+        account,
+        accType,
+        balance,
       );
     }).toList();
   }
 
-  Future<List<Ledger>> getLedgersByAccType(
-      {required int profileId, required int accTypeID}) async {
-    final query = select(accounts).join([
-      innerJoin(accTypes, accTypes.id.equalsExp(accounts.accType)),
-      leftOuterJoin(balances, balances.account.equalsExp(accounts.id)),
+  Future<List<Tuple3<DriftAccount, DriftAccType, DriftBalance>>>
+      getLedgersByAccType(
+          {required int profileId, required int accTypeID}) async {
+    final query = select(driftAccounts).join([
+      innerJoin(
+          driftAccTypes, driftAccTypes.id.equalsExp(driftAccounts.accType)),
+      leftOuterJoin(
+          driftBalances, driftBalances.account.equalsExp(driftAccounts.id)),
     ])
-      ..where(accounts.profile.equals(profileId) &
-          accounts.accType.equals(accTypeID));
+      ..where(driftAccounts.profile.equals(profileId) &
+          driftAccounts.accType.equals(accTypeID));
 
     final results = await query.get();
 
     return results.map((row) {
-      final account = row.readTable(accounts);
-      final accType = row.readTable(accTypes);
-      final balance = row.readTable(balances);
+      final account = row.readTable(driftAccounts);
+      final accType = row.readTable(driftAccTypes);
+      final balance = row.readTable(driftBalances);
 
-      return Ledger(
-        account: account,
-        accType: accType,
-        balance: balance,
+      return Tuple3(
+        account,
+        accType,
+        balance,
       );
     }).toList();
   }
 
-  Future<List<Ledger>> getFunds({required int profileId}) async {
-    final query = select(accounts).join([
-      innerJoin(accTypes, accTypes.id.equalsExp(accounts.accType)),
-      leftOuterJoin(balances, balances.account.equalsExp(accounts.id)),
+  Future<List<Tuple3<DriftAccount, DriftAccType, DriftBalance>>>
+      getLedgersByCategory(
+          {required int profileId, required List<int> accTypeIDs}) async {
+    final query = select(driftAccounts).join([
+      innerJoin(
+          driftAccTypes, driftAccTypes.id.equalsExp(driftAccounts.accType)),
+      leftOuterJoin(
+          driftBalances, driftBalances.account.equalsExp(driftAccounts.id)),
     ])
-      ..where(
-          accounts.profile.equals(profileId) & accounts.accType.isIn(fundIDs));
+      ..where(driftAccounts.profile.equals(profileId) &
+          driftAccounts.accType.isIn(accTypeIDs));
 
     final results = await query.get();
 
     return results.map((row) {
-      final account = row.readTable(accounts);
-      final accType = row.readTable(accTypes);
-      final balance = row.readTable(balances);
+      final account = row.readTable(driftAccounts);
+      final accType = row.readTable(driftAccTypes);
+      final balance = row.readTable(driftBalances);
 
-      return Ledger(
-        account: account,
-        accType: accType,
-        balance: balance,
+      return Tuple3(
+        account,
+        accType,
+        balance,
       );
     }).toList();
   }
 
-  Future<List<Ledger>> getCredits({required int profileId}) async {
-    final query = select(accounts).join([
-      innerJoin(accTypes, accTypes.id.equalsExp(accounts.accType)),
-      leftOuterJoin(balances, balances.account.equalsExp(accounts.id)),
-    ])
-      ..where(accounts.profile.equals(profileId) &
-          accounts.accType.isIn(creditIDs));
+  // Future<List<Ledger>> getCredits({required int profileId}) async {
+  //   final query = select(driftAccounts).join([
+  //     innerJoin(
+  //         driftAccTypes, driftAccTypes.id.equalsExp(driftAccounts.accType)),
+  //     leftOuterJoin(
+  //         driftBalances, driftBalances.account.equalsExp(driftAccounts.id)),
+  //   ])
+  //     ..where(driftAccounts.profile.equals(profileId) &
+  //         driftAccounts.accType.isIn(creditIDs));
 
-    final results = await query.get();
+  //   final results = await query.get();
 
-    return results.map((row) {
-      final account = row.readTable(accounts);
-      final accType = row.readTable(accTypes);
-      final balance = row.readTable(balances);
+  //   return results.map((row) {
+  //     final account = row.readTable(driftAccounts);
+  //     final accType = row.readTable(driftAccTypes);
+  //     final balance = row.readTable(driftBalances);
 
-      return Ledger(
-        account: account,
-        accType: accType,
-        balance: balance,
-      );
-    }).toList();
-  }
+  //     return Ledger(
+  //       account: account,
+  //       accType: accType,
+  //       balance: balance,
+  //     );
+  //   }).toList();
+  // }
 
-  Future<List<Ledger>> getFundingLedgers({required int profileId}) async {
-    final query = select(accounts).join([
-      innerJoin(accTypes, accTypes.id.equalsExp(accounts.accType)),
-      leftOuterJoin(balances, balances.account.equalsExp(accounts.id)),
-    ])
-      ..where(accounts.profile.equals(profileId) &
-          accounts.accType.isIn(fundingAccountIDs));
+  // Future<List<Ledger>> getFundingLedgers({required int profileId}) async {
+  //   final query = select(driftAccounts).join([
+  //     innerJoin(
+  //         driftAccTypes, driftAccTypes.id.equalsExp(driftAccounts.accType)),
+  //     leftOuterJoin(
+  //         driftBalances, driftBalances.account.equalsExp(driftAccounts.id)),
+  //   ])
+  //     ..where(driftAccounts.profile.equals(profileId) &
+  //         driftAccounts.accType.isIn(fundingAccountIDs));
 
-    final results = await query.get();
+  //   final results = await query.get();
 
-    return results.map((row) {
-      final account = row.readTable(accounts);
-      final accType = row.readTable(accTypes);
-      final balance = row.readTable(balances);
+  //   return results.map((row) {
+  //     final account = row.readTable(driftAccounts);
+  //     final accType = row.readTable(driftAccTypes);
+  //     final balance = row.readTable(driftBalances);
 
-      return Ledger(
-        account: account,
-        accType: accType,
-        balance: balance,
-      );
-    }).toList();
-  }
+  //     return Ledger(
+  //       account: account,
+  //       accType: accType,
+  //       balance: balance,
+  //     );
+  //   }).toList();
+  // }
 
-  Future<List<AccType>> getFundAccTypes() async {
-    return await (select(accTypes)..where((a) => a.id.isIn(fundIDs))).get();
-  }
-
-  Future<List<AccType>> getCreditAccTypes() async {
-    return await (select(accTypes)..where((a) => a.id.isIn(creditIDs))).get();
-  }
-
-  Future<List<AccType>> getFundingAccTypes() async {
-    return await (select(accTypes)..where((a) => a.id.isIn(fundingAccountIDs)))
+  Future<List<DriftAccType>> getFundAccTypes() async {
+    return await (select(driftAccTypes)..where((a) => a.id.isIn(fundIDs)))
         .get();
   }
 
-  Future<List<AccType>> getBalanceAccTypes() async {
-    return await (select(accTypes)..where((a) => a.id.isNotIn(incExpIDs)))
+  Future<List<DriftAccType>> getCreditAccTypes() async {
+    return await (select(driftAccTypes)..where((a) => a.id.isIn(creditIDs)))
+        .get();
+  }
+
+  Future<List<DriftAccType>> getFundingAccTypes() async {
+    return await (select(driftAccTypes)
+          ..where((a) => a.id.isIn(fundingAccountIDs)))
+        .get();
+  }
+
+  Future<List<DriftAccType>> getAccTypesByCategory(List<int> accTypeIDs) async {
+    return await (select(driftAccTypes)..where((a) => a.id.isIn(accTypeIDs)))
+        .get();
+  }
+
+  Future<List<DriftAccType>> getBalanceAccTypes() async {
+    return await (select(driftAccTypes)..where((a) => a.id.isNotIn(incExpIDs)))
         .get();
   }
 
   Future<int?> getLastTransactionID() async {
     // Query to get the maximum value of the id column
-    final query = select(transactions)
+    final query = select(driftTransactions)
       ..orderBy([(t) => OrderingTerm.desc(t.id)])
       ..limit(1);
 
@@ -693,62 +759,62 @@ class MyDatabase extends _$MyDatabase {
     return result?.id;
   }
 
-  Future<Map<E, Account>>
+  Future<Map<E, DriftAccount>>
       getTableWithAccounts<E extends DataClass, T extends Table>(
     TableInfo<T, E> table,
     Column<int> accountColumn,
   ) async {
     final query = select(table).join([
-      innerJoin(accounts, accounts.id.equalsExp(accountColumn)),
+      innerJoin(driftAccounts, driftAccounts.id.equalsExp(accountColumn)),
     ]);
 
     final results = await query.get();
 
-    final map = <E, Account>{};
+    final map = <E, DriftAccount>{};
     for (final row in results) {
       final tableEntry = row.readTable(table);
-      final accountEntry = row.readTable(accounts);
+      final accountEntry = row.readTable(driftAccounts);
       map[tableEntry] = accountEntry;
     }
     return map;
   }
 
-  Future<Map<Bank, Account>> getBanksWithAccounts() {
-    return getTableWithAccounts(banks, banks.account);
+  Future<Map<DriftBank, DriftAccount>> getBanksWithAccounts() {
+    return getTableWithAccounts(driftBanks, driftBanks.account);
   }
 
-  Future<Map<Wallet, Account>> getWalletsWithAccounts() {
-    return getTableWithAccounts(wallets, wallets.account);
+  Future<Map<DriftWallet, DriftAccount>> getWalletsWithAccounts() {
+    return getTableWithAccounts(driftWallets, driftWallets.account);
   }
 
-  Future<Map<Loan, Account>> getLoansWithAccounts() {
-    return getTableWithAccounts(loans, loans.account);
+  Future<Map<DriftLoan, DriftAccount>> getLoansWithAccounts() {
+    return getTableWithAccounts(driftLoans, driftLoans.account);
   }
 
-  Future<Map<CCard, Account>> getCCardsWithAccounts() {
-    return getTableWithAccounts(cCards, cCards.account);
+  Future<Map<DriftCCard, DriftAccount>> getCCardsWithAccounts() {
+    return getTableWithAccounts(driftCCards, driftCCards.account);
   }
 
   Future<int> calculateBalance(int accountId) async {
     // Fetch the opening balance from the account table
-    final account = await (select(accounts)
+    final account = await (select(driftAccounts)
           ..where((a) => a.id.equals(accountId)))
         .getSingleOrNull();
 
     if (account == null) {
-      throw Exception("Account not found");
+      throw Exception("DriftAccount not found");
     }
 
     final query = customSelect(
       'SELECT '
       'SUM(CASE WHEN dr = ? THEN amount ELSE 0 END) AS totalDebit, '
       'SUM(CASE WHEN cr = ? THEN amount ELSE 0 END) AS totalCredit '
-      'FROM transactions',
+      'FROM drift_transactions',
       variables: [
         Variable.withInt(accountId),
         Variable.withInt(accountId),
       ],
-      readsFrom: {transactions},
+      readsFrom: {driftTransactions},
     );
 
     final row = await query.getSingle();
@@ -762,10 +828,10 @@ class MyDatabase extends _$MyDatabase {
     final accountType = account.accType;
     // Adjust closing balance calculation based on account type
     if (DBUtils.isAssetOrExpense(accountType)) {
-      // Asset and Expense accounts: Debit increases, Credit decreases
+      // Asset and Expense driftAccounts: Debit increases, Credit decreases
       closingBalance = openingBalance + totalDebit - totalCredit;
     } else if (DBUtils.isLiabilityOrIncome(accountType)) {
-      // Liability and Income accounts: Credit increases, Debit decreases
+      // Liability and Income driftAccounts: Credit increases, Debit decreases
       closingBalance = openingBalance + totalCredit - totalDebit;
     } else {
       throw Exception("Unknown account type");
@@ -774,12 +840,12 @@ class MyDatabase extends _$MyDatabase {
   }
 
   Future<int> getFundClosingBalance(DateTime closingDate, int profileID) async {
-    // Fetch accounts where accType < 4
-    final acc = await (select(accounts)
+    // Fetch driftAccounts where accType < 4
+    final acc = await (select(driftAccounts)
           ..where((a) => a.accType.isIn(fundIDs) & a.profile.equals(profileID)))
         .get();
 
-    // If no accounts match, return 0
+    // If no driftAccounts match, return 0
     if (acc.isEmpty) {
       return 0;
     }
@@ -797,12 +863,12 @@ class MyDatabase extends _$MyDatabase {
 
   Future<int> getClosingBalance(int accountId, DateTime closingDate) async {
     // Fetch account details
-    final account = await (select(accounts)
+    final account = await (select(driftAccounts)
           ..where((a) => a.id.equals(accountId)))
         .getSingleOrNull();
 
     if (account == null) {
-      throw Exception("Account not found");
+      throw Exception("DriftAccount not found");
     }
 
     // If the account was opened after the closing date, just return the opening balance.
@@ -814,19 +880,19 @@ class MyDatabase extends _$MyDatabase {
     final closingDateLimit =
         closingDate.copyWith(hour: 23, minute: 59, second: 59);
 
-    // Use a single SQL query to sum both debit and credit transactions
+    // Use a single SQL query to sum both debit and credit driftTransactions
     final query = customSelect(
       'SELECT '
       'SUM(CASE WHEN dr = ? THEN amount ELSE 0 END) AS totalDebit, '
       'SUM(CASE WHEN cr = ? THEN amount ELSE 0 END) AS totalCredit '
-      'FROM transactions '
+      'FROM drift_transactions '
       'WHERE vch_date <= ?',
       variables: [
         Variable.withInt(accountId),
         Variable.withInt(accountId),
         Variable.withDateTime(closingDateLimit),
       ],
-      readsFrom: {transactions},
+      readsFrom: {driftTransactions},
     );
 
     final row = await query.getSingle();
@@ -840,10 +906,10 @@ class MyDatabase extends _$MyDatabase {
     final accountType = account.accType;
     // Adjust closing balance calculation based on account type
     if (DBUtils.isAssetOrExpense(accountType)) {
-      // Asset and Expense accounts: Debit increases, Credit decreases
+      // Asset and Expense driftAccounts: Debit increases, Credit decreases
       closingBalance = openingBalance + totalDebit - totalCredit;
     } else if (DBUtils.isLiabilityOrIncome(accountType)) {
-      // Liability and Income accounts: Credit increases, Debit decreases
+      // Liability and Income driftAccounts: Credit increases, Debit decreases
       closingBalance = openingBalance + totalCredit - totalDebit;
     } else {
       throw Exception("Unknown account type");
@@ -851,118 +917,129 @@ class MyDatabase extends _$MyDatabase {
     return closingBalance;
   }
 
-  Future<List<Transaction>> getLastNTransactions(int n) async {
-    return await (select(transactions)
+  Future<List<DriftTransaction>> getLastNTransactions(int n) async {
+    return await (select(driftTransactions)
           ..orderBy(
               [(t) => OrderingTerm.desc(t.vchDate)]) // Order by latest date
           ..limit(n)) // Get last 8 entries
         .get();
   }
 
-  Future<List<Budget>> getBudgets() async {
-    return await select(budgets).get();
+  Future<List<DriftBudget>> getBudgets() async {
+    return await select(driftBudgets).get();
   }
 
-  Future<Budget> getBudgetbyId(int id) async {
-    return await (select(budgets)..where((tbl) => tbl.id.equals(id)))
+  Future<DriftBudget> getBudgetbyId(int id) async {
+    return await (select(driftBudgets)..where((tbl) => tbl.id.equals(id)))
         .getSingle();
   }
 
-  Future<List<Budget>> getBudgetsByProfile(int id) async {
-    return await (select(budgets)
+  Future<List<DriftBudget>> getBudgetsByProfile(int id) async {
+    return await (select(driftBudgets)
           ..where((tbl) => tbl.profile.equals(id))
           ..orderBy([(tbl) => OrderingTerm(expression: tbl.name)]))
         .get();
   }
 
-  Future<bool> updateBudget(BudgetsCompanion companion) async {
-    return await update(budgets).replace(companion);
+  Future<bool> updateBudget(DriftBudgetsCompanion companion) async {
+    return await update(driftBudgets).replace(companion);
   }
 
-  Future<int> insertBudget(BudgetsCompanion companion) async {
-    return await into(budgets).insert(companion);
+  Future<int> insertBudget(DriftBudgetsCompanion companion) async {
+    return await into(driftBudgets).insert(companion);
   }
 
   Future<int> deleteBudget(int id) async {
-    return await (delete(budgets)..where((tbl) => tbl.id.equals(id))).go();
+    return await (delete(driftBudgets)..where((tbl) => tbl.id.equals(id))).go();
   }
 
-  Future<List<BudgetFund>> getBudgetFunds() async {
-    return await select(budgetFunds).get();
+  Future<List<DriftBudgetFund>> getBudgetFunds() async {
+    return await select(driftBudgetFunds).get();
   }
 
-  Future<BudgetFund> getBudgetFundbyId(int id) async {
-    return await (select(budgetFunds)..where((tbl) => tbl.id.equals(id)))
+  Future<DriftBudgetFund> getBudgetFundbyId(int id) async {
+    return await (select(driftBudgetFunds)..where((tbl) => tbl.id.equals(id)))
         .getSingle();
   }
 
-  Future<List<BudgetFund>> getBudgetFundsByBudget(int id) async {
-    return await (select(budgetFunds)
+  Future<List<DriftAccount>> getBudgetFundAccountsByBudget(int id) async {
+    final funds = await (select(driftBudgetFunds)
           ..where((tbl) => tbl.budget.equals(id))
           ..orderBy([(tbl) => OrderingTerm(expression: tbl.budget)]))
         .get();
+
+    return await (select(driftAccounts)
+          ..where((a) => a.id.isIn(funds.map((f) => f.account))))
+        .get();
   }
 
-  Future<bool> updateBudgetFund(BudgetFundsCompanion companion) async {
-    return await update(budgetFunds).replace(companion);
+  Future<bool> updateBudgetFund(DriftBudgetFundsCompanion companion) async {
+    return await update(driftBudgetFunds).replace(companion);
   }
 
-  Future<int> insertBudgetFund(BudgetFundsCompanion companion) async {
-    return await into(budgetFunds).insert(companion);
+  Future<int> insertBudgetFund(DriftBudgetFundsCompanion companion) async {
+    return await into(driftBudgetFunds).insert(companion);
   }
 
   Future<int> deleteBudgetFund(int id) async {
-    return await (delete(budgetFunds)..where((tbl) => tbl.id.equals(id))).go();
-  }
-
-  Future<int> deleteBudgetFundByBudget(int id) async {
-    return await (delete(budgetFunds)..where((tbl) => tbl.budget.equals(id)))
+    return await (delete(driftBudgetFunds)..where((tbl) => tbl.id.equals(id)))
         .go();
   }
 
-  Future<List<BudgetAccount>> getBudgetAccounts() async {
-    return await select(budgetAccounts).get();
+  Future<int> deleteBudgetFundByBudget(int id) async {
+    return await (delete(driftBudgetFunds)
+          ..where((tbl) => tbl.budget.equals(id)))
+        .go();
   }
 
-  Future<BudgetAccount> getBudgetAccountbyId(int id) async {
-    return await (select(budgetAccounts)..where((tbl) => tbl.id.equals(id)))
+  Future<List<DriftBudgetAccount>> getBudgetAccounts() async {
+    return await select(driftBudgetAccounts).get();
+  }
+
+  Future<DriftBudgetAccount> getBudgetAccountbyId(int id) async {
+    return await (select(driftBudgetAccounts)
+          ..where((tbl) => tbl.id.equals(id)))
         .getSingle();
   }
 
-  Future<List<BudgetAccount>> getBudgetAccountsByBudget(int id) async {
-    return await (select(budgetAccounts)
+  Future<List<DriftBudgetAccount>> getBudgetAccountsByBudget(int id) async {
+    return await (select(driftBudgetAccounts)
           ..where((tbl) => tbl.budget.equals(id))
           ..orderBy([(tbl) => OrderingTerm(expression: tbl.budget)]))
         .get();
   }
 
-  Future<bool> updateBudgetAccount(BudgetAccountsCompanion companion) async {
-    return await update(budgetAccounts).replace(companion);
+  Future<bool> updateBudgetAccount(
+      DriftBudgetAccountsCompanion companion) async {
+    return await update(driftBudgetAccounts).replace(companion);
   }
 
-  Future<int> insertBudgetAccount(BudgetAccountsCompanion companion) async {
-    return await into(budgetAccounts).insert(companion);
+  Future<int> insertBudgetAccount(
+      DriftBudgetAccountsCompanion companion) async {
+    return await into(driftBudgetAccounts).insert(companion);
   }
 
   Future<int> deleteBudgetAccount(int id) async {
-    return await (delete(budgetAccounts)..where((tbl) => tbl.id.equals(id)))
+    return await (delete(driftBudgetAccounts)
+          ..where((tbl) => tbl.id.equals(id)))
         .go();
   }
 
   Future<int> deleteBudgetAccountByBudget(int id) async {
-    return await (delete(budgetAccounts)..where((tbl) => tbl.budget.equals(id)))
+    return await (delete(driftBudgetAccounts)
+          ..where((tbl) => tbl.budget.equals(id)))
         .go();
   }
 
-  Future<Map<Account, int>> getAccountBalances(
+  Future<Map<DriftAccount, int>> getAccountBalances(
       DateTime startDate, DateTime endDate) async {
-    // Fetch all transactions within the date range
-    final trx = await (select(transactions)
+    // Fetch all driftTransactions within the date range
+    final trx = await (select(driftTransactions)
           ..where((t) => t.vchDate.isBiggerOrEqualValue(startDate))
           ..where((t) => t.vchDate.isSmallerOrEqualValue(endDate)))
         .get();
 
-    // Map to store account balances
+    // Map to store account driftBalances
     final Map<int, int> accountBalances = {};
 
     for (var txn in trx) {
@@ -972,37 +1049,42 @@ class MyDatabase extends _$MyDatabase {
       accountBalances[txn.cr] = (accountBalances[txn.cr] ?? 0) - txn.amount;
     }
 
-    // Fetch account details for all involved accounts
-    final accx = await (select(accounts)
+    // Fetch account details for all involved driftAccounts
+    final accx = await (select(driftAccounts)
           ..where((a) => a.id.isIn(accountBalances.keys.toList())))
         .get();
 
-    // Convert to Map<Account, int>
+    // Convert to Map<DriftAccount, int>
     return {for (var acc in accx) acc: accountBalances[acc.id] ?? 0};
   }
 
-  Future<List<BudgetPlan>> getAllBudgetPlans(int profileID) async {
-    final budgetList = await (select(budgets)
+  Future<
+      List<
+          Tuple4<DriftBudget, List<DriftAccount>, Map<DriftAccount, int>,
+              Map<DriftAccount, int>>>> getAllBudgets(int profileID) async {
+    final budgetList = await (select(driftBudgets)
           ..where((b) => b.profile.equals(profileID)))
-        .get(); // Get all budgets
-    List<BudgetPlan> plans = [];
+        .get(); // Get all driftBudgets
+    List<
+        Tuple4<DriftBudget, List<DriftAccount>, Map<DriftAccount, int>,
+            Map<DriftAccount, int>>> plans = [];
 
     for (var budget in budgetList) {
-      final funds = await (select(accounts)
-            ..where((a) => a.id.isInQuery(selectOnly(budgetFunds)
-              ..addColumns([budgetFunds.account])
-              ..where(budgetFunds.budget.equals(budget.id)))))
+      final funds = await (select(driftAccounts)
+            ..where((a) => a.id.isInQuery(selectOnly(driftBudgetFunds)
+              ..addColumns([driftBudgetFunds.account])
+              ..where(driftBudgetFunds.budget.equals(budget.id)))))
           .get();
 
-      final budgetAccountsList = await (select(budgetAccounts)
+      final budgetAccountsList = await (select(driftBudgetAccounts)
             ..where((ba) => ba.budget.equals(budget.id)))
           .get();
 
-      Map<Account, int> incomes = {};
-      Map<Account, int> expenses = {};
+      Map<DriftAccount, int> incomes = {};
+      Map<DriftAccount, int> expenses = {};
 
       for (var ba in budgetAccountsList) {
-        final account = await (select(accounts)
+        final account = await (select(driftAccounts)
               ..where((a) => a.id.equals(ba.account)))
             .getSingleOrNull();
         if (account != null) {
@@ -1014,36 +1096,38 @@ class MyDatabase extends _$MyDatabase {
         }
       }
 
-      plans.add(BudgetPlan(
+      plans.add(Tuple4(
+        budget,
+        funds,
         incomes,
         expenses,
-        budget: budget,
-        funds: funds,
       ));
     }
 
     return plans;
   }
 
-  Future<BudgetPlan> getBudgetPlanByID(int id) async {
+  Future<
+      Tuple4<DriftBudget, List<DriftAccount>, Map<DriftAccount, int>,
+          Map<DriftAccount, int>>> getBudgetByID(int id) async {
     final budget =
-        await (select(budgets)..where((b) => b.id.equals(id))).getSingle();
+        await (select(driftBudgets)..where((b) => b.id.equals(id))).getSingle();
 
-    final funds = await (select(accounts)
-          ..where((a) => a.id.isInQuery(selectOnly(budgetFunds)
-            ..addColumns([budgetFunds.account])
-            ..where(budgetFunds.budget.equals(budget.id)))))
+    final funds = await (select(driftAccounts)
+          ..where((a) => a.id.isInQuery(selectOnly(driftBudgetFunds)
+            ..addColumns([driftBudgetFunds.account])
+            ..where(driftBudgetFunds.budget.equals(budget.id)))))
         .get();
 
-    final budgetAccountsList = await (select(budgetAccounts)
+    final budgetAccountsList = await (select(driftBudgetAccounts)
           ..where((ba) => ba.budget.equals(budget.id)))
         .get();
 
-    Map<Account, int> incomes = {};
-    Map<Account, int> expenses = {};
+    Map<DriftAccount, int> incomes = {};
+    Map<DriftAccount, int> expenses = {};
 
     for (var ba in budgetAccountsList) {
-      final account = await (select(accounts)
+      final account = await (select(driftAccounts)
             ..where((a) => a.id.equals(ba.account)))
           .getSingleOrNull();
       if (account != null) {
@@ -1055,27 +1139,25 @@ class MyDatabase extends _$MyDatabase {
       }
     }
 
-    BudgetPlan plan = BudgetPlan(
+    return Tuple4(
+      budget,
+      funds,
       incomes,
       expenses,
-      budget: budget,
-      funds: funds,
     );
-
-    return plan;
   }
 
-  Future<int> insertProject(ProjectsCompanion project) =>
-      into(projects).insert(project);
-  Future<bool> updateProject(ProjectsCompanion project) =>
-      update(projects).replace(project);
+  Future<int> insertProject(DriftProjectsCompanion project) =>
+      into(driftProjects).insert(project);
+  Future<bool> updateProject(DriftProjectsCompanion project) =>
+      update(driftProjects).replace(project);
   Future<int> deleteProject(int id, {bool deleteTransactions = false}) async {
     if (deleteTransactions) {
-      final fps = await (select(projectPhotos)
+      final fps = await (select(driftProjectPhotos)
             ..where((tbl) => tbl.project.equals(id)))
           .get();
 
-      // Delete files from FilePaths before deleting the project
+      // Delete files from DriftTransactionPhotos before deleting the project
       for (final filePath in fps) {
         try {
           final file = File(filePath.path);
@@ -1087,78 +1169,86 @@ class MyDatabase extends _$MyDatabase {
         }
       }
     }
-    return (delete(projects)..where((t) => t.id.equals(id))).go();
+    return (delete(driftProjects)..where((t) => t.id.equals(id))).go();
   }
 
-  Future<Project> getProjectById(int id) =>
-      (select(projects)..where((t) => t.id.equals(id))).getSingle();
-  Future<List<Project>> getProjectsByProfile(int id) =>
-      (select(projects)..where((t) => t.profile.equals(id))).get();
+  Future<DriftProject> getProjectById(int id) =>
+      (select(driftProjects)..where((t) => t.id.equals(id))).getSingle();
+  Future<List<DriftProject>> getProjectsByProfile(int id) =>
+      (select(driftProjects)..where((t) => t.profile.equals(id))).get();
 
-  Future<int> insertProjectPhoto(ProjectPhotosCompanion projectPhoto) =>
-      into(projectPhotos).insert(projectPhoto);
-  Future<bool> updateProjectPhoto(ProjectPhotosCompanion projectPhoto) =>
-      update(projectPhotos).replace(projectPhoto);
+  Future<int> insertProjectPhoto(DriftProjectPhotosCompanion projectPhoto) =>
+      into(driftProjectPhotos).insert(projectPhoto);
+  Future<bool> updateProjectPhoto(DriftProjectPhotosCompanion projectPhoto) =>
+      update(driftProjectPhotos).replace(projectPhoto);
   Future<int> deleteProjectPhoto(int id) =>
-      (delete(projectPhotos)..where((t) => t.id.equals(id))).go();
-  Future<ProjectPhoto> getProjectPhotoById(int id) =>
-      (select(projectPhotos)..where((t) => t.id.equals(id))).getSingle();
+      (delete(driftProjectPhotos)..where((t) => t.id.equals(id))).go();
+  Future<DriftProjectPhoto> getProjectPhotoById(int id) =>
+      (select(driftProjectPhotos)..where((t) => t.id.equals(id))).getSingle();
 
   Future<int> deleteProjectPhotobyProject(int id) =>
-      (delete(projectPhotos)..where((t) => t.project.equals(id))).go();
-  Future<List<ProjectPhoto>> getProjectPhotosByProject(int id) =>
-      (select(projectPhotos)..where((t) => t.project.equals(id))).get();
+      (delete(driftProjectPhotos)..where((t) => t.project.equals(id))).go();
+  Future<List<DriftProjectPhoto>> getProjectPhotosByProject(int id) =>
+      (select(driftProjectPhotos)..where((t) => t.project.equals(id))).get();
 
-  Future<int> insertSubscription(SubscriptionsCompanion subscription) =>
-      into(subscriptions).insert(subscription);
-  Future<bool> updateSubscription(SubscriptionsCompanion subscription) =>
-      update(subscriptions).replace(subscription);
+  Future<int> insertSubscription(DriftSubscriptionsCompanion subscription) =>
+      into(driftSubscriptions).insert(subscription);
+  Future<bool> updateSubscription(DriftSubscriptionsCompanion subscription) =>
+      update(driftSubscriptions).replace(subscription);
   Future<int> deleteSubscription(int id) =>
-      (delete(subscriptions)..where((t) => t.id.equals(id))).go();
-  Future<Subscription> getSubscriptionById(int id) =>
-      (select(subscriptions)..where((t) => t.id.equals(id))).getSingle();
+      (delete(driftSubscriptions)..where((t) => t.id.equals(id))).go();
+  Future<DriftSubscription> getSubscriptionById(int id) =>
+      (select(driftSubscriptions)..where((t) => t.id.equals(id))).getSingle();
 
-  Future<ProjectPlan?> getProjectPlan(int projectId) async {
+  Future<Tuple2<DriftProject, List<String>>?> getProjectByID(
+      int projectId) async {
     // Fetch the project
-    final projectQuery = await (select(projects)
+    final project = await (select(driftProjects)
           ..where((tbl) => tbl.id.equals(projectId)))
         .getSingleOrNull();
 
-    if (projectQuery == null) {
-      return null; // Project not found
+    if (project == null) {
+      return null; // DriftProject not found
     }
 
     // Fetch all related photos
-    final photos = await (select(projectPhotos)
+    final photos = await (select(driftProjectPhotos)
           ..where((tbl) => tbl.project.equals(projectId)))
         .get();
 
     // Fetch the associated budget (if exists)
 
-    // Construct and return the ProjectPlan
-    return ProjectPlan(
-      project: projectQuery,
-      photos: photos,
+    // Construct and return the Project
+    return Tuple2(
+      project,
+      photos.map((p) => p.path).toList(),
     );
   }
 
-  Future<List<DoubleEntry>> getDoubleEntriesbyProject(
+  Future<
+      List<
+          Tuple5<
+              DriftTransaction,
+              DriftAccount,
+              DriftAccount,
+              List<DriftTransactionPhoto>,
+              DriftProject?>>> getTransactionsbyProject(
       {required int profileID, required int projectID, reversed = true}) async {
-    // Define aliases for accounts table to handle 'dr' and 'cr'
-    final drAccounts = alias(accounts, 'drAccounts');
-    final crAccounts = alias(accounts, 'crAccounts');
+    // Define aliases for driftAccounts table to handle 'dr' and 'cr'
+    final drAccounts = alias(driftAccounts, 'drAccounts');
+    final crAccounts = alias(driftAccounts, 'crAccounts');
 
-    // Query to fetch transactions and their related accounts
-    final query = select(transactions).join([
-      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(transactions.dr)),
-      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(transactions.cr)),
+    // Query to fetch driftTransactions and their related driftAccounts
+    final query = select(driftTransactions).join([
+      leftOuterJoin(drAccounts, drAccounts.id.equalsExp(driftTransactions.dr)),
+      leftOuterJoin(crAccounts, crAccounts.id.equalsExp(driftTransactions.cr)),
     ])
-      ..where(transactions.profile.equals(profileID) &
-          transactions.project.equals(projectID))
+      ..where(driftTransactions.profile.equals(profileID) &
+          driftTransactions.project.equals(projectID))
       ..orderBy([
         reversed
-            ? OrderingTerm.desc(transactions.vchDate)
-            : OrderingTerm.asc(transactions.vchDate)
+            ? OrderingTerm.desc(driftTransactions.vchDate)
+            : OrderingTerm.asc(driftTransactions.vchDate)
       ]);
 
     // Get transaction results
@@ -1166,33 +1256,34 @@ class MyDatabase extends _$MyDatabase {
 
     // Extract transaction IDs to fetch related file paths
     final transactionIds = transactionResults.map((row) {
-      final transaction = row.readTable(transactions);
+      final transaction = row.readTable(driftTransactions);
       return transaction.id;
     }).toList();
 
     // Query to fetch all file paths related to the transaction IDs
-    final filePathResults = await (select(filePaths)
+    final filePathResults = await (select(driftTransactionPhotos)
           ..where((filePath) => filePath.transaction.isIn(transactionIds)))
         .get();
 
     // Map transaction ID to its related file paths
-    final filePathMap = <int, List<FilePath>>{};
+    final filePathMap = <int, List<DriftTransactionPhoto>>{};
     for (final filePath in filePathResults) {
       filePathMap.putIfAbsent(filePath.transaction, () => []).add(filePath);
     }
+    final allProjects = await getProjectsByProfile(profileID);
 
     // Map the results to the DoubleEntry model
     return transactionResults.map((row) {
-      final transaction = row.readTable(transactions);
+      final transaction = row.readTable(driftTransactions);
       final drAccount = row.readTable(drAccounts);
       final crAccount = row.readTable(crAccounts);
 
-      return DoubleEntry(
-        transaction: transaction,
-        drAccount: drAccount,
-        crAccount: crAccount,
-        filePaths: filePathMap[transaction.id] ?? [],
-      );
+      return Tuple5(
+          transaction,
+          drAccount,
+          crAccount,
+          filePathMap[transaction.id] ?? [],
+          allProjects.firstWhereOrNull((p) => p.id == transaction.project));
     }).toList();
   }
 }

@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pursenal/app/extensions/color.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/utils/services/notification_servie.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/repositories/profiles_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -92,7 +93,7 @@ class AppViewmodel extends ChangeNotifier {
     _selectedProfile = value;
 
     if (value != null) {
-      _profilesDriftRepository.setSelectedProfile(value.id);
+      _profilesDriftRepository.setSelectedProfile(value.dbID);
     }
     notifyListeners();
   }

@@ -1,15 +1,16 @@
 import 'package:drift/drift.dart';
-import 'package:pursenal/core/abstracts/base_repository.dart';
+import 'package:pursenal/app/extensions/drift_models.dart';
+import 'package:pursenal/core/abstracts/projects_repository.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/project_status.dart';
-import 'package:pursenal/core/models/project_plan.dart';
+import 'package:pursenal/core/models/domain/project.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
-class ProjectsDriftRepository
-    implements BaseRepository<Project, ProjectsCompanion> {
+class ProjectsDriftRepository implements ProjectsRepository {
   ProjectsDriftRepository(this.db);
   final MyDatabase db;
 
+  @override
   Future<int> insertProject({
     required String name,
     ProjectStatus projectStatus = ProjectStatus.pending,
@@ -21,7 +22,7 @@ class ProjectsDriftRepository
     required List<String> filePaths,
   }) async {
     try {
-      final project = ProjectsCompanion.insert(
+      final project = DriftProjectsCompanion.insert(
         status: projectStatus,
         name: name,
         description: Value(description),
@@ -35,7 +36,7 @@ class ProjectsDriftRepository
 
       if (filePaths.isNotEmpty) {
         for (var f in filePaths) {
-          final fp = ProjectPhotosCompanion.insert(project: p, path: f);
+          final fp = DriftProjectPhotosCompanion.insert(project: p, path: f);
           db.insertProjectPhoto(fp);
         }
       }
@@ -47,6 +48,7 @@ class ProjectsDriftRepository
     }
   }
 
+  @override
   Future<bool> updateProject({
     required int id,
     required String name,
@@ -60,7 +62,7 @@ class ProjectsDriftRepository
   }) async {
     try {
       db.deleteProjectPhotobyProject(id);
-      final project = ProjectsCompanion(
+      final project = DriftProjectsCompanion(
           id: Value(id),
           status: Value(projectStatus),
           name: Value(name),
@@ -73,7 +75,7 @@ class ProjectsDriftRepository
 
       if (filePaths.isNotEmpty) {
         for (var f in filePaths) {
-          final fp = ProjectPhotosCompanion.insert(project: id, path: f);
+          final fp = DriftProjectPhotosCompanion.insert(project: id, path: f);
           db.insertProjectPhoto(fp);
         }
       }
@@ -85,6 +87,7 @@ class ProjectsDriftRepository
     }
   }
 
+  @override
   Future<bool> updateProjectStatus({
     required int id,
     required String name,
@@ -96,7 +99,7 @@ class ProjectsDriftRepository
     DateTime? endDate,
   }) async {
     try {
-      final project = ProjectsCompanion(
+      final project = DriftProjectsCompanion(
           id: Value(id),
           status: Value(projectStatus),
           name: Value(name),
@@ -124,6 +127,7 @@ class ProjectsDriftRepository
     }
   }
 
+  @override
   Future<int> deleteProject(int id, {bool deleteTransactions = false}) async {
     try {
       if (deleteTransactions) {
@@ -139,25 +143,33 @@ class ProjectsDriftRepository
   @override
   Future<Project> getById(int id) async {
     try {
-      return await db.getProjectById(id);
+      final photoPaths =
+          (await db.getProjectPhotosByProject(id)).map((p) => p.path).toList();
+      return (await db.getProjectById(id)).toDomain(photoPaths: photoPaths);
     } catch (e) {
       AppLogger.instance.error("Failed to get project. ${e.toString()}");
       rethrow;
     }
   }
 
+  @override
   Future<List<Project>> getAllProjects(int profile) async {
     try {
-      return await db.getProjectsByProfile(profile);
+      return (await db.getProjectsByProfile(profile))
+          .map((p) => p.toDomain(photoPaths: []))
+          .toList();
     } catch (e) {
       AppLogger.instance.error("Failed to get project. ${e.toString()}");
       rethrow;
     }
   }
 
-  Future<ProjectPlan?> getProjectPlanById(int id) async {
+  @override
+  Future<Project?> getProjectByID(int id) async {
     try {
-      return await db.getProjectPlan(id);
+      final p = await db.getProjectByID(id);
+
+      return p?.item1.toDomain(photoPaths: p.item2);
     } catch (e) {
       AppLogger.instance.error("Failed to get project plan. ${e.toString()}");
       rethrow;

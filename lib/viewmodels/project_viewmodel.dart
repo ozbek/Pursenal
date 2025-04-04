@@ -3,10 +3,11 @@ import 'package:flutter/rendering.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
-import 'package:pursenal/core/models/double_entry.dart';
-import 'package:pursenal/core/models/project_plan.dart';
-import 'package:pursenal/core/repositories/projects_drift_repository.dart';
-import 'package:pursenal/core/repositories/transactions_drift_repository.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/project.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class ProjectViewmodel extends ChangeNotifier {
@@ -15,12 +16,12 @@ class ProjectViewmodel extends ChangeNotifier {
 
   final int projectID;
 
-  ProjectPlan? _projectPlan;
+  Project? _project;
 
   // ignore: unnecessary_getters_setters
-  ProjectPlan? get projectPlan => _projectPlan;
+  Project? get project => _project;
 
-  set projectPlan(ProjectPlan? value) => _projectPlan = value;
+  set project(Project? value) => _project = value;
 
   final Profile _profile;
   Profile get profile => _profile;
@@ -28,7 +29,7 @@ class ProjectViewmodel extends ChangeNotifier {
   LoadingStatus loadingStatus = LoadingStatus.idle;
   String errorText = "";
 
-  List<DoubleEntry> transactions = [];
+  List<Transaction> transactions = [];
   Set<DateTime> fDates = {};
 
   double? headerHeight;
@@ -68,12 +69,12 @@ class ProjectViewmodel extends ChangeNotifier {
 
   Future<void> _getTransactions() async {
     try {
-      if (projectPlan != null) {
+      if (project != null) {
         transactions =
-            await _transactionsDriftRepository.getDoubleEntriesbyProject(
-                profileID: _profile.id, projectID: projectPlan!.project.id);
+            await _transactionsDriftRepository.getTransactionsbyProject(
+                profileID: _profile.dbID, projectID: project!.dbID);
         fDates = transactions.map((t) {
-          return t.transaction.vchDate.copyWith(
+          return t.voucherDate.copyWith(
               hour: 0, minute: 0, second: 0, microsecond: 0, millisecond: 0);
         }).toSet();
       }
@@ -93,8 +94,8 @@ class ProjectViewmodel extends ChangeNotifier {
 
   deleteProject({deleteTransactions = false}) async {
     try {
-      if (_projectPlan != null) {
-        _projectsDriftRepository.deleteProject(_projectPlan!.project.id,
+      if (_project != null) {
+        _projectsDriftRepository.deleteProject(_project!.dbID,
             deleteTransactions: _deleteTransactionsWithProject);
         return true;
       }
@@ -108,12 +109,12 @@ class ProjectViewmodel extends ChangeNotifier {
 
   Future<bool> changeProjectStatus(ProjectStatus status) async {
     try {
-      if (_projectPlan != null) {
-        final p = _projectPlan!.project;
+      if (_project != null) {
+        final p = _project!;
         _projectsDriftRepository.updateProjectStatus(
-            id: p.id,
+            id: p.dbID,
             name: p.name,
-            profile: _profile.id,
+            profile: _profile.dbID,
             projectStatus: status);
         return true;
       }
@@ -133,9 +134,8 @@ class ProjectViewmodel extends ChangeNotifier {
   Future<void> refetchProject() async {
     try {
       loadingStatus = LoadingStatus.loading;
-      _projectPlan =
-          await _projectsDriftRepository.getProjectPlanById(projectID);
-      if (_projectPlan != null && _projectPlan?.project.budget != null) {}
+      _project = await _projectsDriftRepository.getProjectByID(projectID);
+      if (_project != null && _project?.budget != null) {}
 
       loadingStatus = LoadingStatus.completed;
     } catch (e) {

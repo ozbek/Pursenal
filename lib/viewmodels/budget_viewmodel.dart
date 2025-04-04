@@ -5,12 +5,14 @@ import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/models/budget_plan.dart';
-import 'package:pursenal/core/models/daily_total_transaction.dart';
-import 'package:pursenal/core/models/double_entry.dart';
-import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/budgets_drift_repository.dart';
-import 'package:pursenal/core/repositories/transactions_drift_repository.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/budget.dart';
+import 'package:pursenal/core/models/domain/daily_total_transaction.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class BudgetViewmodel extends ChangeNotifier {
@@ -21,18 +23,18 @@ class BudgetViewmodel extends ChangeNotifier {
   BudgetViewmodel({
     required MyDatabase db,
     required Profile profile,
-    required BudgetPlan budgetPlan,
+    required Budget budget,
   })  : _profile = profile,
-        _budgetPlan = budgetPlan,
+        _budget = budget,
         _accountsDriftRepository = AccountsDriftRepository(db),
         _transactionsDriftRepository = TransactionsDriftRepository(db),
         _budgetsDriftRepository = BudgetsDriftRepository(db);
 
   LoadingStatus loadingStatus = LoadingStatus.idle;
 
-  BudgetPlan _budgetPlan;
+  Budget _budget;
   // ignore: unnecessary_getters_setters
-  BudgetPlan get budgetPlan => _budgetPlan;
+  Budget get budget => _budget;
 
   List<DailyTotalTransaction> _dailyTotalTransactions = [];
 
@@ -47,13 +49,13 @@ class BudgetViewmodel extends ChangeNotifier {
   final List<Account> _funds = [];
   List<Account> get funds => _funds;
 
-  set budgetPlan(BudgetPlan value) => _budgetPlan = value;
+  set budget(Budget value) => _budget = value;
 
   final Profile _profile;
 
   String errorText = "";
 
-  List<DoubleEntry> _transactions = [];
+  List<Transaction> _transactions = [];
 
   List<Account> expenses = [];
   List<Account> incomes = [];
@@ -100,8 +102,7 @@ class BudgetViewmodel extends ChangeNotifier {
   refetchBudget() async {
     try {
       loadingStatus = LoadingStatus.loading;
-      budgetPlan = await _budgetsDriftRepository
-          .getBudgetPlanByID(_budgetPlan.budget.id);
+      budget = await _budgetsDriftRepository.getById(_budget.dbID);
       notifyListeners();
       init();
     } catch (e) {
@@ -113,21 +114,21 @@ class BudgetViewmodel extends ChangeNotifier {
 
   getAccounts() async {
     expenses =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.id, 5);
+        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 5);
     incomes =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.id, 4);
+        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 4);
 
     int accType = 0;
     do {
       funds.addAll(await _accountsDriftRepository.getAccountsByAccType(
-          _profile.id, accType));
+          _profile.dbID, accType));
       accType++;
     } while (fundingAccountIDs.contains(accType));
 
     _expenses =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.id, 5);
+        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 5);
     _incomes =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.id, 4);
+        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 4);
 
     notifyListeners();
   }
@@ -139,7 +140,7 @@ class BudgetViewmodel extends ChangeNotifier {
     );
     DateTime endDate = DateTime.now();
 
-    switch (_budgetPlan.budget.interval) {
+    switch (_budget.interval) {
       case BudgetInterval.weekly:
         startDate = endDate.subtract(Duration(days: endDate.weekday - 1));
         break;
@@ -154,16 +155,16 @@ class BudgetViewmodel extends ChangeNotifier {
         break;
     }
     _transactions = []; // Reset transactions
-    _transactions = await _transactionsDriftRepository.getDoubleEntries(
-        startDate: startDate, endDate: endDate, profileId: _profile.id);
+    _transactions = await _transactionsDriftRepository.getTransactions(
+        startDate: startDate, endDate: endDate, profileId: _profile.dbID);
     _transactions = _transactions
         .where((t) =>
-            budgetPlan.funds
-                .any((f) => f.id == t.crAccount.id || f.id == t.drAccount.id) &&
-            (budgetPlan.expenses.keys.any(
-                    (f) => f.id == t.crAccount.id || f.id == t.drAccount.id) ||
-                budgetPlan.incomes.keys.any(
-                    (f) => f.id == t.crAccount.id || f.id == t.drAccount.id)))
+            budget.funds.any((f) =>
+                f.dbID == t.crAccount.dbID || f.dbID == t.drAccount.dbID) &&
+            (budget.expenses.keys.any((f) =>
+                    f.dbID == t.crAccount.dbID || f.dbID == t.drAccount.dbID) ||
+                budget.incomes.keys.any((f) =>
+                    f.dbID == t.crAccount.dbID || f.dbID == t.drAccount.dbID)))
         .toList()
         .reversed
         .toList();
@@ -188,8 +189,8 @@ class BudgetViewmodel extends ChangeNotifier {
   }
 
   _calculateDifference() {
-    bIncomeTotal = _budgetPlan.incomes.values.sum;
-    bExpenseTotal = _budgetPlan.expenses.values.sum;
+    bIncomeTotal = _budget.incomes.values.sum;
+    bExpenseTotal = _budget.expenses.values.sum;
     bDifference = bIncomeTotal - bExpenseTotal.abs();
     notifyListeners();
   }
@@ -208,38 +209,37 @@ class BudgetViewmodel extends ChangeNotifier {
     for (var dt in rangeDates) {
       final dtt = _dailyTotalTransactions
           .firstWhereOrNull((x) => x.dateTime.isSameDayAs(dt));
-      List<DoubleEntry> doubleEntries = _transactions
-          .where((t) => t.transaction.vchDate.isSameDayAs(dt))
-          .toList();
-      for (var d in doubleEntries) {
-        switch (d.crAccount.accType) {
+      List<Transaction> doubleEntries =
+          _transactions.where((t) => t.voucherDate.isSameDayAs(dt)).toList();
+      for (var t in doubleEntries) {
+        switch (t.crAccount.accountType) {
           case 4:
-            incomeTotals.update(d.crAccount, (amount) {
-              return amount + d.transaction.amount;
+            incomeTotals.update(t.crAccount, (amount) {
+              return amount + t.amount;
             });
-            cumIncomeTotal += d.transaction.amount;
+            cumIncomeTotal += t.amount;
             break;
 
           case 5:
-            expenseTotals.update(d.crAccount, (amount) {
-              return amount - d.transaction.amount;
+            expenseTotals.update(t.crAccount, (amount) {
+              return amount - t.amount;
             });
-            cumExpenseTotal -= d.transaction.amount;
+            cumExpenseTotal -= t.amount;
             break;
         }
-        switch (d.drAccount.accType) {
+        switch (t.drAccount.accountType) {
           case 5:
-            expenseTotals.update(d.drAccount, (amount) {
-              return amount - d.transaction.amount;
+            expenseTotals.update(t.drAccount, (amount) {
+              return amount - t.amount;
             });
-            cumExpenseTotal += d.transaction.amount;
+            cumExpenseTotal += t.amount;
             break;
 
           case 4:
-            incomeTotals.update(d.drAccount, (amount) {
-              return amount + d.transaction.amount;
+            incomeTotals.update(t.drAccount, (amount) {
+              return amount + t.amount;
             });
-            cumIncomeTotal -= d.transaction.amount;
+            cumIncomeTotal -= t.amount;
             break;
         }
       }
@@ -268,11 +268,11 @@ class BudgetViewmodel extends ChangeNotifier {
     try {
       if (dailyTotalTransactions.isNotEmpty) {
         int noOfDays = dailyTotalTransactions.length;
-        int totalDays = budgetPlan.budget.interval == BudgetInterval.monthly
+        int totalDays = budget.interval == BudgetInterval.monthly
             ? 30
-            : budgetPlan.budget.interval == BudgetInterval.weekly
+            : budget.interval == BudgetInterval.weekly
                 ? 7
-                : budgetPlan.budget.interval == BudgetInterval.annual
+                : budget.interval == BudgetInterval.annual
                     ? 365
                     : 30;
 
@@ -294,7 +294,7 @@ class BudgetViewmodel extends ChangeNotifier {
 
   Future<bool> deleteBudget() async {
     try {
-      await _budgetsDriftRepository.delete(_budgetPlan.budget.id);
+      await _budgetsDriftRepository.delete(_budget.dbID);
       return true;
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');

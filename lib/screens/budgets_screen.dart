@@ -6,6 +6,7 @@ import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/budget_entry_screen.dart';
 import 'package:pursenal/screens/budget_screen.dart';
 import 'package:pursenal/viewmodels/budgets_viewmodel.dart';
@@ -128,10 +129,10 @@ class BudgetsList extends StatelessWidget {
               if (viewmodel.searchLoadingStatus == LoadingStatus.completed) {
                 return ListView.builder(
                   controller: viewmodel.scrollController,
-                  itemCount: viewmodel.fBudgetPlans.length,
+                  itemCount: viewmodel.fBudgets.length,
                   padding: const EdgeInsets.only(bottom: 70),
                   itemBuilder: (context, index) {
-                    final b = viewmodel.fBudgetPlans[index];
+                    final b = viewmodel.fBudgets[index];
                     final difference = b.expenses.values.toList().sum +
                         b.incomes.values.toList().sum;
                     return SizedBox(
@@ -145,7 +146,7 @@ class BudgetsList extends StatelessWidget {
                                 MaterialPageRoute(
                                   builder: (context) => BudgetScreen(
                                     profile: viewmodel.profile,
-                                    budgetPlan: b,
+                                    budget: b,
                                   ),
                                 )).then((_) => viewmodel.init());
                           },
@@ -160,7 +161,7 @@ class BudgetsList extends StatelessWidget {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        b.budget.name,
+                                        b.name,
                                         style: Theme.of(context)
                                             .textTheme
                                             .headlineSmall,
@@ -169,15 +170,15 @@ class BudgetsList extends StatelessWidget {
                                     ),
                                     Chip(
                                         label: Text(
-                                      b.budget.interval.label,
+                                      b.interval.label,
                                       overflow: TextOverflow.ellipsis,
                                     ))
                                   ],
                                 ),
                                 Visibility(
-                                  visible: b.budget.details.isNotEmpty,
+                                  visible: b.details.isNotEmpty,
                                   child: Text(
-                                    b.budget.details,
+                                    b.details,
                                     overflow: TextOverflow.ellipsis,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,

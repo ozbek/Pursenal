@@ -1,15 +1,17 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pursenal/app/extensions/datetime.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/utils/exporter.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
-import 'package:pursenal/core/models/double_entry.dart';
-import 'package:pursenal/core/models/ledger.dart';
-import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/transactions_drift_repository.dart';
+import 'package:pursenal/core/models/domain/ledger.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
@@ -43,16 +45,16 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
 
   String errorText = "";
 
-  List<DoubleEntry> _transactions = [];
+  List<Transaction> _transactions = [];
 
-  List<DoubleEntry> _fTransactions = [];
+  List<Transaction> _fTransactions = [];
 
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _endDate = DateTime.now();
   DateTime get startDate => _startDate;
   DateTime get endDate => _endDate;
-  List<DoubleEntry> get transactions => _transactions;
-  List<DoubleEntry> get fTransactions => _fTransactions;
+  List<Transaction> get transactions => _transactions;
+  List<Transaction> get fTransactions => _fTransactions;
 
   Set<VoucherType> voucherTypes = {};
   final Set<VoucherType> _voucherTypeFilters = {};
@@ -101,7 +103,7 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
 
   Future<void> _getAccount() async {
     try {
-      _account = await _accountsDriftRepository.getById(_account.id);
+      _account = await _accountsDriftRepository.getById(_account.dbID);
       AppLogger.instance.info("Fund loaded from database");
     } catch (e) {
       AppLogger.instance.error("Error loading Fund ${e.toString()}");
@@ -111,7 +113,7 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
 
   refetchAccount() async {
     try {
-      _account = await _accountsDriftRepository.getById(_account.id);
+      _account = await _accountsDriftRepository.getById(_account.dbID);
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
       errorText = 'Error: ';
@@ -137,20 +139,20 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
 
   _getOpeningBalance() async {
     openBal = await _balancesDriftRepository.getClosingBalance(
-        account: _account.id,
+        account: _account.dbID,
         closingDate: _startDate.subtract(const Duration(days: 1)));
     notifyListeners();
   }
 
   _getClosingBalance() async {
     closeBal = await _balancesDriftRepository.getClosingBalance(
-        account: _account.id, closingDate: _endDate);
+        account: _account.dbID, closingDate: _endDate);
     notifyListeners();
   }
 
   _getAllLedgers() async {
     allLedgers =
-        await _accountsDriftRepository.getLedgers(profileId: profile.id);
+        await _accountsDriftRepository.getLedgers(profileId: profile.dbID);
     notifyListeners();
   }
 
@@ -186,10 +188,10 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
     }
 
     if (oAcc != null) {
-      if (_otherAccountFilters.contains(oAcc.id)) {
-        _otherAccountFilters.remove(oAcc.id);
+      if (_otherAccountFilters.contains(oAcc.dbID)) {
+        _otherAccountFilters.remove(oAcc.dbID);
       } else {
-        _otherAccountFilters.add(oAcc.id);
+        _otherAccountFilters.add(oAcc.dbID);
       }
     }
 
@@ -210,17 +212,17 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
       _fTransactions = List.from(_transactions);
 
       _fTransactions = fTransactions
-          .where((f) => !voucherTypeFilters.contains(f.transaction.vchType))
+          .where((f) => !voucherTypeFilters.contains(f.voucherType))
           .where((f) =>
-              (f.crAccount.id == _account.id &&
-                  !_otherAccountFilters.contains(f.drAccount.id)) ||
-              (f.drAccount.id == _account.id &&
-                  !_otherAccountFilters.contains(f.crAccount.id)))
-          .where((d) => d.transaction.vchDate.isBetween(_startDate, _endDate))
+              (f.crAccount.dbID == _account.dbID &&
+                  !_otherAccountFilters.contains(f.drAccount.dbID)) ||
+              (f.drAccount.dbID == _account.dbID &&
+                  !_otherAccountFilters.contains(f.crAccount.dbID)))
+          .where((d) => d.voucherDate.isBetween(_startDate, _endDate))
           .where((a) => a.toString().contains(_searchTerm))
           .toList();
       fDates = _fTransactions.map((t) {
-        return t.transaction.vchDate.copyWith(
+        return t.voucherDate.copyWith(
             hour: 0, minute: 0, second: 0, microsecond: 0, millisecond: 0);
       }).toSet();
       searchLoadingStatus = LoadingStatus.completed;
@@ -235,7 +237,7 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
 
   _populateVoucherTypes() {
     // _voucherTypeFilters = {};
-    voucherTypes = _transactions.map((t) => t.transaction.vchType).toSet();
+    voucherTypes = _transactions.map((t) => t.voucherType).toSet();
     notifyListeners();
   }
 
@@ -243,10 +245,10 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
     // _otherAccountFilters = {};
 
     for (var t in _transactions) {
-      if (t.drAccount.id != _account.id) {
+      if (t.drAccount.dbID != _account.dbID) {
         otherAccounts.add(t.drAccount);
       }
-      if (t.crAccount.id != _account.id) {
+      if (t.crAccount.dbID != _account.dbID) {
         otherAccounts.add(t.crAccount);
       }
     }
@@ -254,12 +256,11 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
   }
 
   Future<void> _getTransactions() async {
-    _transactions =
-        await _transactionsDriftRepository.getDoubleEntriesbyAccount(
+    _transactions = await _transactionsDriftRepository.getTransactionsbyAccount(
       startDate: _startDate,
       endDate: _endDate,
-      profileId: _profile.id,
-      accountId: _account.id,
+      profileId: _profile.dbID,
+      accountId: _account.dbID,
       reversed: false,
     );
 

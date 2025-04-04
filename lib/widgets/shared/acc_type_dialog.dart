@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pursenal/core/models/domain/account_type.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/widgets/shared/acc_type_icon.dart';
 
-class AccTypeDialog extends StatelessWidget {
-  const AccTypeDialog({
+class AccountTypeDialog extends StatelessWidget {
+  const AccountTypeDialog({
     super.key,
     required this.profile,
     required this.initFn,
-    required this.accTypes,
+    required this.accountTypes,
   });
 
   final Profile profile;
   final Function initFn;
-  final List<AccType> accTypes;
+  final List<AccountType> accountTypes;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class AccTypeDialog extends StatelessWidget {
       title: Text(AppLocalizations.of(context)!
           .select(AppLocalizations.of(context)!.accountType)),
       children: [
-        ...accTypes.map(
+        ...accountTypes.map(
           (a) => ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -34,7 +35,7 @@ class AccTypeDialog extends StatelessWidget {
                     ?.copyWith(fontSize: 24)),
             minTileHeight: 50,
             minLeadingWidth: 28,
-            leading: Icon(getAccTypeIcon(a.id)),
+            leading: Icon(getAccTypeIcon(a.dbID)),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -42,7 +43,7 @@ class AccTypeDialog extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => AccountEntryScreen(
                     profile: profile,
-                    accType: a,
+                    accountType: a,
                   ),
                 ),
               ).then((_) {

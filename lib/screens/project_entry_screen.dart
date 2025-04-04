@@ -6,7 +6,8 @@ import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
-import 'package:pursenal/core/models/project_plan.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/project.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/project_entry_viewmodel.dart';
 import 'package:pursenal/widgets/shared/images_selector.dart';
@@ -17,19 +18,19 @@ import 'package:pursenal/widgets/shared/the_date_picker.dart';
 class ProjectEntryScreen extends StatelessWidget {
   const ProjectEntryScreen({
     super.key,
-    this.projectPlan,
+    this.project,
     required this.profile,
   });
-  final ProjectPlan? projectPlan;
+  final Project? project;
   final Profile profile;
 
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<MyDatabase>(context);
     return ChangeNotifierProvider(
-      create: (context) => ProjectEntryViewmodel(
-          db: db, projectPlan: projectPlan, profile: profile)
-        ..init(),
+      create: (context) =>
+          ProjectEntryViewmodel(db: db, project: project, profile: profile)
+            ..init(),
       builder: (context, child) => Scaffold(
         appBar: AppBar(title: Text(AppLocalizations.of(context)!.projectForm)),
         body: Consumer<ProjectEntryViewmodel>(
@@ -42,7 +43,7 @@ class ProjectEntryScreen extends StatelessWidget {
               errorText: viewmodel.errorText,
               widget: ProjectForm(
                 viewmodel: viewmodel,
-                isNew: projectPlan == null,
+                isNew: project == null,
               ),
             );
           },

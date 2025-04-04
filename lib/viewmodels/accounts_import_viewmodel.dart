@@ -2,9 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/global/default_accounts.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/wallets_drift_repository.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/wallets_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -112,15 +113,15 @@ class AccountsImportViewmodel extends ChangeNotifier {
             openBal: cashOpenBalance,
             openDate: now.copyWith(month: 1, day: 1),
             accType: 0,
-            profile: _profile.id);
+            profile: _profile.dbID);
         await _balancesDriftRepository.insertBalance(
             account: ac, amount: cashOpenBalance);
         await _walletsDriftRepository.insertWallet(account: ac);
 
         await _accountsDriftRepository.insertAccountsBulk(
-            selectedExpense.toList(), 5, _profile.id, accountOpenDate);
+            selectedExpense.toList(), 5, _profile.dbID, accountOpenDate);
         await _accountsDriftRepository.insertAccountsBulk(
-            selectedIncome.toList(), 4, _profile.id, accountOpenDate);
+            selectedIncome.toList(), 4, _profile.dbID, accountOpenDate);
       } catch (e) {
         errorText = "Failed saving accounts";
         loadingStatus = LoadingStatus.error;

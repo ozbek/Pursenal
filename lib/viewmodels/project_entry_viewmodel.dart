@@ -3,8 +3,10 @@ import 'package:pursenal/app/extensions/datetime.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
-import 'package:pursenal/core/models/project_plan.dart';
-import 'package:pursenal/core/repositories/projects_drift_repository.dart';
+import 'package:pursenal/core/models/domain/budget.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/project.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class ProjectEntryViewmodel extends ChangeNotifier {
@@ -14,18 +16,14 @@ class ProjectEntryViewmodel extends ChangeNotifier {
     required MyDatabase db,
     required Profile profile,
     Project? project,
-    ProjectPlan? projectPlan,
   })  : _projectsDriftRepository = ProjectsDriftRepository(db),
         _project = project,
-        _projectPlan = projectPlan,
         _profile = profile;
   LoadingStatus loadingStatus = LoadingStatus.idle;
   final Profile _profile;
   Project? _project;
 
   Project? get project => _project;
-  // ignore: prefer_final_fields
-  ProjectPlan? _projectPlan;
 
   final List<Project> _projects = [];
   String _projectName = "";
@@ -95,15 +93,15 @@ class ProjectEntryViewmodel extends ChangeNotifier {
   }
 
   set project(Project? project) {
-    if (_projectPlan != null) {
+    if (_project != null) {
       loadingStatus = LoadingStatus.loading;
 
-      _projectName = _projectPlan!.project.name;
-      _description = _projectPlan!.project.description;
-      _startDate = _projectPlan!.project.startDate;
-      _endDate = _projectPlan!.project.endDate;
-      _projectStatus = _projectPlan!.project.status;
-      mediaPaths = _projectPlan!.photos.map((p) => p.path).toList();
+      _projectName = _project!.name;
+      _description = _project!.description;
+      _startDate = _project!.startDate;
+      _endDate = _project!.endDate;
+      _projectStatus = _project!.status;
+      mediaPaths = _project!.photoPaths.map((p) => p).toList();
 
       loadingStatus = LoadingStatus.completed;
       notifyListeners();
@@ -170,11 +168,11 @@ class ProjectEntryViewmodel extends ChangeNotifier {
     if (_validate()) {
       loadingStatus = LoadingStatus.submitting;
       notifyListeners();
-      if (_projectPlan == null) {
+      if (_project == null) {
         int newPro = await _projectsDriftRepository.insertProject(
             name: _projectName,
-            budget: _budget?.id,
-            profile: _profile.id,
+            budget: _budget?.dbID,
+            profile: _profile.dbID,
             description: _description,
             startDate: _startDate,
             endDate: _endDate,
@@ -183,10 +181,10 @@ class ProjectEntryViewmodel extends ChangeNotifier {
         _project = await _projectsDriftRepository.getById(newPro);
       } else {
         await _projectsDriftRepository.updateProject(
-            profile: _profile.id,
-            id: _projectPlan!.project.id,
+            profile: _profile.dbID,
+            id: _project!.dbID,
             name: _projectName,
-            budget: _budget?.id,
+            budget: _budget?.dbID,
             description: _description,
             startDate: _startDate,
             endDate: _endDate,

@@ -4,7 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/repositories/profiles_drift_repository.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -202,7 +203,7 @@ class ProfileEntryViewmodel extends ChangeNotifier {
         _profile = await _profilesDriftRepository.getById(newPro);
       } else {
         await _profilesDriftRepository.updateProfile(
-          id: _profile!.id,
+          id: _profile!.dbID,
           name: _profileName,
           alias: _nickName,
           currency: _currency!,

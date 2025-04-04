@@ -5,6 +5,7 @@ import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/transactions_viewmodel.dart';
 import 'package:pursenal/widgets/shared/transaction_options_dialog.dart';
@@ -225,7 +226,7 @@ List<Widget> createFilterMenu(
       runSpacing: 4,
       children: [
         ...viewmodel.fundCriterias.toList().map((v) => FilterChip(
-            selected: !viewmodel.fundFilters.contains(v.id),
+            selected: !viewmodel.fundFilters.contains(v.dbID),
             label: Text(v.name),
             onSelected: (s) {
               viewmodel.addToFilter(fAcc: v);
@@ -252,7 +253,7 @@ List<Widget> createFilterMenu(
       runSpacing: 4,
       children: [
         ...viewmodel.otherAccounts.toList().map((v) => FilterChip(
-            selected: !viewmodel.otherAccountFilters.contains(v.id),
+            selected: !viewmodel.otherAccountFilters.contains(v.dbID),
             label: Text(v.name),
             onSelected: (s) {
               viewmodel.addToFilter(oAcc: v);

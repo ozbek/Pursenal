@@ -26,3 +26,11 @@ const List<int> fundingAccountIDs = [
   loanTypeID,
   cCardTypeID
 ];
+const List<int> balanceAccountIDs = [
+  cashTypeID,
+  bankTypeID,
+  loanTypeID,
+  cCardTypeID,
+  advanceTypeID,
+  peopleTypeID,
+];

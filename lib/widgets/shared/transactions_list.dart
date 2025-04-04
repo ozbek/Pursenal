@@ -5,10 +5,11 @@ import 'package:pursenal/app/global/date_formats.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/app/extensions/datetime.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
-import 'package:pursenal/core/models/double_entry.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/screens/transaction_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/widgets/shared/transaction_tile2.dart';
@@ -25,7 +26,7 @@ class TransactionsList extends StatelessWidget {
 
   final ScrollController? scrollController;
   final Set<DateTime> fDates;
-  final List<DoubleEntry> fTransactions;
+  final List<Transaction> fTransactions;
   final Profile profile;
   final Function initFn;
   final Account? account;
@@ -35,7 +36,7 @@ class TransactionsList extends StatelessWidget {
     final appViewmodel = Provider.of<AppViewmodel>(context);
     final bool hasAccount = account != null;
     final bool isColorful = !hasAccount ||
-        (hasAccount && fundingAccountIDs.contains(account!.accType));
+        (hasAccount && fundingAccountIDs.contains(account!.accountType));
     return ListView.builder(
       cacheExtent: 20,
       controller: scrollController,
@@ -43,19 +44,19 @@ class TransactionsList extends StatelessWidget {
       itemCount: fDates.length,
       itemBuilder: (context, index) {
         final vchDate = fDates.elementAt(index);
-        final todayTransactions = fTransactions
-            .where((tr) => tr.transaction.vchDate.isSameDayAs(vchDate));
+        final todayTransactions =
+            fTransactions.where((tr) => tr.voucherDate.isSameDayAs(vchDate));
 
         int totalPayments = 0;
         int totalReceipts = 0;
 
         for (var t in todayTransactions.where((a) =>
-            !(fundingAccountIDs.contains(a.crAccount.accType) &&
-                fundingAccountIDs.contains(a.drAccount.accType)))) {
-          if (t.transaction.vchType == VoucherType.payment) {
-            totalPayments += t.transaction.amount;
-          } else if (t.transaction.vchType == VoucherType.receipt) {
-            totalReceipts += t.transaction.amount;
+            !(fundingAccountIDs.contains(a.crAccount.accountType) &&
+                fundingAccountIDs.contains(a.drAccount.accountType)))) {
+          if (t.voucherType == VoucherType.payment) {
+            totalPayments += t.amount;
+          } else if (t.voucherType == VoucherType.receipt) {
+            totalReceipts += t.amount;
           }
         }
 
@@ -148,37 +149,39 @@ class TransactionsList extends StatelessWidget {
                 ),
               ),
               ...todayTransactions.map((t) {
-                final int amount = t.transaction.amount;
+                final int amount = t.amount;
 
                 final bool isTransfer =
-                    fundingAccountIDs.contains(t.drAccount.accType) &&
-                        fundingAccountIDs.contains(t.crAccount.accType) &&
+                    fundingAccountIDs.contains(t.drAccount.accountType) &&
+                        fundingAccountIDs.contains(t.crAccount.accountType) &&
                         !hasAccount;
 
                 final Account acc = hasAccount
                     ? [t.crAccount, t.drAccount]
-                        .firstWhere((a) => a.id != account!.id)
-                    : (t.transaction.vchType == VoucherType.payment
+                        .firstWhere((a) => a.dbID != account!.dbID)
+                    : (t.voucherType == VoucherType.payment
                         ? t.drAccount
                         : t.crAccount);
 
                 final bool isNegative = !isTransfer &&
-                    ((t.transaction.vchType == VoucherType.payment &&
-                            (!hasAccount || account!.id == t.crAccount.id)) ||
-                        (t.transaction.vchType == VoucherType.receipt &&
-                            t.crAccount.id != acc.id &&
-                            fundingAccountIDs.contains(t.crAccount.accType)));
+                    ((t.voucherType == VoucherType.payment &&
+                            (!hasAccount ||
+                                account!.dbID == t.crAccount.dbID)) ||
+                        (t.voucherType == VoucherType.receipt &&
+                            t.crAccount.dbID != acc.dbID &&
+                            fundingAccountIDs
+                                .contains(t.crAccount.accountType)));
 
                 final String accountName = acc.name;
                 final String? fundName = hasAccount
                     ? null
-                    : (t.transaction.vchType == VoucherType.receipt
+                    : (t.voucherType == VoucherType.receipt
                         ? t.drAccount.name
                         : t.crAccount.name);
                 return TransactionTile2(
                   isColorful: isColorful,
                   currency: profile.currency,
-                  vchDate: t.transaction.vchDate,
+                  vchDate: t.voucherDate,
                   isNegative: isNegative,
                   accountName: accountName,
                   isTransfer: isTransfer,
@@ -187,7 +190,7 @@ class TransactionsList extends StatelessWidget {
                     Navigator.of(context)
                         .push(MaterialPageRoute(
                       builder: (context) => TransactionScreen(
-                        doubleEntry: t,
+                        transaction: t,
                         profile: profile,
                       ),
                     ))
@@ -195,9 +198,9 @@ class TransactionsList extends StatelessWidget {
                       initFn();
                     });
                   },
-                  vchType: t.transaction.vchType,
-                  transactionID: t.transaction.id,
-                  narr: t.transaction.narr,
+                  vchType: t.voucherType,
+                  transactionID: t.dbID,
+                  narr: t.narration,
                   fundName: fundName,
                 );
               })

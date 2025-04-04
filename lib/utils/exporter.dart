@@ -8,10 +8,10 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pursenal/app/global/date_formats.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
-import 'package:pursenal/core/models/double_entry.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:path/path.dart' as path;
 import 'package:pursenal/utils/db_utils.dart';
@@ -26,7 +26,7 @@ mixin Exporter {
   }
 
   static Future<String> genTransactionsPDF({
-    required List<DoubleEntry> transactions,
+    required List<Transaction> transactions,
     required DateTime startDate,
     required DateTime endDate,
     required Currency currency,
@@ -134,12 +134,12 @@ mixin Exporter {
                           padding: const pw.EdgeInsets.all(8.0),
                           child: pw.Text(
                               textAlign: pw.TextAlign.center,
-                              defaultDate.format(t.transaction.vchDate),
+                              defaultDate.format(t.voucherDate),
                               style: pw.TextStyle(font: ttf)),
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(t.transaction.id.toString(),
+                          child: pw.Text(t.dbID.toString(),
                               textAlign: pw.TextAlign.center,
                               style: pw.TextStyle(font: ttf)),
                         ),
@@ -151,7 +151,7 @@ mixin Exporter {
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
                             children: [
                               pw.Text(
-                                  t.transaction.vchType == VoucherType.payment
+                                  t.voucherType == VoucherType.payment
                                       ? t.drAccount.name
                                       : t.crAccount.name,
                                   overflow: pw.TextOverflow.clip,
@@ -162,7 +162,7 @@ mixin Exporter {
                                       fontSize: 12,
                                       color: PdfColors.black)),
                               pw.Text(
-                                  t.transaction.vchType == VoucherType.receipt
+                                  t.voucherType == VoucherType.receipt
                                       ? "Received in ${t.drAccount.name}"
                                       : "Paid from ${t.crAccount.name}",
                                   overflow: pw.TextOverflow.clip,
@@ -171,7 +171,7 @@ mixin Exporter {
                                       font: ttf,
                                       fontSize: 11,
                                       color: PdfColors.grey800)),
-                              pw.Text(t.transaction.narr,
+                              pw.Text(t.narration,
                                   style: pw.TextStyle(
                                       font: ttf,
                                       fontSize: 10,
@@ -184,19 +184,17 @@ mixin Exporter {
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
                           child: pw.Text(
-                            (t.transaction.amount *
-                                    (t.transaction.vchType ==
-                                            VoucherType.payment
+                            (t.amount *
+                                    (t.voucherType == VoucherType.payment
                                         ? -1
                                         : 1))
                                 .toCurrencyStringWSymbol(currency),
                             textAlign: pw.TextAlign.right,
                             style: pw.TextStyle(
                                 font: ttf,
-                                color:
-                                    t.transaction.vchType == VoucherType.payment
-                                        ? PdfColors.red
-                                        : PdfColors.black),
+                                color: t.voucherType == VoucherType.payment
+                                    ? PdfColors.red
+                                    : PdfColors.black),
                           ),
                         ),
                       ],
@@ -255,7 +253,7 @@ mixin Exporter {
   }
 
   static Future<String> genLTransactionsPDF({
-    required List<DoubleEntry> transactions,
+    required List<Transaction> transactions,
     required DateTime startDate,
     required DateTime endDate,
     required int openingBalance,
@@ -406,12 +404,12 @@ mixin Exporter {
                           padding: const pw.EdgeInsets.all(8.0),
                           child: pw.Text(
                               textAlign: pw.TextAlign.center,
-                              defaultDate.format(t.transaction.vchDate),
+                              defaultDate.format(t.voucherDate),
                               style: pw.TextStyle(font: ttf)),
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(t.transaction.id.toString(),
+                          child: pw.Text(t.dbID.toString(),
                               textAlign: pw.TextAlign.center,
                               style: pw.TextStyle(font: ttf)),
                         ),
@@ -423,7 +421,7 @@ mixin Exporter {
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
                             children: [
                               pw.Text(
-                                  t.crAccount.id == account.id
+                                  t.crAccount.dbID == account.dbID
                                       ? t.drAccount.name
                                       : t.crAccount.name,
                                   overflow: pw.TextOverflow.clip,
@@ -433,7 +431,7 @@ mixin Exporter {
                                       fontWeight: pw.FontWeight.bold,
                                       fontSize: 12,
                                       color: PdfColors.black)),
-                              pw.Text(t.transaction.narr,
+                              pw.Text(t.narration,
                                   style: pw.TextStyle(
                                       font: ttf,
                                       fontSize: 10,
@@ -446,13 +444,15 @@ mixin Exporter {
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
                           child: pw.Text(
-                            (t.transaction.amount *
+                            (t.amount *
                                     ((DBUtils.isLiabilityOrIncome(
-                                                    account.accType) &&
-                                                t.drAccount.id == account.id) ||
+                                                    account.accountType) &&
+                                                t.drAccount.dbID ==
+                                                    account.dbID) ||
                                             (DBUtils.isAssetOrExpense(
-                                                    account.accType) &&
-                                                t.crAccount.id == account.id)
+                                                    account.accountType) &&
+                                                t.crAccount.dbID ==
+                                                    account.dbID)
                                         ? -1
                                         : 1))
                                 .toCurrencyStringWSymbol(currency),
@@ -551,7 +551,7 @@ mixin Exporter {
   }
 
   static Future<String> genTransactionsXLSX({
-    required List<DoubleEntry> transactions,
+    required List<Transaction> transactions,
     required DateTime startDate,
     required DateTime endDate,
     required Currency currency,
@@ -604,13 +604,14 @@ mixin Exporter {
       }
 
       for (int i = 0; i < transactions.length; i++) {
-        final d = transactions[i];
+        final t = transactions[i];
 
-        final isTransfer = (fundingAccountIDs.contains(d.crAccount.accType) &&
-            fundingAccountIDs.contains(d.drAccount.accType));
-        final isPayment = d.transaction.vchType == VoucherType.payment;
+        final isTransfer =
+            (fundingAccountIDs.contains(t.crAccount.accountType) &&
+                fundingAccountIDs.contains(t.drAccount.accountType));
+        final isPayment = t.voucherType == VoucherType.payment;
 
-        final vchDate = d.transaction.vchDate;
+        final vchDate = t.voucherDate;
         List<CellValue> row = [
           DateTimeCellValue(
               day: vchDate.day,
@@ -618,19 +619,18 @@ mixin Exporter {
               year: vchDate.year,
               hour: vchDate.hour,
               minute: vchDate.minute),
-          TextCellValue(d.transaction.id.toString()),
+          TextCellValue(t.dbID.toString()),
           TextCellValue(isTransfer
               ? "Transfer"
               : isPayment
                   ? VoucherType.payment.label
                   : VoucherType.receipt.label),
-          TextCellValue(!isPayment ? d.drAccount.name : d.crAccount.name),
-          TextCellValue(isPayment ? d.drAccount.name : d.crAccount.name),
-          TextCellValue(d.transaction.refNo),
-          TextCellValue(d.transaction.narr),
+          TextCellValue(!isPayment ? t.drAccount.name : t.crAccount.name),
+          TextCellValue(isPayment ? t.drAccount.name : t.crAccount.name),
+          TextCellValue(t.refNo),
+          TextCellValue(t.narration),
           DoubleCellValue(
-              (d.transaction.amount * ((!isTransfer && isPayment) ? -1 : 1))
-                  .toCurrency()),
+              (t.amount * ((!isTransfer && isPayment) ? -1 : 1)).toCurrency()),
         ];
 
         sheet.appendRow(row);
@@ -693,7 +693,7 @@ mixin Exporter {
   }
 
   static Future<String> genLTransactionsXLSX({
-    required List<DoubleEntry> transactions,
+    required List<Transaction> transactions,
     required DateTime startDate,
     required DateTime endDate,
     required int openingBalance,
@@ -787,18 +787,19 @@ mixin Exporter {
       }
 
       for (int i = 0; i < transactions.length; i++) {
-        final d = transactions[i];
+        final t = transactions[i];
 
-        final isTransfer = (fundingAccountIDs.contains(d.crAccount.accType) &&
-            fundingAccountIDs.contains(d.drAccount.accType));
-        final isPayment = d.transaction.vchType == VoucherType.payment;
+        final isTransfer =
+            (fundingAccountIDs.contains(t.crAccount.accountType) &&
+                fundingAccountIDs.contains(t.drAccount.accountType));
+        final isPayment = t.voucherType == VoucherType.payment;
 
-        final isNegative = (DBUtils.isLiabilityOrIncome(account.accType) &&
-                d.drAccount.id == account.id) ||
-            (DBUtils.isAssetOrExpense(account.accType) &&
-                d.crAccount.id == account.id);
+        final isNegative = (DBUtils.isLiabilityOrIncome(account.accountType) &&
+                t.drAccount.dbID == account.dbID) ||
+            (DBUtils.isAssetOrExpense(account.accountType) &&
+                t.crAccount.dbID == account.dbID);
 
-        final vchDate = d.transaction.vchDate;
+        final vchDate = t.voucherDate;
         List<CellValue> row = [
           DateTimeCellValue(
               day: vchDate.day,
@@ -806,19 +807,20 @@ mixin Exporter {
               year: vchDate.year,
               hour: vchDate.hour,
               minute: vchDate.minute),
-          TextCellValue(d.transaction.id.toString()),
+          TextCellValue(t.dbID.toString()),
           TextCellValue(isTransfer
               ? "Transfer"
               : isPayment
                   ? VoucherType.payment.label
                   : VoucherType.receipt.label),
           TextCellValue(
-            d.crAccount.id == account.id ? d.drAccount.name : d.crAccount.name,
+            t.crAccount.dbID == account.dbID
+                ? t.drAccount.name
+                : t.crAccount.name,
           ),
-          TextCellValue(d.transaction.refNo),
-          TextCellValue(d.transaction.narr),
-          DoubleCellValue(
-              (d.transaction.amount * (isNegative ? -1 : 1)).toCurrency()),
+          TextCellValue(t.refNo),
+          TextCellValue(t.narration),
+          DoubleCellValue((t.amount * (isNegative ? -1 : 1)).toCurrency()),
         ];
 
         sheet.appendRow(row);

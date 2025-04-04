@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/project_status.dart';
-import 'package:pursenal/core/models/project_plan.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/project.dart';
 import 'package:pursenal/screens/project_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/project_viewmodel.dart';
@@ -44,8 +45,7 @@ class ProjectScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProjectEntryScreen(
-                                profile: profile,
-                                projectPlan: viewmodel.projectPlan),
+                                profile: profile, project: viewmodel.project),
                           )).then((v) {
                         viewmodel.refetchProject();
                       });
@@ -130,8 +130,8 @@ class ProjectScreen extends StatelessWidget {
                 widget: LayoutBuilder(
                   builder: (context, constraints) {
                     bool isWide = constraints.maxWidth > 800;
-                    if (viewmodel.projectPlan != null) {
-                      ProjectPlan projectPlan = viewmodel.projectPlan!;
+                    if (viewmodel.project != null) {
+                      Project project = viewmodel.project!;
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -154,8 +154,7 @@ class ProjectScreen extends StatelessWidget {
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    viewmodel.projectPlan!
-                                                        .project.name,
+                                                    viewmodel.project!.name,
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     style: Theme.of(context)
@@ -165,8 +164,7 @@ class ProjectScreen extends StatelessWidget {
                                                 ),
                                                 Visibility(
                                                   visible:
-                                                      viewmodel.projectPlan !=
-                                                          null,
+                                                      viewmodel.project != null,
                                                   child: Align(
                                                     alignment:
                                                         Alignment.centerLeft,
@@ -223,11 +221,8 @@ class ProjectScreen extends StatelessWidget {
                                                               Theme.of(context)
                                                                   .primaryColor),
                                                           label: Text(
-                                                            viewmodel
-                                                                .projectPlan!
-                                                                .project
-                                                                .status
-                                                                .label,
+                                                            viewmodel.project!
+                                                                .status.label,
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,
@@ -260,9 +255,7 @@ class ProjectScreen extends StatelessWidget {
                                             child: Align(
                                               alignment: Alignment.centerLeft,
                                               child: Text(
-                                                viewmodel.projectPlan!.project
-                                                        .description ??
-                                                    "",
+                                                viewmodel.project!.description,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: Theme.of(context)
                                                     .textTheme
@@ -279,9 +272,7 @@ class ProjectScreen extends StatelessWidget {
                                                   curve: Curves.easeInOut,
                                                   duration: 100.ms),
                                           Visibility(
-                                            visible:
-                                                projectPlan.project.startDate !=
-                                                    null,
+                                            visible: project.startDate != null,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -290,7 +281,7 @@ class ProjectScreen extends StatelessWidget {
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
-                                                  "${AppLocalizations.of(context)!.startDate} ${appViewmodel.dateFormat.format(projectPlan.project.startDate ?? DateTime.now())}",
+                                                  "${AppLocalizations.of(context)!.startDate} ${appViewmodel.dateFormat.format(project.startDate ?? DateTime.now())}",
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: Theme.of(context)
@@ -309,9 +300,7 @@ class ProjectScreen extends StatelessWidget {
                                                   curve: Curves.easeInOut,
                                                   duration: 100.ms),
                                           Visibility(
-                                            visible:
-                                                projectPlan.project.endDate !=
-                                                    null,
+                                            visible: project.endDate != null,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -320,7 +309,7 @@ class ProjectScreen extends StatelessWidget {
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
-                                                  "${AppLocalizations.of(context)!.endDate} ${appViewmodel.dateFormat.format(projectPlan.project.endDate ?? DateTime.now())}",
+                                                  "${AppLocalizations.of(context)!.endDate} ${appViewmodel.dateFormat.format(project.endDate ?? DateTime.now())}",
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: Theme.of(context)
@@ -342,7 +331,7 @@ class ProjectScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Visibility(
-                                            visible: projectPlan.photos.isNotEmpty,
+                                            visible: project.photoPaths.isNotEmpty,
                                             child: Container(
                                               height: 150,
                                               padding:
@@ -354,7 +343,7 @@ class ProjectScreen extends StatelessWidget {
                                                   spacing: 8,
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
-                                                  children: projectPlan.photos
+                                                  children: project.photoPaths
                                                       .mapIndexed(
                                                           (index, filePath) {
                                                     return Material(
@@ -393,8 +382,8 @@ class ProjectScreen extends StatelessWidget {
                                                                                 Text("Media error"),
                                                                           ),
                                                                         ),
-                                                                        File(filePath
-                                                                            .path),
+                                                                        File(
+                                                                            filePath),
                                                                         fit: BoxFit
                                                                             .fitWidth,
                                                                       ),
@@ -452,8 +441,7 @@ class ProjectScreen extends StatelessWidget {
                                                                       "Media error"),
                                                                 ),
                                                               ),
-                                                              File(filePath
-                                                                  .path),
+                                                              File(filePath),
                                                               width: 50,
                                                               fit: BoxFit.fill,
                                                             ),

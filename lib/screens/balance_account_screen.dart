@@ -6,6 +6,8 @@ import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/balance_account_viewmodel.dart';
@@ -68,11 +70,11 @@ class BalanceAccountScreen extends StatelessWidget {
                           currency: profile.currency,
                           ledgers: viewmodel.allLedgers,
                           profile: profile,
-                          oAcc: (account.accType == peopleTypeID ||
-                                  account.accType == advanceTypeID)
+                          oAcc: (account.accountType == peopleTypeID ||
+                                  account.accountType == advanceTypeID)
                               ? account
                               : null,
-                          fAcc: fundingAccountIDs.contains(account.accType)
+                          fAcc: fundingAccountIDs.contains(account.accountType)
                               ? account
                               : null,
                           reloadFn: () async {
@@ -260,7 +262,7 @@ List<Widget> createFilterMenu(BalanceAccountViewmodel viewmodel,
       runSpacing: 4,
       children: [
         ...viewmodel.otherAccounts.toList().map((v) => FilterChip(
-            selected: !viewmodel.otherAccountFilters.contains(v.id),
+            selected: !viewmodel.otherAccountFilters.contains(v.dbID),
             label: Text(v.name),
             onSelected: (s) {
               viewmodel.addToFilter(oAcc: v);
@@ -315,7 +317,7 @@ class TransactionsSection extends StatelessWidget {
                               width: 10,
                             ),
                             Icon(
-                              getAccTypeIcon(viewmodel.account.accType),
+                              getAccTypeIcon(viewmodel.account.accountType),
                               color: Theme.of(context)
                                   .textTheme
                                   .headlineMedium

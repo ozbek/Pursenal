@@ -6,6 +6,7 @@ import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/screens/account_screen.dart';
 import 'package:pursenal/viewmodels/accounts_viewmodel.dart';
@@ -80,7 +81,7 @@ class AccountsScreen extends StatelessWidget {
                                   MaterialPageRoute(
                                     builder: (context) => AccountEntryScreen(
                                       profile: profile,
-                                      accType: a,
+                                      accountType: a,
                                     ),
                                   )).then(
                                 (_) => viewmodel.init(),
@@ -235,7 +236,7 @@ class AccountsList extends StatelessWidget {
                       title: Text(a.account.name,
                           style: Theme.of(context).textTheme.titleMedium),
                       trailing: Text(
-                          a.balance.amount
+                          a.balance
                               .toCurrencyString(viewmodel.profile.currency),
                           style: Theme.of(context).textTheme.titleMedium),
                     );

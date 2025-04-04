@@ -1,17 +1,21 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/extensions/currency.dart';
+import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
-import 'package:pursenal/core/models/double_entry.dart';
-import 'package:pursenal/core/models/ledger.dart';
-import 'package:pursenal/core/repositories/acc_types_drift_repository.dart';
-import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/file_path_drift_repository.dart';
-import 'package:pursenal/core/repositories/projects_drift_repository.dart';
-import 'package:pursenal/core/repositories/transactions_drift_repository.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/account_type.dart';
+import 'package:pursenal/core/models/domain/ledger.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/project.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,8 +23,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
   final AccountsDriftRepository _accountsDriftRepository;
   final TransactionsDriftRepository _transactionsDriftRepository;
   final BalancesDriftRepository _balancesDriftRepository;
-  final FilePathsDriftRepository _filePathsDriftRepository;
-  final AccTypesDriftRepository _accTypesDriftRepository;
+  final AccountTypesDriftRepository _accountTypesDriftRepository;
   final ProjectsDriftRepository _projectsDriftRepository;
 
   TransactionEntryViewmodel({
@@ -28,23 +31,20 @@ class TransactionEntryViewmodel extends ChangeNotifier {
     required Profile profile,
     Transaction? transaction,
     Transaction? dupeTransaction,
-    DoubleEntry? doubleEntry,
     Account? selectedAccount,
     Account? selectedFund,
     VoucherType? vchType,
   })  : _profile = profile,
         _transaction = transaction,
         _dupeTransaction = dupeTransaction,
-        _doubleEntry = doubleEntry,
         _selectedAccount = selectedAccount,
         _selectedFund = selectedFund,
         _vchType = vchType ?? VoucherType.payment,
         _accountsDriftRepository = AccountsDriftRepository(db),
         _transactionsDriftRepository = TransactionsDriftRepository(db),
         _balancesDriftRepository = BalancesDriftRepository(db),
-        _accTypesDriftRepository = AccTypesDriftRepository(db),
-        _projectsDriftRepository = ProjectsDriftRepository(db),
-        _filePathsDriftRepository = FilePathsDriftRepository(db);
+        _accountTypesDriftRepository = AccountTypesDriftRepository(db),
+        _projectsDriftRepository = ProjectsDriftRepository(db);
 
   LoadingStatus loadingStatus = LoadingStatus.idle;
   bool isNegativeBalanceAlerted = false;
@@ -70,8 +70,6 @@ class TransactionEntryViewmodel extends ChangeNotifier {
   Account? _selectedFund;
   Account? _selectedAccount;
   Project? _selectedProject;
-
-  final DoubleEntry? _doubleEntry;
 
   // Error text variables
   String _vchNoError = "";
@@ -109,7 +107,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
   DateTime get startDate => _startDate;
   Project? get selectedProject => _selectedProject;
 
-  List<AccType> accTypes = [];
+  List<AccountType> accountTypes = [];
 
   SharedPreferences? _prefs;
 
@@ -123,13 +121,12 @@ class TransactionEntryViewmodel extends ChangeNotifier {
 
     isPayment = _vchType == VoucherType.payment;
 
-    if (_doubleEntry != null) {
-      _transaction = _doubleEntry.transaction;
-      AppLogger.instance
-          .info("Editing transaction : ${_doubleEntry.transaction.id}");
+    if (_transaction != null) {
+      _transaction = _transaction;
+      AppLogger.instance.info("Editing transaction : ${_transaction!.dbID}");
       try {
-        _setDefaults(_doubleEntry.transaction);
-        _images = [..._doubleEntry.filePaths.map((p) => p.path!)];
+        _setDefaults(_transaction!);
+        _images = [..._transaction!.filePaths];
       } catch (e, stackTrace) {
         errorText = "Error: Failed to initialise Transaction form";
         loadingStatus = LoadingStatus.error;
@@ -243,44 +240,58 @@ class TransactionEntryViewmodel extends ChangeNotifier {
 
   Future<void> getAccounts() async {
     _ledgers =
-        await _accountsDriftRepository.getLedgers(profileId: _profile.id);
-    _funds = await _accountsDriftRepository.getFundingLedgers(
-        profileId: _profile.id);
+        await _accountsDriftRepository.getLedgers(profileId: _profile.dbID);
+    _funds = await _accountsDriftRepository.getLedgersByCategory(
+        profileId: _profile.dbID, accTypeIDs: fundingAccountIDs);
 
-    accTypes = await _accTypesDriftRepository.getAll();
+    accountTypes = await _accountTypesDriftRepository.getAll();
 
-    // _ledgers.where((a) => a.accType.id <= 3).toList();
+    // _ledgers.where((a) => a.accType.dbID <= 3).toList();
     notifyListeners();
     _filterAccounts();
   }
 
   void _setDefaults(Transaction tr) {
-    if (tr.vchType == VoucherType.payment) {
-      _isPayment = true;
-      _selectedFund = _funds.firstWhere((a) => a.account.id == tr.cr).account;
-      _selectedAccount =
-          _ledgers.firstWhere((a) => a.account.id == tr.dr).account;
-    } else {
-      _isPayment = false;
-      _selectedAccount =
-          _ledgers.firstWhere((a) => a.account.id == tr.cr).account;
-      _selectedFund = _funds.firstWhere((a) => a.account.id == tr.dr).account;
+    try {
+      if (tr.voucherType == VoucherType.payment) {
+        _isPayment = true;
+        _selectedFund = _funds
+            .firstWhere((a) => a.account.dbID == tr.crAccount.dbID)
+            .account;
+        _selectedAccount = _ledgers
+            .firstWhere((a) => a.account.dbID == tr.drAccount.dbID)
+            .account;
+      } else {
+        _isPayment = false;
+        _selectedAccount = _ledgers
+            .firstWhere((a) => a.account.dbID == tr.crAccount.dbID)
+            .account;
+        _selectedFund = _funds
+            .firstWhere((a) => a.account.dbID == tr.drAccount.dbID)
+            .account;
+      }
+      _amount = tr.amount;
+      _vchNo = tr.dbID;
+      _vchDate = tr.voucherDate;
+      _vchType = tr.voucherType;
+      _narr = tr.narration;
+      _refNo = tr.refNo;
+      if (tr.project != null) {
+        _selectedProject = projects.firstWhereOrNull((p) => p == tr.project);
+      }
+
+      notifyListeners();
+    } catch (e, stackTrace) {
+      AppLogger.instance.error(' ${e.toString()}', [stackTrace]);
+      errorText = 'Error: Failed to set transaction ';
     }
-    _amount = tr.amount;
-    _vchNo = tr.id;
-    _vchDate = tr.vchDate;
-    _vchType = tr.vchType;
-    _narr = tr.narr;
-    _refNo = tr.refNo;
-    _selectedProject = projects.firstWhereOrNull((p) => p.id == tr.project);
-    notifyListeners();
   }
 
   void _filterAccounts() {
     _fLedgers = List.from(_ledgers);
 
     if (_selectedFund != null) {
-      _fLedgers.removeWhere((l) => l.account.id == _selectedFund?.id);
+      _fLedgers.removeWhere((l) => l.account.dbID == _selectedFund?.dbID);
     }
     notifyListeners();
   }
@@ -301,7 +312,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
 
   Future<void> _getAllProjects() async {
     try {
-      projects = await _projectsDriftRepository.getAllProjects(_profile.id);
+      projects = await _projectsDriftRepository.getAllProjects(_profile.dbID);
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
       errorText = 'Error: ';
@@ -318,9 +329,8 @@ class TransactionEntryViewmodel extends ChangeNotifier {
     notifyListeners();
 
     int fundBalance = _funds
-            .firstWhereOrNull((f) => f.account.id == _selectedFund?.id)
-            ?.balance
-            .amount ??
+            .firstWhereOrNull((f) => f.account.dbID == _selectedFund?.dbID)
+            ?.balance ??
         0;
 
     if (_vchNo <= 0) {
@@ -339,11 +349,11 @@ class TransactionEntryViewmodel extends ChangeNotifier {
 
     if (isPayment && !isNegativeBalanceAlerted) {
       int difference = fundBalance - amount;
-      if (_doubleEntry != null) {
-        if (_doubleEntry.transaction.vchType == VoucherType.receipt) {
-          difference -= (_doubleEntry.transaction.amount);
-        } else if (_doubleEntry.transaction.vchType == VoucherType.payment) {
-          difference += (_doubleEntry.transaction.amount);
+      if (_transaction != null) {
+        if (_transaction!.voucherType == VoucherType.receipt) {
+          difference -= (_transaction!.amount);
+        } else if (_transaction!.voucherType == VoucherType.payment) {
+          difference += (_transaction!.amount);
         }
       }
 
@@ -374,40 +384,40 @@ class TransactionEntryViewmodel extends ChangeNotifier {
         loadingStatus = LoadingStatus.submitting;
         notifyListeners();
 
-        if (_doubleEntry != null && _transaction != null) {
+        if (_transaction != null && _transaction != null) {
           AppLogger.instance
-              .info("Updating Transaction with ID:${_transaction!.id}");
+              .info("Updating Transaction with ID:${_transaction!.dbID}");
           await _transactionsDriftRepository.updateTransaction(
-              id: _transaction!.id,
+              id: _transaction!.dbID,
               vchDate: _vchDate,
               narr: _narr,
               refNo: _refNo,
-              dr: isPayment ? _selectedAccount!.id : _selectedFund!.id,
-              cr: isPayment ? _selectedFund!.id : _selectedAccount!.id,
+              dr: isPayment ? _selectedAccount!.dbID : _selectedFund!.dbID,
+              cr: isPayment ? _selectedFund!.dbID : _selectedAccount!.dbID,
               amount: _amount,
               vchType: _vchType,
-              project: _selectedProject?.id,
-              profile: _profile.id);
-          for (var f in _doubleEntry.filePaths) {
-            await _filePathsDriftRepository.delete(f.id);
+              project: _selectedProject?.dbID,
+              profile: _profile.dbID);
+          for (var f in _transaction!.filePaths) {
+            await _transactionsDriftRepository.deletePhotoPathbyPath(f);
           }
           for (var p in _images) {
-            await _filePathsDriftRepository.insertPath(
-                path: p, transaction: _transaction!.id);
+            await _transactionsDriftRepository.insertPhotoPath(
+                path: p, transaction: _transaction!.dbID);
           }
         } else {
           final trId = await _transactionsDriftRepository.insertTransaction(
               vchDate: _vchDate,
               narr: _narr,
               refNo: _refNo,
-              dr: isPayment ? _selectedAccount!.id : _selectedFund!.id,
-              cr: isPayment ? _selectedFund!.id : _selectedAccount!.id,
+              dr: isPayment ? _selectedAccount!.dbID : _selectedFund!.dbID,
+              cr: isPayment ? _selectedFund!.dbID : _selectedAccount!.dbID,
               amount: _amount,
               vchType: _vchType,
-              project: _selectedProject?.id,
-              profile: _profile.id);
+              project: _selectedProject?.dbID,
+              profile: _profile.dbID);
           for (String p in _images) {
-            await _filePathsDriftRepository.insertPath(
+            await _transactionsDriftRepository.insertPhotoPath(
                 path: p, transaction: trId);
           }
         }
@@ -436,11 +446,11 @@ class TransactionEntryViewmodel extends ChangeNotifier {
     try {
       if (_selectedAccount != null && _selectedFund != null) {
         await _balancesDriftRepository.updateBalanceByAccount(
-          account: _selectedFund!.id,
+          account: _selectedFund!.dbID,
         );
 
         await _balancesDriftRepository.updateBalanceByAccount(
-          account: _selectedAccount!.id,
+          account: _selectedAccount!.dbID,
         );
       }
     } catch (e) {
@@ -469,13 +479,13 @@ class TransactionEntryViewmodel extends ChangeNotifier {
   _sortOtherAccounts() {
     _fLedgers.sort((a, b) {
       if (_vchType == VoucherType.payment) {
-        if (a.accType.id == 5) {
+        if (a.accountType.dbID == 5) {
           return -1;
         }
       }
 
       if (_vchType == VoucherType.receipt) {
-        if (a.accType.id == 4) {
+        if (a.accountType.dbID == 4) {
           return -1;
         }
       }

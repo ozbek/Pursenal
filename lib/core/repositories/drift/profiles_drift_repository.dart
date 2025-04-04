@@ -1,23 +1,26 @@
 import 'package:drift/drift.dart';
-import 'package:pursenal/core/abstracts/base_repository.dart';
+import 'package:pursenal/app/extensions/drift_models.dart';
+import 'package:pursenal/core/abstracts/profiles_repository.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/currency.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
-class ProfilesDriftRepository
-    implements BaseRepository<Profile, ProfilesCompanion> {
+class ProfilesDriftRepository implements ProfilesRepository {
   ProfilesDriftRepository(this.db);
   final MyDatabase db;
 
+  @override
   Future<List<Profile>> getAll() async {
     try {
-      return await db.getProfiles();
+      return (await db.getProfiles()).map((p) => p.toDomain()).toList();
     } catch (e) {
       AppLogger.instance.error("Failed to get profiles list. ${e.toString()}");
       rethrow;
     }
   }
 
+  @override
   Future<int> insertProfile({
     required String name,
     required String? alias,
@@ -29,7 +32,7 @@ class ProfilesDriftRepository
     required String? tin,
   }) async {
     try {
-      final profile = ProfilesCompanion(
+      final profile = DriftProfilesCompanion(
         name: Value(name),
         alias: Value(alias),
         currency: Value(currency),
@@ -46,6 +49,7 @@ class ProfilesDriftRepository
     }
   }
 
+  @override
   Future<bool> updateProfile({
     required int id,
     required String name,
@@ -58,7 +62,7 @@ class ProfilesDriftRepository
     required String? tin,
   }) async {
     try {
-      final profile = ProfilesCompanion(
+      final profile = DriftProfilesCompanion(
           id: Value(id),
           name: Value(name),
           alias: Value(alias),
@@ -89,16 +93,17 @@ class ProfilesDriftRepository
   @override
   Future<Profile> getById(int id) async {
     try {
-      return await db.getProfileById(id);
+      return (await db.getProfileById(id)).toDomain();
     } catch (e) {
       AppLogger.instance.error("Failed to get profile. ${e.toString()}");
       rethrow;
     }
   }
 
+  @override
   Future<Profile?> getSelectedProfile() async {
     try {
-      return await db.getSelectedProfile();
+      return (await db.getSelectedProfile())?.toDomain();
     } catch (e) {
       AppLogger.instance
           .error("Failed to get selected profile. ${e.toString()}");
@@ -106,6 +111,7 @@ class ProfilesDriftRepository
     }
   }
 
+  @override
   Future<void> setSelectedProfile(int id) async {
     try {
       return await db.setSelectedProfile(id);

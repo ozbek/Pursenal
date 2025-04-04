@@ -2,19 +2,22 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/app/extensions/datetime.dart';
+import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/date_filter_type.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/models/budget_plan.dart';
-import 'package:pursenal/core/models/daily_total_transaction.dart';
-import 'package:pursenal/core/models/double_entry.dart';
-import 'package:pursenal/core/models/ledger.dart';
-import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/budgets_drift_repository.dart';
-import 'package:pursenal/core/repositories/profiles_drift_repository.dart';
-import 'package:pursenal/core/repositories/transactions_drift_repository.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/budget.dart';
+import 'package:pursenal/core/models/domain/daily_total_transaction.dart';
+import 'package:pursenal/core/models/domain/ledger.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class InsightsViewmodel extends ChangeNotifier {
@@ -55,8 +58,8 @@ class InsightsViewmodel extends ChangeNotifier {
 
   final int recentCount = 4;
 
-  List<DoubleEntry> _transactions = [];
-  List<DoubleEntry> get transactions => _transactions;
+  List<Transaction> _transactions = [];
+  List<Transaction> get transactions => _transactions;
 
   List<Account> _expenses = [];
   List<Account> _incomes = [];
@@ -87,9 +90,9 @@ class InsightsViewmodel extends ChangeNotifier {
 
   Map<Account, List<int>> fundBalances = {};
 
-  List<BudgetPlan> budgetPlans = [];
-  BudgetPlan? _selectedBudgetPlan;
-  BudgetPlan? get selectedBudgetPlan => _selectedBudgetPlan;
+  List<Budget> budgets = [];
+  Budget? _selectedBudget;
+  Budget? get selectedBudget => _selectedBudget;
 
   int _expCardPage = 0;
   final PageController _expCardpageController = PageController();
@@ -114,24 +117,24 @@ class InsightsViewmodel extends ChangeNotifier {
       notifyListeners();
       await getData();
       await _calculate();
-      await _getBudgetPlans();
-      if (budgetPlans.isNotEmpty) {
-        _selectedBudgetPlan = budgetPlans.first;
+      await _getBudgets();
+      if (budgets.isNotEmpty) {
+        _selectedBudget = budgets.first;
       }
-    } catch (e) {
-      AppLogger.instance.error(' ${e.toString()}');
+    } catch (e, stackTrace) {
+      AppLogger.instance.error(' ${e.toString()}', [stackTrace]);
       errorText = 'Error: Failed to initialise insights';
       loadingStatus = LoadingStatus.error;
       notifyListeners();
     }
   }
 
-  set selectedBudgetPlan(BudgetPlan? value) {
-    _selectedBudgetPlan = value;
+  set selectedBudget(Budget? value) {
+    _selectedBudget = value;
     notifyListeners();
 
-    if (_selectedBudgetPlan != null) {
-      switch (_selectedBudgetPlan?.budget.interval) {
+    if (_selectedBudget != null) {
+      switch (_selectedBudget?.interval) {
         case BudgetInterval.weekly:
           if (_dateFilterType != DateFilterType.weekly) {
             dateFilterType = DateFilterType.weekly;
@@ -158,25 +161,22 @@ class InsightsViewmodel extends ChangeNotifier {
   trySetBudget() {
     switch (_dateFilterType) {
       case DateFilterType.weekly:
-        final bs = budgetPlans
-            .where((b) => b.budget.interval == BudgetInterval.weekly);
+        final bs = budgets.where((b) => b.interval == BudgetInterval.weekly);
         if (bs.isNotEmpty) {
-          _selectedBudgetPlan = bs.first;
+          _selectedBudget = bs.first;
         }
         break;
       case DateFilterType.monthly:
-        final bs = budgetPlans
-            .where((b) => b.budget.interval == BudgetInterval.monthly);
+        final bs = budgets.where((b) => b.interval == BudgetInterval.monthly);
         if (bs.isNotEmpty) {
-          _selectedBudgetPlan = bs.first;
+          _selectedBudget = bs.first;
         }
         break;
 
       case DateFilterType.annual:
-        final bs = budgetPlans
-            .where((b) => b.budget.interval == BudgetInterval.annual);
+        final bs = budgets.where((b) => b.interval == BudgetInterval.annual);
         if (bs.isNotEmpty) {
-          _selectedBudgetPlan = bs.first;
+          _selectedBudget = bs.first;
         }
         break;
       default:
@@ -239,21 +239,21 @@ class InsightsViewmodel extends ChangeNotifier {
 
   _getAccounts() async {
     allLedgers = await _accountsDriftRepository.getLedgers(
-        profileId: _selectedProfile.id);
+        profileId: _selectedProfile.dbID);
 
-    _funds = await _accountsDriftRepository.getFundAccounts(
-        profileId: _selectedProfile.id);
+    _funds = await _accountsDriftRepository.getAccountsByCategory(
+        profileId: _selectedProfile.dbID, accTypeIDs: fundIDs);
 
     for (var f in _funds) {
-      if (f.accType > 1) {
-        selectedFundsForBalanceChart.add(f.id);
+      if (f.accountType > 1) {
+        selectedFundsForBalanceChart.add(f.dbID);
       }
     }
 
     _expenses = await _accountsDriftRepository.getAccountsByAccType(
-        _selectedProfile.id, 5);
+        _selectedProfile.dbID, expenseTypeID);
     _incomes = await _accountsDriftRepository.getAccountsByAccType(
-        _selectedProfile.id, 4);
+        _selectedProfile.dbID, incomeTypeID);
 
     expenseTotals = {for (var k in _expenses) k: 0};
     incomeTotals = {for (var k in _incomes) k: 0};
@@ -263,14 +263,15 @@ class InsightsViewmodel extends ChangeNotifier {
 
   _getTransactions() async {
     _transactions = []; // Reset transactions
-    _transactions = await _transactionsDriftRepository.getDoubleEntries(
-        startDate: startDate, endDate: endDate, profileId: _selectedProfile.id);
+    _transactions = await _transactionsDriftRepository.getTransactions(
+        startDate: startDate,
+        endDate: endDate,
+        profileId: _selectedProfile.dbID);
     notifyListeners();
   }
 
-  _getBudgetPlans() async {
-    budgetPlans =
-        await _budgetsDriftRepository.getAllBudgetPlans(_selectedProfile.id);
+  _getBudgets() async {
+    budgets = await _budgetsDriftRepository.getAll(_selectedProfile.dbID);
 
     notifyListeners();
   }
@@ -317,43 +318,43 @@ class InsightsViewmodel extends ChangeNotifier {
     expenseTotals = {for (var k in _expenses) k: 0};
     incomeTotals = {for (var k in _incomes) k: 0};
 
-    for (var d in _transactions) {
-      final dtt = _dailyTotalTransactions.firstWhereOrNull(
-          (x) => x.dateTime.isSameDayAs(d.transaction.vchDate));
-      if (!d.transaction.vchDate.isBetween(startDate, endDate)) {
+    for (var t in _transactions) {
+      final dtt = _dailyTotalTransactions
+          .firstWhereOrNull((x) => x.dateTime.isSameDayAs(t.voucherDate));
+      if (!t.voucherDate.isBetween(startDate, endDate)) {
         continue;
       }
 
-      switch (d.crAccount.accType) {
+      switch (t.crAccount.accountType) {
         case 4:
-          incomeTotals.update(d.crAccount, (amount) {
-            return amount + d.transaction.amount;
+          incomeTotals.update(t.crAccount, (amount) {
+            return amount + t.amount;
           });
-          dtt?.addReceipt(d.transaction.amount);
+          dtt?.addReceipt(t.amount);
 
           break;
 
         case 5:
-          expenseTotals.update(d.crAccount, (amount) {
-            return amount - d.transaction.amount;
+          expenseTotals.update(t.crAccount, (amount) {
+            return amount - t.amount;
           });
-          dtt?.addReceipt(d.transaction.amount);
+          dtt?.addReceipt(t.amount);
           break;
       }
-      switch (d.drAccount.accType) {
+      switch (t.drAccount.accountType) {
         case 5:
-          expenseTotals.update(d.drAccount, (amount) {
-            return amount - d.transaction.amount;
+          expenseTotals.update(t.drAccount, (amount) {
+            return amount - t.amount;
           });
-          dtt?.addPayment(d.transaction.amount);
+          dtt?.addPayment(t.amount);
 
           break;
 
         case 4:
-          incomeTotals.update(d.drAccount, (amount) {
-            return amount + d.transaction.amount;
+          incomeTotals.update(t.drAccount, (amount) {
+            return amount + t.amount;
           });
-          dtt?.addPayment(d.transaction.amount);
+          dtt?.addPayment(t.amount);
 
           break;
       }
@@ -383,13 +384,13 @@ class InsightsViewmodel extends ChangeNotifier {
   }
 
   populateBudgetUsage() {
-    if (_selectedBudgetPlan != null) {}
+    if (_selectedBudget != null) {}
   }
 
   _setBalances() async {
     fundBalances = {};
     for (var f in _funds) {
-      if (!selectedFundsForBalanceChart.contains(f.id)) {
+      if (!selectedFundsForBalanceChart.contains(f.dbID)) {
         fundBalances.addAll({f: []});
       }
     }
@@ -397,7 +398,7 @@ class InsightsViewmodel extends ChangeNotifier {
     for (var d in _rangeDates) {
       for (var f in _funds) {
         fundBalances[f]?.add(await _balancesDriftRepository.getClosingBalance(
-            account: f.id, closingDate: d));
+            account: f.dbID, closingDate: d));
       }
     }
 

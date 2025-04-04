@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:pursenal/app/extensions/datetime.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/models/double_entry.dart';
-import 'package:pursenal/core/models/ledger.dart';
-import 'package:pursenal/core/repositories/acc_types_drift_repository.dart';
-import 'package:pursenal/core/repositories/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/profiles_drift_repository.dart';
-import 'package:pursenal/core/repositories/transactions_drift_repository.dart';
+import 'package:pursenal/core/models/domain/account_type.dart';
+import 'package:pursenal/core/models/domain/ledger.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/transaction.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,7 +19,7 @@ class DashboardViewmodel extends ChangeNotifier {
   final AccountsDriftRepository _accountsDriftRepository;
   final TransactionsDriftRepository _transactionsDriftRepository;
   final BalancesDriftRepository _balancesDriftRepository;
-  final AccTypesDriftRepository _accTypesDriftRepository;
+  final AccountTypesDriftRepository _accountTypesDriftRepository;
 
   DashboardViewmodel({required MyDatabase db, required Profile profile})
       : _selectedProfile = profile,
@@ -25,7 +27,7 @@ class DashboardViewmodel extends ChangeNotifier {
         _accountsDriftRepository = AccountsDriftRepository(db),
         _balancesDriftRepository = BalancesDriftRepository(db),
         _transactionsDriftRepository = TransactionsDriftRepository(db),
-        _accTypesDriftRepository = AccTypesDriftRepository(db);
+        _accountTypesDriftRepository = AccountTypesDriftRepository(db);
 
   List<Profile> _profiles = [];
 
@@ -49,7 +51,7 @@ class DashboardViewmodel extends ChangeNotifier {
 
   final int recentCount = 4;
 
-  List<DoubleEntry> recentTransactions = [];
+  List<Transaction> recentTransactions = [];
 
   int _closingBalance = 0;
   int get closingBalance => _closingBalance;
@@ -58,8 +60,8 @@ class DashboardViewmodel extends ChangeNotifier {
 
   bool mustAddAccounts = true;
 
-  List<AccType> _accTypes = [];
-  List<AccType> fAccTypes = [];
+  List<AccountType> _accTypes = [];
+  List<AccountType> fAccountTypes = [];
 
   SharedPreferences? _prefs;
 
@@ -72,8 +74,8 @@ class DashboardViewmodel extends ChangeNotifier {
       _prefs = await SharedPreferences.getInstance();
       _profiles = await _profilesDriftRepository.getAll();
       await getAllLedgers();
-      await getAccTypes();
-      filterAccTypes();
+      await getAccountTypes();
+      filterAccountTypes();
       await setBalances(await checkBalanceNeedReload());
       await getTransactions();
       loadingStatus = LoadingStatus.completed;
@@ -93,28 +95,29 @@ class DashboardViewmodel extends ChangeNotifier {
 
   getAllLedgers() async {
     allLedgers = await _accountsDriftRepository.getLedgers(
-        profileId: _selectedProfile.id);
+        profileId: _selectedProfile.dbID);
     notifyListeners();
   }
 
-  getAccTypes() async {
-    _accTypes = await _accTypesDriftRepository.getAll();
+  getAccountTypes() async {
+    _accTypes = await _accountTypesDriftRepository.getAll();
     notifyListeners();
   }
 
-  filterAccTypes() {
-    fAccTypes = List.from(_accTypes);
-    fAccTypes.removeWhere((a) => allLedgers.any((l) => l.accType.id == a.id));
+  filterAccountTypes() {
+    fAccountTypes = List.from(_accTypes);
+    fAccountTypes.removeWhere(
+        (a) => allLedgers.any((l) => l.accountType.dbID == a.dbID));
 
-    if (fAccTypes.length < 6) {
+    if (fAccountTypes.length < 6) {
       canAddTransaction = true;
     }
     notifyListeners();
   }
 
   getTransactions() async {
-    recentTransactions = await _transactionsDriftRepository.getNDoubleEntries(
-        n: recentCount, profileId: _selectedProfile.id);
+    recentTransactions = await _transactionsDriftRepository.getNTransactions(
+        n: recentCount, profileId: _selectedProfile.dbID);
 
     notifyListeners();
   }
@@ -123,7 +126,7 @@ class DashboardViewmodel extends ChangeNotifier {
     if (reloadNeeded) {
       do {
         final balance = await _balancesDriftRepository.getFundClosingBalance(
-            _startDate, _selectedProfile.id);
+            _startDate, _selectedProfile.dbID);
         balances.add(balance);
         _startDate = _startDate.add(const Duration(days: 1));
       } while (_startDate.isBeforeOrEqualTo(_endDate));

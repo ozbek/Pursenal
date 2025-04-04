@@ -5,6 +5,7 @@ import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/accounts_import_screen.dart';
 import 'package:pursenal/viewmodels/profile_entry_viewmodel.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/accounts_screen.dart';
 import 'package:pursenal/screens/budgets_screen.dart';
 import 'package:pursenal/screens/projects_screen.dart';
@@ -232,7 +233,7 @@ class DashboardScreen extends StatelessWidget {
                             viewmodel: viewmodel,
                           )),
                       Visibility(
-                          visible: viewmodel.fAccTypes.isNotEmpty,
+                          visible: viewmodel.fAccountTypes.isNotEmpty,
                           child: AddNewAccountCard(
                             viewmodel: viewmodel,
                           )),

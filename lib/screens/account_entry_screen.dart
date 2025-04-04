@@ -8,6 +8,9 @@ import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/account_type.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/viewmodels/account_entry_viewmodel.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/widgets/shared/calculated_field.dart';
@@ -17,10 +20,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AccountEntryScreen extends StatelessWidget {
   const AccountEntryScreen(
-      {super.key, this.account, required this.profile, this.accType});
+      {super.key, this.account, required this.profile, this.accountType});
   final Account? account;
   final Profile profile;
-  final AccType? accType;
+  final AccountType? accountType;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,7 @@ class AccountEntryScreen extends StatelessWidget {
         db: db,
         profile: profile,
         account: account,
-        accType: accType,
+        accountType: accountType,
       )..init(),
       builder: (context, child) =>
           Consumer<AccountEntryViewModel>(builder: (context, viewmodel, child) {
@@ -96,8 +99,8 @@ class AccountEntryScreen extends StatelessWidget {
               widget: AccountForm(
                 account: account,
                 viewmodel: viewmodel,
-                autoFocusNameField: accType != null,
-                isAccTypeDisabled: accType != null,
+                autoFocusNameField: accountType != null,
+                isAccountTypeDisabled: accountType != null,
               ),
               resetErrorTextFn: () {
                 viewmodel.resetErrorText();
@@ -114,13 +117,13 @@ class AccountForm extends StatelessWidget {
     required this.account,
     required this.viewmodel,
     this.autoFocusNameField = false,
-    this.isAccTypeDisabled = false,
+    this.isAccountTypeDisabled = false,
   });
 
   final Account? account;
   final AccountEntryViewModel viewmodel;
   final bool autoFocusNameField;
-  final bool isAccTypeDisabled;
+  final bool isAccountTypeDisabled;
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +141,7 @@ class AccountForm extends StatelessWidget {
                         ? Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 8),
-                            child: DropdownMenu<AccType?>(
+                            child: DropdownMenu<AccountType?>(
                               initialSelection: viewmodel.accountType,
                               errorText: viewmodel.accountTypeError.isNotEmpty
                                   ? viewmodel.accountTypeError
@@ -147,9 +150,9 @@ class AccountForm extends StatelessWidget {
                               label: Text(
                                   AppLocalizations.of(context)!.accountType),
                               width: smallWidth,
-                              enabled: !isAccTypeDisabled,
+                              enabled: !isAccountTypeDisabled,
                               dropdownMenuEntries: [
-                                ...viewmodel.accTypes.map(
+                                ...viewmodel.accountTypes.map(
                                   (a) => DropdownMenuEntry(
                                     style: ButtonStyle(
                                         textStyle: WidgetStatePropertyAll(
@@ -233,7 +236,7 @@ class AccountForm extends StatelessWidget {
                             ? viewmodel.amountError
                             : null,
                         isDisabled: (viewmodel.accountType != null &&
-                            incExpIDs.contains(viewmodel.accountType!.id)),
+                            incExpIDs.contains(viewmodel.accountType!.dbID)),
                         helperText: viewmodel.amountHelperText,
                       ),
                     ),
@@ -241,7 +244,7 @@ class AccountForm extends StatelessWidget {
                       height: 16,
                     ),
                     if (viewmodel.accountType != null &&
-                        viewmodel.accountType!.id == bankTypeID)
+                        viewmodel.accountType!.dbID == bankTypeID)
                       ...[
                         // Show Bank specific fields
                         Padding(
@@ -326,7 +329,7 @@ class AccountForm extends StatelessWidget {
                           .fade(curve: Curves.easeInOut, duration: 100.ms),
                     // Credit card
                     if (viewmodel.accountType != null &&
-                        viewmodel.accountType!.id == cCardTypeID)
+                        viewmodel.accountType!.dbID == cCardTypeID)
                       ...[
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -407,7 +410,7 @@ class AccountForm extends StatelessWidget {
                           .fade(curve: Curves.easeInOut, duration: 100.ms),
                     // Loan
                     if (viewmodel.accountType != null &&
-                        viewmodel.accountType!.id == loanTypeID)
+                        viewmodel.accountType!.dbID == loanTypeID)
                       ...[
                         Padding(
                           padding: const EdgeInsets.symmetric(

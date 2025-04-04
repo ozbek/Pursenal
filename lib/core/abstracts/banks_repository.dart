@@ -1,0 +1,25 @@
+import 'package:pursenal/core/models/domain/bank.dart';
+
+abstract class BanksRepository {
+  Future<int> insertBank({
+    required int account,
+    required String? branch,
+    required String? branchCode,
+    required String? holderName,
+    required String? accountNo,
+    required String? institution,
+  });
+
+  Future<bool> updateBank({
+    required int id,
+    required int account,
+    required String? branch,
+    required String? branchCode,
+    required String? accountNo,
+    required String? holderName,
+    required String? institution,
+  });
+
+  Future<int> delete(int id);
+  Future<Bank> getById(int id);
+}

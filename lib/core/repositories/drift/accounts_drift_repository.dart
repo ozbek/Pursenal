@@ -1,14 +1,20 @@
 import 'package:drift/drift.dart';
-import 'package:pursenal/core/abstracts/base_repository.dart';
+import 'package:pursenal/app/extensions/drift_models.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
 import 'package:pursenal/core/db/database.dart';
-import 'package:pursenal/core/models/ledger.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/bank.dart';
+import 'package:pursenal/core/models/domain/credit_card.dart';
+import 'package:pursenal/core/models/domain/ledger.dart';
+import 'package:pursenal/core/models/domain/loan.dart';
+import 'package:pursenal/core/models/domain/wallet.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
-class AccountsDriftRepository
-    implements BaseRepository<Account, AccountsCompanion> {
-  AccountsDriftRepository(this.db);
+class AccountsDriftRepository implements AccountsRepository {
   final MyDatabase db;
+  AccountsDriftRepository(this.db);
 
+  @override
   Future<int> insertAccount(
       {required String name,
       required int openBal,
@@ -16,7 +22,7 @@ class AccountsDriftRepository
       required int accType,
       required int profile}) async {
     try {
-      final account = AccountsCompanion(
+      final account = DriftAccountsCompanion(
         name: Value(name),
         accType: Value(accType),
         openBal: Value(openBal),
@@ -31,6 +37,7 @@ class AccountsDriftRepository
     }
   }
 
+  @override
   Future<bool> updateAccount(
       {required int id,
       required String name,
@@ -39,7 +46,7 @@ class AccountsDriftRepository
       required int accType,
       required int profile}) async {
     try {
-      final account = AccountsCompanion(
+      final account = DriftAccountsCompanion(
         id: Value(id),
         name: Value(name),
         accType: Value(accType),
@@ -69,165 +76,104 @@ class AccountsDriftRepository
   @override
   Future<Account> getById(int id) async {
     try {
-      return await db.getAccountbyId(id);
+      return (await db.getAccountbyId(id)).toDomain();
     } catch (e) {
       AppLogger.instance.error("Failed to get account. ${e.toString()}");
       rethrow;
     }
   }
 
+  @override
   Future<List<Account>> getAccountsByProfile({required int profileId}) async {
     try {
-      return await db.getAccountsByProfile(profileId);
+      return (await db.getAccountsByProfile(profileId))
+          .map((a) => a.toDomain())
+          .toList();
     } catch (e) {
       AppLogger.instance.error("Failed to get accounts list. ${e.toString()}");
       rethrow;
     }
   }
 
+  @override
   Future<List<Ledger>> getLedgers({required int profileId}) async {
     try {
-      return await db.getLedgers(profileId: profileId);
+      return (await db.getLedgers(profileId: profileId))
+          .map(
+            (a) => Ledger(
+                account: a.item1.toDomain(),
+                accountType: a.item2.toDomain(),
+                balance: a.item3.amount),
+          )
+          .toList();
     } catch (e) {
       AppLogger.instance.error("Failed to get accounts list. ${e.toString()}");
       rethrow;
     }
   }
 
-  Future<List<Ledger>> getLedgersByAccType(
-      {required int profileId, required int accTypeID}) async {
-    try {
-      return await db.getLedgersByAccType(
-          profileId: profileId, accTypeID: accTypeID);
-    } catch (e) {
-      AppLogger.instance.error("Failed to get accounts list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future<List<Ledger>> getFunds({required int profileId}) async {
-    try {
-      return await db.getFunds(profileId: profileId);
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Funds list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future<List<Ledger>> getCredits({required int profileId}) async {
-    try {
-      return await db.getCredits(profileId: profileId);
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Credits list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future<List<Ledger>> getFundingLedgers({required int profileId}) async {
-    try {
-      return await db.getFundingLedgers(profileId: profileId);
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Credits list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future<List<Account>> getFundAccounts({required int profileId}) async {
-    try {
-      return await db.getFundAccounts(profileId);
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Funds list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future<Map<Bank, Account>> getBanksWithAccounts() async {
-    try {
-      return await db.getBanksWithAccounts();
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Banks list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future<Map<Wallet, Account>> getWalletsWithAccounts() async {
-    try {
-      return await db.getWalletsWithAccounts();
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Wallets list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future<Map<Loan, Account>> getLoansWithAccounts() async {
-    try {
-      return await db.getLoansWithAccounts();
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Loans list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future<Map<CCard, Account>> getCCardsWithAccounts() async {
-    try {
-      return await db.getCCardsWithAccounts();
-    } catch (e) {
-      AppLogger.instance
-          .error("Failed to get Credit Card list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
+  @override
   Future<Wallet> getWalletByAccount(int id) async {
     try {
-      return await db.getWalletByAccount(id);
+      final account = await getById(id);
+      return (await db.getWalletByAccount(id)).toDomain(account);
     } catch (e) {
       AppLogger.instance.error("Failed to get Wallet. ${e.toString()}");
       rethrow;
     }
   }
 
+  @override
   Future<Bank> getBankByAccount(int id) async {
     try {
-      return await db.getBankByAccount(id);
+      final account = await getById(id);
+      return (await db.getBankByAccount(id)).toDomain(account);
     } catch (e) {
       AppLogger.instance.error("Failed to get Bank. ${e.toString()}");
       rethrow;
     }
   }
 
+  @override
   Future<Loan> getLoanByAccount(int id) async {
     try {
-      return await db.getLoanByAccount(id);
+      final account = await getById(id);
+      return (await db.getLoanByAccount(id)).toDomain(account);
     } catch (e) {
       AppLogger.instance.error("Failed to get Loan. ${e.toString()}");
       rethrow;
     }
   }
 
-  Future<CCard> getCCardByAccount(int id) async {
+  @override
+  Future<CreditCard> getCCardByAccount(int id) async {
     try {
-      return await db.getCCardByAccount(id);
+      final account = await getById(id);
+      return (await db.getCCardByAccount(id)).toDomain(account);
     } catch (e) {
       AppLogger.instance.error("Failed to get Credit Card. ${e.toString()}");
       rethrow;
     }
   }
 
+  @override
   Future<List<Account>> getAccountsByAccType(int profileId, int accType) async {
     try {
-      return await db.getAccountsByAccType(profileId, accType);
+      return (await db.getAccountsByAccType(profileId, accType))
+          .map((a) => a.toDomain())
+          .toList();
     } catch (e) {
       AppLogger.instance.error("Failed to get accounts list. ${e.toString()}");
       rethrow;
     }
   }
 
+  @override
   Future<void> insertAccountsBulk(
       List<String> names, int accType, int profile, DateTime openDate) async {
     try {
-      List<AccountsCompanion> accounts = names
-          .map((a) => AccountsCompanion.insert(
+      List<DriftAccountsCompanion> accounts = names
+          .map((a) => DriftAccountsCompanion.insert(
               name: a,
               accType: accType,
               profile: profile,
@@ -237,6 +183,58 @@ class AccountsDriftRepository
     } catch (e) {
       AppLogger.instance
           .error("Failed to insert bulk accounts. ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Ledger>> getLedgersByAccType(
+      {required int profileId, required int accTypeID}) async {
+    try {
+      return (await db.getLedgersByAccType(
+              profileId: profileId, accTypeID: accTypeID))
+          .map(
+            (a) => Ledger(
+                account: a.item1.toDomain(),
+                accountType: a.item2.toDomain(),
+                balance: a.item3.amount),
+          )
+          .toList();
+    } catch (e) {
+      AppLogger.instance.error("Failed to get accounts list. ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Ledger>> getLedgersByCategory(
+      {required int profileId, required List<int> accTypeIDs}) async {
+    try {
+      return (await db.getLedgersByCategory(
+              profileId: profileId, accTypeIDs: accTypeIDs))
+          .map(
+            (a) => Ledger(
+                account: a.item1.toDomain(),
+                accountType: a.item2.toDomain(),
+                balance: a.item3.amount),
+          )
+          .toList();
+    } catch (e) {
+      AppLogger.instance.error("Failed to get accounts list. ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Account>> getAccountsByCategory(
+      {required int profileId, required List<int> accTypeIDs}) async {
+    try {
+      return (await db.getAccountsByCategory(
+              profileID: profileId, accTypeIDs: accTypeIDs))
+          .map((a) => a.toDomain())
+          .toList();
+    } catch (e) {
+      AppLogger.instance.error("Failed to get accounts list. ${e.toString()}");
       rethrow;
     }
   }

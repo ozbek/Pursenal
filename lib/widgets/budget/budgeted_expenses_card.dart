@@ -2,7 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/app/global/dimensions.dart';
-import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/viewmodels/budget_viewmodel.dart';
 import 'package:pursenal/widgets/shared/progress_bar.dart';
 import 'package:pursenal/widgets/shared/the_divider.dart';
@@ -49,16 +50,15 @@ class BudgetedExpensesCard extends StatelessWidget {
                   color: Theme.of(context).scaffoldBackgroundColor),
               child: Column(
                 children: [
-                  ...viewmodel.budgetPlan.expenses.entries
-                      .mapIndexed((index, b) {
+                  ...viewmodel.budget.expenses.entries.mapIndexed((index, b) {
                     final Account acc = b.key;
 
                     int expA = viewmodel.expenseTotals.entries
-                            .firstWhereOrNull((e) => e.key.id == acc.id)
+                            .firstWhereOrNull((e) => e.key.dbID == acc.dbID)
                             ?.value ??
                         0;
 
-                    int expB = viewmodel.budgetPlan.expenses[acc] ?? 0;
+                    int expB = viewmodel.budget.expenses[acc] ?? 0;
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/db/database.dart';
-import 'package:pursenal/core/models/ledger.dart';
+import 'package:pursenal/core/models/domain/account_type.dart';
+import 'package:pursenal/core/models/domain/ledger.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/screens/balance_account_screen.dart';
 import 'package:pursenal/viewmodels/balances_viewmodel.dart';
@@ -60,13 +62,14 @@ class BalancesScreen extends StatelessWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         runAlignment: WrapAlignment.center,
                         children: [
-                          ...viewmodel.fundAccTypes.map((a) => FundsCard(
-                                accType: a,
+                          ...viewmodel.fundAccountTypes.map((a) => FundsCard(
+                                accountType: a,
                                 profile: profile,
                                 viewmodel: viewmodel,
                                 width: isWide ? 400 : null,
                                 balanceAccounts: viewmodel.funds
-                                    .where((ac) => ac.account.accType == a.id)
+                                    .where((ac) =>
+                                        ac.account.accountType == a.dbID)
                                     .toList(),
                               )),
                         ],
@@ -92,13 +95,14 @@ class BalancesScreen extends StatelessWidget {
                         alignment: WrapAlignment.center,
                         runAlignment: WrapAlignment.center,
                         children: [
-                          ...viewmodel.creditAccTypes.map((a) => FundsCard(
-                                accType: a,
+                          ...viewmodel.creditAccountTypes.map((a) => FundsCard(
+                                accountType: a,
                                 profile: profile,
                                 viewmodel: viewmodel,
                                 width: isWide ? 400 : null,
                                 balanceAccounts: viewmodel.credits
-                                    .where((ac) => ac.account.accType == a.id)
+                                    .where((ac) =>
+                                        ac.account.accountType == a.dbID)
                                     .toList(),
                               )),
                         ],
@@ -124,15 +128,15 @@ class BalancesScreen extends StatelessWidget {
                         alignment: WrapAlignment.center,
                         runAlignment: WrapAlignment.center,
                         children: [
-                          ...viewmodel.otherAccountAccTypes
+                          ...viewmodel.otherAccountAccountTypes
                               .map((a) => FundsCard(
-                                    accType: a,
+                                    accountType: a,
                                     profile: profile,
                                     viewmodel: viewmodel,
                                     width: isWide ? 400 : null,
                                     balanceAccounts: viewmodel.otherAccounts
-                                        .where(
-                                            (ac) => ac.account.accType == a.id)
+                                        .where((ac) =>
+                                            ac.account.accountType == a.dbID)
                                         .toList(),
                                   )),
                         ],
@@ -153,9 +157,9 @@ class BalancesScreen extends StatelessWidget {
             onPressed: () async {
               showDialog(
                 context: context,
-                builder: (context) => AccTypeDialog(
+                builder: (context) => AccountTypeDialog(
                   profile: profile,
-                  accTypes: viewmodel.balanceAccTypes,
+                  accountTypes: viewmodel.balanceAccountTypes,
                   initFn: () {
                     viewmodel.init();
                   },
@@ -174,14 +178,14 @@ class BalancesScreen extends StatelessWidget {
 class FundsCard extends StatelessWidget {
   const FundsCard({
     super.key,
-    required this.accType,
+    required this.accountType,
     required this.profile,
     required this.viewmodel,
     required this.balanceAccounts,
     this.width,
   });
 
-  final AccType accType;
+  final AccountType accountType;
   final Profile profile;
   final BalancesViewmodel viewmodel;
   final double? width;
@@ -189,7 +193,7 @@ class FundsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int balance = viewmodel.getBalanceByAccType(accType.id);
+    int balance = viewmodel.getBalanceByAccountType(accountType.dbID);
     return Padding(
       padding: const EdgeInsets.all(0.0),
       child: SizedBox(
@@ -210,7 +214,7 @@ class FundsCard extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => AccountEntryScreen(
                           profile: profile,
-                          accType: accType,
+                          accountType: accountType,
                         ),
                       )).then((_) {
                     viewmodel.init();
@@ -222,7 +226,7 @@ class FundsCard extends StatelessWidget {
                 initiallyExpanded: balanceAccounts.isNotEmpty,
                 minTileHeight: 64,
                 leading: Icon(
-                  getAccTypeIcon(accType.id),
+                  getAccTypeIcon(accountType.dbID),
                   color: Theme.of(context).textTheme.titleMedium?.color,
                 ),
                 backgroundColor: Theme.of(context).cardColor,
@@ -233,7 +237,7 @@ class FundsCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 title: Text(
-                  accType.name,
+                  accountType.name,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 trailing: Text(
@@ -256,7 +260,7 @@ class FundsCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       trailing: Text(
-                        f.balance.amount.toCurrencyString(profile.currency),
+                        f.balance.toCurrencyString(profile.currency),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       onTap: () async {

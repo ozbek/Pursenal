@@ -1,16 +1,18 @@
 import 'package:drift/drift.dart';
-import 'package:pursenal/core/abstracts/base_repository.dart';
+import 'package:pursenal/app/extensions/drift_models.dart';
+import 'package:pursenal/core/abstracts/wallets_repository.dart';
 import 'package:pursenal/core/db/database.dart';
+import 'package:pursenal/core/models/domain/wallet.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
-class WalletsDriftRepository
-    implements BaseRepository<Wallet, WalletsCompanion> {
+class WalletsDriftRepository implements WalletsRepository {
   WalletsDriftRepository(this.db);
   final MyDatabase db;
 
+  @override
   Future<int> insertWallet({required int account}) async {
     try {
-      final wallet = WalletsCompanion(
+      final wallet = DriftWalletsCompanion(
         account: Value(account),
       );
       return await db.insertWallet(wallet);
@@ -20,9 +22,10 @@ class WalletsDriftRepository
     }
   }
 
+  @override
   Future<bool> updateWallet({required int account, required int id}) async {
     try {
-      final wallet = WalletsCompanion(
+      final wallet = DriftWalletsCompanion(
           account: Value(account),
           id: Value(id),
           updateDate: Value(DateTime.now()));
@@ -46,7 +49,8 @@ class WalletsDriftRepository
   @override
   Future<Wallet> getById(int id) async {
     try {
-      return await db.getWalletById(id);
+      final account = (await db.getAccountbyId(id)).toDomain();
+      return (await db.getWalletById(id)).toDomain(account);
     } catch (e) {
       AppLogger.instance.error("Failed to get wallet. ${e.toString()}");
       rethrow;

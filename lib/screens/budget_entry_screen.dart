@@ -5,25 +5,26 @@ import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/models/budget_plan.dart';
+import 'package:pursenal/core/models/domain/budget.dart';
+import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/viewmodels/budget_entry_viewmodel.dart';
 import 'package:pursenal/widgets/shared/calculated_field.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BudgetEntryScreen extends StatelessWidget {
-  const BudgetEntryScreen({super.key, required this.profile, this.budgetPlan});
+  const BudgetEntryScreen({super.key, required this.profile, this.budget});
 
   final Profile profile;
 
-  final BudgetPlan? budgetPlan;
+  final Budget? budget;
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<MyDatabase>(context);
 
     return ChangeNotifierProvider<BudgetEntryViewmodel>(
       create: (context) =>
-          BudgetEntryViewmodel(db: db, profile: profile, budgetPlan: budgetPlan)
+          BudgetEntryViewmodel(db: db, profile: profile, budget: budget)
             ..init(),
       child: Consumer<BudgetEntryViewmodel>(
         builder: (context, viewmodel, child) => Scaffold(
@@ -31,7 +32,7 @@ class BudgetEntryScreen extends StatelessWidget {
             title: Text(AppLocalizations.of(context)!.budgetForm),
             actions: [
               Visibility(
-                  visible: budgetPlan != null,
+                  visible: budget != null,
                   child: IconButton(
                     onPressed: () {
                       showDialog(
@@ -182,9 +183,9 @@ class BudgetForm extends StatelessWidget {
                       ),
                       children: [
                         ...viewmodel.funds.map((e) => CheckboxListTile(
-                              value: viewmodel.selectedFunds.contains(e.id),
+                              value: viewmodel.selectedFunds.contains(e.dbID),
                               onChanged: (v) {
-                                viewmodel.toggleFund(e.id);
+                                viewmodel.toggleFund(e.dbID);
                               },
                               title: Text(e.name),
                             ))
@@ -215,11 +216,12 @@ class BudgetForm extends StatelessWidget {
                                     onChanged: (value) {
                                       if (value != null) {
                                         viewmodel.addIncome(
-                                            e.id, (value * 1000).toInt());
+                                            e.dbID, (value * 1000).toInt());
                                       }
                                     },
                                     label: e.name,
-                                    amount: viewmodel.getIncomeAmt(e.id) / 1000,
+                                    amount:
+                                        viewmodel.getIncomeAmt(e.dbID) / 1000,
                                   )),
                                 ],
                               ),
@@ -251,12 +253,12 @@ class BudgetForm extends StatelessWidget {
                                     onChanged: (value) {
                                       if (value != null) {
                                         viewmodel.addExpense(
-                                            e.id, (value * 1000).toInt());
+                                            e.dbID, (value * 1000).toInt());
                                       }
                                     },
                                     label: e.name,
                                     amount:
-                                        viewmodel.getExpenseAmt(e.id) / 1000,
+                                        viewmodel.getExpenseAmt(e.dbID) / 1000,
                                   )),
                                 ],
                               ),
