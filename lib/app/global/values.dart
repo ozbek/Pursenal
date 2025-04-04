@@ -7,7 +7,7 @@ const supportURL = "https://buymeacoffee.com/kaashier";
 
 // DB related
 
-const int cashTypeID = 0;
+const int walletTypeID = 0;
 const int bankTypeID = 1;
 const int cCardTypeID = 2;
 const int loanTypeID = 3;
@@ -18,16 +18,16 @@ const int peopleTypeID = 7;
 
 const List<int> incExpIDs = [incomeTypeID, expenseTypeID];
 
-const List<int> fundIDs = [cashTypeID, bankTypeID];
+const List<int> fundIDs = [walletTypeID, bankTypeID];
 const List<int> creditIDs = [loanTypeID, cCardTypeID];
 const List<int> fundingAccountIDs = [
-  cashTypeID,
+  walletTypeID,
   bankTypeID,
   loanTypeID,
   cCardTypeID
 ];
 const List<int> balanceAccountIDs = [
-  cashTypeID,
+  walletTypeID,
   bankTypeID,
   loanTypeID,
   cCardTypeID,

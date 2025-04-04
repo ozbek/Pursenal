@@ -129,10 +129,6 @@ class DriftWallets extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get account =>
       integer().references(DriftAccounts, #id, onDelete: KeyAction.cascade)();
-  DateTimeColumn get addedDate =>
-      dateTime().clientDefault(() => DateTime.now())();
-  DateTimeColumn get updateDate =>
-      dateTime().clientDefault(() => DateTime.now())();
 }
 
 /// Stores information about loans linked to accounts.
@@ -263,4 +259,25 @@ class DriftSubscriptions extends Table {
       dateTime().clientDefault(() => DateTime.now())(); // Date added
   DateTimeColumn get updateDate =>
       dateTime().clientDefault(() => DateTime.now())(); // Last update date
+}
+
+// Advances receivable back to the user
+class DriftReceivables extends Table {
+  IntColumn get id => integer().autoIncrement()(); // dbID
+  IntColumn get accountId =>
+      integer().references(DriftAccounts, #id, onDelete: KeyAction.cascade)();
+  IntColumn get totalAmount => integer().nullable()();
+  DateTimeColumn get paidDate => dateTime().nullable()();
+}
+
+// People. You know.
+class DriftPeople extends Table {
+  IntColumn get id => integer().autoIncrement()(); // dbID
+  IntColumn get accountId =>
+      integer().references(DriftAccounts, #id, onDelete: KeyAction.cascade)();
+  TextColumn get address => text().nullable()();
+  TextColumn get zip => text().nullable()();
+  TextColumn get email => text().nullable()();
+  TextColumn get phone => text().nullable()();
+  TextColumn get tin => text().nullable()();
 }

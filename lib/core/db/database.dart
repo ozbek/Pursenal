@@ -33,6 +33,8 @@ part 'database.g.dart';
   DriftProjects,
   DriftProjectPhotos,
   DriftSubscriptions,
+  DriftReceivables,
+  DriftPeople
 ])
 class MyDatabase extends _$MyDatabase {
   // we tell the database where to store the data with this constructor
@@ -49,7 +51,7 @@ class MyDatabase extends _$MyDatabase {
     }, onCreate: (Migrator m) async {
       await m.createAll();
       await insertAccType(const DriftAccTypesCompanion(
-          id: Value(cashTypeID),
+          id: Value(walletTypeID),
           name: Value("Wallets"),
           primary: Value(PrimaryType.asset)));
       await insertAccType(const DriftAccTypesCompanion(
@@ -1286,4 +1288,27 @@ class MyDatabase extends _$MyDatabase {
           allProjects.firstWhereOrNull((p) => p.id == transaction.project));
     }).toList();
   }
+
+  Future<int> insertReceivable(DriftReceivablesCompanion receivable) =>
+      into(driftReceivables).insert(receivable);
+  Future<bool> updateReceivable(DriftReceivablesCompanion receivable) =>
+      update(driftReceivables).replace(receivable);
+  Future<int> deleteReceivable(int id) =>
+      (delete(driftReceivables)..where((t) => t.id.equals(id))).go();
+  Future<DriftReceivable> getReceivableById(int id) =>
+      (select(driftReceivables)..where((t) => t.id.equals(id))).getSingle();
+  Future<DriftReceivable> getReceivableByAccount(int id) =>
+      (select(driftReceivables)..where((t) => t.accountId.equals(id)))
+          .getSingle();
+
+  Future<int> insertPeople(DriftPeopleCompanion people) =>
+      into(driftPeople).insert(people);
+  Future<bool> updatePeople(DriftPeopleCompanion people) =>
+      update(driftPeople).replace(people);
+  Future<int> deletePeople(int id) =>
+      (delete(driftPeople)..where((t) => t.id.equals(id))).go();
+  Future<DriftPeopleData> getPeopleById(int id) =>
+      (select(driftPeople)..where((t) => t.id.equals(id))).getSingle();
+  Future<DriftPeopleData> getPeopleByAccount(int id) =>
+      (select(driftPeople)..where((t) => t.accountId.equals(id))).getSingle();
 }

@@ -513,6 +513,138 @@ class AccountForm extends StatelessWidget {
                           .scale(
                               begin: const Offset(1.02, 1.02), duration: 100.ms)
                           .fade(curve: Curves.easeInOut, duration: 100.ms),
+
+                    if (viewmodel.accountType != null &&
+                        viewmodel.accountType!.dbID == advanceTypeID)
+                      ...[
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 8),
+                            child: CalculatedField(
+                              onChanged: (d) {
+                                if (d != null) {
+                                  viewmodel.totalAmount = (d * 1000).toInt();
+                                }
+                              },
+                              label: "Total Amount Paid",
+                              currency: viewmodel.profile.currency,
+                              amount: viewmodel.totalAmount?.toCurrency(),
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: TheDatePicker(
+                            initialDate: viewmodel.paidDate,
+                            onChanged: (d) {
+                              viewmodel.paidDate = d;
+                            },
+                            label: "Paid Date",
+                            needTime: false,
+                            datePattern: appViewmodel.dateFormat.pattern ??
+                                AppDateFormat.date1.pattern,
+                          ),
+                        ),
+                      ]
+                          .animate(delay: 100.ms)
+                          .scale(
+                              begin: const Offset(1.02, 1.02), duration: 100.ms)
+                          .fade(curve: Curves.easeInOut, duration: 100.ms),
+
+                    if (viewmodel.accountType != null &&
+                        viewmodel.accountType!.dbID == peopleTypeID)
+                      ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: TextFormField(
+                            initialValue: viewmodel.address,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.address,
+                              errorText: viewmodel.addressError != ""
+                                  ? viewmodel.addressError
+                                  : null,
+                            ),
+                            onChanged: (value) {
+                              viewmodel.address = value;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            initialValue: viewmodel.zip,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.zip,
+                              errorText: viewmodel.zipError != ""
+                                  ? viewmodel.zipError
+                                  : null,
+                            ),
+                            onChanged: (value) {
+                              viewmodel.zip = value;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: TextFormField(
+                            initialValue: viewmodel.email,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.email,
+                              errorText: viewmodel.emailError != ""
+                                  ? viewmodel.emailError
+                                  : null,
+                            ),
+                            onChanged: (value) {
+                              viewmodel.email = value;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: TextFormField(
+                            initialValue: viewmodel.phone,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.phone,
+                              errorText: viewmodel.phoneError != ""
+                                  ? viewmodel.phoneError
+                                  : null,
+                            ),
+                            onChanged: (value) {
+                              viewmodel.phone = value;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: TextFormField(
+                            initialValue: viewmodel.tin,
+                            decoration: const InputDecoration(
+                              hintText: "Business ID, Tax ID etc",
+                              labelText: "ID",
+                            ),
+                            onChanged: (value) {
+                              viewmodel.tin = value;
+                            },
+                          ),
+                        ),
+                      ]
+                          .animate(delay: 100.ms)
+                          .scale(
+                              begin: const Offset(1.02, 1.02), duration: 100.ms)
+                          .fade(curve: Curves.easeInOut, duration: 100.ms),
+
                     const SizedBox(
                       height: 50,
                     ),

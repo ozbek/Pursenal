@@ -7,6 +7,8 @@ import 'package:pursenal/core/models/domain/bank.dart';
 import 'package:pursenal/core/models/domain/credit_card.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/core/models/domain/loan.dart';
+import 'package:pursenal/core/models/domain/people.dart';
+import 'package:pursenal/core/models/domain/receivable.dart';
 import 'package:pursenal/core/models/domain/wallet.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
@@ -235,6 +237,30 @@ class AccountsDriftRepository implements AccountsRepository {
           .toList();
     } catch (e) {
       AppLogger.instance.error("Failed to get accounts list. ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<People> getPeopleByAccount(int id) async {
+    try {
+      final account = await getById(id);
+      return (await db.getPeopleByAccount(id)).toDomain(account);
+    } catch (e, stackTrace) {
+      AppLogger.instance.error(
+          "Failed to get People by Account. ${e.toString()}", [stackTrace]);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Receivable> getReceivableByAccount(int id) async {
+    try {
+      final account = await getById(id);
+      return (await db.getReceivableByAccount(id)).toDomain(account);
+    } catch (e, stackTrace) {
+      AppLogger.instance.error(
+          "Failed to get Receivable by Account. ${e.toString()}", [stackTrace]);
       rethrow;
     }
   }

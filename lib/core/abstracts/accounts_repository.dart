@@ -3,6 +3,8 @@ import 'package:pursenal/core/models/domain/bank.dart';
 import 'package:pursenal/core/models/domain/credit_card.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/core/models/domain/loan.dart';
+import 'package:pursenal/core/models/domain/people.dart';
+import 'package:pursenal/core/models/domain/receivable.dart';
 import 'package:pursenal/core/models/domain/wallet.dart';
 
 abstract class AccountsRepository {
@@ -38,6 +40,8 @@ abstract class AccountsRepository {
   Future<Bank> getBankByAccount(int id);
   Future<Loan> getLoanByAccount(int id);
   Future<CreditCard> getCCardByAccount(int id);
+  Future<People> getPeopleByAccount(int id);
+  Future<Receivable> getReceivableByAccount(int id);
 
   Future<List<Account>> getAccountsByAccType(int profileId, int accType);
 

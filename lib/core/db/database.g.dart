@@ -3090,8 +3090,14 @@ class $DriftUsersTable extends DriftUsers
           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 32),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _photoPathMeta =
+      const VerificationMeta('photoPath');
   @override
-  List<GeneratedColumn> get $columns => [id, name, deviceID];
+  late final GeneratedColumn<String> photoPath = GeneratedColumn<String>(
+      'photo_path', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, deviceID, photoPath];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3117,6 +3123,12 @@ class $DriftUsersTable extends DriftUsers
     } else if (isInserting) {
       context.missing(_deviceIDMeta);
     }
+    if (data.containsKey('photo_path')) {
+      context.handle(_photoPathMeta,
+          photoPath.isAcceptableOrUnknown(data['photo_path']!, _photoPathMeta));
+    } else if (isInserting) {
+      context.missing(_photoPathMeta);
+    }
     return context;
   }
 
@@ -3132,6 +3144,8 @@ class $DriftUsersTable extends DriftUsers
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       deviceID: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}device_i_d'])!,
+      photoPath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}photo_path'])!,
     );
   }
 
@@ -3145,14 +3159,19 @@ class DriftUser extends DataClass implements Insertable<DriftUser> {
   final int id;
   final String name;
   final String deviceID;
+  final String photoPath;
   const DriftUser(
-      {required this.id, required this.name, required this.deviceID});
+      {required this.id,
+      required this.name,
+      required this.deviceID,
+      required this.photoPath});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['device_i_d'] = Variable<String>(deviceID);
+    map['photo_path'] = Variable<String>(photoPath);
     return map;
   }
 
@@ -3161,6 +3180,7 @@ class DriftUser extends DataClass implements Insertable<DriftUser> {
       id: Value(id),
       name: Value(name),
       deviceID: Value(deviceID),
+      photoPath: Value(photoPath),
     );
   }
 
@@ -3171,6 +3191,7 @@ class DriftUser extends DataClass implements Insertable<DriftUser> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       deviceID: serializer.fromJson<String>(json['deviceID']),
+      photoPath: serializer.fromJson<String>(json['photoPath']),
     );
   }
   @override
@@ -3180,19 +3201,24 @@ class DriftUser extends DataClass implements Insertable<DriftUser> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'deviceID': serializer.toJson<String>(deviceID),
+      'photoPath': serializer.toJson<String>(photoPath),
     };
   }
 
-  DriftUser copyWith({int? id, String? name, String? deviceID}) => DriftUser(
+  DriftUser copyWith(
+          {int? id, String? name, String? deviceID, String? photoPath}) =>
+      DriftUser(
         id: id ?? this.id,
         name: name ?? this.name,
         deviceID: deviceID ?? this.deviceID,
+        photoPath: photoPath ?? this.photoPath,
       );
   DriftUser copyWithCompanion(DriftUsersCompanion data) {
     return DriftUser(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       deviceID: data.deviceID.present ? data.deviceID.value : this.deviceID,
+      photoPath: data.photoPath.present ? data.photoPath.value : this.photoPath,
     );
   }
 
@@ -3201,55 +3227,67 @@ class DriftUser extends DataClass implements Insertable<DriftUser> {
     return (StringBuffer('DriftUser(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('deviceID: $deviceID')
+          ..write('deviceID: $deviceID, ')
+          ..write('photoPath: $photoPath')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, deviceID);
+  int get hashCode => Object.hash(id, name, deviceID, photoPath);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DriftUser &&
           other.id == this.id &&
           other.name == this.name &&
-          other.deviceID == this.deviceID);
+          other.deviceID == this.deviceID &&
+          other.photoPath == this.photoPath);
 }
 
 class DriftUsersCompanion extends UpdateCompanion<DriftUser> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> deviceID;
+  final Value<String> photoPath;
   const DriftUsersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.deviceID = const Value.absent(),
+    this.photoPath = const Value.absent(),
   });
   DriftUsersCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String deviceID,
+    required String photoPath,
   })  : name = Value(name),
-        deviceID = Value(deviceID);
+        deviceID = Value(deviceID),
+        photoPath = Value(photoPath);
   static Insertable<DriftUser> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? deviceID,
+    Expression<String>? photoPath,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (deviceID != null) 'device_i_d': deviceID,
+      if (photoPath != null) 'photo_path': photoPath,
     });
   }
 
   DriftUsersCompanion copyWith(
-      {Value<int>? id, Value<String>? name, Value<String>? deviceID}) {
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? deviceID,
+      Value<String>? photoPath}) {
     return DriftUsersCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       deviceID: deviceID ?? this.deviceID,
+      photoPath: photoPath ?? this.photoPath,
     );
   }
 
@@ -3265,6 +3303,9 @@ class DriftUsersCompanion extends UpdateCompanion<DriftUser> {
     if (deviceID.present) {
       map['device_i_d'] = Variable<String>(deviceID.value);
     }
+    if (photoPath.present) {
+      map['photo_path'] = Variable<String>(photoPath.value);
+    }
     return map;
   }
 
@@ -3273,7 +3314,8 @@ class DriftUsersCompanion extends UpdateCompanion<DriftUser> {
     return (StringBuffer('DriftUsersCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('deviceID: $deviceID')
+          ..write('deviceID: $deviceID, ')
+          ..write('photoPath: $photoPath')
           ..write(')'))
         .toString();
   }
@@ -3707,24 +3749,8 @@ class $DriftWalletsTable extends DriftWallets
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
-  static const VerificationMeta _addedDateMeta =
-      const VerificationMeta('addedDate');
   @override
-  late final GeneratedColumn<DateTime> addedDate = GeneratedColumn<DateTime>(
-      'added_date', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      clientDefault: () => DateTime.now());
-  static const VerificationMeta _updateDateMeta =
-      const VerificationMeta('updateDate');
-  @override
-  late final GeneratedColumn<DateTime> updateDate = GeneratedColumn<DateTime>(
-      'update_date', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      clientDefault: () => DateTime.now());
-  @override
-  List<GeneratedColumn> get $columns => [id, account, addedDate, updateDate];
+  List<GeneratedColumn> get $columns => [id, account];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3744,16 +3770,6 @@ class $DriftWalletsTable extends DriftWallets
     } else if (isInserting) {
       context.missing(_accountMeta);
     }
-    if (data.containsKey('added_date')) {
-      context.handle(_addedDateMeta,
-          addedDate.isAcceptableOrUnknown(data['added_date']!, _addedDateMeta));
-    }
-    if (data.containsKey('update_date')) {
-      context.handle(
-          _updateDateMeta,
-          updateDate.isAcceptableOrUnknown(
-              data['update_date']!, _updateDateMeta));
-    }
     return context;
   }
 
@@ -3767,10 +3783,6 @@ class $DriftWalletsTable extends DriftWallets
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       account: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}account'])!,
-      addedDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}added_date'])!,
-      updateDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_date'])!,
     );
   }
 
@@ -3783,20 +3795,12 @@ class $DriftWalletsTable extends DriftWallets
 class DriftWallet extends DataClass implements Insertable<DriftWallet> {
   final int id;
   final int account;
-  final DateTime addedDate;
-  final DateTime updateDate;
-  const DriftWallet(
-      {required this.id,
-      required this.account,
-      required this.addedDate,
-      required this.updateDate});
+  const DriftWallet({required this.id, required this.account});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['account'] = Variable<int>(account);
-    map['added_date'] = Variable<DateTime>(addedDate);
-    map['update_date'] = Variable<DateTime>(updateDate);
     return map;
   }
 
@@ -3804,8 +3808,6 @@ class DriftWallet extends DataClass implements Insertable<DriftWallet> {
     return DriftWalletsCompanion(
       id: Value(id),
       account: Value(account),
-      addedDate: Value(addedDate),
-      updateDate: Value(updateDate),
     );
   }
 
@@ -3815,8 +3817,6 @@ class DriftWallet extends DataClass implements Insertable<DriftWallet> {
     return DriftWallet(
       id: serializer.fromJson<int>(json['id']),
       account: serializer.fromJson<int>(json['account']),
-      addedDate: serializer.fromJson<DateTime>(json['addedDate']),
-      updateDate: serializer.fromJson<DateTime>(json['updateDate']),
     );
   }
   @override
@@ -3825,26 +3825,17 @@ class DriftWallet extends DataClass implements Insertable<DriftWallet> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'account': serializer.toJson<int>(account),
-      'addedDate': serializer.toJson<DateTime>(addedDate),
-      'updateDate': serializer.toJson<DateTime>(updateDate),
     };
   }
 
-  DriftWallet copyWith(
-          {int? id, int? account, DateTime? addedDate, DateTime? updateDate}) =>
-      DriftWallet(
+  DriftWallet copyWith({int? id, int? account}) => DriftWallet(
         id: id ?? this.id,
         account: account ?? this.account,
-        addedDate: addedDate ?? this.addedDate,
-        updateDate: updateDate ?? this.updateDate,
       );
   DriftWallet copyWithCompanion(DriftWalletsCompanion data) {
     return DriftWallet(
       id: data.id.present ? data.id.value : this.id,
       account: data.account.present ? data.account.value : this.account,
-      addedDate: data.addedDate.present ? data.addedDate.value : this.addedDate,
-      updateDate:
-          data.updateDate.present ? data.updateDate.value : this.updateDate,
     );
   }
 
@@ -3852,66 +3843,46 @@ class DriftWallet extends DataClass implements Insertable<DriftWallet> {
   String toString() {
     return (StringBuffer('DriftWallet(')
           ..write('id: $id, ')
-          ..write('account: $account, ')
-          ..write('addedDate: $addedDate, ')
-          ..write('updateDate: $updateDate')
+          ..write('account: $account')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, account, addedDate, updateDate);
+  int get hashCode => Object.hash(id, account);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DriftWallet &&
           other.id == this.id &&
-          other.account == this.account &&
-          other.addedDate == this.addedDate &&
-          other.updateDate == this.updateDate);
+          other.account == this.account);
 }
 
 class DriftWalletsCompanion extends UpdateCompanion<DriftWallet> {
   final Value<int> id;
   final Value<int> account;
-  final Value<DateTime> addedDate;
-  final Value<DateTime> updateDate;
   const DriftWalletsCompanion({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
-    this.addedDate = const Value.absent(),
-    this.updateDate = const Value.absent(),
   });
   DriftWalletsCompanion.insert({
     this.id = const Value.absent(),
     required int account,
-    this.addedDate = const Value.absent(),
-    this.updateDate = const Value.absent(),
   }) : account = Value(account);
   static Insertable<DriftWallet> custom({
     Expression<int>? id,
     Expression<int>? account,
-    Expression<DateTime>? addedDate,
-    Expression<DateTime>? updateDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (account != null) 'account': account,
-      if (addedDate != null) 'added_date': addedDate,
-      if (updateDate != null) 'update_date': updateDate,
     });
   }
 
-  DriftWalletsCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? account,
-      Value<DateTime>? addedDate,
-      Value<DateTime>? updateDate}) {
+  DriftWalletsCompanion copyWith({Value<int>? id, Value<int>? account}) {
     return DriftWalletsCompanion(
       id: id ?? this.id,
       account: account ?? this.account,
-      addedDate: addedDate ?? this.addedDate,
-      updateDate: updateDate ?? this.updateDate,
     );
   }
 
@@ -3924,12 +3895,6 @@ class DriftWalletsCompanion extends UpdateCompanion<DriftWallet> {
     if (account.present) {
       map['account'] = Variable<int>(account.value);
     }
-    if (addedDate.present) {
-      map['added_date'] = Variable<DateTime>(addedDate.value);
-    }
-    if (updateDate.present) {
-      map['update_date'] = Variable<DateTime>(updateDate.value);
-    }
     return map;
   }
 
@@ -3937,9 +3902,7 @@ class DriftWalletsCompanion extends UpdateCompanion<DriftWallet> {
   String toString() {
     return (StringBuffer('DriftWalletsCompanion(')
           ..write('id: $id, ')
-          ..write('account: $account, ')
-          ..write('addedDate: $addedDate, ')
-          ..write('updateDate: $updateDate')
+          ..write('account: $account')
           ..write(')'))
         .toString();
   }
@@ -6333,6 +6296,647 @@ class DriftSubscriptionsCompanion extends UpdateCompanion<DriftSubscription> {
   }
 }
 
+class $DriftReceivablesTable extends DriftReceivables
+    with TableInfo<$DriftReceivablesTable, DriftReceivable> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DriftReceivablesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _accountIdMeta =
+      const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<int> accountId = GeneratedColumn<int>(
+      'account_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
+  static const VerificationMeta _totalAmountMeta =
+      const VerificationMeta('totalAmount');
+  @override
+  late final GeneratedColumn<int> totalAmount = GeneratedColumn<int>(
+      'total_amount', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _paidDateMeta =
+      const VerificationMeta('paidDate');
+  @override
+  late final GeneratedColumn<DateTime> paidDate = GeneratedColumn<DateTime>(
+      'paid_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, accountId, totalAmount, paidDate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'drift_receivables';
+  @override
+  VerificationContext validateIntegrity(Insertable<DriftReceivable> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta,
+          accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('total_amount')) {
+      context.handle(
+          _totalAmountMeta,
+          totalAmount.isAcceptableOrUnknown(
+              data['total_amount']!, _totalAmountMeta));
+    }
+    if (data.containsKey('paid_date')) {
+      context.handle(_paidDateMeta,
+          paidDate.isAcceptableOrUnknown(data['paid_date']!, _paidDateMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DriftReceivable map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftReceivable(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      accountId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}account_id'])!,
+      totalAmount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}total_amount']),
+      paidDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}paid_date']),
+    );
+  }
+
+  @override
+  $DriftReceivablesTable createAlias(String alias) {
+    return $DriftReceivablesTable(attachedDatabase, alias);
+  }
+}
+
+class DriftReceivable extends DataClass implements Insertable<DriftReceivable> {
+  final int id;
+  final int accountId;
+  final int? totalAmount;
+  final DateTime? paidDate;
+  const DriftReceivable(
+      {required this.id,
+      required this.accountId,
+      this.totalAmount,
+      this.paidDate});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['account_id'] = Variable<int>(accountId);
+    if (!nullToAbsent || totalAmount != null) {
+      map['total_amount'] = Variable<int>(totalAmount);
+    }
+    if (!nullToAbsent || paidDate != null) {
+      map['paid_date'] = Variable<DateTime>(paidDate);
+    }
+    return map;
+  }
+
+  DriftReceivablesCompanion toCompanion(bool nullToAbsent) {
+    return DriftReceivablesCompanion(
+      id: Value(id),
+      accountId: Value(accountId),
+      totalAmount: totalAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(totalAmount),
+      paidDate: paidDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(paidDate),
+    );
+  }
+
+  factory DriftReceivable.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftReceivable(
+      id: serializer.fromJson<int>(json['id']),
+      accountId: serializer.fromJson<int>(json['accountId']),
+      totalAmount: serializer.fromJson<int?>(json['totalAmount']),
+      paidDate: serializer.fromJson<DateTime?>(json['paidDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'accountId': serializer.toJson<int>(accountId),
+      'totalAmount': serializer.toJson<int?>(totalAmount),
+      'paidDate': serializer.toJson<DateTime?>(paidDate),
+    };
+  }
+
+  DriftReceivable copyWith(
+          {int? id,
+          int? accountId,
+          Value<int?> totalAmount = const Value.absent(),
+          Value<DateTime?> paidDate = const Value.absent()}) =>
+      DriftReceivable(
+        id: id ?? this.id,
+        accountId: accountId ?? this.accountId,
+        totalAmount: totalAmount.present ? totalAmount.value : this.totalAmount,
+        paidDate: paidDate.present ? paidDate.value : this.paidDate,
+      );
+  DriftReceivable copyWithCompanion(DriftReceivablesCompanion data) {
+    return DriftReceivable(
+      id: data.id.present ? data.id.value : this.id,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      totalAmount:
+          data.totalAmount.present ? data.totalAmount.value : this.totalAmount,
+      paidDate: data.paidDate.present ? data.paidDate.value : this.paidDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftReceivable(')
+          ..write('id: $id, ')
+          ..write('accountId: $accountId, ')
+          ..write('totalAmount: $totalAmount, ')
+          ..write('paidDate: $paidDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, accountId, totalAmount, paidDate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftReceivable &&
+          other.id == this.id &&
+          other.accountId == this.accountId &&
+          other.totalAmount == this.totalAmount &&
+          other.paidDate == this.paidDate);
+}
+
+class DriftReceivablesCompanion extends UpdateCompanion<DriftReceivable> {
+  final Value<int> id;
+  final Value<int> accountId;
+  final Value<int?> totalAmount;
+  final Value<DateTime?> paidDate;
+  const DriftReceivablesCompanion({
+    this.id = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.totalAmount = const Value.absent(),
+    this.paidDate = const Value.absent(),
+  });
+  DriftReceivablesCompanion.insert({
+    this.id = const Value.absent(),
+    required int accountId,
+    this.totalAmount = const Value.absent(),
+    this.paidDate = const Value.absent(),
+  }) : accountId = Value(accountId);
+  static Insertable<DriftReceivable> custom({
+    Expression<int>? id,
+    Expression<int>? accountId,
+    Expression<int>? totalAmount,
+    Expression<DateTime>? paidDate,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (accountId != null) 'account_id': accountId,
+      if (totalAmount != null) 'total_amount': totalAmount,
+      if (paidDate != null) 'paid_date': paidDate,
+    });
+  }
+
+  DriftReceivablesCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? accountId,
+      Value<int?>? totalAmount,
+      Value<DateTime?>? paidDate}) {
+    return DriftReceivablesCompanion(
+      id: id ?? this.id,
+      accountId: accountId ?? this.accountId,
+      totalAmount: totalAmount ?? this.totalAmount,
+      paidDate: paidDate ?? this.paidDate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<int>(accountId.value);
+    }
+    if (totalAmount.present) {
+      map['total_amount'] = Variable<int>(totalAmount.value);
+    }
+    if (paidDate.present) {
+      map['paid_date'] = Variable<DateTime>(paidDate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftReceivablesCompanion(')
+          ..write('id: $id, ')
+          ..write('accountId: $accountId, ')
+          ..write('totalAmount: $totalAmount, ')
+          ..write('paidDate: $paidDate')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DriftPeopleTable extends DriftPeople
+    with TableInfo<$DriftPeopleTable, DriftPeopleData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DriftPeopleTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _accountIdMeta =
+      const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<int> accountId = GeneratedColumn<int>(
+      'account_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES drift_accounts (id) ON DELETE CASCADE'));
+  static const VerificationMeta _addressMeta =
+      const VerificationMeta('address');
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+      'address', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _zipMeta = const VerificationMeta('zip');
+  @override
+  late final GeneratedColumn<String> zip = GeneratedColumn<String>(
+      'zip', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+      'email', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+      'phone', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _tinMeta = const VerificationMeta('tin');
+  @override
+  late final GeneratedColumn<String> tin = GeneratedColumn<String>(
+      'tin', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, accountId, address, zip, email, phone, tin];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'drift_people';
+  @override
+  VerificationContext validateIntegrity(Insertable<DriftPeopleData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta,
+          accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('address')) {
+      context.handle(_addressMeta,
+          address.isAcceptableOrUnknown(data['address']!, _addressMeta));
+    }
+    if (data.containsKey('zip')) {
+      context.handle(
+          _zipMeta, zip.isAcceptableOrUnknown(data['zip']!, _zipMeta));
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+          _emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+          _phoneMeta, phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta));
+    }
+    if (data.containsKey('tin')) {
+      context.handle(
+          _tinMeta, tin.isAcceptableOrUnknown(data['tin']!, _tinMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DriftPeopleData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftPeopleData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      accountId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}account_id'])!,
+      address: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}address']),
+      zip: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}zip']),
+      email: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}email']),
+      phone: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}phone']),
+      tin: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}tin']),
+    );
+  }
+
+  @override
+  $DriftPeopleTable createAlias(String alias) {
+    return $DriftPeopleTable(attachedDatabase, alias);
+  }
+}
+
+class DriftPeopleData extends DataClass implements Insertable<DriftPeopleData> {
+  final int id;
+  final int accountId;
+  final String? address;
+  final String? zip;
+  final String? email;
+  final String? phone;
+  final String? tin;
+  const DriftPeopleData(
+      {required this.id,
+      required this.accountId,
+      this.address,
+      this.zip,
+      this.email,
+      this.phone,
+      this.tin});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['account_id'] = Variable<int>(accountId);
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || zip != null) {
+      map['zip'] = Variable<String>(zip);
+    }
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || tin != null) {
+      map['tin'] = Variable<String>(tin);
+    }
+    return map;
+  }
+
+  DriftPeopleCompanion toCompanion(bool nullToAbsent) {
+    return DriftPeopleCompanion(
+      id: Value(id),
+      accountId: Value(accountId),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      zip: zip == null && nullToAbsent ? const Value.absent() : Value(zip),
+      email:
+          email == null && nullToAbsent ? const Value.absent() : Value(email),
+      phone:
+          phone == null && nullToAbsent ? const Value.absent() : Value(phone),
+      tin: tin == null && nullToAbsent ? const Value.absent() : Value(tin),
+    );
+  }
+
+  factory DriftPeopleData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftPeopleData(
+      id: serializer.fromJson<int>(json['id']),
+      accountId: serializer.fromJson<int>(json['accountId']),
+      address: serializer.fromJson<String?>(json['address']),
+      zip: serializer.fromJson<String?>(json['zip']),
+      email: serializer.fromJson<String?>(json['email']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      tin: serializer.fromJson<String?>(json['tin']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'accountId': serializer.toJson<int>(accountId),
+      'address': serializer.toJson<String?>(address),
+      'zip': serializer.toJson<String?>(zip),
+      'email': serializer.toJson<String?>(email),
+      'phone': serializer.toJson<String?>(phone),
+      'tin': serializer.toJson<String?>(tin),
+    };
+  }
+
+  DriftPeopleData copyWith(
+          {int? id,
+          int? accountId,
+          Value<String?> address = const Value.absent(),
+          Value<String?> zip = const Value.absent(),
+          Value<String?> email = const Value.absent(),
+          Value<String?> phone = const Value.absent(),
+          Value<String?> tin = const Value.absent()}) =>
+      DriftPeopleData(
+        id: id ?? this.id,
+        accountId: accountId ?? this.accountId,
+        address: address.present ? address.value : this.address,
+        zip: zip.present ? zip.value : this.zip,
+        email: email.present ? email.value : this.email,
+        phone: phone.present ? phone.value : this.phone,
+        tin: tin.present ? tin.value : this.tin,
+      );
+  DriftPeopleData copyWithCompanion(DriftPeopleCompanion data) {
+    return DriftPeopleData(
+      id: data.id.present ? data.id.value : this.id,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      address: data.address.present ? data.address.value : this.address,
+      zip: data.zip.present ? data.zip.value : this.zip,
+      email: data.email.present ? data.email.value : this.email,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      tin: data.tin.present ? data.tin.value : this.tin,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftPeopleData(')
+          ..write('id: $id, ')
+          ..write('accountId: $accountId, ')
+          ..write('address: $address, ')
+          ..write('zip: $zip, ')
+          ..write('email: $email, ')
+          ..write('phone: $phone, ')
+          ..write('tin: $tin')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, accountId, address, zip, email, phone, tin);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftPeopleData &&
+          other.id == this.id &&
+          other.accountId == this.accountId &&
+          other.address == this.address &&
+          other.zip == this.zip &&
+          other.email == this.email &&
+          other.phone == this.phone &&
+          other.tin == this.tin);
+}
+
+class DriftPeopleCompanion extends UpdateCompanion<DriftPeopleData> {
+  final Value<int> id;
+  final Value<int> accountId;
+  final Value<String?> address;
+  final Value<String?> zip;
+  final Value<String?> email;
+  final Value<String?> phone;
+  final Value<String?> tin;
+  const DriftPeopleCompanion({
+    this.id = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.address = const Value.absent(),
+    this.zip = const Value.absent(),
+    this.email = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.tin = const Value.absent(),
+  });
+  DriftPeopleCompanion.insert({
+    this.id = const Value.absent(),
+    required int accountId,
+    this.address = const Value.absent(),
+    this.zip = const Value.absent(),
+    this.email = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.tin = const Value.absent(),
+  }) : accountId = Value(accountId);
+  static Insertable<DriftPeopleData> custom({
+    Expression<int>? id,
+    Expression<int>? accountId,
+    Expression<String>? address,
+    Expression<String>? zip,
+    Expression<String>? email,
+    Expression<String>? phone,
+    Expression<String>? tin,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (accountId != null) 'account_id': accountId,
+      if (address != null) 'address': address,
+      if (zip != null) 'zip': zip,
+      if (email != null) 'email': email,
+      if (phone != null) 'phone': phone,
+      if (tin != null) 'tin': tin,
+    });
+  }
+
+  DriftPeopleCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? accountId,
+      Value<String?>? address,
+      Value<String?>? zip,
+      Value<String?>? email,
+      Value<String?>? phone,
+      Value<String?>? tin}) {
+    return DriftPeopleCompanion(
+      id: id ?? this.id,
+      accountId: accountId ?? this.accountId,
+      address: address ?? this.address,
+      zip: zip ?? this.zip,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      tin: tin ?? this.tin,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<int>(accountId.value);
+    }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (zip.present) {
+      map['zip'] = Variable<String>(zip.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (tin.present) {
+      map['tin'] = Variable<String>(tin.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftPeopleCompanion(')
+          ..write('id: $id, ')
+          ..write('accountId: $accountId, ')
+          ..write('address: $address, ')
+          ..write('zip: $zip, ')
+          ..write('email: $email, ')
+          ..write('phone: $phone, ')
+          ..write('tin: $tin')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MyDatabase extends GeneratedDatabase {
   _$MyDatabase(QueryExecutor e) : super(e);
   $MyDatabaseManager get managers => $MyDatabaseManager(this);
@@ -6359,6 +6963,9 @@ abstract class _$MyDatabase extends GeneratedDatabase {
       $DriftProjectPhotosTable(this);
   late final $DriftSubscriptionsTable driftSubscriptions =
       $DriftSubscriptionsTable(this);
+  late final $DriftReceivablesTable driftReceivables =
+      $DriftReceivablesTable(this);
+  late final $DriftPeopleTable driftPeople = $DriftPeopleTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6380,7 +6987,9 @@ abstract class _$MyDatabase extends GeneratedDatabase {
         driftBudgetAccounts,
         driftBudgetFunds,
         driftProjectPhotos,
-        driftSubscriptions
+        driftSubscriptions,
+        driftReceivables,
+        driftPeople
       ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
@@ -6537,6 +7146,20 @@ abstract class _$MyDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('drift_subscriptions', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('drift_accounts',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('drift_receivables', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('drift_accounts',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('drift_people', kind: UpdateKind.delete),
             ],
           ),
         ],
@@ -7724,6 +8347,38 @@ final class $$DriftAccountsTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$DriftReceivablesTable, List<DriftReceivable>>
+      _driftReceivablesRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftReceivables,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftReceivables.accountId));
+
+  $$DriftReceivablesTableProcessedTableManager get driftReceivablesRefs {
+    final manager =
+        $$DriftReceivablesTableTableManager($_db, $_db.driftReceivables)
+            .filter((f) => f.accountId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_driftReceivablesRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DriftPeopleTable, List<DriftPeopleData>>
+      _driftPeopleRefsTable(_$MyDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftPeople,
+              aliasName: $_aliasNameGenerator(
+                  db.driftAccounts.id, db.driftPeople.accountId));
+
+  $$DriftPeopleTableProcessedTableManager get driftPeopleRefs {
+    final manager = $$DriftPeopleTableTableManager($_db, $_db.driftPeople)
+        .filter((f) => f.accountId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_driftPeopleRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$DriftAccountsTableFilterComposer
@@ -7998,6 +8653,48 @@ class $$DriftAccountsTableFilterComposer
             $$DriftSubscriptionsTableFilterComposer(
               $db: $db,
               $table: $db.driftSubscriptions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> driftReceivablesRefs(
+      Expression<bool> Function($$DriftReceivablesTableFilterComposer f) f) {
+    final $$DriftReceivablesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.driftReceivables,
+        getReferencedColumn: (t) => t.accountId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftReceivablesTableFilterComposer(
+              $db: $db,
+              $table: $db.driftReceivables,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> driftPeopleRefs(
+      Expression<bool> Function($$DriftPeopleTableFilterComposer f) f) {
+    final $$DriftPeopleTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.driftPeople,
+        getReferencedColumn: (t) => t.accountId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftPeopleTableFilterComposer(
+              $db: $db,
+              $table: $db.driftPeople,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8362,6 +9059,48 @@ class $$DriftAccountsTableAnnotationComposer
                 ));
     return f(composer);
   }
+
+  Expression<T> driftReceivablesRefs<T extends Object>(
+      Expression<T> Function($$DriftReceivablesTableAnnotationComposer a) f) {
+    final $$DriftReceivablesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.driftReceivables,
+        getReferencedColumn: (t) => t.accountId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftReceivablesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.driftReceivables,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> driftPeopleRefs<T extends Object>(
+      Expression<T> Function($$DriftPeopleTableAnnotationComposer a) f) {
+    final $$DriftPeopleTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.driftPeople,
+        getReferencedColumn: (t) => t.accountId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftPeopleTableAnnotationComposer(
+              $db: $db,
+              $table: $db.driftPeople,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$DriftAccountsTableTableManager extends RootTableManager<
@@ -8387,7 +9126,9 @@ class $$DriftAccountsTableTableManager extends RootTableManager<
         bool driftBalancesRefs,
         bool driftBudgetAccountsRefs,
         bool driftBudgetFundsRefs,
-        bool driftSubscriptionsRefs})> {
+        bool driftSubscriptionsRefs,
+        bool driftReceivablesRefs,
+        bool driftPeopleRefs})> {
   $$DriftAccountsTableTableManager(_$MyDatabase db, $DriftAccountsTable table)
       : super(TableManagerState(
           db: db,
@@ -8460,7 +9201,9 @@ class $$DriftAccountsTableTableManager extends RootTableManager<
               driftBalancesRefs = false,
               driftBudgetAccountsRefs = false,
               driftBudgetFundsRefs = false,
-              driftSubscriptionsRefs = false}) {
+              driftSubscriptionsRefs = false,
+              driftReceivablesRefs = false,
+              driftPeopleRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -8473,7 +9216,9 @@ class $$DriftAccountsTableTableManager extends RootTableManager<
                 if (driftBalancesRefs) db.driftBalances,
                 if (driftBudgetAccountsRefs) db.driftBudgetAccounts,
                 if (driftBudgetFundsRefs) db.driftBudgetFunds,
-                if (driftSubscriptionsRefs) db.driftSubscriptions
+                if (driftSubscriptionsRefs) db.driftSubscriptions,
+                if (driftReceivablesRefs) db.driftReceivables,
+                if (driftPeopleRefs) db.driftPeople
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -8642,6 +9387,32 @@ class $$DriftAccountsTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.account == item.id),
+                        typedResults: items),
+                  if (driftReceivablesRefs)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftReceivable>(
+                        currentTable: table,
+                        referencedTable: $$DriftAccountsTableReferences
+                            ._driftReceivablesRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .driftReceivablesRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.accountId == item.id),
+                        typedResults: items),
+                  if (driftPeopleRefs)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftPeopleData>(
+                        currentTable: table,
+                        referencedTable: $$DriftAccountsTableReferences
+                            ._driftPeopleRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .driftPeopleRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.accountId == item.id),
                         typedResults: items)
                 ];
               },
@@ -8673,7 +9444,9 @@ typedef $$DriftAccountsTableProcessedTableManager = ProcessedTableManager<
         bool driftBalancesRefs,
         bool driftBudgetAccountsRefs,
         bool driftBudgetFundsRefs,
-        bool driftSubscriptionsRefs})>;
+        bool driftSubscriptionsRefs,
+        bool driftReceivablesRefs,
+        bool driftPeopleRefs})>;
 typedef $$DriftBudgetsTableCreateCompanionBuilder = DriftBudgetsCompanion
     Function({
   Value<int> id,
@@ -10531,11 +11304,13 @@ typedef $$DriftUsersTableCreateCompanionBuilder = DriftUsersCompanion Function({
   Value<int> id,
   required String name,
   required String deviceID,
+  required String photoPath,
 });
 typedef $$DriftUsersTableUpdateCompanionBuilder = DriftUsersCompanion Function({
   Value<int> id,
   Value<String> name,
   Value<String> deviceID,
+  Value<String> photoPath,
 });
 
 class $$DriftUsersTableFilterComposer
@@ -10555,6 +11330,9 @@ class $$DriftUsersTableFilterComposer
 
   ColumnFilters<String> get deviceID => $composableBuilder(
       column: $table.deviceID, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get photoPath => $composableBuilder(
+      column: $table.photoPath, builder: (column) => ColumnFilters(column));
 }
 
 class $$DriftUsersTableOrderingComposer
@@ -10574,6 +11352,9 @@ class $$DriftUsersTableOrderingComposer
 
   ColumnOrderings<String> get deviceID => $composableBuilder(
       column: $table.deviceID, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get photoPath => $composableBuilder(
+      column: $table.photoPath, builder: (column) => ColumnOrderings(column));
 }
 
 class $$DriftUsersTableAnnotationComposer
@@ -10593,6 +11374,9 @@ class $$DriftUsersTableAnnotationComposer
 
   GeneratedColumn<String> get deviceID =>
       $composableBuilder(column: $table.deviceID, builder: (column) => column);
+
+  GeneratedColumn<String> get photoPath =>
+      $composableBuilder(column: $table.photoPath, builder: (column) => column);
 }
 
 class $$DriftUsersTableTableManager extends RootTableManager<
@@ -10621,21 +11405,25 @@ class $$DriftUsersTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> deviceID = const Value.absent(),
+            Value<String> photoPath = const Value.absent(),
           }) =>
               DriftUsersCompanion(
             id: id,
             name: name,
             deviceID: deviceID,
+            photoPath: photoPath,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
             required String deviceID,
+            required String photoPath,
           }) =>
               DriftUsersCompanion.insert(
             id: id,
             name: name,
             deviceID: deviceID,
+            photoPath: photoPath,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -10957,15 +11745,11 @@ typedef $$DriftWalletsTableCreateCompanionBuilder = DriftWalletsCompanion
     Function({
   Value<int> id,
   required int account,
-  Value<DateTime> addedDate,
-  Value<DateTime> updateDate,
 });
 typedef $$DriftWalletsTableUpdateCompanionBuilder = DriftWalletsCompanion
     Function({
   Value<int> id,
   Value<int> account,
-  Value<DateTime> addedDate,
-  Value<DateTime> updateDate,
 });
 
 final class $$DriftWalletsTableReferences
@@ -11000,12 +11784,6 @@ class $$DriftWalletsTableFilterComposer
   ColumnFilters<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get addedDate => $composableBuilder(
-      column: $table.addedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get updateDate => $composableBuilder(
-      column: $table.updateDate, builder: (column) => ColumnFilters(column));
-
   $$DriftAccountsTableFilterComposer get account {
     final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -11039,12 +11817,6 @@ class $$DriftWalletsTableOrderingComposer
   ColumnOrderings<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get addedDate => $composableBuilder(
-      column: $table.addedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get updateDate => $composableBuilder(
-      column: $table.updateDate, builder: (column) => ColumnOrderings(column));
-
   $$DriftAccountsTableOrderingComposer get account {
     final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -11077,12 +11849,6 @@ class $$DriftWalletsTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get addedDate =>
-      $composableBuilder(column: $table.addedDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updateDate => $composableBuilder(
-      column: $table.updateDate, builder: (column) => column);
 
   $$DriftAccountsTableAnnotationComposer get account {
     final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
@@ -11130,26 +11896,18 @@ class $$DriftWalletsTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> account = const Value.absent(),
-            Value<DateTime> addedDate = const Value.absent(),
-            Value<DateTime> updateDate = const Value.absent(),
           }) =>
               DriftWalletsCompanion(
             id: id,
             account: account,
-            addedDate: addedDate,
-            updateDate: updateDate,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required int account,
-            Value<DateTime> addedDate = const Value.absent(),
-            Value<DateTime> updateDate = const Value.absent(),
           }) =>
               DriftWalletsCompanion.insert(
             id: id,
             account: account,
-            addedDate: addedDate,
-            updateDate: updateDate,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
@@ -13586,6 +14344,562 @@ typedef $$DriftSubscriptionsTableProcessedTableManager = ProcessedTableManager<
     (DriftSubscription, $$DriftSubscriptionsTableReferences),
     DriftSubscription,
     PrefetchHooks Function({bool account, bool profile})>;
+typedef $$DriftReceivablesTableCreateCompanionBuilder
+    = DriftReceivablesCompanion Function({
+  Value<int> id,
+  required int accountId,
+  Value<int?> totalAmount,
+  Value<DateTime?> paidDate,
+});
+typedef $$DriftReceivablesTableUpdateCompanionBuilder
+    = DriftReceivablesCompanion Function({
+  Value<int> id,
+  Value<int> accountId,
+  Value<int?> totalAmount,
+  Value<DateTime?> paidDate,
+});
+
+final class $$DriftReceivablesTableReferences extends BaseReferences<
+    _$MyDatabase, $DriftReceivablesTable, DriftReceivable> {
+  $$DriftReceivablesTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $DriftAccountsTable _accountIdTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias($_aliasNameGenerator(
+          db.driftReceivables.accountId, db.driftAccounts.id));
+
+  $$DriftAccountsTableProcessedTableManager get accountId {
+    final $_column = $_itemColumn<int>('account_id')!;
+
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$DriftReceivablesTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftReceivablesTable> {
+  $$DriftReceivablesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get totalAmount => $composableBuilder(
+      column: $table.totalAmount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get paidDate => $composableBuilder(
+      column: $table.paidDate, builder: (column) => ColumnFilters(column));
+
+  $$DriftAccountsTableFilterComposer get accountId {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.accountId,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableFilterComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftReceivablesTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftReceivablesTable> {
+  $$DriftReceivablesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get totalAmount => $composableBuilder(
+      column: $table.totalAmount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get paidDate => $composableBuilder(
+      column: $table.paidDate, builder: (column) => ColumnOrderings(column));
+
+  $$DriftAccountsTableOrderingComposer get accountId {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.accountId,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableOrderingComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftReceivablesTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftReceivablesTable> {
+  $$DriftReceivablesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get totalAmount => $composableBuilder(
+      column: $table.totalAmount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get paidDate =>
+      $composableBuilder(column: $table.paidDate, builder: (column) => column);
+
+  $$DriftAccountsTableAnnotationComposer get accountId {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.accountId,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftReceivablesTableTableManager extends RootTableManager<
+    _$MyDatabase,
+    $DriftReceivablesTable,
+    DriftReceivable,
+    $$DriftReceivablesTableFilterComposer,
+    $$DriftReceivablesTableOrderingComposer,
+    $$DriftReceivablesTableAnnotationComposer,
+    $$DriftReceivablesTableCreateCompanionBuilder,
+    $$DriftReceivablesTableUpdateCompanionBuilder,
+    (DriftReceivable, $$DriftReceivablesTableReferences),
+    DriftReceivable,
+    PrefetchHooks Function({bool accountId})> {
+  $$DriftReceivablesTableTableManager(
+      _$MyDatabase db, $DriftReceivablesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DriftReceivablesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DriftReceivablesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DriftReceivablesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> accountId = const Value.absent(),
+            Value<int?> totalAmount = const Value.absent(),
+            Value<DateTime?> paidDate = const Value.absent(),
+          }) =>
+              DriftReceivablesCompanion(
+            id: id,
+            accountId: accountId,
+            totalAmount: totalAmount,
+            paidDate: paidDate,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int accountId,
+            Value<int?> totalAmount = const Value.absent(),
+            Value<DateTime?> paidDate = const Value.absent(),
+          }) =>
+              DriftReceivablesCompanion.insert(
+            id: id,
+            accountId: accountId,
+            totalAmount: totalAmount,
+            paidDate: paidDate,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftReceivablesTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({accountId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (accountId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.accountId,
+                    referencedTable:
+                        $$DriftReceivablesTableReferences._accountIdTable(db),
+                    referencedColumn: $$DriftReceivablesTableReferences
+                        ._accountIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$DriftReceivablesTableProcessedTableManager = ProcessedTableManager<
+    _$MyDatabase,
+    $DriftReceivablesTable,
+    DriftReceivable,
+    $$DriftReceivablesTableFilterComposer,
+    $$DriftReceivablesTableOrderingComposer,
+    $$DriftReceivablesTableAnnotationComposer,
+    $$DriftReceivablesTableCreateCompanionBuilder,
+    $$DriftReceivablesTableUpdateCompanionBuilder,
+    (DriftReceivable, $$DriftReceivablesTableReferences),
+    DriftReceivable,
+    PrefetchHooks Function({bool accountId})>;
+typedef $$DriftPeopleTableCreateCompanionBuilder = DriftPeopleCompanion
+    Function({
+  Value<int> id,
+  required int accountId,
+  Value<String?> address,
+  Value<String?> zip,
+  Value<String?> email,
+  Value<String?> phone,
+  Value<String?> tin,
+});
+typedef $$DriftPeopleTableUpdateCompanionBuilder = DriftPeopleCompanion
+    Function({
+  Value<int> id,
+  Value<int> accountId,
+  Value<String?> address,
+  Value<String?> zip,
+  Value<String?> email,
+  Value<String?> phone,
+  Value<String?> tin,
+});
+
+final class $$DriftPeopleTableReferences
+    extends BaseReferences<_$MyDatabase, $DriftPeopleTable, DriftPeopleData> {
+  $$DriftPeopleTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $DriftAccountsTable _accountIdTable(_$MyDatabase db) =>
+      db.driftAccounts.createAlias(
+          $_aliasNameGenerator(db.driftPeople.accountId, db.driftAccounts.id));
+
+  $$DriftAccountsTableProcessedTableManager get accountId {
+    final $_column = $_itemColumn<int>('account_id')!;
+
+    final manager = $$DriftAccountsTableTableManager($_db, $_db.driftAccounts)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$DriftPeopleTableFilterComposer
+    extends Composer<_$MyDatabase, $DriftPeopleTable> {
+  $$DriftPeopleTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get address => $composableBuilder(
+      column: $table.address, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get zip => $composableBuilder(
+      column: $table.zip, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get email => $composableBuilder(
+      column: $table.email, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get phone => $composableBuilder(
+      column: $table.phone, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get tin => $composableBuilder(
+      column: $table.tin, builder: (column) => ColumnFilters(column));
+
+  $$DriftAccountsTableFilterComposer get accountId {
+    final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.accountId,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableFilterComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftPeopleTableOrderingComposer
+    extends Composer<_$MyDatabase, $DriftPeopleTable> {
+  $$DriftPeopleTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get address => $composableBuilder(
+      column: $table.address, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get zip => $composableBuilder(
+      column: $table.zip, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get email => $composableBuilder(
+      column: $table.email, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+      column: $table.phone, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get tin => $composableBuilder(
+      column: $table.tin, builder: (column) => ColumnOrderings(column));
+
+  $$DriftAccountsTableOrderingComposer get accountId {
+    final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.accountId,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableOrderingComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftPeopleTableAnnotationComposer
+    extends Composer<_$MyDatabase, $DriftPeopleTable> {
+  $$DriftPeopleTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<String> get zip =>
+      $composableBuilder(column: $table.zip, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get tin =>
+      $composableBuilder(column: $table.tin, builder: (column) => column);
+
+  $$DriftAccountsTableAnnotationComposer get accountId {
+    final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.accountId,
+        referencedTable: $db.driftAccounts,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DriftAccountsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.driftAccounts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$DriftPeopleTableTableManager extends RootTableManager<
+    _$MyDatabase,
+    $DriftPeopleTable,
+    DriftPeopleData,
+    $$DriftPeopleTableFilterComposer,
+    $$DriftPeopleTableOrderingComposer,
+    $$DriftPeopleTableAnnotationComposer,
+    $$DriftPeopleTableCreateCompanionBuilder,
+    $$DriftPeopleTableUpdateCompanionBuilder,
+    (DriftPeopleData, $$DriftPeopleTableReferences),
+    DriftPeopleData,
+    PrefetchHooks Function({bool accountId})> {
+  $$DriftPeopleTableTableManager(_$MyDatabase db, $DriftPeopleTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DriftPeopleTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DriftPeopleTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DriftPeopleTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> accountId = const Value.absent(),
+            Value<String?> address = const Value.absent(),
+            Value<String?> zip = const Value.absent(),
+            Value<String?> email = const Value.absent(),
+            Value<String?> phone = const Value.absent(),
+            Value<String?> tin = const Value.absent(),
+          }) =>
+              DriftPeopleCompanion(
+            id: id,
+            accountId: accountId,
+            address: address,
+            zip: zip,
+            email: email,
+            phone: phone,
+            tin: tin,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int accountId,
+            Value<String?> address = const Value.absent(),
+            Value<String?> zip = const Value.absent(),
+            Value<String?> email = const Value.absent(),
+            Value<String?> phone = const Value.absent(),
+            Value<String?> tin = const Value.absent(),
+          }) =>
+              DriftPeopleCompanion.insert(
+            id: id,
+            accountId: accountId,
+            address: address,
+            zip: zip,
+            email: email,
+            phone: phone,
+            tin: tin,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftPeopleTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({accountId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (accountId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.accountId,
+                    referencedTable:
+                        $$DriftPeopleTableReferences._accountIdTable(db),
+                    referencedColumn:
+                        $$DriftPeopleTableReferences._accountIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$DriftPeopleTableProcessedTableManager = ProcessedTableManager<
+    _$MyDatabase,
+    $DriftPeopleTable,
+    DriftPeopleData,
+    $$DriftPeopleTableFilterComposer,
+    $$DriftPeopleTableOrderingComposer,
+    $$DriftPeopleTableAnnotationComposer,
+    $$DriftPeopleTableCreateCompanionBuilder,
+    $$DriftPeopleTableUpdateCompanionBuilder,
+    (DriftPeopleData, $$DriftPeopleTableReferences),
+    DriftPeopleData,
+    PrefetchHooks Function({bool accountId})>;
 
 class $MyDatabaseManager {
   final _$MyDatabase _db;
@@ -13625,4 +14939,8 @@ class $MyDatabaseManager {
       $$DriftProjectPhotosTableTableManager(_db, _db.driftProjectPhotos);
   $$DriftSubscriptionsTableTableManager get driftSubscriptions =>
       $$DriftSubscriptionsTableTableManager(_db, _db.driftSubscriptions);
+  $$DriftReceivablesTableTableManager get driftReceivables =>
+      $$DriftReceivablesTableTableManager(_db, _db.driftReceivables);
+  $$DriftPeopleTableTableManager get driftPeople =>
+      $$DriftPeopleTableTableManager(_db, _db.driftPeople);
 }

@@ -9,7 +9,9 @@ import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/bank.dart';
 import 'package:pursenal/core/models/domain/credit_card.dart';
 import 'package:pursenal/core/models/domain/loan.dart';
+import 'package:pursenal/core/models/domain/people.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/receivable.dart';
 import 'package:pursenal/core/models/domain/wallet.dart';
 import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
@@ -17,6 +19,8 @@ import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart'
 import 'package:pursenal/core/repositories/drift/banks_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/ccards_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/loans_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/people_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/receivables_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/wallets_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +33,8 @@ class AccountEntryViewModel extends ChangeNotifier {
   final LoansDriftRepository _loansDriftRepository;
   final CCardsDriftRepository _cCardsDriftRepository;
   final BanksDriftRepository _banksDriftRepository;
+  final PeopleDriftRepository _peopleDriftRepository;
+  final ReceivablesDriftRepository _receivablesDriftRepository;
 
   AccountEntryViewModel({
     required MyDatabase db,
@@ -43,6 +49,8 @@ class AccountEntryViewModel extends ChangeNotifier {
         _loansDriftRepository = LoansDriftRepository(db),
         _cCardsDriftRepository = CCardsDriftRepository(db),
         _banksDriftRepository = BanksDriftRepository(db),
+        _peopleDriftRepository = PeopleDriftRepository(db),
+        _receivablesDriftRepository = ReceivablesDriftRepository(db),
         _accountType = accountType,
         _account = account;
 
@@ -70,11 +78,21 @@ class AccountEntryViewModel extends ChangeNotifier {
   DateTime? _startDate;
   DateTime? _endDate;
 
+  DateTime? _paidDate;
+  int? _totalAmount;
+  String? _address;
+  String? _zip;
+  String? _email;
+  String? _phone;
+  String? _tin;
+
   Account? _account;
   Loan? _loan;
   Wallet? _wallet;
   Bank? _bank;
   CreditCard? _card;
+  People? _people;
+  Receivable? _receivable;
 
   String _accountNameError = "";
   String _accountTypeError = "";
@@ -103,13 +121,23 @@ class AccountEntryViewModel extends ChangeNotifier {
 
   String? amountHelperText;
 
+  String nameError = "";
+  String nickNameError = "";
+  String currencyError = "";
+  String addressError = "";
+  String zipError = "";
+  String emailError = "";
+  String phoneError = "";
+
   Future<void> init() async {
     loadingStatus = LoadingStatus.loading;
     _prefs = await SharedPreferences.getInstance();
 
     await _getAccount();
-
-    _openDate = DateTime(_openDate.year);
+    if (_accountType != null &&
+        [incomeTypeID, expenseTypeID].contains(_accountType?.dbID)) {
+      _openDate = DateTime(_openDate.year);
+    }
 
     if (_account != null) {
       _accountName = _account!.name;
@@ -136,6 +164,15 @@ class AccountEntryViewModel extends ChangeNotifier {
       _interestRate = _loan!.interestRate;
       _startDate = _loan!.startDate;
       _endDate = _loan!.endDate;
+    } else if (_people != null) {
+      _address = _people?.address;
+      _email = _people?.email;
+      _phone = _people?.phone;
+      _tin = _people?.tin;
+      _zip = _people?.zip;
+    } else if (_receivable != null) {
+      _totalAmount = _receivable?.totalAmount;
+      _paidDate = _receivable?.paidDate;
     }
 
     await _getAccountTypes();
@@ -156,21 +193,29 @@ class AccountEntryViewModel extends ChangeNotifier {
         _account = await _accountsDriftRepository.getById(_account!.dbID);
 
         switch (_account?.accountType) {
-          case 0:
+          case walletTypeID:
             _wallet = await _accountsDriftRepository
                 .getWalletByAccount(_account!.dbID);
             break;
-          case 1:
+          case bankTypeID:
             _bank =
                 await _accountsDriftRepository.getBankByAccount(_account!.dbID);
             break;
-          case 2:
+          case cCardTypeID:
             _card = await _accountsDriftRepository
                 .getCCardByAccount(_account!.dbID);
             break;
-          case 3:
+          case loanTypeID:
             _loan =
                 await _accountsDriftRepository.getLoanByAccount(_account!.dbID);
+            break;
+          case peopleTypeID:
+            _people = await _accountsDriftRepository
+                .getPeopleByAccount(_account!.dbID);
+            break;
+          case advanceTypeID:
+            _receivable = await _accountsDriftRepository
+                .getReceivableByAccount(_account!.dbID);
             break;
           default:
             break;
@@ -325,6 +370,48 @@ class AccountEntryViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  DateTime? get paidDate => _paidDate;
+  set paidDate(DateTime? value) {
+    _paidDate = value;
+    notifyListeners();
+  }
+
+  int? get totalAmount => _totalAmount;
+  set totalAmount(int? value) {
+    _totalAmount = value;
+    notifyListeners();
+  }
+
+  String? get address => _address;
+  set address(String? value) {
+    _address = value;
+    notifyListeners();
+  }
+
+  String? get zip => _zip;
+  set zip(String? value) {
+    _zip = value;
+    notifyListeners();
+  }
+
+  String? get email => _email;
+  set email(String? value) {
+    _email = value;
+    notifyListeners();
+  }
+
+  String? get phone => _phone;
+  set phone(String? value) {
+    _phone = value;
+    notifyListeners();
+  }
+
+  String? get tin => _tin;
+  set tin(String? value) {
+    _tin = value;
+    notifyListeners();
+  }
+
   // Setters for related objects
 
   // Loan setter
@@ -374,6 +461,27 @@ class AccountEntryViewModel extends ChangeNotifier {
       _cardNetwork = value.cardNetwork;
       _cardNo = value.cardNo;
       _statementDate = value.statementDate;
+    }
+    notifyListeners();
+  }
+
+  set people(People? value) {
+    _people = value;
+    if (value != null) {
+      _address = _people?.address;
+      _email = _people?.email;
+      _phone = _people?.phone;
+      _tin = _people?.tin;
+      _zip = _people?.zip;
+    }
+    notifyListeners();
+  }
+
+  set receivable(Receivable? value) {
+    _receivable = value;
+    if (value != null) {
+      _totalAmount = _receivable?.totalAmount;
+      _paidDate = _receivable?.paidDate;
     }
     notifyListeners();
   }
@@ -491,7 +599,7 @@ class AccountEntryViewModel extends ChangeNotifier {
                 : null;
 
         if (accId != null) {
-          if (_accountType!.dbID == cashTypeID) {
+          if (_accountType!.dbID == walletTypeID) {
             if (_wallet == null) {
               _walletsDriftRepository.insertWallet(account: accId);
             } else {
@@ -557,6 +665,38 @@ class AccountEntryViewModel extends ChangeNotifier {
                 endDate: _endDate,
               );
             }
+          } else if (_accountType!.dbID == peopleTypeID) {
+            if (_people == null) {
+              _peopleDriftRepository.insertPeople(
+                  account: accId,
+                  address: _address,
+                  email: _email,
+                  phone: _phone,
+                  tin: _tin,
+                  zip: _zip);
+            } else {
+              _peopleDriftRepository.updatePeople(
+                  id: _people!.dbID,
+                  account: accId,
+                  address: _address,
+                  email: _email,
+                  phone: _phone,
+                  tin: _tin,
+                  zip: _zip);
+            }
+          } else if (_accountType!.dbID == advanceTypeID) {
+            if (_receivable == null) {
+              _receivablesDriftRepository.insertReceivable(
+                  account: accId,
+                  paidAmount: _totalAmount,
+                  paidDate: _paidDate);
+            } else {
+              _receivablesDriftRepository.updateReceivable(
+                  id: _receivable!.dbID,
+                  account: accId,
+                  paidAmount: _totalAmount,
+                  paidDate: _paidDate);
+            }
           }
 
           if (_account != null) {
@@ -602,21 +742,25 @@ class AccountEntryViewModel extends ChangeNotifier {
   _setHelperText() {
     if (_accountType != null && _openBal == 0) {
       switch (_accountType?.dbID) {
-        case 0:
+        case walletTypeID:
           amountHelperText =
               "* Enter your wallet balance (as on ${defaultDate2.format(openDate)})";
           break;
-        case 1:
+        case bankTypeID:
           amountHelperText =
               "* Enter the bank account balance (as on ${defaultDate2.format(openDate)})";
           break;
-        case 2:
+        case cCardTypeID:
           amountHelperText =
               "* Enter the used amount out of total credit card limit (as on ${defaultDate2.format(openDate)})";
           break;
-        case 3:
+        case loanTypeID:
           amountHelperText =
               "* Enter the loan balance (as on ${defaultDate2.format(openDate)})";
+          break;
+        case advanceTypeID:
+          amountHelperText =
+              "* Enter the amount receivable (as on ${defaultDate2.format(openDate)})";
           break;
         default:
           amountHelperText = null;

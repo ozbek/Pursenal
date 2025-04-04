@@ -6,8 +6,10 @@ import 'package:pursenal/core/models/domain/bank.dart';
 import 'package:pursenal/core/models/domain/budget.dart';
 import 'package:pursenal/core/models/domain/credit_card.dart';
 import 'package:pursenal/core/models/domain/loan.dart';
+import 'package:pursenal/core/models/domain/people.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
+import 'package:pursenal/core/models/domain/receivable.dart';
 import 'package:pursenal/core/models/domain/subscription.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/core/models/domain/wallet.dart';
@@ -311,6 +313,56 @@ extension ProfileMapper on DriftProfile {
       isLocal: isLocal,
       addedDate: addedDate,
       updateDate: updateDate,
+    );
+  }
+}
+
+extension ReceivableMapper on DriftReceivable {
+  Receivable toDomain(Account account) {
+    return Receivable(
+      dbID: id,
+      account: account,
+      totalAmount: totalAmount,
+      paidDate: paidDate,
+    );
+  }
+}
+
+extension ReceivableEntityMapper on Receivable {
+  DriftReceivablesCompanion toDrift() {
+    return DriftReceivablesCompanion(
+      id: Value(dbID),
+      accountId: Value(account.dbID),
+      totalAmount: Value(totalAmount),
+      paidDate: Value(paidDate),
+    );
+  }
+}
+
+extension PeopleMapper on DriftPeopleData {
+  People toDomain(Account account) {
+    return People(
+      dbID: id,
+      account: account,
+      address: address,
+      zip: zip,
+      email: email,
+      phone: phone,
+      tin: tin,
+    );
+  }
+}
+
+extension PeopleEntityMapper on People {
+  DriftPeopleCompanion toDrift() {
+    return DriftPeopleCompanion(
+      id: Value(dbID),
+      accountId: Value(account.dbID),
+      address: Value(address),
+      zip: Value(zip),
+      email: Value(email),
+      phone: Value(phone),
+      tin: Value(tin),
     );
   }
 }

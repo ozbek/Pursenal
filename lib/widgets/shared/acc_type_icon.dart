@@ -3,7 +3,7 @@ import 'package:pursenal/app/global/values.dart';
 
 IconData getAccTypeIcon(int accType) {
   switch (accType) {
-    case cashTypeID:
+    case walletTypeID:
       return Icons.account_balance_wallet;
     case bankTypeID:
       return Icons.account_balance;

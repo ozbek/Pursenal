@@ -26,9 +26,9 @@ class WalletsDriftRepository implements WalletsRepository {
   Future<bool> updateWallet({required int account, required int id}) async {
     try {
       final wallet = DriftWalletsCompanion(
-          account: Value(account),
-          id: Value(id),
-          updateDate: Value(DateTime.now()));
+        account: Value(account),
+        id: Value(id),
+      );
       return await db.updateWallet(wallet);
     } catch (e) {
       AppLogger.instance.error("Failed to update wallet. ${e.toString()}");
