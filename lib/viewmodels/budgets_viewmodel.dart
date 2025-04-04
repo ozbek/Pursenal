@@ -1,19 +1,17 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/budget.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
-import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
+import 'package:pursenal/core/abstracts/budgets_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class BudgetsViewmodel extends ChangeNotifier {
-  final BudgetsDriftRepository _budgetsDriftRepository;
+  final BudgetsRepository _budgetsRepository;
 
-  BudgetsViewmodel(
-      {required MyDatabase db, required Profile profile, int accTypeID = 4})
-      : _profile = profile,
-        _budgetsDriftRepository = BudgetsDriftRepository(db);
+  BudgetsViewmodel(this._budgetsRepository,
+      {required Profile profile, int accTypeID = 4})
+      : _profile = profile;
 
   final Profile _profile;
   Profile get profile => _profile;
@@ -53,7 +51,7 @@ class BudgetsViewmodel extends ChangeNotifier {
 
   Future<void> _getBudgets() async {
     try {
-      _budgets = await _budgetsDriftRepository.getAll(profile.dbID);
+      _budgets = await _budgetsRepository.getAll(profile.dbID);
 
       AppLogger.instance.info("Budgets loaded from database");
     } catch (e) {

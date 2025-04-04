@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:pursenal/core/abstracts/balance_repository.dart';
+import 'package:pursenal/core/abstracts/balances_repository.dart';
 import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/utils/app_logger.dart';
 

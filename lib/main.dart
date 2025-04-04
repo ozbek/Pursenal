@@ -6,6 +6,19 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/banks_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/ccards_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/loans_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/people_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/receivables_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/wallets_drift_repository.dart';
 import 'package:pursenal/screens/welcome_screen.dart';
 import 'package:pursenal/utils/services/notification_servie.dart';
 import 'package:pursenal/providers/theme_provider.dart';
@@ -59,9 +72,55 @@ void main() async {
         create: (context) => MyDatabase(connection, "b"),
         dispose: (context, db) => db.close(),
       ),
+      Provider<ProfilesDriftRepository>(
+        create: (context) =>
+            ProfilesDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<AccountTypesDriftRepository>(
+        create: (context) =>
+            AccountTypesDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<AccountsDriftRepository>(
+        create: (context) =>
+            AccountsDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<BalancesDriftRepository>(
+        create: (context) =>
+            BalancesDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<BanksDriftRepository>(
+        create: (context) => BanksDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<BudgetsDriftRepository>(
+        create: (context) => BudgetsDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<CCardsDriftRepository>(
+        create: (context) => CCardsDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<LoansDriftRepository>(
+        create: (context) => LoansDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<PeopleDriftRepository>(
+        create: (context) => PeopleDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<ReceivablesDriftRepository>(
+        create: (context) =>
+            ReceivablesDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<WalletsDriftRepository>(
+        create: (context) => WalletsDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<TransactionsDriftRepository>(
+        create: (context) =>
+            TransactionsDriftRepository(context.read<MyDatabase>()),
+      ),
+      Provider<ProjectsDriftRepository>(
+        create: (context) =>
+            ProjectsDriftRepository(context.read<MyDatabase>()),
+      ),
       ChangeNotifierProvider<AppViewmodel>(
         create: (context) =>
-            AppViewmodel(db: context.read<MyDatabase>())..init(),
+            AppViewmodel(context.read<ProfilesDriftRepository>())..init(),
       ),
       ChangeNotifierProvider<ThemeProvider>.value(
         value: themeProvider,

@@ -4,10 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/models/domain/account.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/balance_account_viewmodel.dart';
@@ -33,12 +35,19 @@ class BalanceAccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final transactionsDriftRepository =
+        Provider.of<TransactionsDriftRepository>(context, listen: false);
+    final balancesDriftRepository =
+        Provider.of<BalancesDriftRepository>(context, listen: false);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
+
     final appViewmodel = Provider.of<AppViewmodel>(context);
     return ChangeNotifierProvider<BalanceAccountViewmodel>(
-      create: (context) =>
-          BalanceAccountViewmodel(db: db, profile: profile, account: account)
-            ..init(),
+      create: (context) => BalanceAccountViewmodel(transactionsDriftRepository,
+          balancesDriftRepository, accountsDriftRepository,
+          profile: profile, account: account)
+        ..init(),
       builder: (context, child) => Consumer<BalanceAccountViewmodel>(
         builder: (context, viewmodel, child) => Scaffold(
           appBar: AppBar(

@@ -1,24 +1,21 @@
 import 'package:flutter/foundation.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
-import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
+import 'package:pursenal/core/abstracts/account_types_repository.dart';
+import 'package:pursenal/core/abstracts/projects_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class ProjectsViewmodel extends ChangeNotifier {
-  final ProjectsDriftRepository _projectsDriftRepository;
-  final AccountTypesDriftRepository _accountTypesDriftRepository;
+  final ProjectsRepository _projectsRepository;
+  final AccountTypesRepository _accountTypesRepository;
 
-  ProjectsViewmodel(
-      {required MyDatabase db, required Profile profile, int accTypeID = 4})
+  ProjectsViewmodel(this._projectsRepository, this._accountTypesRepository,
+      {required Profile profile, int accTypeID = 4})
       : _profile = profile,
-        _accTypeID = accTypeID,
-        _projectsDriftRepository = ProjectsDriftRepository(db),
-        _accountTypesDriftRepository = AccountTypesDriftRepository(db);
+        _accTypeID = accTypeID;
 
   int _accTypeID;
 
@@ -78,7 +75,7 @@ class ProjectsViewmodel extends ChangeNotifier {
 
   Future<void> getProjects() async {
     try {
-      _projects = await _projectsDriftRepository.getAllProjects(profile.dbID);
+      _projects = await _projectsRepository.getAllProjects(profile.dbID);
       _projects.sort(
         (a, b) => a.status.index.compareTo(b.status.index),
       );
@@ -123,7 +120,7 @@ class ProjectsViewmodel extends ChangeNotifier {
   }
 
   setAccountType(int id) async {
-    _accType = await _accountTypesDriftRepository.getById(id);
+    _accType = await _accountTypesRepository.getById(id);
     notifyListeners();
     await getProjects();
     _filterProjects();

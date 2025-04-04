@@ -1,23 +1,20 @@
 import 'package:flutter/foundation.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
-import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/abstracts/account_types_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class AccountsViewmodel extends ChangeNotifier {
-  final AccountsDriftRepository _accountsDriftRepository;
-  final AccountTypesDriftRepository _accountTypesDriftRepository;
+  final AccountsRepository _accountsRepository;
+  final AccountTypesRepository _accountTypesRepository;
 
-  AccountsViewmodel(
-      {required MyDatabase db, required Profile profile, int accTypeID = 4})
+  AccountsViewmodel(this._accountsRepository, this._accountTypesRepository,
+      {required Profile profile, int accTypeID = 4})
       : _profile = profile,
-        _accTypeID = accTypeID,
-        _accountsDriftRepository = AccountsDriftRepository(db),
-        _accountTypesDriftRepository = AccountTypesDriftRepository(db);
+        _accTypeID = accTypeID;
 
   int _accTypeID;
 
@@ -75,10 +72,10 @@ class AccountsViewmodel extends ChangeNotifier {
   Future<void> getAccounts() async {
     try {
       accTypes = [];
-      _ledgers = await _accountsDriftRepository.getLedgersByAccType(
+      _ledgers = await _accountsRepository.getLedgersByAccType(
           profileId: _profile.dbID, accTypeID: _accTypeID);
       for (int a in [4, 5]) {
-        accTypes.add(await _accountTypesDriftRepository.getById(a));
+        accTypes.add(await _accountTypesRepository.getById(a));
       }
 
       AppLogger.instance.info("Ledgers loaded from database");
@@ -106,7 +103,7 @@ class AccountsViewmodel extends ChangeNotifier {
   }
 
   setAccType(int id) async {
-    _accType = await _accountTypesDriftRepository.getById(id);
+    _accType = await _accountTypesRepository.getById(id);
     notifyListeners();
     await getAccounts();
     _filterAccounts();

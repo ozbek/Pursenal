@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/screens/accounts_screen.dart';
 import 'package:pursenal/screens/budgets_screen.dart';
 import 'package:pursenal/screens/projects_screen.dart';
@@ -21,10 +25,27 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final profilesDriftRepository =
+        Provider.of<ProfilesDriftRepository>(context, listen: false);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
+    final transactionsDriftRepository =
+        Provider.of<TransactionsDriftRepository>(context, listen: false);
+    final balancesDriftRepository =
+        Provider.of<BalancesDriftRepository>(context, listen: false);
+    final accountTypesDriftRepository =
+        Provider.of<AccountTypesDriftRepository>(context, listen: false);
+
     final appViewmodel = Provider.of<AppViewmodel>(context);
     return ChangeNotifierProvider<DashboardViewmodel>(
-      create: (context) => DashboardViewmodel(db: db, profile: profile)..init(),
+      create: (context) => DashboardViewmodel(
+          profilesDriftRepository,
+          accountsDriftRepository,
+          transactionsDriftRepository,
+          balancesDriftRepository,
+          accountTypesDriftRepository,
+          profile: profile)
+        ..init(),
       builder: (context, child) => Consumer<DashboardViewmodel>(
         builder: (context, viewmodel, child) => Scaffold(
           body: LoadingBody(

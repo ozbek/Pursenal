@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/profiles_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainViewmodel extends ChangeNotifier {
-  final ProfilesDriftRepository _profilesDriftRepository;
-  final AccountsDriftRepository _accountsDriftRepository;
+  final ProfilesRepository _profilesRepository;
+  final AccountsRepository _accountsRepository;
 
-  MainViewmodel({required selectedProfile, required MyDatabase db})
-      : _selectedProfile = selectedProfile,
-        _profilesDriftRepository = ProfilesDriftRepository(db),
-        _accountsDriftRepository = AccountsDriftRepository(db);
+  MainViewmodel(
+    this._profilesRepository,
+    this._accountsRepository, {
+    required selectedProfile,
+  }) : _selectedProfile = selectedProfile;
 
   List<Profile> _profiles = [];
 
@@ -54,7 +54,7 @@ class MainViewmodel extends ChangeNotifier {
 
   set selectedProfile(Profile value) {
     _selectedProfile = value;
-    _profilesDriftRepository.setSelectedProfile(value.dbID);
+    _profilesRepository.setSelectedProfile(value.dbID);
     notifyListeners();
   }
 
@@ -66,7 +66,7 @@ class MainViewmodel extends ChangeNotifier {
 
       _prefs = await SharedPreferences.getInstance();
       notifyListeners();
-      _profiles = await _profilesDriftRepository.getAll();
+      _profiles = await _profilesRepository.getAll();
       try {
         _selectedProfile =
             _profiles.firstWhere((p) => p.dbID == _selectedProfile.dbID);
@@ -93,10 +93,10 @@ class MainViewmodel extends ChangeNotifier {
   }
 
   _getAccCounts() async {
-    cashCountinProfile = (await _accountsDriftRepository.getAccountsByAccType(
+    cashCountinProfile = (await _accountsRepository.getAccountsByAccType(
             _selectedProfile.dbID, 0))
         .length;
-    bankCountinProfile = (await _accountsDriftRepository.getAccountsByAccType(
+    bankCountinProfile = (await _accountsRepository.getAccountsByAccType(
             _selectedProfile.dbID, 1))
         .length;
     notifyListeners();

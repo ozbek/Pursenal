@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/transactions_viewmodel.dart';
 import 'package:pursenal/widgets/shared/transaction_options_dialog.dart';
@@ -24,11 +25,17 @@ class TransactionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final transactionsDriftRepository =
+        Provider.of<TransactionsDriftRepository>(context, listen: false);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
+
     final appViewmodel = Provider.of<AppViewmodel>(context);
     return ChangeNotifierProvider<TransactionsViewmodel>(
-      create: (context) =>
-          TransactionsViewmodel(db: db, profile: profile)..init(),
+      create: (context) => TransactionsViewmodel(
+          transactionsDriftRepository, accountsDriftRepository,
+          profile: profile)
+        ..init(),
       builder: (context, child) => Consumer<TransactionsViewmodel>(
         builder: (context, viewmodel, child) => Scaffold(
           body: LoadingBody(

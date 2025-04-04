@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
-import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/abstracts/projects_repository.dart';
+import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class ProjectViewmodel extends ChangeNotifier {
-  final ProjectsDriftRepository _projectsDriftRepository;
-  final TransactionsDriftRepository _transactionsDriftRepository;
+  final ProjectsRepository _projectsRepository;
+  final TransactionsRepository _transactionsRepository;
 
   final int projectID;
 
@@ -38,12 +37,11 @@ class ProjectViewmodel extends ChangeNotifier {
   bool _deleteTransactionsWithProject = false;
 
   ProjectViewmodel(
-      {required this.projectID,
-      required Profile profile,
-      required MyDatabase db})
-      : _profile = profile,
-        _projectsDriftRepository = ProjectsDriftRepository(db),
-        _transactionsDriftRepository = TransactionsDriftRepository(db);
+    this._projectsRepository,
+    this._transactionsRepository, {
+    required this.projectID,
+    required Profile profile,
+  }) : _profile = profile;
 
   init() async {
     try {
@@ -70,9 +68,8 @@ class ProjectViewmodel extends ChangeNotifier {
   Future<void> _getTransactions() async {
     try {
       if (project != null) {
-        transactions =
-            await _transactionsDriftRepository.getTransactionsbyProject(
-                profileID: _profile.dbID, projectID: project!.dbID);
+        transactions = await _transactionsRepository.getTransactionsbyProject(
+            profileID: _profile.dbID, projectID: project!.dbID);
         fDates = transactions.map((t) {
           return t.voucherDate.copyWith(
               hour: 0, minute: 0, second: 0, microsecond: 0, millisecond: 0);
@@ -95,7 +92,7 @@ class ProjectViewmodel extends ChangeNotifier {
   deleteProject({deleteTransactions = false}) async {
     try {
       if (_project != null) {
-        _projectsDriftRepository.deleteProject(_project!.dbID,
+        _projectsRepository.deleteProject(_project!.dbID,
             deleteTransactions: _deleteTransactionsWithProject);
         return true;
       }
@@ -111,7 +108,7 @@ class ProjectViewmodel extends ChangeNotifier {
     try {
       if (_project != null) {
         final p = _project!;
-        _projectsDriftRepository.updateProjectStatus(
+        _projectsRepository.updateProjectStatus(
             id: p.dbID,
             name: p.name,
             profile: _profile.dbID,
@@ -134,7 +131,7 @@ class ProjectViewmodel extends ChangeNotifier {
   Future<void> refetchProject() async {
     try {
       loadingStatus = LoadingStatus.loading;
-      _project = await _projectsDriftRepository.getProjectByID(projectID);
+      _project = await _projectsRepository.getProjectByID(projectID);
       if (_project != null && _project?.budget != null) {}
 
       loadingStatus = LoadingStatus.completed;

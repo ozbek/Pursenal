@@ -3,10 +3,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/extensions/currency.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/screens/balance_account_screen.dart';
 import 'package:pursenal/viewmodels/balances_viewmodel.dart';
@@ -25,9 +26,15 @@ class BalancesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final accountTypesDriftRepository =
+        Provider.of<AccountTypesDriftRepository>(context, listen: false);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
     return ChangeNotifierProvider<BalancesViewmodel>(
-      create: (context) => BalancesViewmodel(db: db, profile: profile)..init(),
+      create: (context) => BalancesViewmodel(
+          accountsDriftRepository, accountTypesDriftRepository,
+          profile: profile)
+        ..init(),
       builder: (context, child) => Consumer<BalancesViewmodel>(
         builder: (context, viewmodel, child) => Scaffold(
           body: LoadingBody(

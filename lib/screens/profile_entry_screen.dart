@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
 import 'package:pursenal/screens/accounts_import_screen.dart';
 import 'package:pursenal/viewmodels/profile_entry_viewmodel.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
@@ -20,10 +20,12 @@ class ProfileEntryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final profilesDriftRepository =
+        Provider.of<ProfilesDriftRepository>(context, listen: false);
     return ChangeNotifierProvider(
       create: (context) =>
-          ProfileEntryViewmodel(db: db, profile: profile)..init(),
+          ProfileEntryViewmodel(profilesDriftRepository, profile: profile)
+            ..init(),
       builder: (context, child) => Scaffold(
         appBar: AppBar(title: Text(AppLocalizations.of(context)!.profileForm)),
         body: Consumer<ProfileEntryViewmodel>(

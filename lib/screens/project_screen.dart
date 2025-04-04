@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/screens/project_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/project_viewmodel.dart';
@@ -28,12 +29,16 @@ class ProjectScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final projectsDriftRepository =
+        Provider.of<ProjectsDriftRepository>(context, listen: false);
+    final transactionsDriftRepository =
+        Provider.of<TransactionsDriftRepository>(context, listen: false);
     final appViewmodel = Provider.of<AppViewmodel>(context);
     return ChangeNotifierProvider<ProjectViewmodel>(
-      create: (context) =>
-          ProjectViewmodel(profile: profile, db: db, projectID: projectID)
-            ..init(),
+      create: (context) => ProjectViewmodel(
+          projectsDriftRepository, transactionsDriftRepository,
+          profile: profile, projectID: projectID)
+        ..init(),
       child: Consumer<ProjectViewmodel>(
         builder: (context, viewmodel, child) {
           return Scaffold(

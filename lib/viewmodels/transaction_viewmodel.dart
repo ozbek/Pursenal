@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
-import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/abstracts/balances_repository.dart';
+import 'package:pursenal/core/abstracts/projects_repository.dart';
+import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TransactionViewmodel extends ChangeNotifier {
-  final TransactionsDriftRepository _transactionsDriftRepository;
-  final BalancesDriftRepository _balancesDriftRepository;
-  final ProjectsDriftRepository _projectsDriftRepository;
+  final TransactionsRepository _transactionsRepository;
+  final BalancesRepository _balancesRepository;
+  final ProjectsRepository _projectsRepository;
 
-  TransactionViewmodel({
+  TransactionViewmodel(
+    this._transactionsRepository,
+    this._balancesRepository,
+    this._projectsRepository, {
     required Profile profile,
-    required MyDatabase db,
     required Transaction transaction,
   })  : _profile = profile,
-        _transaction = transaction,
-        _transactionsDriftRepository = TransactionsDriftRepository(db),
-        _projectsDriftRepository = ProjectsDriftRepository(db),
-        _balancesDriftRepository = BalancesDriftRepository(db);
+        _transaction = transaction;
 
   Transaction _transaction;
   Transaction get transaction => _transaction;
@@ -60,10 +58,10 @@ class TransactionViewmodel extends ChangeNotifier {
 
   deleteTransaction() async {
     try {
-      await _transactionsDriftRepository.delete(_transaction.dbID);
-      await _balancesDriftRepository.updateBalanceByAccount(
+      await _transactionsRepository.delete(_transaction.dbID);
+      await _balancesRepository.updateBalanceByAccount(
           account: _transaction.crAccount.dbID);
-      await _balancesDriftRepository.updateBalanceByAccount(
+      await _balancesRepository.updateBalanceByAccount(
           account: _transaction.drAccount.dbID);
       notifyListeners();
       await setLastUpdatedTimeStamp();
@@ -83,8 +81,7 @@ class TransactionViewmodel extends ChangeNotifier {
   _getProject() async {
     try {
       if (transaction.project != null) {
-        project =
-            await _projectsDriftRepository.getById(transaction.project!.dbID);
+        project = await _projectsRepository.getById(transaction.project!.dbID);
       }
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
@@ -107,7 +104,7 @@ class TransactionViewmodel extends ChangeNotifier {
     try {
       loadingStatus = LoadingStatus.loading;
       notifyListeners();
-      _transaction = await _transactionsDriftRepository.getTransactionById(
+      _transaction = await _transactionsRepository.getTransactionById(
           transactionID: transaction.dbID);
       _getProject();
       loadingStatus = LoadingStatus.completed;

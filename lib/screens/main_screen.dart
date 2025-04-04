@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
 import 'package:pursenal/screens/dashboard_screen.dart';
 import 'package:pursenal/screens/balances_screen.dart';
 import 'package:pursenal/screens/insights_screen.dart';
@@ -18,13 +19,17 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
-
+    final profilesDriftRepository =
+        Provider.of<ProfilesDriftRepository>(context, listen: false);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
     const double barIconSize = 24.00;
 
     return ChangeNotifierProvider<MainViewmodel>(
-      create: (context) =>
-          MainViewmodel(db: db, selectedProfile: profile)..init(),
+      create: (context) => MainViewmodel(
+          profilesDriftRepository, accountsDriftRepository,
+          selectedProfile: profile)
+        ..init(),
       builder: (context, child) => Consumer<MainViewmodel>(
         builder: (context, viewmodel, child) => LayoutBuilder(
           builder: (context, constraints) {

@@ -7,10 +7,12 @@ import 'package:pursenal/app/global/date_formats.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/screens/transaction_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/transaction_viewmodel.dart';
@@ -28,11 +30,18 @@ class TransactionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final transactionsDriftRepository =
+        Provider.of<TransactionsDriftRepository>(context, listen: false);
+    final balancesDriftRepository =
+        Provider.of<BalancesDriftRepository>(context, listen: false);
+    final projectsDriftRepository =
+        Provider.of<ProjectsDriftRepository>(context, listen: false);
+
     final appViewmodel = Provider.of<AppViewmodel>(context);
     return ChangeNotifierProvider<TransactionViewmodel>(
-      create: (context) => TransactionViewmodel(
-          profile: profile, db: db, transaction: transaction)
+      create: (context) => TransactionViewmodel(transactionsDriftRepository,
+          balancesDriftRepository, projectsDriftRepository,
+          profile: profile, transaction: transaction)
         ..init(),
       child: Consumer<TransactionViewmodel>(
         builder: (context, viewmodel, child) {

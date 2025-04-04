@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -7,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
@@ -15,6 +13,11 @@ import 'package:pursenal/core/models/domain/account.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/transaction_entry_viewmodel.dart';
 import 'package:pursenal/widgets/shared/acc_type_dialog.dart';
@@ -43,11 +46,24 @@ class TransactionEntryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
+    final transactionsDriftRepository =
+        Provider.of<TransactionsDriftRepository>(context, listen: false);
+    final balancesDriftRepository =
+        Provider.of<BalancesDriftRepository>(context, listen: false);
+    final accountTypesDriftRepository =
+        Provider.of<AccountTypesDriftRepository>(context, listen: false);
+    final projectsDriftRepository =
+        Provider.of<ProjectsDriftRepository>(context, listen: false);
 
     return ChangeNotifierProvider<TransactionEntryViewmodel>(
       create: (context) => TransactionEntryViewmodel(
-        db: db,
+        accountsDriftRepository,
+        transactionsDriftRepository,
+        balancesDriftRepository,
+        accountTypesDriftRepository,
+        projectsDriftRepository,
         transaction: transaction,
         profile: profile,
         selectedAccount: selectedAccount,

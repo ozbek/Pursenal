@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/extensions/datetime.dart';
 import 'package:pursenal/app/global/values.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/account.dart';
@@ -10,25 +9,24 @@ import 'package:pursenal/core/models/domain/budget.dart';
 import 'package:pursenal/core/models/domain/daily_total_transaction.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/budgets_repository.dart';
+import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class BudgetViewmodel extends ChangeNotifier {
-  final AccountsDriftRepository _accountsDriftRepository;
-  final BudgetsDriftRepository _budgetsDriftRepository;
-  final TransactionsDriftRepository _transactionsDriftRepository;
+  final AccountsRepository _accountsRepository;
+  final BudgetsRepository _budgetsRepository;
+  final TransactionsRepository _transactionsRepository;
 
-  BudgetViewmodel({
-    required MyDatabase db,
+  BudgetViewmodel(
+    this._accountsRepository,
+    this._budgetsRepository,
+    this._transactionsRepository, {
     required Profile profile,
     required Budget budget,
   })  : _profile = profile,
-        _budget = budget,
-        _accountsDriftRepository = AccountsDriftRepository(db),
-        _transactionsDriftRepository = TransactionsDriftRepository(db),
-        _budgetsDriftRepository = BudgetsDriftRepository(db);
+        _budget = budget;
 
   LoadingStatus loadingStatus = LoadingStatus.idle;
 
@@ -102,7 +100,7 @@ class BudgetViewmodel extends ChangeNotifier {
   refetchBudget() async {
     try {
       loadingStatus = LoadingStatus.loading;
-      budget = await _budgetsDriftRepository.getById(_budget.dbID);
+      budget = await _budgetsRepository.getById(_budget.dbID);
       notifyListeners();
       init();
     } catch (e) {
@@ -113,22 +111,19 @@ class BudgetViewmodel extends ChangeNotifier {
   }
 
   getAccounts() async {
-    expenses =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 5);
-    incomes =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 4);
+    expenses = await _accountsRepository.getAccountsByAccType(_profile.dbID, 5);
+    incomes = await _accountsRepository.getAccountsByAccType(_profile.dbID, 4);
 
     int accType = 0;
     do {
-      funds.addAll(await _accountsDriftRepository.getAccountsByAccType(
+      funds.addAll(await _accountsRepository.getAccountsByAccType(
           _profile.dbID, accType));
       accType++;
     } while (fundingAccountIDs.contains(accType));
 
     _expenses =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 5);
-    _incomes =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 4);
+        await _accountsRepository.getAccountsByAccType(_profile.dbID, 5);
+    _incomes = await _accountsRepository.getAccountsByAccType(_profile.dbID, 4);
 
     notifyListeners();
   }
@@ -155,7 +150,7 @@ class BudgetViewmodel extends ChangeNotifier {
         break;
     }
     _transactions = []; // Reset transactions
-    _transactions = await _transactionsDriftRepository.getTransactions(
+    _transactions = await _transactionsRepository.getTransactions(
         startDate: startDate, endDate: endDate, profileId: _profile.dbID);
     _transactions = _transactions
         .where((t) =>
@@ -294,7 +289,7 @@ class BudgetViewmodel extends ChangeNotifier {
 
   Future<bool> deleteBudget() async {
     try {
-      await _budgetsDriftRepository.delete(_budget.dbID);
+      await _budgetsRepository.delete(_budget.dbID);
       return true;
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');

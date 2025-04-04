@@ -8,30 +8,28 @@ import 'package:pursenal/core/models/domain/loan.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/utils/exporter.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/balances_repository.dart';
+import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class AccountViewmodel extends ChangeNotifier {
-  final TransactionsDriftRepository _transactionsDriftRepository;
-  final BalancesDriftRepository _balancesDriftRepository;
+  final TransactionsRepository _transactionsRepository;
+  final BalancesRepository _balancesRepository;
 
-  final AccountsDriftRepository _accountsDriftRepository;
+  final AccountsRepository _accountsRepository;
 
-  AccountViewmodel({
+  AccountViewmodel(
+    this._transactionsRepository,
+    this._balancesRepository,
+    this._accountsRepository, {
     required Profile profile,
-    required MyDatabase db,
     required Account account,
   })  : _profile = profile,
-        _account = account,
-        _accountsDriftRepository = AccountsDriftRepository(db),
-        _transactionsDriftRepository = TransactionsDriftRepository(db),
-        _balancesDriftRepository = BalancesDriftRepository(db);
+        _account = account;
 
   Account _account;
   Account get account => _account;
@@ -118,7 +116,7 @@ class AccountViewmodel extends ChangeNotifier {
 
   Future<void> getAccount() async {
     try {
-      _account = await _accountsDriftRepository.getById(_account.dbID);
+      _account = await _accountsRepository.getById(_account.dbID);
       AppLogger.instance.info("Account loaded from database");
     } catch (e) {
       AppLogger.instance.error("Error loading Account ${e.toString()}");
@@ -143,7 +141,7 @@ class AccountViewmodel extends ChangeNotifier {
   }
 
   getOpeningBalance() async {
-    openBal = await _balancesDriftRepository.getClosingBalance(
+    openBal = await _balancesRepository.getClosingBalance(
         account: _account.dbID,
         closingDate: _startDate.subtract(const Duration(days: 1)));
     notifyListeners();
@@ -151,7 +149,7 @@ class AccountViewmodel extends ChangeNotifier {
 
   getClosingBalance() async {
     try {
-      closeBal = await _balancesDriftRepository.getClosingBalance(
+      closeBal = await _balancesRepository.getClosingBalance(
           account: _account.dbID, closingDate: _endDate);
       notifyListeners();
     } catch (e) {
@@ -163,7 +161,7 @@ class AccountViewmodel extends ChangeNotifier {
   getAllLedgers() async {
     try {
       allLedgers =
-          await _accountsDriftRepository.getLedgers(profileId: profile.dbID);
+          await _accountsRepository.getLedgers(profileId: profile.dbID);
       notifyListeners();
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
@@ -258,7 +256,7 @@ class AccountViewmodel extends ChangeNotifier {
 
   refetchAccount() async {
     try {
-      _account = await _accountsDriftRepository.getById(_account.dbID);
+      _account = await _accountsRepository.getById(_account.dbID);
       notifyListeners();
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
@@ -291,7 +289,7 @@ class AccountViewmodel extends ChangeNotifier {
   }
 
   Future<void> getTransactions() async {
-    _transactions = await _transactionsDriftRepository.getTransactionsbyAccount(
+    _transactions = await _transactionsRepository.getTransactionsbyAccount(
       startDate: _startDate,
       endDate: _endDate,
       profileId: _profile.dbID,

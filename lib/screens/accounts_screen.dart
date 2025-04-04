@@ -5,8 +5,9 @@ import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/screens/account_screen.dart';
 import 'package:pursenal/viewmodels/accounts_viewmodel.dart';
@@ -26,10 +27,14 @@ class AccountsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final accountTypesDriftRepository =
+        Provider.of<AccountTypesDriftRepository>(context, listen: false);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
     return ChangeNotifierProvider<AccountsViewmodel>(
       create: (context) => AccountsViewmodel(
-        db: db,
+        accountsDriftRepository,
+        accountTypesDriftRepository,
         profile: profile,
       )..init(),
       builder: (context, child) => Consumer<AccountsViewmodel>(

@@ -5,25 +5,23 @@ import 'package:pursenal/core/models/domain/account.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/utils/exporter.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TransactionsViewmodel extends ChangeNotifier with Exporter {
-  final TransactionsDriftRepository _transactionsDriftRepository;
-  final AccountsDriftRepository _accountsDriftRepository;
+  final TransactionsRepository _transactionsRepository;
+  final AccountsRepository _accountsRepository;
 
-  TransactionsViewmodel({
+  TransactionsViewmodel(
+    this._transactionsRepository,
+    this._accountsRepository, {
     required Profile profile,
-    required MyDatabase db,
-  })  : _profile = profile,
-        _transactionsDriftRepository = TransactionsDriftRepository(db),
-        _accountsDriftRepository = AccountsDriftRepository(db);
+  }) : _profile = profile;
 
   LoadingStatus loadingStatus = LoadingStatus.idle;
   LoadingStatus searchLoadingStatus = LoadingStatus.idle;
@@ -202,8 +200,7 @@ class TransactionsViewmodel extends ChangeNotifier with Exporter {
   }
 
   _getAllLedgers() async {
-    allLedgers =
-        await _accountsDriftRepository.getLedgers(profileId: profile.dbID);
+    allLedgers = await _accountsRepository.getLedgers(profileId: profile.dbID);
     notifyListeners();
   }
 
@@ -236,11 +233,11 @@ class TransactionsViewmodel extends ChangeNotifier with Exporter {
     // Explicitly reload the database before fetching
 
     _transactions.clear(); // Force clear old data
-    _transactions = await _transactionsDriftRepository.getTransactions(
+    _transactions = await _transactionsRepository.getTransactions(
         startDate: _startDate, endDate: _endDate, profileId: _profile.dbID);
 
     if (_transactions.isEmpty) {
-      _transactions = await _transactionsDriftRepository.getNTransactions(
+      _transactions = await _transactionsRepository.getNTransactions(
           n: 30, profileId: _profile.dbID);
 
       if (_transactions.isNotEmpty) {

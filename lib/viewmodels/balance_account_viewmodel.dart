@@ -5,30 +5,28 @@ import 'package:pursenal/core/models/domain/account.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/utils/exporter.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/balances_repository.dart';
+import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
-  final TransactionsDriftRepository _transactionsDriftRepository;
-  final BalancesDriftRepository _balancesDriftRepository;
+  final TransactionsRepository _transactionsRepository;
+  final BalancesRepository _balancesRepository;
 
-  final AccountsDriftRepository _accountsDriftRepository;
+  final AccountsRepository _accountsRepository;
 
-  BalanceAccountViewmodel({
+  BalanceAccountViewmodel(
+    this._transactionsRepository,
+    this._balancesRepository,
+    this._accountsRepository, {
     required Profile profile,
-    required MyDatabase db,
     required Account account,
   })  : _profile = profile,
-        _account = account,
-        _accountsDriftRepository = AccountsDriftRepository(db),
-        _transactionsDriftRepository = TransactionsDriftRepository(db),
-        _balancesDriftRepository = BalancesDriftRepository(db);
+        _account = account;
 
   Account _account;
   Account get account => _account;
@@ -103,7 +101,7 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
 
   Future<void> _getAccount() async {
     try {
-      _account = await _accountsDriftRepository.getById(_account.dbID);
+      _account = await _accountsRepository.getById(_account.dbID);
       AppLogger.instance.info("Fund loaded from database");
     } catch (e) {
       AppLogger.instance.error("Error loading Fund ${e.toString()}");
@@ -113,7 +111,7 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
 
   refetchAccount() async {
     try {
-      _account = await _accountsDriftRepository.getById(_account.dbID);
+      _account = await _accountsRepository.getById(_account.dbID);
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
       errorText = 'Error: ';
@@ -138,21 +136,20 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
   }
 
   _getOpeningBalance() async {
-    openBal = await _balancesDriftRepository.getClosingBalance(
+    openBal = await _balancesRepository.getClosingBalance(
         account: _account.dbID,
         closingDate: _startDate.subtract(const Duration(days: 1)));
     notifyListeners();
   }
 
   _getClosingBalance() async {
-    closeBal = await _balancesDriftRepository.getClosingBalance(
+    closeBal = await _balancesRepository.getClosingBalance(
         account: _account.dbID, closingDate: _endDate);
     notifyListeners();
   }
 
   _getAllLedgers() async {
-    allLedgers =
-        await _accountsDriftRepository.getLedgers(profileId: profile.dbID);
+    allLedgers = await _accountsRepository.getLedgers(profileId: profile.dbID);
     notifyListeners();
   }
 
@@ -256,7 +253,7 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
   }
 
   Future<void> _getTransactions() async {
-    _transactions = await _transactionsDriftRepository.getTransactionsbyAccount(
+    _transactions = await _transactionsRepository.getTransactionsbyAccount(
       startDate: _startDate,
       endDate: _endDate,
       profileId: _profile.dbID,

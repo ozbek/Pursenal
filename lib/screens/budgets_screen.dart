@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
 import 'package:pursenal/screens/budget_entry_screen.dart';
 import 'package:pursenal/screens/budget_screen.dart';
 import 'package:pursenal/viewmodels/budgets_viewmodel.dart';
@@ -26,10 +26,11 @@ class BudgetsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final budgetsDriftRepository =
+        Provider.of<BudgetsDriftRepository>(context, listen: false);
     return ChangeNotifierProvider<BudgetsViewmodel>(
       create: (context) => BudgetsViewmodel(
-        db: db,
+        budgetsDriftRepository,
         profile: profile,
       )..init(),
       builder: (context, child) => Scaffold(

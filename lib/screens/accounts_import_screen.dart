@@ -4,9 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/default_accounts.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/extensions/currency.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/wallets_drift_repository.dart';
 import 'package:pursenal/screens/main_screen.dart';
 import 'package:pursenal/viewmodels/accounts_import_viewmodel.dart';
 import 'package:pursenal/widgets/shared/calculated_field.dart';
@@ -22,11 +24,18 @@ class AccountsImportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
+    final walletsDriftRepository =
+        Provider.of<WalletsDriftRepository>(context, listen: false);
+    final balancesDriftRepository =
+        Provider.of<BalancesDriftRepository>(context, listen: false);
 
     return ChangeNotifierProvider<AccountsImportViewmodel>(
       create: (context) => AccountsImportViewmodel(
-        db: db,
+        accountsDriftRepository,
+        walletsDriftRepository,
+        balancesDriftRepository,
         profile: profile,
       )..init(),
       child: Scaffold(

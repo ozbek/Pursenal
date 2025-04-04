@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/extensions/currency.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/budget.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
 import 'package:pursenal/viewmodels/budget_entry_viewmodel.dart';
 import 'package:pursenal/widgets/shared/calculated_field.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
@@ -20,12 +21,16 @@ class BudgetEntryScreen extends StatelessWidget {
   final Budget? budget;
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
+    final budgetsDriftRepository =
+        Provider.of<BudgetsDriftRepository>(context, listen: false);
 
     return ChangeNotifierProvider<BudgetEntryViewmodel>(
-      create: (context) =>
-          BudgetEntryViewmodel(db: db, profile: profile, budget: budget)
-            ..init(),
+      create: (context) => BudgetEntryViewmodel(
+          accountsDriftRepository, budgetsDriftRepository,
+          profile: profile, budget: budget)
+        ..init(),
       child: Consumer<BudgetEntryViewmodel>(
         builder: (context, viewmodel, child) => Scaffold(
           appBar: AppBar(

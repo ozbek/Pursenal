@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/enums/date_filter_type.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/insights_viewmodel.dart';
 import 'package:pursenal/widgets/insights/average_transactions_bar_chart_card.dart';
@@ -23,12 +27,27 @@ class InsightsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final profilesDriftRepository =
+        Provider.of<ProfilesDriftRepository>(context, listen: false);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
+    final transactionsDriftRepository =
+        Provider.of<TransactionsDriftRepository>(context, listen: false);
+    final balancesDriftRepository =
+        Provider.of<BalancesDriftRepository>(context, listen: false);
+    final budgetsDriftRepository =
+        Provider.of<BudgetsDriftRepository>(context, listen: false);
 
     return Scaffold(
       body: ChangeNotifierProvider(
-        create: (context) =>
-            InsightsViewmodel(db: db, profile: profile)..init(),
+        create: (context) => InsightsViewmodel(
+            profilesDriftRepository,
+            accountsDriftRepository,
+            transactionsDriftRepository,
+            balancesDriftRepository,
+            budgetsDriftRepository,
+            profile: profile)
+          ..init(),
         builder: (context, child) => Consumer<InsightsViewmodel>(
           builder: (context, viewmodel, child) => LoadingBody(
               loadingStatus: viewmodel.loadingStatus,

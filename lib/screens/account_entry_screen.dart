@@ -5,12 +5,20 @@ import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/app/extensions/currency.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/account.dart';
 import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/banks_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/ccards_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/loans_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/people_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/receivables_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/wallets_drift_repository.dart';
 import 'package:pursenal/viewmodels/account_entry_viewmodel.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/widgets/shared/calculated_field.dart';
@@ -27,11 +35,36 @@ class AccountEntryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final walletsDriftRepository =
+        Provider.of<WalletsDriftRepository>(context, listen: false);
+    final accountTypesDriftRepository =
+        Provider.of<AccountTypesDriftRepository>(context, listen: false);
+    final accountsDriftRepository =
+        Provider.of<AccountsDriftRepository>(context, listen: false);
+    final balancesDriftRepository =
+        Provider.of<BalancesDriftRepository>(context, listen: false);
+    final banksDriftRepository =
+        Provider.of<BanksDriftRepository>(context, listen: false);
+    final cCardsDriftRepository =
+        Provider.of<CCardsDriftRepository>(context, listen: false);
+    final loansDriftRepository =
+        Provider.of<LoansDriftRepository>(context, listen: false);
+    final peopleDriftRepository =
+        Provider.of<PeopleDriftRepository>(context, listen: false);
+    final receivablesDriftRepository =
+        Provider.of<ReceivablesDriftRepository>(context, listen: false);
 
     return ChangeNotifierProvider(
       create: (context) => AccountEntryViewModel(
-        db: db,
+        walletsDriftRepository,
+        accountsDriftRepository,
+        accountTypesDriftRepository,
+        balancesDriftRepository,
+        loansDriftRepository,
+        cCardsDriftRepository,
+        banksDriftRepository,
+        peopleDriftRepository,
+        receivablesDriftRepository,
         profile: profile,
         account: account,
         accountType: accountType,

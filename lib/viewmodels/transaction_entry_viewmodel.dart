@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/app/global/values.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
 import 'package:pursenal/core/models/domain/account.dart';
@@ -11,23 +10,27 @@ import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
-import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/abstracts/account_types_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/balances_repository.dart';
+import 'package:pursenal/core/abstracts/projects_repository.dart';
+import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TransactionEntryViewmodel extends ChangeNotifier {
-  final AccountsDriftRepository _accountsDriftRepository;
-  final TransactionsDriftRepository _transactionsDriftRepository;
-  final BalancesDriftRepository _balancesDriftRepository;
-  final AccountTypesDriftRepository _accountTypesDriftRepository;
-  final ProjectsDriftRepository _projectsDriftRepository;
+  final AccountsRepository _accountsRepository;
+  final TransactionsRepository _transactionsRepository;
+  final BalancesRepository _balancesRepository;
+  final AccountTypesRepository _accountTypesRepository;
+  final ProjectsRepository _projectsRepository;
 
-  TransactionEntryViewmodel({
-    required MyDatabase db,
+  TransactionEntryViewmodel(
+    this._accountsRepository,
+    this._transactionsRepository,
+    this._balancesRepository,
+    this._accountTypesRepository,
+    this._projectsRepository, {
     required Profile profile,
     Transaction? transaction,
     Transaction? dupeTransaction,
@@ -39,12 +42,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
         _dupeTransaction = dupeTransaction,
         _selectedAccount = selectedAccount,
         _selectedFund = selectedFund,
-        _vchType = vchType ?? VoucherType.payment,
-        _accountsDriftRepository = AccountsDriftRepository(db),
-        _transactionsDriftRepository = TransactionsDriftRepository(db),
-        _balancesDriftRepository = BalancesDriftRepository(db),
-        _accountTypesDriftRepository = AccountTypesDriftRepository(db),
-        _projectsDriftRepository = ProjectsDriftRepository(db);
+        _vchType = vchType ?? VoucherType.payment;
 
   LoadingStatus loadingStatus = LoadingStatus.idle;
   bool isNegativeBalanceAlerted = false;
@@ -147,8 +145,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
         notifyListeners();
       }
 
-      vchNo =
-          (await _transactionsDriftRepository.getLastTransactionID() ?? 0) + 1;
+      vchNo = (await _transactionsRepository.getLastTransactionID() ?? 0) + 1;
     }
 
     loadingStatus = LoadingStatus.completed;
@@ -239,12 +236,11 @@ class TransactionEntryViewmodel extends ChangeNotifier {
   }
 
   Future<void> getAccounts() async {
-    _ledgers =
-        await _accountsDriftRepository.getLedgers(profileId: _profile.dbID);
-    _funds = await _accountsDriftRepository.getLedgersByCategory(
+    _ledgers = await _accountsRepository.getLedgers(profileId: _profile.dbID);
+    _funds = await _accountsRepository.getLedgersByCategory(
         profileId: _profile.dbID, accTypeIDs: fundingAccountIDs);
 
-    accountTypes = await _accountTypesDriftRepository.getAll();
+    accountTypes = await _accountTypesRepository.getAll();
 
     // _ledgers.where((a) => a.accType.dbID <= 3).toList();
     notifyListeners();
@@ -312,7 +308,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
 
   Future<void> _getAllProjects() async {
     try {
-      projects = await _projectsDriftRepository.getAllProjects(_profile.dbID);
+      projects = await _projectsRepository.getAllProjects(_profile.dbID);
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
       errorText = 'Error: ';
@@ -387,7 +383,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
         if (_transaction != null && _transaction != null) {
           AppLogger.instance
               .info("Updating Transaction with ID:${_transaction!.dbID}");
-          await _transactionsDriftRepository.updateTransaction(
+          await _transactionsRepository.updateTransaction(
               id: _transaction!.dbID,
               vchDate: _vchDate,
               narr: _narr,
@@ -399,14 +395,14 @@ class TransactionEntryViewmodel extends ChangeNotifier {
               project: _selectedProject?.dbID,
               profile: _profile.dbID);
           for (var f in _transaction!.filePaths) {
-            await _transactionsDriftRepository.deletePhotoPathbyPath(f);
+            await _transactionsRepository.deletePhotoPathbyPath(f);
           }
           for (var p in _images) {
-            await _transactionsDriftRepository.insertPhotoPath(
+            await _transactionsRepository.insertPhotoPath(
                 path: p, transaction: _transaction!.dbID);
           }
         } else {
-          final trId = await _transactionsDriftRepository.insertTransaction(
+          final trId = await _transactionsRepository.insertTransaction(
               vchDate: _vchDate,
               narr: _narr,
               refNo: _refNo,
@@ -417,7 +413,7 @@ class TransactionEntryViewmodel extends ChangeNotifier {
               project: _selectedProject?.dbID,
               profile: _profile.dbID);
           for (String p in _images) {
-            await _transactionsDriftRepository.insertPhotoPath(
+            await _transactionsRepository.insertPhotoPath(
                 path: p, transaction: trId);
           }
         }
@@ -445,11 +441,11 @@ class TransactionEntryViewmodel extends ChangeNotifier {
   _updateBalances() async {
     try {
       if (_selectedAccount != null && _selectedFund != null) {
-        await _balancesDriftRepository.updateBalanceByAccount(
+        await _balancesRepository.updateBalanceByAccount(
           account: _selectedFund!.dbID,
         );
 
-        await _balancesDriftRepository.updateBalanceByAccount(
+        await _balancesRepository.updateBalanceByAccount(
           account: _selectedAccount!.dbID,
         );
       }

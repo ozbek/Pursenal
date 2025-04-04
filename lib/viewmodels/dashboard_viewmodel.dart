@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:pursenal/app/extensions/datetime.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
-import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/abstracts/account_types_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/balances_repository.dart';
+import 'package:pursenal/core/abstracts/profiles_repository.dart';
+import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardViewmodel extends ChangeNotifier {
-  final ProfilesDriftRepository _profilesDriftRepository;
-  final AccountsDriftRepository _accountsDriftRepository;
-  final TransactionsDriftRepository _transactionsDriftRepository;
-  final BalancesDriftRepository _balancesDriftRepository;
-  final AccountTypesDriftRepository _accountTypesDriftRepository;
+  final ProfilesRepository _profilesRepository;
+  final AccountsRepository _accountsRepository;
+  final TransactionsRepository _transactionsRepository;
+  final BalancesRepository _balancesRepository;
+  final AccountTypesRepository _accountTypesRepository;
 
-  DashboardViewmodel({required MyDatabase db, required Profile profile})
-      : _selectedProfile = profile,
-        _profilesDriftRepository = ProfilesDriftRepository(db),
-        _accountsDriftRepository = AccountsDriftRepository(db),
-        _balancesDriftRepository = BalancesDriftRepository(db),
-        _transactionsDriftRepository = TransactionsDriftRepository(db),
-        _accountTypesDriftRepository = AccountTypesDriftRepository(db);
+  DashboardViewmodel(
+      this._profilesRepository,
+      this._accountsRepository,
+      this._transactionsRepository,
+      this._balancesRepository,
+      this._accountTypesRepository,
+      {required Profile profile})
+      : _selectedProfile = profile;
 
   List<Profile> _profiles = [];
 
@@ -72,7 +72,7 @@ class DashboardViewmodel extends ChangeNotifier {
       if (hasListeners) notifyListeners();
 
       _prefs = await SharedPreferences.getInstance();
-      _profiles = await _profilesDriftRepository.getAll();
+      _profiles = await _profilesRepository.getAll();
       await getAllLedgers();
       await getAccountTypes();
       filterAccountTypes();
@@ -94,13 +94,13 @@ class DashboardViewmodel extends ChangeNotifier {
   }
 
   getAllLedgers() async {
-    allLedgers = await _accountsDriftRepository.getLedgers(
-        profileId: _selectedProfile.dbID);
+    allLedgers =
+        await _accountsRepository.getLedgers(profileId: _selectedProfile.dbID);
     notifyListeners();
   }
 
   getAccountTypes() async {
-    _accTypes = await _accountTypesDriftRepository.getAll();
+    _accTypes = await _accountTypesRepository.getAll();
     notifyListeners();
   }
 
@@ -116,7 +116,7 @@ class DashboardViewmodel extends ChangeNotifier {
   }
 
   getTransactions() async {
-    recentTransactions = await _transactionsDriftRepository.getNTransactions(
+    recentTransactions = await _transactionsRepository.getNTransactions(
         n: recentCount, profileId: _selectedProfile.dbID);
 
     notifyListeners();
@@ -125,7 +125,7 @@ class DashboardViewmodel extends ChangeNotifier {
   setBalances(bool reloadNeeded) async {
     if (reloadNeeded) {
       do {
-        final balance = await _balancesDriftRepository.getFundClosingBalance(
+        final balance = await _balancesRepository.getFundClosingBalance(
             _startDate, _selectedProfile.dbID);
         balances.add(balance);
         _startDate = _startDate.add(const Duration(days: 1));

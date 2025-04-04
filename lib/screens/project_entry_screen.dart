@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/project_entry_viewmodel.dart';
 import 'package:pursenal/widgets/shared/images_selector.dart';
@@ -26,11 +26,12 @@ class ProjectEntryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final projectsDriftRepository =
+        Provider.of<ProjectsDriftRepository>(context, listen: false);
     return ChangeNotifierProvider(
-      create: (context) =>
-          ProjectEntryViewmodel(db: db, project: project, profile: profile)
-            ..init(),
+      create: (context) => ProjectEntryViewmodel(projectsDriftRepository,
+          project: project, profile: profile)
+        ..init(),
       builder: (context, child) => Scaffold(
         appBar: AppBar(title: Text(AppLocalizations.of(context)!.projectForm)),
         body: Consumer<ProjectEntryViewmodel>(

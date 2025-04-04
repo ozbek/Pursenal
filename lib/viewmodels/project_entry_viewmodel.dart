@@ -1,23 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/extensions/datetime.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/models/domain/budget.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
-import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
+import 'package:pursenal/core/abstracts/projects_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class ProjectEntryViewmodel extends ChangeNotifier {
-  final ProjectsDriftRepository _projectsDriftRepository;
+  final ProjectsRepository _projectsRepository;
 
-  ProjectEntryViewmodel({
-    required MyDatabase db,
+  ProjectEntryViewmodel(
+    this._projectsRepository, {
     required Profile profile,
     Project? project,
-  })  : _projectsDriftRepository = ProjectsDriftRepository(db),
-        _project = project,
+  })  : _project = project,
         _profile = profile;
   LoadingStatus loadingStatus = LoadingStatus.idle;
   final Profile _profile;
@@ -88,7 +86,7 @@ class ProjectEntryViewmodel extends ChangeNotifier {
   }
 
   Future<void> getProjects() async {
-    // _projects = await _projectsDriftRepository.getAll();
+    // _projects = await _projectsRepository.getAll();
     notifyListeners();
   }
 
@@ -169,7 +167,7 @@ class ProjectEntryViewmodel extends ChangeNotifier {
       loadingStatus = LoadingStatus.submitting;
       notifyListeners();
       if (_project == null) {
-        int newPro = await _projectsDriftRepository.insertProject(
+        int newPro = await _projectsRepository.insertProject(
             name: _projectName,
             budget: _budget?.dbID,
             profile: _profile.dbID,
@@ -178,9 +176,9 @@ class ProjectEntryViewmodel extends ChangeNotifier {
             endDate: _endDate,
             filePaths: mediaPaths,
             projectStatus: _projectStatus);
-        _project = await _projectsDriftRepository.getById(newPro);
+        _project = await _projectsRepository.getById(newPro);
       } else {
-        await _projectsDriftRepository.updateProject(
+        await _projectsRepository.updateProject(
             profile: _profile.dbID,
             id: _project!.dbID,
             name: _projectName,

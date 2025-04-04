@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/app/extensions/datetime.dart';
 import 'package:pursenal/app/global/values.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/date_filter_type.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
@@ -13,27 +12,28 @@ import 'package:pursenal/core/models/domain/daily_total_transaction.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/balances_repository.dart';
+import 'package:pursenal/core/abstracts/budgets_repository.dart';
+import 'package:pursenal/core/abstracts/profiles_repository.dart';
+import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class InsightsViewmodel extends ChangeNotifier {
-  final ProfilesDriftRepository _profilesDriftRepository;
-  final AccountsDriftRepository _accountsDriftRepository;
-  final TransactionsDriftRepository _transactionsDriftRepository;
-  final BalancesDriftRepository _balancesDriftRepository;
-  final BudgetsDriftRepository _budgetsDriftRepository;
+  final ProfilesRepository _profilesRepository;
+  final AccountsRepository _accountsRepository;
+  final TransactionsRepository _transactionsRepository;
+  final BalancesRepository _balancesRepository;
+  final BudgetsRepository _budgetsRepository;
 
-  InsightsViewmodel({required MyDatabase db, required Profile profile})
-      : _selectedProfile = profile,
-        _profilesDriftRepository = ProfilesDriftRepository(db),
-        _accountsDriftRepository = AccountsDriftRepository(db),
-        _balancesDriftRepository = BalancesDriftRepository(db),
-        _transactionsDriftRepository = TransactionsDriftRepository(db),
-        _budgetsDriftRepository = BudgetsDriftRepository(db);
+  InsightsViewmodel(
+      this._profilesRepository,
+      this._accountsRepository,
+      this._transactionsRepository,
+      this._balancesRepository,
+      this._budgetsRepository,
+      {required Profile profile})
+      : _selectedProfile = profile;
 
   List<Profile> _profiles = [];
 
@@ -112,7 +112,7 @@ class InsightsViewmodel extends ChangeNotifier {
       loadingStatus = LoadingStatus.loading;
       notifyListeners();
       dateFilterType = DateFilterType.monthly;
-      _profiles = await _profilesDriftRepository.getAll();
+      _profiles = await _profilesRepository.getAll();
       loadingStatus = LoadingStatus.completed;
       notifyListeners();
       await getData();
@@ -238,10 +238,10 @@ class InsightsViewmodel extends ChangeNotifier {
   }
 
   _getAccounts() async {
-    allLedgers = await _accountsDriftRepository.getLedgers(
-        profileId: _selectedProfile.dbID);
+    allLedgers =
+        await _accountsRepository.getLedgers(profileId: _selectedProfile.dbID);
 
-    _funds = await _accountsDriftRepository.getAccountsByCategory(
+    _funds = await _accountsRepository.getAccountsByCategory(
         profileId: _selectedProfile.dbID, accTypeIDs: fundIDs);
 
     for (var f in _funds) {
@@ -250,9 +250,9 @@ class InsightsViewmodel extends ChangeNotifier {
       }
     }
 
-    _expenses = await _accountsDriftRepository.getAccountsByAccType(
+    _expenses = await _accountsRepository.getAccountsByAccType(
         _selectedProfile.dbID, expenseTypeID);
-    _incomes = await _accountsDriftRepository.getAccountsByAccType(
+    _incomes = await _accountsRepository.getAccountsByAccType(
         _selectedProfile.dbID, incomeTypeID);
 
     expenseTotals = {for (var k in _expenses) k: 0};
@@ -263,7 +263,7 @@ class InsightsViewmodel extends ChangeNotifier {
 
   _getTransactions() async {
     _transactions = []; // Reset transactions
-    _transactions = await _transactionsDriftRepository.getTransactions(
+    _transactions = await _transactionsRepository.getTransactions(
         startDate: startDate,
         endDate: endDate,
         profileId: _selectedProfile.dbID);
@@ -271,7 +271,7 @@ class InsightsViewmodel extends ChangeNotifier {
   }
 
   _getBudgets() async {
-    budgets = await _budgetsDriftRepository.getAll(_selectedProfile.dbID);
+    budgets = await _budgetsRepository.getAll(_selectedProfile.dbID);
 
     notifyListeners();
   }
@@ -397,7 +397,7 @@ class InsightsViewmodel extends ChangeNotifier {
 
     for (var d in _rangeDates) {
       for (var f in _funds) {
-        fundBalances[f]?.add(await _balancesDriftRepository.getClosingBalance(
+        fundBalances[f]?.add(await _balancesRepository.getClosingBalance(
             account: f.dbID, closingDate: d));
       }
     }

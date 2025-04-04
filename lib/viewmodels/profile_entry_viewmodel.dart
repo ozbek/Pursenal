@@ -1,22 +1,20 @@
 import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
-import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
+import 'package:pursenal/core/abstracts/profiles_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileEntryViewmodel extends ChangeNotifier {
-  final ProfilesDriftRepository _profilesDriftRepository;
+  final ProfilesRepository _profilesRepository;
 
-  ProfileEntryViewmodel({
-    required MyDatabase db,
+  ProfileEntryViewmodel(
+    this._profilesRepository, {
     Profile? profile,
-  })  : _profilesDriftRepository = ProfilesDriftRepository(db),
-        _profile = profile;
+  }) : _profile = profile;
   SharedPreferences? _prefs;
   LoadingStatus loadingStatus = LoadingStatus.idle;
 
@@ -94,7 +92,7 @@ class ProfileEntryViewmodel extends ChangeNotifier {
   }
 
   Future<void> getProfiles() async {
-    _profiles = await _profilesDriftRepository.getAll();
+    _profiles = await _profilesRepository.getAll();
     notifyListeners();
   }
 
@@ -190,7 +188,7 @@ class ProfileEntryViewmodel extends ChangeNotifier {
       loadingStatus = LoadingStatus.submitting;
       notifyListeners();
       if (_profile == null) {
-        int newPro = await _profilesDriftRepository.insertProfile(
+        int newPro = await _profilesRepository.insertProfile(
           name: _profileName,
           alias: _nickName,
           currency: _currency!,
@@ -200,9 +198,9 @@ class ProfileEntryViewmodel extends ChangeNotifier {
           phone: _phone,
           tin: _tin,
         );
-        _profile = await _profilesDriftRepository.getById(newPro);
+        _profile = await _profilesRepository.getById(newPro);
       } else {
-        await _profilesDriftRepository.updateProfile(
+        await _profilesRepository.updateProfile(
           id: _profile!.dbID,
           name: _profileName,
           alias: _nickName,

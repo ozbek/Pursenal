@@ -1,24 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/global/default_accounts.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/wallets_drift_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/balances_repository.dart';
+import 'package:pursenal/core/abstracts/wallets_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountsImportViewmodel extends ChangeNotifier {
-  final AccountsDriftRepository _accountsDriftRepository;
-  final WalletsDriftRepository _walletsDriftRepository;
-  final BalancesDriftRepository _balancesDriftRepository;
+  final AccountsRepository _accountsRepository;
+  final WalletsRepository _walletsRepository;
+  final BalancesRepository _balancesRepository;
 
-  AccountsImportViewmodel({required MyDatabase db, required Profile profile})
-      : _profile = profile,
-        _accountsDriftRepository = AccountsDriftRepository(db),
-        _balancesDriftRepository = BalancesDriftRepository(db),
-        _walletsDriftRepository = WalletsDriftRepository(db);
+  AccountsImportViewmodel(this._accountsRepository, this._walletsRepository,
+      this._balancesRepository,
+      {required Profile profile})
+      : _profile = profile;
   SharedPreferences? _prefs;
   Future<void> init() async {
     try {
@@ -108,19 +106,19 @@ class AccountsImportViewmodel extends ChangeNotifier {
       loadingStatus = LoadingStatus.submitting;
       notifyListeners();
       try {
-        int ac = await _accountsDriftRepository.insertAccount(
+        int ac = await _accountsRepository.insertAccount(
             name: selectedCash.first,
             openBal: cashOpenBalance,
             openDate: now.copyWith(month: 1, day: 1),
             accType: 0,
             profile: _profile.dbID);
-        await _balancesDriftRepository.insertBalance(
+        await _balancesRepository.insertBalance(
             account: ac, amount: cashOpenBalance);
-        await _walletsDriftRepository.insertWallet(account: ac);
+        await _walletsRepository.insertWallet(account: ac);
 
-        await _accountsDriftRepository.insertAccountsBulk(
+        await _accountsRepository.insertAccountsBulk(
             selectedExpense.toList(), 5, _profile.dbID, accountOpenDate);
-        await _accountsDriftRepository.insertAccountsBulk(
+        await _accountsRepository.insertAccountsBulk(
             selectedIncome.toList(), 4, _profile.dbID, accountOpenDate);
       } catch (e) {
         errorText = "Failed saving accounts";

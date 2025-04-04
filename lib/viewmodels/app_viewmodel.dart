@@ -5,17 +5,15 @@ import 'package:pursenal/app/extensions/color.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/utils/services/notification_servie.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
+import 'package:pursenal/core/abstracts/profiles_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppViewmodel extends ChangeNotifier {
-  final ProfilesDriftRepository _profilesDriftRepository;
+  final ProfilesRepository _profilesRepository;
 
-  AppViewmodel({required MyDatabase db})
-      : _profilesDriftRepository = ProfilesDriftRepository(db);
+  AppViewmodel(this._profilesRepository);
 
   Profile? _selectedProfile;
 
@@ -68,8 +66,8 @@ class AppViewmodel extends ChangeNotifier {
     loadingStatus = LoadingStatus.loading;
     try {
       notifyListeners();
-      _profiles = await _profilesDriftRepository.getAll();
-      _selectedProfile = await _profilesDriftRepository.getSelectedProfile();
+      _profiles = await _profilesRepository.getAll();
+      _selectedProfile = await _profilesRepository.getSelectedProfile();
       loadingStatus = LoadingStatus.completed;
 
       _prefs = await SharedPreferences.getInstance();
@@ -93,7 +91,7 @@ class AppViewmodel extends ChangeNotifier {
     _selectedProfile = value;
 
     if (value != null) {
-      _profilesDriftRepository.setSelectedProfile(value.dbID);
+      _profilesRepository.setSelectedProfile(value.dbID);
     }
     notifyListeners();
   }

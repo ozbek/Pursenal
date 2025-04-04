@@ -1,28 +1,26 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/global/values.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/account.dart';
 import 'package:pursenal/core/models/domain/budget.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
-import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
-import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
+import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/budgets_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class BudgetEntryViewmodel extends ChangeNotifier {
-  final AccountsDriftRepository _accountsDriftRepository;
-  final BudgetsDriftRepository _budgetsDriftRepository;
+  final AccountsRepository _accountsRepository;
+  final BudgetsRepository _budgetsRepository;
 
-  BudgetEntryViewmodel({
-    required MyDatabase db,
+  BudgetEntryViewmodel(
+    this._accountsRepository,
+    this._budgetsRepository, {
     required Profile profile,
     Budget? budget,
   })  : _profile = profile,
-        _budget = budget,
-        _accountsDriftRepository = AccountsDriftRepository(db),
-        _budgetsDriftRepository = BudgetsDriftRepository(db);
+        _budget = budget;
 
   LoadingStatus loadingStatus = LoadingStatus.idle;
 
@@ -120,14 +118,12 @@ class BudgetEntryViewmodel extends ChangeNotifier {
   }
 
   getAccounts() async {
-    expenses =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 5);
-    incomes =
-        await _accountsDriftRepository.getAccountsByAccType(_profile.dbID, 4);
+    expenses = await _accountsRepository.getAccountsByAccType(_profile.dbID, 5);
+    incomes = await _accountsRepository.getAccountsByAccType(_profile.dbID, 4);
 
     int accType = 0;
     do {
-      funds.addAll(await _accountsDriftRepository.getAccountsByAccType(
+      funds.addAll(await _accountsRepository.getAccountsByAccType(
           _profile.dbID, accType));
       accType++;
     } while (fundingAccountIDs.contains(accType));
@@ -187,7 +183,7 @@ class BudgetEntryViewmodel extends ChangeNotifier {
 
   Future<void> getBudgets() async {
     try {
-      _budgets = await _budgetsDriftRepository.getAll(_profile.dbID);
+      _budgets = await _budgetsRepository.getAll(_profile.dbID);
 
       AppLogger.instance.info("Budgets loaded from database");
     } catch (e) {
@@ -251,10 +247,10 @@ class BudgetEntryViewmodel extends ChangeNotifier {
       acc.addAll(selectedIncomes);
 
       if (_budget == null) {
-        await _budgetsDriftRepository.insertBudget(name, details,
+        await _budgetsRepository.insertBudget(name, details,
             selectedFunds.toList(), acc, interval, _profile.dbID);
       } else {
-        await _budgetsDriftRepository.updateBudget(_budget!.dbID, name, details,
+        await _budgetsRepository.updateBudget(_budget!.dbID, name, details,
             selectedFunds.toList(), acc, interval, _profile.dbID);
       }
 
@@ -275,7 +271,7 @@ class BudgetEntryViewmodel extends ChangeNotifier {
   Future<bool> deleteBudget() async {
     if (_budget != null && _budget != null) {
       try {
-        await _budgetsDriftRepository.delete(_budget!.dbID);
+        await _budgetsRepository.delete(_budget!.dbID);
         return true;
       } catch (e) {
         AppLogger.instance.error(' ${e.toString()}');

@@ -3,8 +3,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
-import 'package:pursenal/core/db/database.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
 import 'package:pursenal/screens/project_entry_screen.dart';
 import 'package:pursenal/screens/project_screen.dart';
 import 'package:pursenal/viewmodels/projects_viewmodel.dart';
@@ -19,10 +20,15 @@ class ProjectsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
+    final projectsDriftRepository =
+        Provider.of<ProjectsDriftRepository>(context, listen: false);
+    final accountTypesDriftRepository =
+        Provider.of<AccountTypesDriftRepository>(context, listen: false);
+
     return ChangeNotifierProvider<ProjectsViewmodel>(
       create: (context) => ProjectsViewmodel(
-        db: db,
+        projectsDriftRepository,
+        accountTypesDriftRepository,
         profile: profile,
       )..init(),
       builder: (context, child) => Consumer<ProjectsViewmodel>(
