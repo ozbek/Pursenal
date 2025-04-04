@@ -67,3 +67,4 @@ build_apk.sh
 
 windows-setup-script.iss
 installers
+out.sql
