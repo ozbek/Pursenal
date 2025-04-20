@@ -20,7 +20,7 @@ import 'package:pursenal/core/repositories/drift/receivables_drift_repository.da
 import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/wallets_drift_repository.dart';
 import 'package:pursenal/screens/welcome_screen.dart';
-import 'package:pursenal/utils/services/notification_servie.dart';
+import 'package:pursenal/utils/services/notification_service.dart';
 import 'package:pursenal/providers/theme_provider.dart';
 import 'package:pursenal/screens/main_screen.dart';
 import 'package:pursenal/core/db/app_drift_database.dart';
@@ -47,6 +47,8 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AppLogger.instance.info("Application started");
+
+  await requestNotificationPermission();
 
   tz.initializeTimeZones();
 

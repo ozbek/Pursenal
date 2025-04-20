@@ -2,9 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pursenal/app/extensions/color.dart';
+import 'package:pursenal/app/global/date_formats.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
-import 'package:pursenal/utils/services/notification_servie.dart';
+import 'package:pursenal/utils/services/notification_service.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/abstracts/profiles_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
@@ -197,7 +198,8 @@ class AppViewmodel extends ChangeNotifier {
     try {
       await _prefs?.setInt('reminderHour', time.hour);
       await _prefs?.setInt('reminderMinute', time.minute);
-      reminderTime = "${time.hour}:${time.minute}";
+      final dt = DateTime(0, 0, 0, time.hour, time.minute);
+      reminderTime = timeFormat.format(dt);
       if (reminderStatus) {
         NotificationService.scheduleDailyReminder(0, "Pursenal",
             "Click to add today's transactions", time, '/profiles');
@@ -213,7 +215,8 @@ class AppViewmodel extends ChangeNotifier {
     try {
       final hr = _prefs?.getInt('reminderHour') ?? 00;
       final mi = _prefs?.getInt('reminderMinute') ?? 00;
-      return "$hr:$mi";
+      final dt = DateTime(0, 0, 0, hr, mi);
+      return timeFormat.format(dt);
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
       errorText = 'Error: Cannot get reminder time';

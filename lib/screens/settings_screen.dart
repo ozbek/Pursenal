@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -197,51 +199,55 @@ class SettingsScreen extends StatelessWidget {
                       const SizedBox(
                         height: 16,
                       ),
-                      Row(
-                        children: [
-                          Text(AppLocalizations.of(context)!.reminder),
-                          const Expanded(child: TheDivider()),
-                        ],
-                      ),
-                      SwitchListTile(
-                          activeColor: Theme.of(context)
-                              .colorScheme
-                              .primary, // Changes selected color
-                          inactiveTrackColor: Theme.of(context)
-                              .colorScheme
-                              .secondary, // Optional
-                          value: viewmodel.reminderStatus,
-                          title: Text(
-                            AppLocalizations.of(context)!.setDailyReminder,
-                            style: TextStyle(
-                              color: Theme.of(context).listTileTheme.textColor,
+                      // Reminder options hidden for desktop devices until full implementation
+                      if (Platform.isAndroid || Platform.isIOS) ...[
+                        Row(
+                          children: [
+                            Text(AppLocalizations.of(context)!.reminder),
+                            const Expanded(child: TheDivider()),
+                          ],
+                        ),
+                        SwitchListTile(
+                            activeColor: Theme.of(context)
+                                .colorScheme
+                                .primary, // Changes selected color
+                            inactiveTrackColor: Theme.of(context)
+                                .colorScheme
+                                .secondary, // Optional
+                            value: viewmodel.reminderStatus,
+                            title: Text(
+                              AppLocalizations.of(context)!.setDailyReminder,
+                              style: TextStyle(
+                                color:
+                                    Theme.of(context).listTileTheme.textColor,
+                              ),
                             ),
-                          ),
-                          subtitle: viewmodel.reminderStatus
-                              ? Text(AppLocalizations.of(context)!
-                                  .reminderSetTime(viewmodel.reminderTime))
-                              : null,
-                          onChanged: (v) async {
-                            await viewmodel.toggleReminder(v);
+                            subtitle: viewmodel.reminderStatus
+                                ? Text(AppLocalizations.of(context)!
+                                    .reminderSetTime(viewmodel.reminderTime))
+                                : null,
+                            onChanged: (v) async {
+                              await viewmodel.toggleReminder(v);
 
-                            if (context.mounted) {
-                              if (v) {
-                                showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay.now(),
-                                ).then((t) {
-                                  if (t != null) {
-                                    viewmodel.setRemindTime(t);
-                                  } else {
-                                    viewmodel.toggleReminder(false);
-                                  }
-                                });
+                              if (context.mounted) {
+                                if (v) {
+                                  showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.now(),
+                                  ).then((t) {
+                                    if (t != null) {
+                                      viewmodel.setRemindTime(t);
+                                    } else {
+                                      viewmodel.toggleReminder(false);
+                                    }
+                                  });
+                                }
                               }
-                            }
-                          }),
-                      const SizedBox(
-                        height: 16,
-                      ),
+                            }),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                      ],
                       Row(
                         children: [
                           Text(AppLocalizations.of(context)!.dates),
