@@ -6,6 +6,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
@@ -33,16 +34,19 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+// Get the database path for Drift
 Future<String> _getDatabasePath() async {
   final appDir = await getApplicationSupportDirectory();
   return p.join(appDir.path, 'db', 'app_drift_database.sqlite');
 }
 
+// Opens a Drift database connection
 DatabaseConnection _backgroundConnection(String path) {
   final database = NativeDatabase(File(path));
   return DatabaseConnection(database);
 }
 
+// Intended to use for navigating to transaction entry screen on clicking reminder notification
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +56,7 @@ void main() async {
 
   tz.initializeTimeZones();
 
+  // Function to divert user to a certain page when clicked on the notification. Currently the ProfileSelectionScreen. Not working if app is closed.
   await NotificationService.init((String? payload) {
     if (payload != null) {
       navigatorKey.currentState?.pushNamed(payload).then((_) {});
@@ -61,14 +66,16 @@ void main() async {
   // Precompute the database path
   final dbPath = await _getDatabasePath();
 
-  // Pass a synchronous function to spawn
+  // Pass a synchronous function to spawn Drift database in a separate isolate
   final isolate = await DriftIsolate.spawn(() => _backgroundConnection(dbPath));
-
   final connection = await isolate.connect();
+
+  // The ThemeProvider for the App.
   final themeProvider = ThemeProvider();
   await themeProvider.init();
 
   runApp(MultiProvider(
+    // The repositories as per the MVVM architecture used are initialised here as providers and then passed on to viewmodels to commmunicate with the database.
     providers: [
       Provider<AppDriftDatabase>(
         create: (context) => AppDriftDatabase(connection, "b"),
@@ -153,7 +160,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         navigatorKey: navigatorKey,
         localizationsDelegates: const [
-          AppLocalizations.delegate, // Add this line
+          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
@@ -164,12 +171,13 @@ class MyApp extends StatelessWidget {
         routes: {"/profiles": (context) => const ProfileSelectionScreen()},
         theme: light,
         darkTheme: dark,
-        title: AppLocalizations.of(context)?.pursenal ?? "Pursenal",
+        title: AppLocalizations.of(context)?.pursenal ?? appName,
         home: Consumer<AppViewmodel>(
           builder: (context, viewmodel, child) => LoadingBody(
             loadingStatus: viewmodel.loadingStatus,
             errorText: viewmodel.errorText,
             widget: viewmodel.selectedProfile == null
+                // If the user hasn't yet created a profile, they are forwarded to WelcomeScreen
                 ? const WelcomeScreen()
                 : MainScreen(
                     profile: viewmodel.selectedProfile!,

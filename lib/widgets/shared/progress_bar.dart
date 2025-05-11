@@ -3,10 +3,16 @@ import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/core/enums/currency.dart';
 
 class ProgressBar extends StatelessWidget {
+  /// The percentage progress in double value
   final double progress; // Value between 0 and 1
+
+  /// Maximum possible value
   final double max;
+
+  /// Currency from profile
   final Currency currency;
 
+  /// A simple progress bar widget
   const ProgressBar({
     super.key,
     required this.progress,

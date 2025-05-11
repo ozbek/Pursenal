@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TheDatePicker extends StatelessWidget {
+  /// A date picker field
   const TheDatePicker({
     super.key,
     required this.initialDate,
@@ -15,14 +16,31 @@ class TheDatePicker extends StatelessWidget {
     this.timePattern = "hh:mm a",
   });
 
+  /// Field intial date
   final DateTime? initialDate;
+
+  /// Callback function on date is changed
   final Function(DateTime) onChanged;
+
+  /// Label for the field
   final String label;
+
+  /// Text to show in case of an error
   final String? errorText;
+
+  /// Whether the user need to select the time with date
   final bool needTime;
+
+  /// DatePickerDialog firstDate
   final DateTime? firstDate;
+
+  /// DatePickerDialog lastDate
   final DateTime? lastDate;
+
+  /// The app date pattern
   final String datePattern;
+
+  /// The app time pattern
   final String timePattern;
 
   @override

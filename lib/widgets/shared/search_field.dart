@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SearchField extends StatefulWidget {
+  /// A text field for search based on string input
   const SearchField(
       {super.key,
       required this.searchFn,
@@ -8,9 +9,16 @@ class SearchField extends StatefulWidget {
       this.autoFocus = false,
       this.initText = ""});
 
+  /// Callback function to filter and search
   final Function(String) searchFn;
+
+  /// TextField hint text
   final String hintText;
+
+  /// TextField autoFocus
   final bool autoFocus;
+
+  /// TextField intial value
   final String initText;
 
   @override

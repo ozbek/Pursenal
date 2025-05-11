@@ -7,11 +7,19 @@ import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/viewmodels/calculator_viewmodel.dart';
 
 class CalculatorKeyBoard extends StatelessWidget {
+  /// The initial amount
   final double? amount;
+
+  /// Viewmodel function to call on value changed
   final Function(double?) onChanged;
+
+  /// Function to clear the input
   final Function dismissFn;
+
+  /// Currency from profile
   final Currency currency;
 
+  /// The virtual calculator keyboard for amounts calculation and direct inputs for mobile devices only.
   const CalculatorKeyBoard(
       {super.key,
       this.amount,

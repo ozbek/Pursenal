@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart' as p;
 
 class ImagesSelector extends StatelessWidget {
+  /// Field to select multiple images from the system
   const ImagesSelector({
     super.key,
     required this.paths,
@@ -15,8 +16,13 @@ class ImagesSelector extends StatelessWidget {
     required this.deletePathFn,
   });
 
+  /// Paths for images already saved
   final List<String> paths;
+
+  /// Callback function to add new a photo path
   final Function(String) addPathFn;
+
+  /// Callback function to delete a photo path
   final Function(String) deletePathFn;
 
   @override

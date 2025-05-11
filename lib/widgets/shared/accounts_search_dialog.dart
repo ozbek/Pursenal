@@ -6,10 +6,14 @@ import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/widgets/shared/search_field.dart';
 
 class AccountsSearchDialog extends StatefulWidget {
+  /// Search dialog for searching and selecting accounts for the transaction entry screen
   const AccountsSearchDialog(
       {super.key, required this.ledgers, required this.currency});
 
+  /// List of ledgers to search
   final List<Ledger> ledgers;
+
+  /// The currency from the profile
   final Currency currency;
 
   @override

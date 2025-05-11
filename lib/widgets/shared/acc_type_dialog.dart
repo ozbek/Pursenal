@@ -6,6 +6,7 @@ import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/widgets/shared/acc_type_icon.dart';
 
 class AccountTypeDialog extends StatelessWidget {
+  /// A dialog that shows the list of AccountTypes that is provided. The one selected is passed Account Entry Screen.
   const AccountTypeDialog({
     super.key,
     required this.profile,
@@ -13,8 +14,13 @@ class AccountTypeDialog extends StatelessWidget {
     required this.accountTypes,
   });
 
+  /// User Profile
   final Profile profile;
+
+  /// The init function for the viewmodel
   final Function initFn;
+
+  /// List of account types to select
   final List<AccountType> accountTypes;
 
   @override

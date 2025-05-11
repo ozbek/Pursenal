@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 
 class TransactionTile extends StatelessWidget {
+  /// A list tile for a single transaction : wide screens
   const TransactionTile(
       {super.key,
       required this.vchDate,
@@ -22,17 +23,41 @@ class TransactionTile extends StatelessWidget {
       required this.currency,
       this.isColorful = false,
       this.isNegative = false});
+
+  /// Transaction voucher date
   final DateTime vchDate;
+
+  /// Transaction account
   final String accountName;
+
+  /// Transaction amount
   final int amount;
+
+  /// On click callback function
   final Function onClick;
+
+  /// Transaction voucher type
   final VoucherType vchType;
+
+  /// Transaction id
   final int transactionID;
+
+  /// Fund used for transaction
   final String? fundName;
+
+  /// Transaction details text
   final String narr;
+
+  /// Whether fund is a transfer to another fund
   final bool isTransfer;
+
+  /// Whether the tile should show the amount with a negative sign
   final bool isNegative;
+
+  /// Currency from profile
   final Currency currency;
+
+  /// Whether to show different color for elements
   final bool isColorful;
 
   @override

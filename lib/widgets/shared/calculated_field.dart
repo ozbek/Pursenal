@@ -8,6 +8,7 @@ import 'package:pursenal/core/enums/currency.dart';
 import 'package:pursenal/widgets/shared/calculator_keyboard.dart';
 
 class CalculatedField extends StatelessWidget {
+  /// Custom field to input currency amounts, with currency and formating
   const CalculatedField(
       {super.key,
       this.amount,
@@ -19,14 +20,32 @@ class CalculatedField extends StatelessWidget {
       this.isDisabled = false,
       required this.currency,
       this.helperText});
+
+  /// The initial amount
   final double? amount;
+
+  /// Function to update the viewmodel amount on change
   final Function(double?) onChanged;
+
+  /// The label to be placed on top of the field
   final String label;
+
+  /// Text to show in case of an error
   final String? errorText;
+
+  /// Whether to focus on the field
   final bool autoFocus;
+
+  /// Text styling for the field
   final TextStyle? textStyle;
+
+  /// Disable the field
   final bool isDisabled;
+
+  /// Currency from the profile
   final Currency currency;
+
+  /// Helper text for the field
   final String? helperText;
 
   @override

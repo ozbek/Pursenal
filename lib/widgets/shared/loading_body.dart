@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 
 class LoadingBody extends StatelessWidget {
+  /// LoadingBody is a widget extensively used to manage errors and database loading interval throughout the app as the parent for any given screen body.
   const LoadingBody(
       {super.key,
       required this.loadingStatus,
@@ -9,10 +10,20 @@ class LoadingBody extends StatelessWidget {
       required this.widget,
       this.feedbackText = "",
       required this.resetErrorTextFn});
+
+  /// LoadingStatus variable that determines the database fetch status
   final LoadingStatus loadingStatus;
+
+  /// The text to be shown in case of an error.
   final String errorText;
+
+  /// Any specific feedback to be shown to the user, when it is needed.
   final String feedbackText;
+
+  /// The child widget, mostly the body of a Scaffold.
   final Widget widget;
+
+  /// Viewmodel function that will reset the error to empty.
   final Function resetErrorTextFn;
 
   @override

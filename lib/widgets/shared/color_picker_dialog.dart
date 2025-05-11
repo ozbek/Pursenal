@@ -4,12 +4,17 @@ import 'package:pursenal/app/global/dimensions.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ColorPickerDialog extends StatelessWidget {
+  /// Dialog that sets a material color
   const ColorPickerDialog({
     super.key,
     required this.setColorFn,
     this.selectedColor,
   });
+
+  /// Viewmodel function that sets the color
   final Function(MaterialColor?) setColorFn;
+
+  /// Initial color
   final MaterialColor? selectedColor;
 
   @override

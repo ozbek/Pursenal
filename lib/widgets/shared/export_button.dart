@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ExportButton extends StatelessWidget {
+  /// Button to export given data to several document formats
   const ExportButton({
     super.key,
     required this.pdfExportFn,
     required this.xlsxExportFn,
   });
 
+  /// Function that will generate PDF file
   final Function pdfExportFn;
+
+  /// Function that will generate spreadsheet file
   final Function xlsxExportFn;
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TheDivider extends StatelessWidget {
+  /// App level divider. Since normal divider is set transparent
   const TheDivider({
     super.key,
     this.indent = 15,

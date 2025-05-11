@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
 class DotsIndicator extends StatelessWidget {
+  /// Checks whether is the selected one
   final bool isActive;
+
+  /// Callback function on touch
   final Function onTap;
+
+  /// The dot indicator for slides
   const DotsIndicator({
     super.key,
     required this.isActive,

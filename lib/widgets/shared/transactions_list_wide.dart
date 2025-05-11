@@ -9,6 +9,8 @@ import 'package:pursenal/screens/transaction_screen.dart';
 import 'package:pursenal/widgets/shared/transaction_tile.dart';
 
 class TransactionsListWide extends StatelessWidget {
+  /// Transactions list for wide screen
+
   const TransactionsListWide({
     super.key,
     required this.scrollController,
@@ -18,10 +20,19 @@ class TransactionsListWide extends StatelessWidget {
     this.account,
   });
 
+  /// Scroll controller for the screen
   final ScrollController? scrollController;
+
+  /// Filtered dates for transactions
   final List<Transaction> fTransactions;
+
+  /// App Profile
   final Profile profile;
+
+  /// Viewmodel init function
   final Function initFn;
+
+  /// Whether an specific account is selected for transactions
   final Account? account;
 
   @override

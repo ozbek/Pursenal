@@ -14,6 +14,7 @@ import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/widgets/shared/search_field.dart';
 
 class TransactionOptionsDialog extends StatefulWidget {
+  /// Dialog with options that will prefill the transaction entry screen
   const TransactionOptionsDialog(
       {super.key,
       required this.ledgers,
@@ -23,12 +24,26 @@ class TransactionOptionsDialog extends StatefulWidget {
       this.fAcc,
       this.oAcc,
       required this.currency});
+
+  /// List of ledgers passed to select the fund and account
   final List<Ledger> ledgers;
+
+  /// Selected profile
   final Profile profile;
+
+  /// Function to reload the screen
   final Function reloadFn;
+
+  /// VoucherType for the transaction
   final VoucherType? vType;
+
+  /// Selected fund for the transaction
   final Account? fAcc;
+
+  /// Selected account for transaction
   final Account? oAcc;
+
+  /// Currency from profile
   final Currency currency;
 
   @override

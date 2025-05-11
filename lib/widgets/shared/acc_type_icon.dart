@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pursenal/app/global/values.dart';
 
+/// Get the icon for a given account type.
 IconData getAccTypeIcon(int accType) {
   switch (accType) {
     case walletTypeID:

@@ -15,6 +15,7 @@ import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/widgets/shared/transaction_tile2.dart';
 
 class TransactionsList extends StatelessWidget {
+  /// Transactions list for mobile screen
   const TransactionsList(
       {super.key,
       required this.scrollController,
@@ -24,11 +25,22 @@ class TransactionsList extends StatelessWidget {
       required this.initFn,
       this.account});
 
+  /// Scroll controller for the screen
   final ScrollController? scrollController;
+
+  /// Filtered dates for transactions
   final Set<DateTime> fDates;
+
+  /// Filtered transactions
   final List<Transaction> fTransactions;
+
+  /// App Profile
   final Profile profile;
+
+  /// Viewmodel init function
   final Function initFn;
+
+  /// Whether a specific account is selected for transactions
   final Account? account;
 
   @override
