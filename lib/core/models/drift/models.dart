@@ -244,23 +244,6 @@ class DriftProjectPhotos extends Table {
   TextColumn get path => text().withLength(min: 0, max: 512)(); // File path
 }
 
-// Fixed Payments and Subscriptions table
-class DriftSubscriptions extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get account =>
-      integer().references(DriftAccounts, #id, onDelete: KeyAction.cascade)();
-  IntColumn get profile => integer().references(DriftProfiles, #id,
-      onDelete: KeyAction.cascade)(); // Profile association
-  IntColumn get interval =>
-      intEnum<BudgetInterval>()(); // The interval for the subscription
-  IntColumn get day => integer().withDefault(const Constant(1))();
-  IntColumn get amount => integer().withDefault(const Constant(0))();
-  DateTimeColumn get addedDate =>
-      dateTime().clientDefault(() => DateTime.now())(); // Date added
-  DateTimeColumn get updateDate =>
-      dateTime().clientDefault(() => DateTime.now())(); // Last update date
-}
-
 // Advances receivable back to the user
 class DriftReceivables extends Table {
   IntColumn get id => integer().autoIncrement()(); // dbID
@@ -280,4 +263,26 @@ class DriftPeople extends Table {
   TextColumn get email => text().nullable()();
   TextColumn get phone => text().nullable()();
   TextColumn get tin => text().nullable()();
+}
+
+// Reminder for one time and recurring payments
+class DriftPaymentReminders extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get account => integer()
+      .nullable()
+      .references(DriftAccounts, #id, onDelete: KeyAction.cascade)();
+  IntColumn get fund => integer()
+      .nullable()
+      .references(DriftAccounts, #id, onDelete: KeyAction.setNull)();
+  IntColumn get profile => integer().references(DriftProfiles, #id,
+      onDelete: KeyAction.cascade)(); // Profile association
+  IntColumn get interval => intEnum<BudgetInterval>()
+      .nullable()(); // The interval for the subscription
+  IntColumn get day => integer().withDefault(const Constant(1))();
+  IntColumn get amount => integer().withDefault(const Constant(0))();
+  DateTimeColumn get paymentDate => dateTime().nullable()();
+  DateTimeColumn get addedDate =>
+      dateTime().clientDefault(() => DateTime.now())(); // Date added
+  DateTimeColumn get updateDate =>
+      dateTime().clientDefault(() => DateTime.now())(); // Last update date
 }

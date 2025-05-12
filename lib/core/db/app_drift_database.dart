@@ -32,9 +32,9 @@ part 'app_drift_database.g.dart';
   DriftBudgetFunds,
   DriftProjects,
   DriftProjectPhotos,
-  DriftSubscriptions,
   DriftReceivables,
-  DriftPeople
+  DriftPeople,
+  DriftPaymentReminders,
 ])
 class AppDriftDatabase extends _$AppDriftDatabase {
   // we tell the database where to store the data with this constructor
@@ -42,7 +42,7 @@ class AppDriftDatabase extends _$AppDriftDatabase {
 
   final String dbName;
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {
@@ -83,13 +83,9 @@ class AppDriftDatabase extends _$AppDriftDatabase {
           name: Value("People"),
           primary: Value(PrimaryType.asset)));
     }, onUpgrade: (Migrator m, int from, int to) async {
-      if (from < 3) {
-        // we added the dueDate property in the change from version 1 to
-        // version 2
-      }
-      if (from < 3) {
-        // we added the priority property in the change from version 1 or 2
-        // to version 3
+      if (from == 1) {
+        await m.deleteTable('drift_subscriptions');
+        await m.createTable(driftPaymentReminders);
       }
     });
   }
@@ -1193,15 +1189,6 @@ class AppDriftDatabase extends _$AppDriftDatabase {
   Future<List<DriftProjectPhoto>> getProjectPhotosByProject(int id) =>
       (select(driftProjectPhotos)..where((t) => t.project.equals(id))).get();
 
-  Future<int> insertSubscription(DriftSubscriptionsCompanion subscription) =>
-      into(driftSubscriptions).insert(subscription);
-  Future<bool> updateSubscription(DriftSubscriptionsCompanion subscription) =>
-      update(driftSubscriptions).replace(subscription);
-  Future<int> deleteSubscription(int id) =>
-      (delete(driftSubscriptions)..where((t) => t.id.equals(id))).go();
-  Future<DriftSubscription> getSubscriptionById(int id) =>
-      (select(driftSubscriptions)..where((t) => t.id.equals(id))).getSingle();
-
   Future<Tuple2<DriftProject, List<String>>?> getProjectByID(
       int projectId) async {
     // Fetch the project
@@ -1311,4 +1298,16 @@ class AppDriftDatabase extends _$AppDriftDatabase {
       (select(driftPeople)..where((t) => t.id.equals(id))).getSingle();
   Future<DriftPeopleData> getPeopleByAccount(int id) =>
       (select(driftPeople)..where((t) => t.accountId.equals(id))).getSingle();
+
+  Future<int> insertPaymentReminder(
+          DriftPaymentRemindersCompanion paymentReminder) =>
+      into(driftPaymentReminders).insert(paymentReminder);
+  Future<bool> updatePaymentReminder(
+          DriftPaymentRemindersCompanion paymentReminder) =>
+      update(driftPaymentReminders).replace(paymentReminder);
+  Future<int> deletePaymentReminder(int id) =>
+      (delete(driftPaymentReminders)..where((t) => t.id.equals(id))).go();
+  Future<DriftPaymentReminder> getPaymentReminderById(int id) =>
+      (select(driftPaymentReminders)..where((t) => t.id.equals(id)))
+          .getSingle();
 }

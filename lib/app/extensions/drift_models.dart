@@ -6,11 +6,11 @@ import 'package:pursenal/core/models/domain/bank.dart';
 import 'package:pursenal/core/models/domain/budget.dart';
 import 'package:pursenal/core/models/domain/credit_card.dart';
 import 'package:pursenal/core/models/domain/loan.dart';
+import 'package:pursenal/core/models/domain/payment_reminder.dart';
 import 'package:pursenal/core/models/domain/people.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
 import 'package:pursenal/core/models/domain/receivable.dart';
-import 'package:pursenal/core/models/domain/subscription.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/core/models/domain/wallet.dart';
 
@@ -160,36 +160,6 @@ extension TransactionMapper on DriftTransaction {
       addedDate: addedDate,
       updateDate: updateDate,
       filePaths: filePaths,
-    );
-  }
-}
-
-extension SubscriptionMapper on DriftSubscription {
-  Subscription toDomain(Account account) {
-    return Subscription(
-      dbID: id,
-      account: account,
-      profile: profile,
-      interval: interval,
-      day: day,
-      amount: amount,
-      addedDate: addedDate,
-      updateDate: updateDate,
-    );
-  }
-}
-
-extension SubscriptionEntityMapper on Subscription {
-  DriftSubscriptionsCompanion toDrift() {
-    return DriftSubscriptionsCompanion(
-      id: Value(dbID),
-      account: Value(account.dbID),
-      profile: Value(profile),
-      interval: Value(interval),
-      day: Value(day),
-      amount: Value(amount),
-      addedDate: Value(addedDate),
-      updateDate: Value(updateDate),
     );
   }
 }
@@ -363,6 +333,38 @@ extension PeopleEntityMapper on People {
       email: Value(email),
       phone: Value(phone),
       tin: Value(tin),
+    );
+  }
+}
+
+extension PaymentReminderMapper on DriftPaymentReminder {
+  PaymentReminder toDomain(Account account, Account fund) {
+    return PaymentReminder(
+      dbID: id,
+      account: account,
+      fund: fund,
+      profile: profile,
+      interval: interval,
+      day: day,
+      amount: amount,
+      addedDate: addedDate,
+      updateDate: updateDate,
+    );
+  }
+}
+
+extension PaymentReminderEntityMapper on PaymentReminder {
+  DriftPaymentRemindersCompanion toDrift() {
+    return DriftPaymentRemindersCompanion(
+      id: Value(dbID),
+      account: Value(account?.dbID),
+      fund: Value(fund?.dbID),
+      profile: Value(profile),
+      interval: Value(interval),
+      day: Value(day ?? 1),
+      amount: Value(amount),
+      addedDate: Value(addedDate),
+      updateDate: Value(updateDate),
     );
   }
 }
