@@ -2,6 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/app/global/values.dart';
+import 'package:pursenal/core/abstracts/file_paths_repository.dart';
+import 'package:pursenal/core/enums/db_table_type.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
 import 'package:pursenal/core/models/domain/account.dart';
@@ -24,13 +26,15 @@ class TransactionEntryViewmodel extends ChangeNotifier {
   final BalancesRepository _balancesRepository;
   final AccountTypesRepository _accountTypesRepository;
   final ProjectsRepository _projectsRepository;
+  final FilePathsRepository _filePathsRepository;
 
   TransactionEntryViewmodel(
     this._accountsRepository,
     this._transactionsRepository,
     this._balancesRepository,
     this._accountTypesRepository,
-    this._projectsRepository, {
+    this._projectsRepository,
+    this._filePathsRepository, {
     required Profile profile,
     Transaction? transaction,
     Transaction? dupeTransaction,
@@ -396,12 +400,15 @@ class TransactionEntryViewmodel extends ChangeNotifier {
               vchType: _vchType,
               project: _selectedProject?.dbID,
               profile: _profile.dbID);
-          for (var f in _transaction!.filePaths) {
-            await _transactionsRepository.deletePhotoPathbyPath(f);
-          }
+
+          await _filePathsRepository
+              .deleteFilePathByParentID(transaction!.dbID);
+
           for (var p in _images) {
-            await _transactionsRepository.insertPhotoPath(
-                path: p, transaction: _transaction!.dbID);
+            await _filePathsRepository.insertFilePath(
+                path: p,
+                parentTableID: _transaction!.dbID,
+                tableType: DBTableType.transaction);
           }
         } else {
           final trId = await _transactionsRepository.insertTransaction(
@@ -415,8 +422,10 @@ class TransactionEntryViewmodel extends ChangeNotifier {
               project: _selectedProject?.dbID,
               profile: _profile.dbID);
           for (String p in _images) {
-            await _transactionsRepository.insertPhotoPath(
-                path: p, transaction: trId);
+            await _filePathsRepository.insertFilePath(
+                path: p,
+                parentTableID: trId,
+                tableType: DBTableType.transaction);
           }
         }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/extensions/datetime.dart';
+import 'package:pursenal/core/abstracts/file_paths_repository.dart';
+import 'package:pursenal/core/enums/db_table_type.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/models/domain/budget.dart';
@@ -10,9 +12,11 @@ import 'package:pursenal/utils/app_logger.dart';
 
 class ProjectEntryViewmodel extends ChangeNotifier {
   final ProjectsRepository _projectsRepository;
+  final FilePathsRepository _filePathsRepository;
 
   ProjectEntryViewmodel(
-    this._projectsRepository, {
+    this._projectsRepository,
+    this._filePathsRepository, {
     required Profile profile,
     Project? project,
   })  : _project = project,
@@ -174,10 +178,14 @@ class ProjectEntryViewmodel extends ChangeNotifier {
             description: _description,
             startDate: _startDate,
             endDate: _endDate,
-            filePaths: mediaPaths,
             projectStatus: _projectStatus);
+        for (var p in mediaPaths) {
+          await _filePathsRepository.insertFilePath(
+              path: p, parentTableID: newPro, tableType: DBTableType.project);
+        }
         _project = await _projectsRepository.getById(newPro);
       } else {
+        await _filePathsRepository.deleteFilePathByParentID(_project!.dbID);
         await _projectsRepository.updateProject(
             profile: _profile.dbID,
             id: _project!.dbID,
@@ -186,8 +194,13 @@ class ProjectEntryViewmodel extends ChangeNotifier {
             description: _description,
             startDate: _startDate,
             endDate: _endDate,
-            filePaths: mediaPaths,
             projectStatus: _projectStatus);
+        for (var p in mediaPaths) {
+          await _filePathsRepository.insertFilePath(
+              path: p,
+              parentTableID: _project!.dbID,
+              tableType: DBTableType.project);
+        }
       }
 
       loadingStatus = LoadingStatus.submitted;

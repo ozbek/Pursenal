@@ -50,15 +50,4 @@ abstract class TransactionsRepository {
     required int profileID,
     required int projectID,
   });
-
-  Future<int> insertPhotoPath({required String path, required int transaction});
-
-  Future<bool> updatePhotoPath(
-      {required String path, required int transaction, required int id});
-
-  Future<int> deletePath(int id);
-
-  Future<String> getById(int id);
-
-  Future<int> deletePhotoPathbyPath(String path);
 }

@@ -14,7 +14,6 @@ abstract class PaymentRemindersRepository {
     DateTime? paymentDate,
     Account? fund,
     int day = 1,
-    required List<String> filePaths,
   });
 
   Future<bool> updatePaymentReminder({
@@ -28,7 +27,6 @@ abstract class PaymentRemindersRepository {
     DateTime? paymentDate,
     Account? fund,
     int day = 1,
-    required List<String> filePaths,
   });
 
   Future<bool> updatePaymentReminderStatus({
@@ -45,7 +43,9 @@ abstract class PaymentRemindersRepository {
   });
 
   Future<int> delete(int id);
-  Future<int> deletePaymentReminder(int id, {bool deleteTransactions = false});
+  Future<int> deletePaymentReminder(
+    int id,
+  );
   Future<PaymentReminder> getById(int id);
   Future<List<PaymentReminder>> getAllPaymentReminders(int profile);
   Future<PaymentReminder?> getPaymentReminderByID(int id);

@@ -2,8 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/abstracts/account_types_repository.dart';
 import 'package:pursenal/core/abstracts/accounts_repository.dart';
+import 'package:pursenal/core/abstracts/file_paths_repository.dart';
 import 'package:pursenal/core/abstracts/payment_reminders_repository.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
+import 'package:pursenal/core/enums/db_table_type.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/payment_status.dart';
 import 'package:pursenal/core/models/domain/account.dart';
@@ -16,10 +18,12 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
   final PaymentRemindersRepository _paymentRemindersRepository;
   final AccountsRepository _accountsRepository;
   final AccountTypesRepository _accountTypesRepository;
+  final FilePathsRepository _filePathsRepository;
 
   PaymentReminderEntryViewmodel(
     this._paymentRemindersRepository,
     this._accountsRepository,
+    this._filePathsRepository,
     this._accountTypesRepository, {
     required Profile profile,
     PaymentReminder? reminder,
@@ -258,12 +262,18 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
           paymentDate: _paymentDate,
           status: _paymentStatus,
           details: _details,
-          filePaths: _filePaths,
         );
+        for (var p in filePaths) {
+          await _filePathsRepository.insertFilePath(
+              path: p,
+              parentTableID: newId,
+              tableType: DBTableType.paymentReminder);
+        }
 
         _reminder =
             await _paymentRemindersRepository.getPaymentReminderByID(newId);
       } else {
+        await _filePathsRepository.deleteFilePathByParentID(_reminder!.dbID);
         await _paymentRemindersRepository.updatePaymentReminder(
           id: _reminder!.dbID,
           profile: _profile.dbID,
@@ -275,8 +285,13 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
           paymentDate: _paymentDate,
           status: _paymentStatus,
           details: _details,
-          filePaths: _filePaths,
         );
+        for (var p in filePaths) {
+          await _filePathsRepository.insertFilePath(
+              path: p,
+              parentTableID: _reminder!.dbID,
+              tableType: DBTableType.paymentReminder);
+        }
       }
 
       loadingStatus = LoadingStatus.submitted;

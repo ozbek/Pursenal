@@ -6,7 +6,6 @@ import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
-import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/payment_reminders_drift_repository.dart';
 import 'package:pursenal/screens/payment_reminder_entry_screen.dart';
 import 'package:pursenal/screens/transaction_entry_screen.dart';
@@ -26,13 +25,10 @@ class PaymentRemindersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final paymentRemindersDriftRepository =
         Provider.of<PaymentRemindersDriftRepository>(context, listen: false);
-    final accountTypesDriftRepository =
-        Provider.of<AccountTypesDriftRepository>(context, listen: false);
 
     return ChangeNotifierProvider<PaymentRemindersViewmodel>(
       create: (context) => PaymentRemindersViewmodel(
         paymentRemindersDriftRepository,
-        accountTypesDriftRepository,
         profile: profile,
       )..init(),
       builder: (context, child) => Consumer<PaymentRemindersViewmodel>(

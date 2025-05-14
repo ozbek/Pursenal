@@ -27,13 +27,11 @@ part 'app_drift_database.g.dart';
   DriftLoans,
   DriftCCards,
   DriftBalances,
-  DriftTransactionPhotos,
   DriftProfiles,
   DriftBudgets,
   DriftBudgetAccounts,
   DriftBudgetFunds,
   DriftProjects,
-  DriftProjectPhotos,
   DriftReceivables,
   DriftPeople,
   DriftPaymentReminders,
@@ -45,7 +43,7 @@ class AppDriftDatabase extends _$AppDriftDatabase {
 
   final String dbName;
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
@@ -90,6 +88,23 @@ class AppDriftDatabase extends _$AppDriftDatabase {
         await m.deleteTable('drift_subscriptions');
         await m.createTable(driftPaymentReminders);
         await m.createTable(driftFilePaths);
+      }
+      if (from < 3) {
+        // 2. Migrate data from DriftProjectPhotos
+        await customStatement('''
+        INSERT INTO drift_file_paths (table_type, parent_table, path)
+        SELECT ${DBTableType.project.index}, project, path FROM drift_project_photos
+      ''');
+
+        // 3. Migrate data from DriftTransactionPhotos
+        await customStatement('''
+            INSERT INTO drift_file_paths (table_type, parent_table, path)
+            SELECT 0, "transaction", path FROM drift_transaction_photos;
+      ''');
+
+        // 4. Drop the old tables
+        await m.deleteTable('drift_project_photos');
+        await m.deleteTable('drift_transaction_photos');
       }
     });
   }
@@ -240,22 +255,7 @@ class AppDriftDatabase extends _$AppDriftDatabase {
   }
 
   Future<int> deleteTransaction(int id) async {
-    final fps = await (select(driftTransactionPhotos)
-          ..where((tbl) => tbl.transaction.equals(id)))
-        .get();
-
-    // Delete files from DriftTransactionPhotos before deleting the transaction
-    for (final filePath in fps) {
-      try {
-        final file = File(filePath.path);
-        if (await file.exists()) {
-          await file.delete();
-        }
-      } catch (e) {
-        AppLogger.instance.error("Cannot delete transaction image");
-      }
-    }
-
+    await deleteFilePathByParentID(id);
     return await (delete(driftTransactions)..where((tbl) => tbl.id.equals(id)))
         .go();
   }
@@ -361,32 +361,19 @@ class AppDriftDatabase extends _$AppDriftDatabase {
   Future<DriftBalance> getBalanceByAccount(int id) =>
       (select(driftBalances)..where((t) => t.account.equals(id))).getSingle();
 
-  Future<int> insertDriftTransactionPhoto(
-          DriftTransactionPhotosCompanion filePath) =>
-      into(driftTransactionPhotos).insert(filePath);
-  Future<bool> updateDriftTransactionPhoto(
-          DriftTransactionPhotosCompanion filePath) =>
-      update(driftTransactionPhotos).replace(filePath);
-  Future<int> deleteDriftTransactionPhoto(int id) =>
-      (delete(driftTransactionPhotos)..where((t) => t.id.equals(id))).go();
-  Future<int> deletePath(String path) =>
-      (delete(driftTransactionPhotos)..where((t) => t.path.equals(path))).go();
-  Future<DriftTransactionPhoto> getDriftTransactionPhotoById(int id) =>
-      (select(driftTransactionPhotos)..where((t) => t.id.equals(id)))
-          .getSingle();
-
   Future<
       List<
           Tuple5<DriftTransaction, DriftAccount, DriftAccount,
-              List<DriftTransactionPhoto>, DriftProject?>>> getTransactions(
-      {required DateTime startDate,
-      required DateTime endDate,
-      required int profileId}) async {
-    // Define aliases for driftAccounts table to handle 'dr' and 'cr'
+              List<DriftFilePath>, DriftProject?>>> getTransactions({
+    required DateTime startDate,
+    required DateTime endDate,
+    required int profileId,
+  }) async {
+    // Aliases for 'dr' and 'cr' accounts
     final drAccounts = alias(driftAccounts, 'drAccounts');
     final crAccounts = alias(driftAccounts, 'crAccounts');
 
-    // Query to fetch driftTransactions and their related driftAccounts
+    // Join transactions with dr/cr accounts
     final query = select(driftTransactions).join([
       leftOuterJoin(drAccounts, drAccounts.id.equalsExp(driftTransactions.dr)),
       leftOuterJoin(crAccounts, crAccounts.id.equalsExp(driftTransactions.cr)),
@@ -397,47 +384,46 @@ class AppDriftDatabase extends _$AppDriftDatabase {
       )
       ..orderBy([OrderingTerm.desc(driftTransactions.vchDate)]);
 
-    // Get transaction results
     final transactionResults = await query.get();
 
     // Extract transaction IDs to fetch related file paths
-    final transactionIds = transactionResults.map((row) {
-      final transaction = row.readTable(driftTransactions);
-      return transaction.id;
-    }).toList();
+    final transactionIds = transactionResults
+        .map((row) => row.readTable(driftTransactions).id)
+        .toList();
 
-    // Query to fetch all file paths related to the transaction IDs
-    final filePathResults = await (select(driftTransactionPhotos)
-          ..where((filePath) => filePath.transaction.isIn(transactionIds)))
+    // Fetch file paths where tableType is transaction
+    final filePathResults = await (select(driftFilePaths)
+          ..where((fp) =>
+              fp.tableType.equals(DBTableType.transaction.index) &
+              fp.parentTable.isIn(transactionIds)))
         .get();
 
     // Map transaction ID to its related file paths
-    final filePathMap = <int, List<DriftTransactionPhoto>>{};
-    for (final filePath in filePathResults) {
-      filePathMap.putIfAbsent(filePath.transaction, () => []).add(filePath);
+    final filePathMap = <int, List<DriftFilePath>>{};
+    for (final fp in filePathResults) {
+      filePathMap.putIfAbsent(fp.parentTable, () => []).add(fp);
     }
+
     final allProjects = await getProjectsByProfile(profileId);
-    // Map the results to the DoubleEntry model
+
+    // Build final result list
     return transactionResults.map((row) {
       final transaction = row.readTable(driftTransactions);
       final drAccount = row.readTable(drAccounts);
       final crAccount = row.readTable(crAccounts);
 
       return Tuple5(
-          transaction,
-          drAccount,
-          crAccount,
-          filePathMap[transaction.id] ?? [],
-          allProjects.firstWhereOrNull((p) => p.id == transaction.project));
+        transaction,
+        drAccount,
+        crAccount,
+        filePathMap[transaction.id] ?? [],
+        allProjects.firstWhereOrNull((p) => p.id == transaction.project),
+      );
     }).toList();
   }
 
   Future<
-      Tuple5<
-          DriftTransaction,
-          DriftAccount,
-          DriftAccount,
-          List<DriftTransactionPhoto>,
+      Tuple5<DriftTransaction, DriftAccount, DriftAccount, List<DriftFilePath>,
           DriftProject?>> getTransactionById(int transactionId) async {
     // Define aliases for driftAccounts table to handle 'dr' and 'cr'
     final drAccounts = alias(driftAccounts, 'drAccounts');
@@ -453,15 +439,19 @@ class AppDriftDatabase extends _$AppDriftDatabase {
     // Get the transaction result
     final row = await query.getSingle();
 
-    // Query to fetch all file paths related to the transaction ID
-    final filePathResults = await (select(driftTransactionPhotos)
-          ..where((filePath) => filePath.transaction.equals(transactionId)))
+    // Query to fetch all file paths related to the transaction ID using DriftFilePaths
+    final filePathResults = await (select(driftFilePaths)
+          ..where((fp) =>
+              fp.tableType.equals(DBTableType.transaction.index) &
+              fp.parentTable.equals(transactionId)))
         .get();
 
-    // Map the result to the DoubleEntry model
+    // Read transaction and accounts from the joined result
     final transaction = row.readTable(driftTransactions);
     final drAccount = row.readTable(drAccounts);
     final crAccount = row.readTable(crAccounts);
+
+    // Fetch associated project if available
     final project = transaction.project != null
         ? await (select(driftProjects)
               ..where((tbl) => tbl.id.equals(transaction.project!)))
@@ -477,7 +467,7 @@ class AppDriftDatabase extends _$AppDriftDatabase {
               DriftTransaction,
               DriftAccount,
               DriftAccount,
-              List<DriftTransactionPhoto>,
+              List<DriftFilePath>,
               DriftProject?>>> getNTransactions(int n, int profileId) async {
     // Define aliases for driftAccounts table to handle 'dr' and 'cr'
     final drAccounts = alias(driftAccounts, 'drAccounts');
@@ -488,9 +478,7 @@ class AppDriftDatabase extends _$AppDriftDatabase {
       leftOuterJoin(drAccounts, drAccounts.id.equalsExp(driftTransactions.dr)),
       leftOuterJoin(crAccounts, crAccounts.id.equalsExp(driftTransactions.cr)),
     ])
-      ..where(
-        driftTransactions.profile.equals(profileId),
-      )
+      ..where(driftTransactions.profile.equals(profileId))
       ..orderBy([OrderingTerm.desc(driftTransactions.vchDate)])
       ..limit(n);
 
@@ -498,50 +486,51 @@ class AppDriftDatabase extends _$AppDriftDatabase {
     final transactionResults = await query.get();
 
     // Extract transaction IDs to fetch related file paths
-    final transactionIds = transactionResults.map((row) {
-      final transaction = row.readTable(driftTransactions);
-      return transaction.id;
-    }).toList();
+    final transactionIds = transactionResults
+        .map((row) => row.readTable(driftTransactions).id)
+        .toList();
 
-    // Query to fetch all file paths related to the transaction IDs
-    final filePathResults = await (select(driftTransactionPhotos)
-          ..where((filePath) => filePath.transaction.isIn(transactionIds)))
+    // Query to fetch all file paths from DriftFilePaths for those transactions
+    final filePathResults = await (select(driftFilePaths)
+          ..where((fp) =>
+              fp.tableType.equals(DBTableType.transaction.index) &
+              fp.parentTable.isIn(transactionIds)))
         .get();
 
     // Map transaction ID to its related file paths
-    final filePathMap = <int, List<DriftTransactionPhoto>>{};
+    final filePathMap = <int, List<DriftFilePath>>{};
     for (final filePath in filePathResults) {
-      filePathMap.putIfAbsent(filePath.transaction, () => []).add(filePath);
+      filePathMap.putIfAbsent(filePath.parentTable, () => []).add(filePath);
     }
+
     final allProjects = await getProjectsByProfile(profileId);
-    // Map the results to the DoubleEntry model
+
+    // Map the results to the Tuple5
     return transactionResults.map((row) {
       final transaction = row.readTable(driftTransactions);
       final drAccount = row.readTable(drAccounts);
       final crAccount = row.readTable(crAccounts);
 
       return Tuple5(
-          transaction,
-          drAccount,
-          crAccount,
-          filePathMap[transaction.id] ?? [],
-          allProjects.firstWhereOrNull((p) => p.id == transaction.project));
+        transaction,
+        drAccount,
+        crAccount,
+        filePathMap[transaction.id] ?? [],
+        allProjects.firstWhereOrNull((p) => p.id == transaction.project),
+      );
     }).toList();
   }
 
   Future<
       List<
-          Tuple5<
-              DriftTransaction,
-              DriftAccount,
-              DriftAccount,
-              List<DriftTransactionPhoto>,
-              DriftProject?>>> getTransactionsbyAccount(
-      {required DateTime startDate,
-      required DateTime endDate,
-      required int profileId,
-      required int accountId,
-      reversed = true}) async {
+          Tuple5<DriftTransaction, DriftAccount, DriftAccount,
+              List<DriftFilePath>, DriftProject?>>> getTransactionsByAccount({
+    required DateTime startDate,
+    required DateTime endDate,
+    required int profileId,
+    required int accountId,
+    bool reversed = true,
+  }) async {
     // Define aliases for driftAccounts table to handle 'dr' and 'cr'
     final drAccounts = alias(driftAccounts, 'drAccounts');
     final crAccounts = alias(driftAccounts, 'crAccounts');
@@ -551,48 +540,54 @@ class AppDriftDatabase extends _$AppDriftDatabase {
       leftOuterJoin(drAccounts, drAccounts.id.equalsExp(driftTransactions.dr)),
       leftOuterJoin(crAccounts, crAccounts.id.equalsExp(driftTransactions.cr)),
     ])
-      ..where(driftTransactions.vchDate.isBetweenValues(startDate, endDate) &
-          driftTransactions.profile.equals(profileId) &
-          (driftTransactions.dr.equals(accountId) |
-              driftTransactions.cr.equals(accountId)))
+      ..where(
+        driftTransactions.vchDate.isBetweenValues(startDate, endDate) &
+            driftTransactions.profile.equals(profileId) &
+            (driftTransactions.dr.equals(accountId) |
+                driftTransactions.cr.equals(accountId)),
+      )
       ..orderBy([
         reversed
             ? OrderingTerm.desc(driftTransactions.vchDate)
-            : OrderingTerm.asc(driftTransactions.vchDate)
+            : OrderingTerm.asc(driftTransactions.vchDate),
       ]);
 
     // Get transaction results
     final transactionResults = await query.get();
 
     // Extract transaction IDs to fetch related file paths
-    final transactionIds = transactionResults.map((row) {
-      final transaction = row.readTable(driftTransactions);
-      return transaction.id;
-    }).toList();
+    final transactionIds = transactionResults
+        .map((row) => row.readTable(driftTransactions).id)
+        .toList();
 
     // Query to fetch all file paths related to the transaction IDs
-    final filePathResults = await (select(driftTransactionPhotos)
-          ..where((filePath) => filePath.transaction.isIn(transactionIds)))
+    final filePathResults = await (select(driftFilePaths)
+          ..where((fp) =>
+              fp.tableType.equals(DBTableType.transaction.index) &
+              fp.parentTable.isIn(transactionIds)))
         .get();
 
     // Map transaction ID to its related file paths
-    final filePathMap = <int, List<DriftTransactionPhoto>>{};
+    final filePathMap = <int, List<DriftFilePath>>{};
     for (final filePath in filePathResults) {
-      filePathMap.putIfAbsent(filePath.transaction, () => []).add(filePath);
+      filePathMap.putIfAbsent(filePath.parentTable, () => []).add(filePath);
     }
+
     final allProjects = await getProjectsByProfile(profileId);
-    // Map the results to the DoubleEntry model
+
+    // Map the results to the Tuple5
     return transactionResults.map((row) {
       final transaction = row.readTable(driftTransactions);
       final drAccount = row.readTable(drAccounts);
       final crAccount = row.readTable(crAccounts);
 
       return Tuple5(
-          transaction,
-          drAccount,
-          crAccount,
-          filePathMap[transaction.id] ?? [],
-          allProjects.firstWhereOrNull((p) => p.id == transaction.project));
+        transaction,
+        drAccount,
+        crAccount,
+        filePathMap[transaction.id] ?? [],
+        allProjects.firstWhereOrNull((p) => p.id == transaction.project),
+      );
     }).toList();
   }
 
@@ -1154,23 +1149,7 @@ class AppDriftDatabase extends _$AppDriftDatabase {
   Future<bool> updateProject(DriftProjectsCompanion project) =>
       update(driftProjects).replace(project);
   Future<int> deleteProject(int id, {bool deleteTransactions = false}) async {
-    if (deleteTransactions) {
-      final fps = await (select(driftProjectPhotos)
-            ..where((tbl) => tbl.project.equals(id)))
-          .get();
-
-      // Delete files from DriftTransactionPhotos before deleting the project
-      for (final filePath in fps) {
-        try {
-          final file = File(filePath.path);
-          if (await file.exists()) {
-            await file.delete();
-          }
-        } catch (e) {
-          AppLogger.instance.error("Cannot delete project image");
-        }
-      }
-    }
+    await deleteFilePathByParentID(id);
     return (delete(driftProjects)..where((t) => t.id.equals(id))).go();
   }
 
@@ -1178,20 +1157,6 @@ class AppDriftDatabase extends _$AppDriftDatabase {
       (select(driftProjects)..where((t) => t.id.equals(id))).getSingle();
   Future<List<DriftProject>> getProjectsByProfile(int id) =>
       (select(driftProjects)..where((t) => t.profile.equals(id))).get();
-
-  Future<int> insertProjectPhoto(DriftProjectPhotosCompanion projectPhoto) =>
-      into(driftProjectPhotos).insert(projectPhoto);
-  Future<bool> updateProjectPhoto(DriftProjectPhotosCompanion projectPhoto) =>
-      update(driftProjectPhotos).replace(projectPhoto);
-  Future<int> deleteProjectPhoto(int id) =>
-      (delete(driftProjectPhotos)..where((t) => t.id.equals(id))).go();
-  Future<DriftProjectPhoto> getProjectPhotoById(int id) =>
-      (select(driftProjectPhotos)..where((t) => t.id.equals(id))).getSingle();
-
-  Future<int> deleteProjectPhotobyProject(int id) =>
-      (delete(driftProjectPhotos)..where((t) => t.project.equals(id))).go();
-  Future<List<DriftProjectPhoto>> getProjectPhotosByProject(int id) =>
-      (select(driftProjectPhotos)..where((t) => t.project.equals(id))).get();
 
   Future<Tuple2<DriftProject, List<String>>?> getProjectByID(
       int projectId) async {
@@ -1205,8 +1170,10 @@ class AppDriftDatabase extends _$AppDriftDatabase {
     }
 
     // Fetch all related photos
-    final photos = await (select(driftProjectPhotos)
-          ..where((tbl) => tbl.project.equals(projectId)))
+    final photos = await (select(driftFilePaths)
+          ..where((tbl) =>
+              tbl.parentTable.equals(projectId) &
+              tbl.tableType.equals(DBTableType.project.index)))
         .get();
 
     // Fetch the associated budget (if exists)
@@ -1220,13 +1187,12 @@ class AppDriftDatabase extends _$AppDriftDatabase {
 
   Future<
       List<
-          Tuple5<
-              DriftTransaction,
-              DriftAccount,
-              DriftAccount,
-              List<DriftTransactionPhoto>,
-              DriftProject?>>> getTransactionsbyProject(
-      {required int profileID, required int projectID, reversed = true}) async {
+          Tuple5<DriftTransaction, DriftAccount, DriftAccount,
+              List<DriftFilePath>, DriftProject?>>> getTransactionsByProject({
+    required int profileID,
+    required int projectID,
+    bool reversed = true,
+  }) async {
     // Define aliases for driftAccounts table to handle 'dr' and 'cr'
     final drAccounts = alias(driftAccounts, 'drAccounts');
     final crAccounts = alias(driftAccounts, 'crAccounts');
@@ -1236,47 +1202,52 @@ class AppDriftDatabase extends _$AppDriftDatabase {
       leftOuterJoin(drAccounts, drAccounts.id.equalsExp(driftTransactions.dr)),
       leftOuterJoin(crAccounts, crAccounts.id.equalsExp(driftTransactions.cr)),
     ])
-      ..where(driftTransactions.profile.equals(profileID) &
-          driftTransactions.project.equals(projectID))
+      ..where(
+        driftTransactions.profile.equals(profileID) &
+            driftTransactions.project.equals(projectID),
+      )
       ..orderBy([
         reversed
             ? OrderingTerm.desc(driftTransactions.vchDate)
-            : OrderingTerm.asc(driftTransactions.vchDate)
+            : OrderingTerm.asc(driftTransactions.vchDate),
       ]);
 
     // Get transaction results
     final transactionResults = await query.get();
 
-    // Extract transaction IDs to fetch related file paths
-    final transactionIds = transactionResults.map((row) {
-      final transaction = row.readTable(driftTransactions);
-      return transaction.id;
-    }).toList();
+    // Extract transaction IDs
+    final transactionIds = transactionResults
+        .map((row) => row.readTable(driftTransactions).id)
+        .toList();
 
-    // Query to fetch all file paths related to the transaction IDs
-    final filePathResults = await (select(driftTransactionPhotos)
-          ..where((filePath) => filePath.transaction.isIn(transactionIds)))
+    // Query to fetch related file paths
+    final filePathResults = await (select(driftFilePaths)
+          ..where((fp) =>
+              fp.tableType.equals(DBTableType.transaction.index) &
+              fp.parentTable.isIn(transactionIds)))
         .get();
 
     // Map transaction ID to its related file paths
-    final filePathMap = <int, List<DriftTransactionPhoto>>{};
+    final filePathMap = <int, List<DriftFilePath>>{};
     for (final filePath in filePathResults) {
-      filePathMap.putIfAbsent(filePath.transaction, () => []).add(filePath);
+      filePathMap.putIfAbsent(filePath.parentTable, () => []).add(filePath);
     }
+
     final allProjects = await getProjectsByProfile(profileID);
 
-    // Map the results to the DoubleEntry model
+    // Map the results to the Tuple5 model
     return transactionResults.map((row) {
       final transaction = row.readTable(driftTransactions);
       final drAccount = row.readTable(drAccounts);
       final crAccount = row.readTable(crAccounts);
 
       return Tuple5(
-          transaction,
-          drAccount,
-          crAccount,
-          filePathMap[transaction.id] ?? [],
-          allProjects.firstWhereOrNull((p) => p.id == transaction.project));
+        transaction,
+        drAccount,
+        crAccount,
+        filePathMap[transaction.id] ?? [],
+        allProjects.firstWhereOrNull((p) => p.id == transaction.project),
+      );
     }).toList();
   }
 
@@ -1309,8 +1280,11 @@ class AppDriftDatabase extends _$AppDriftDatabase {
   Future<bool> updatePaymentReminder(
           DriftPaymentRemindersCompanion paymentReminder) =>
       update(driftPaymentReminders).replace(paymentReminder);
-  Future<int> deletePaymentReminder(int id) =>
-      (delete(driftPaymentReminders)..where((t) => t.id.equals(id))).go();
+  Future<int> deletePaymentReminder(int id) async {
+    await deleteFilePathByParentID(id);
+    return (delete(driftPaymentReminders)..where((t) => t.id.equals(id))).go();
+  }
+
   Future<DriftPaymentReminder> getPaymentReminderById(int id) =>
       (select(driftPaymentReminders)..where((t) => t.id.equals(id)))
           .getSingle();
@@ -1408,8 +1382,36 @@ class AppDriftDatabase extends _$AppDriftDatabase {
       (select(driftFilePaths)..where((t) => t.id.equals(id))).getSingle();
 
   Future<int> deleteFilePathByParentID(int id) async {
+    final fps = await (select(driftFilePaths)
+          ..where((t) => t.parentTable.equals(id)))
+        .get();
+    // Delete files
+    for (final filePath in fps) {
+      try {
+        final file = File(filePath.path);
+        if (await file.exists()) {
+          await file.delete();
+        }
+      } catch (e) {
+        AppLogger.instance.error("Cannot delete media file");
+      }
+    }
+
     return (delete(driftFilePaths)..where((t) => t.parentTable.equals(id)))
         .go();
+  }
+
+  Future<int> deleteFilePathByPath(String path) async {
+    try {
+      final file = File(path);
+      if (await file.exists()) {
+        await file.delete();
+      }
+    } catch (e) {
+      AppLogger.instance.error("Cannot delete media file");
+    }
+
+    return (delete(driftFilePaths)..where((t) => t.path.equals(path))).go();
   }
 
   Future<List<DriftFilePath>> getFilePathByParentId(int id) =>

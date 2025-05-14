@@ -35,6 +35,7 @@ class PaymentReminder {
 
   @override
   String toString() {
-    return "$details ${amount / 1000} ${account != null ? account?.name : ""} ${fund != null ? fund?.name : ""}";
+    return "$details ${amount / 1000} ${account != null ? account?.name : ""} ${fund != null ? fund?.name : ""}"
+        .toLowerCase();
   }
 }

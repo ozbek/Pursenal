@@ -136,7 +136,7 @@ class TransactionsDriftRepository implements TransactionsRepository {
     try {
       AppLogger.instance.info("Loading Transactions for account : $accountId");
 
-      final transactionsTuples = await db.getTransactionsbyAccount(
+      final transactionsTuples = await db.getTransactionsByAccount(
         startDate: startDate.copyWith(hour: 0, minute: 0, second: 0),
         endDate: endDate.copyWith(hour: 23, minute: 59, second: 59),
         profileId: profileId,
@@ -197,7 +197,7 @@ class TransactionsDriftRepository implements TransactionsRepository {
     try {
       AppLogger.instance.info("Loading Transactions for project : $projectID");
 
-      final transactionsTuples = await db.getTransactionsbyProject(
+      final transactionsTuples = await db.getTransactionsByProject(
           profileID: profileID, projectID: projectID);
 
       return transactionsTuples
@@ -210,62 +210,6 @@ class TransactionsDriftRepository implements TransactionsRepository {
     } catch (e) {
       AppLogger.instance
           .error("Failed to get transactions list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<int> insertPhotoPath(
-      {required String path, required int transaction}) async {
-    try {
-      final filePath = DriftTransactionPhotosCompanion(
-          path: Value(path), transaction: Value(transaction));
-      return await db.insertDriftTransactionPhoto(filePath);
-    } catch (e) {
-      AppLogger.instance.error("Failed to insert filePath. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<bool> updatePhotoPath(
-      {required String path, required int transaction, required int id}) async {
-    try {
-      final filePath = DriftTransactionPhotosCompanion(
-          id: Value(id), path: Value(path), transaction: Value(transaction));
-      return await db.updateDriftTransactionPhoto(filePath);
-    } catch (e) {
-      AppLogger.instance.error("Failed to update filePath. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<int> deletePath(int id) async {
-    try {
-      return await db.deleteDriftTransactionPhoto(id);
-    } catch (e) {
-      AppLogger.instance.error("Failed to delete filePath. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<String> getById(int id) async {
-    try {
-      return (await db.getDriftTransactionPhotoById(id)).path;
-    } catch (e) {
-      AppLogger.instance.error("Failed to get filePath. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<int> deletePhotoPathbyPath(String path) async {
-    try {
-      return await db.deletePath(path);
-    } catch (e) {
-      AppLogger.instance.error("Failed to delete filePath. ${e.toString()}");
       rethrow;
     }
   }

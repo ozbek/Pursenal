@@ -166,14 +166,6 @@ class DriftCCards extends Table {
       text().withLength(min: 0, max: 32).nullable()(); // Visa, Mastercard, etc.
 }
 
-/// Stores file paths linked to transactions (e.g., receipts, invoices).
-class DriftTransactionPhotos extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get transaction => integer()
-      .references(DriftTransactions, #id, onDelete: KeyAction.cascade)();
-  TextColumn get path => text().withLength(min: 0, max: 512)(); // File path
-}
-
 /// Stores balance snapshots for accounts.
 class DriftBalances extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -237,13 +229,6 @@ class DriftProjects extends Table {
       dateTime().clientDefault(() => DateTime.now())(); // Date added
   DateTimeColumn get updateDate =>
       dateTime().clientDefault(() => DateTime.now())(); // Last update date
-}
-
-class DriftProjectPhotos extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get project =>
-      integer().references(DriftProjects, #id, onDelete: KeyAction.cascade)();
-  TextColumn get path => text().withLength(min: 0, max: 512)(); // File path
 }
 
 // Advances receivable back to the user

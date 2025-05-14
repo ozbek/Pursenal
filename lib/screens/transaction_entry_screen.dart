@@ -16,6 +16,7 @@ import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/file_paths_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
@@ -58,6 +59,8 @@ class TransactionEntryScreen extends StatelessWidget {
         Provider.of<AccountTypesDriftRepository>(context, listen: false);
     final projectsDriftRepository =
         Provider.of<ProjectsDriftRepository>(context, listen: false);
+    final filePathsDriftRepository =
+        Provider.of<FilePathsDriftRepository>(context, listen: false);
 
     return ChangeNotifierProvider<TransactionEntryViewmodel>(
       create: (context) => TransactionEntryViewmodel(
@@ -66,6 +69,7 @@ class TransactionEntryScreen extends StatelessWidget {
           balancesDriftRepository,
           accountTypesDriftRepository,
           projectsDriftRepository,
+          filePathsDriftRepository,
           transaction: transaction,
           profile: profile,
           selectedAccount: selectedAccount,

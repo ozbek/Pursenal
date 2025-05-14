@@ -2,25 +2,17 @@ import 'package:flutter/foundation.dart';
 import 'package:pursenal/core/abstracts/payment_reminders_repository.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/payment_status.dart';
-import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/payment_reminder.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
-import 'package:pursenal/core/abstracts/account_types_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class PaymentRemindersViewmodel extends ChangeNotifier {
   final PaymentRemindersRepository _paymentRemindersRepository;
-  final AccountTypesRepository _accountTypesRepository;
 
   PaymentRemindersViewmodel(
-      this._paymentRemindersRepository, this._accountTypesRepository,
-      {required Profile profile, int accTypeID = 4})
-      : _profile = profile,
-        _accTypeID = accTypeID;
-
-  int _accTypeID;
-
-  get accTypeID => _accTypeID;
+    this._paymentRemindersRepository, {
+    required Profile profile,
+  }) : _profile = profile;
 
   bool isPayment = false;
 
@@ -29,13 +21,6 @@ class PaymentRemindersViewmodel extends ChangeNotifier {
 
   List<PaymentReminder> _paymentReminders = [];
   List<PaymentReminder> _fPaymentReminders = [];
-
-  AccountType? _accType;
-  get accType => _accType;
-
-  List<AccountType> accTypes = [];
-
-  set accType(value) => _accType = value;
 
   LoadingStatus loadingStatus = LoadingStatus.idle;
   LoadingStatus searchLoadingStatus = LoadingStatus.idle;
@@ -51,7 +36,8 @@ class PaymentRemindersViewmodel extends ChangeNotifier {
   Future<void> init() async {
     loadingStatus = LoadingStatus.loading;
     try {
-      await setAccountType(_accTypeID);
+      await getPaymentReminders();
+      _filterPaymentReminders();
       loadingStatus = LoadingStatus.completed;
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
@@ -67,12 +53,6 @@ class PaymentRemindersViewmodel extends ChangeNotifier {
   }
 
   String errorText = "";
-
-  set accTypeID(final value) {
-    _accTypeID = value;
-    setAccountType(_accTypeID);
-    notifyListeners();
-  }
 
   Future<void> getPaymentReminders() async {
     try {
@@ -123,16 +103,9 @@ class PaymentRemindersViewmodel extends ChangeNotifier {
     _filterPaymentReminders();
   }
 
-  setAccountType(int id) async {
-    _accType = await _accountTypesRepository.getById(id);
-    notifyListeners();
-    await getPaymentReminders();
-    _filterPaymentReminders();
-  }
-
   Future<bool> deleteReminder(int id) async {
     try {
-      _paymentRemindersRepository.deletePaymentReminder(id);
+      await _paymentRemindersRepository.deletePaymentReminder(id);
       notifyListeners();
       return true;
     } catch (e) {

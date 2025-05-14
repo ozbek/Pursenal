@@ -3,7 +3,6 @@ import 'package:pursenal/app/extensions/drift_models.dart';
 import 'package:pursenal/core/abstracts/payment_reminders_repository.dart';
 import 'package:pursenal/core/db/app_drift_database.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
-import 'package:pursenal/core/enums/db_table_type.dart';
 import 'package:pursenal/core/enums/payment_status.dart';
 import 'package:pursenal/core/models/domain/account.dart';
 import 'package:pursenal/core/models/domain/payment_reminder.dart';
@@ -24,7 +23,6 @@ class PaymentRemindersDriftRepository implements PaymentRemindersRepository {
     DateTime? paymentDate,
     Account? fund,
     int day = 1,
-    required List<String> filePaths,
   }) async {
     try {
       final reminder = DriftPaymentRemindersCompanion.insert(
@@ -40,15 +38,6 @@ class PaymentRemindersDriftRepository implements PaymentRemindersRepository {
       );
 
       final p = await db.insertPaymentReminder(reminder);
-
-      if (filePaths.isNotEmpty) {
-        for (var f in filePaths) {
-          final fp = DriftFilePathsCompanion.insert(
-              parentTable: p, tableType: DBTableType.paymentReminder, path: f);
-          db.insertFilePath(fp);
-        }
-      }
-
       return p;
     } catch (e) {
       AppLogger.instance.error("Failed to insert reminder. ${e.toString()}");
@@ -68,7 +57,6 @@ class PaymentRemindersDriftRepository implements PaymentRemindersRepository {
     DateTime? paymentDate,
     Account? fund,
     int day = 1,
-    required List<String> filePaths,
   }) async {
     try {
       db.deleteFilePathByParentID(id);
@@ -84,14 +72,6 @@ class PaymentRemindersDriftRepository implements PaymentRemindersRepository {
         paymentDate: Value(paymentDate),
         details: Value(details),
       );
-
-      if (filePaths.isNotEmpty) {
-        for (var f in filePaths) {
-          final fp = DriftFilePathsCompanion.insert(
-              parentTable: id, tableType: DBTableType.paymentReminder, path: f);
-          db.insertFilePath(fp);
-        }
-      }
 
       return await db.updatePaymentReminder(reminder);
     } catch (e) {
@@ -182,9 +162,14 @@ class PaymentRemindersDriftRepository implements PaymentRemindersRepository {
   }
 
   @override
-  Future<int> deletePaymentReminder(int id, {bool deleteTransactions = false}) {
-    // TODO: implement deletePaymentReminder
-    throw UnimplementedError();
+  Future<int> deletePaymentReminder(int id) async {
+    try {
+      await db.deletePaymentReminder(id);
+      return 1;
+    } catch (e) {
+      AppLogger.instance.error("Failed to get reminder plan. ${e.toString()}");
+      rethrow;
+    }
   }
 
   @override

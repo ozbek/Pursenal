@@ -15,6 +15,7 @@ import 'package:pursenal/core/models/domain/payment_reminder.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/file_paths_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/payment_reminders_drift_repository.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/payment_reminder_entry_viewmodel.dart';
@@ -45,10 +46,14 @@ class PaymentReminderEntryScreen extends StatelessWidget {
 
     final accountTypesDriftRepository =
         Provider.of<AccountTypesDriftRepository>(context, listen: false);
+
+    final filePathsDriftRepository =
+        Provider.of<FilePathsDriftRepository>(context, listen: false);
     return ChangeNotifierProvider(
       create: (context) => PaymentReminderEntryViewmodel(
         paymentRemindersDriftRepository,
         accountsDriftRepository,
+        filePathsDriftRepository,
         accountTypesDriftRepository,
         reminder: paymentReminder,
         profile: profile,

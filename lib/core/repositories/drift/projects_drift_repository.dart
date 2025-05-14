@@ -19,7 +19,6 @@ class ProjectsDriftRepository implements ProjectsRepository {
     String? description,
     DateTime? startDate,
     DateTime? endDate,
-    required List<String> filePaths,
   }) async {
     try {
       final project = DriftProjectsCompanion.insert(
@@ -33,14 +32,6 @@ class ProjectsDriftRepository implements ProjectsRepository {
       );
 
       final p = await db.insertProject(project);
-
-      if (filePaths.isNotEmpty) {
-        for (var f in filePaths) {
-          final fp = DriftProjectPhotosCompanion.insert(project: p, path: f);
-          db.insertProjectPhoto(fp);
-        }
-      }
-
       return p;
     } catch (e) {
       AppLogger.instance.error("Failed to insert project. ${e.toString()}");
@@ -58,10 +49,9 @@ class ProjectsDriftRepository implements ProjectsRepository {
     String? description,
     DateTime? startDate,
     DateTime? endDate,
-    required List<String> filePaths,
   }) async {
     try {
-      db.deleteProjectPhotobyProject(id);
+      db.deleteFilePathByParentID(id);
       final project = DriftProjectsCompanion(
           id: Value(id),
           status: Value(projectStatus),
@@ -72,13 +62,6 @@ class ProjectsDriftRepository implements ProjectsRepository {
           endDate: Value(endDate),
           budget: Value(budget),
           updateDate: Value(DateTime.now()));
-
-      if (filePaths.isNotEmpty) {
-        for (var f in filePaths) {
-          final fp = DriftProjectPhotosCompanion.insert(project: id, path: f);
-          db.insertProjectPhoto(fp);
-        }
-      }
 
       return await db.updateProject(project);
     } catch (e) {
@@ -144,7 +127,7 @@ class ProjectsDriftRepository implements ProjectsRepository {
   Future<Project> getById(int id) async {
     try {
       final photoPaths =
-          (await db.getProjectPhotosByProject(id)).map((p) => p.path).toList();
+          (await db.getFilePathByParentId(id)).map((p) => p.path).toList();
       return (await db.getProjectById(id)).toDomain(photoPaths: photoPaths);
     } catch (e) {
       AppLogger.instance.error("Failed to get project. ${e.toString()}");

@@ -10,7 +10,6 @@ abstract class ProjectsRepository {
     String? description,
     DateTime? startDate,
     DateTime? endDate,
-    required List<String> filePaths,
   });
 
   Future<bool> updateProject({
@@ -22,7 +21,6 @@ abstract class ProjectsRepository {
     String? description,
     DateTime? startDate,
     DateTime? endDate,
-    required List<String> filePaths,
   });
 
   Future<bool> updateProjectStatus({

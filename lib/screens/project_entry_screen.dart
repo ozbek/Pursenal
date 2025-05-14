@@ -7,6 +7,7 @@ import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
+import 'package:pursenal/core/repositories/drift/file_paths_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/project_entry_viewmodel.dart';
@@ -28,8 +29,11 @@ class ProjectEntryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final projectsDriftRepository =
         Provider.of<ProjectsDriftRepository>(context, listen: false);
+    final filePathsDriftRepository =
+        Provider.of<FilePathsDriftRepository>(context, listen: false);
     return ChangeNotifierProvider(
-      create: (context) => ProjectEntryViewmodel(projectsDriftRepository,
+      create: (context) => ProjectEntryViewmodel(
+          projectsDriftRepository, filePathsDriftRepository,
           project: project, profile: profile)
         ..init(),
       builder: (context, child) => Scaffold(
