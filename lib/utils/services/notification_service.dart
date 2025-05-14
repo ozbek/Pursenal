@@ -57,6 +57,15 @@ class NotificationService {
     }
   }
 
+  static Future<void> cancelReminder({int id = 0}) async {
+    try {
+      await flutterLocalNotificationsPlugin.cancel(id);
+    } catch (e) {
+      AppLogger.instance
+          .error("Failed to cancel notification. ${e.toString()}");
+    }
+  }
+
   static Future<void> scheduleDailyReminder(int id, String title, String body,
       TimeOfDay time, String screenRoute) async {
     try {
@@ -109,6 +118,110 @@ class NotificationService {
       AppLogger.instance
           .error("Failed to schedule daily reminder. ${e.toString()}");
     }
+  }
+
+  static Future<void> schedulePaymentReminder({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime startDateTime,
+    required bool isWeekly,
+    int? weekday, // 1-7 (Mon-Sun)
+    int? monthDay, // 1-31
+  }) async {
+    try {
+      if (Platform.isLinux) {
+        return;
+      }
+
+      String channelID = 'pursenal_payment_reminder_$id';
+
+      final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+      tz.TZDateTime scheduled;
+
+      if (isWeekly && weekday != null) {
+        scheduled = _nextInstanceOfWeekday(startDateTime, weekday);
+      } else if (!isWeekly && monthDay != null) {
+        scheduled = _nextInstanceOfMonthDay(startDateTime, monthDay);
+      } else {
+        return;
+      }
+
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
+        scheduled,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channelID,
+            'Payment Reminder',
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
+        ),
+        matchDateTimeComponents: isWeekly
+            ? DateTimeComponents.dayOfWeekAndTime
+            : DateTimeComponents.dayOfMonthAndTime,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      );
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+    }
+  }
+
+  static tz.TZDateTime _nextInstanceOfWeekday(DateTime time, int weekday) {
+    tz.TZDateTime scheduledDate = tz.TZDateTime.local(
+      time.year,
+      time.month,
+      time.day,
+      time.hour,
+      time.minute,
+    );
+
+    while (scheduledDate.weekday != weekday) {
+      scheduledDate = scheduledDate.add(Duration(days: 1));
+    }
+
+    if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
+      scheduledDate = scheduledDate.add(const Duration(days: 7));
+    }
+
+    return scheduledDate;
+  }
+
+  static tz.TZDateTime _nextInstanceOfMonthDay(DateTime time, int day) {
+    final now = tz.TZDateTime.now(tz.local);
+    final year = now.year;
+    final month = now.month;
+    final daysInMonth = DateTime(year, month + 1, 0).day;
+
+    final validDay = day <= daysInMonth ? day : daysInMonth;
+
+    var scheduled = tz.TZDateTime.local(
+      year,
+      month,
+      validDay,
+      time.hour,
+      time.minute,
+    );
+
+    if (scheduled.isBefore(now)) {
+      final nextMonth = DateTime(year, month + 1);
+      final daysInNextMonth =
+          DateTime(nextMonth.year, nextMonth.month + 1, 0).day;
+      final validNextDay = day <= daysInNextMonth ? day : daysInNextMonth;
+
+      scheduled = tz.TZDateTime.local(
+        nextMonth.year,
+        nextMonth.month,
+        validNextDay,
+        time.hour,
+        time.minute,
+      );
+    }
+
+    return scheduled;
   }
 }
 

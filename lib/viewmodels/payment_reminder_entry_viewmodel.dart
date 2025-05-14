@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/abstracts/account_types_repository.dart';
 import 'package:pursenal/core/abstracts/accounts_repository.dart';
@@ -13,6 +14,7 @@ import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/core/models/domain/payment_reminder.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/utils/services/notification_service.dart';
 
 class PaymentReminderEntryViewmodel extends ChangeNotifier {
   final PaymentRemindersRepository _paymentRemindersRepository;
@@ -127,6 +129,7 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
     _doesRepeat = value;
     _day = null;
     _interval = BudgetInterval.monthly;
+    _paymentDate = null;
     notifyListeners();
   }
 
@@ -226,17 +229,21 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
       if (_interval == BudgetInterval.monthly) {
         if ((_day == null || _day! > 31)) {
           monthDayError = "Enter a valid day";
+          isValid = false;
         }
       } else if (_interval == BudgetInterval.weekly) {
         if (_day == null || _day! > 7) {
           weekDayError = "Select a valid day";
+          isValid = false;
         }
       } else {
         intervalError = "Select a valid interval";
+        isValid = false;
       }
     } else {
       if (_paymentDate == null) {
         paymentDateError = "Enter a valid date";
+        isValid = false;
       }
     }
 
@@ -269,7 +276,16 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
               parentTableID: newId,
               tableType: DBTableType.paymentReminder);
         }
-
+        NotificationService.schedulePaymentReminder(
+          id: newId,
+          title:
+              "Today's payment reminder : ${amount.toCurrencyStringWSymbol(_profile.currency)}",
+          body: "Towards $details",
+          isWeekly: _interval == BudgetInterval.weekly,
+          startDateTime: DateTime.now().copyWith(hour: 8, minute: 0, second: 0),
+          monthDay: _interval == BudgetInterval.monthly ? day : null,
+          weekday: _interval == BudgetInterval.weekly ? day : null,
+        );
         _reminder =
             await _paymentRemindersRepository.getPaymentReminderByID(newId);
       } else {
@@ -292,6 +308,17 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
               parentTableID: _reminder!.dbID,
               tableType: DBTableType.paymentReminder);
         }
+        NotificationService.cancelReminder(id: _reminder!.dbID);
+        NotificationService.schedulePaymentReminder(
+          id: _reminder!.dbID,
+          title:
+              "Today's payment reminder : ${amount.toCurrencyStringWSymbol(_profile.currency)}",
+          body: "Towards $details",
+          isWeekly: _interval == BudgetInterval.weekly,
+          startDateTime: DateTime.now().copyWith(hour: 8, minute: 0, second: 0),
+          monthDay: _interval == BudgetInterval.monthly ? day : null,
+          weekday: _interval == BudgetInterval.weekly ? day : null,
+        );
       }
 
       loadingStatus = LoadingStatus.submitted;

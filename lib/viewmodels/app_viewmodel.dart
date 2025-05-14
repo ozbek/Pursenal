@@ -175,7 +175,7 @@ class AppViewmodel extends ChangeNotifier {
       await _prefs?.setBool('isReminderEnabled', status);
       reminderStatus = status;
       if (!status) {
-        NotificationService.cancelAllNotifications();
+        NotificationService.cancelReminder();
       }
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');

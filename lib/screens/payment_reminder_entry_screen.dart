@@ -206,7 +206,10 @@ class PaymentReminderForm extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             vertical: 4, horizontal: 8),
                         child: DropdownMenu<WeekDays>(
-                          initialSelection: WeekDays.values[viewmodel.day ?? 1],
+                          initialSelection:
+                              viewmodel.interval == BudgetInterval.weekly
+                                  ? WeekDays.values[viewmodel.day ?? 1]
+                                  : null,
                           label: const Text("Day of the week"),
                           errorText: viewmodel.weekDayError.isNotEmpty
                               ? viewmodel.weekDayError
@@ -256,7 +259,11 @@ class PaymentReminderForm extends StatelessWidget {
                             viewmodel.day = int.tryParse(value);
                           },
                         ),
-                      ),
+                      )
+                          .animate(delay: 40.ms)
+                          .scale(
+                              begin: const Offset(1.02, 1.02), duration: 100.ms)
+                          .fade(curve: Curves.easeInOut, duration: 100.ms),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
