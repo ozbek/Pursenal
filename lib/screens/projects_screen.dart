@@ -33,7 +33,9 @@ class ProjectsScreen extends StatelessWidget {
       )..init(),
       builder: (context, child) => Consumer<ProjectsViewmodel>(
         builder: (context, viewmodel, child) => Scaffold(
-          appBar: AppBar(),
+          appBar: AppBar(
+            actions: const [SizedBox.shrink()],
+          ),
           body: LoadingBody(
             loadingStatus: viewmodel.loadingStatus,
             errorText: viewmodel.errorText,
@@ -47,6 +49,32 @@ class ProjectsScreen extends StatelessWidget {
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Visibility(
+                      visible: isWide,
+                      child: SizedBox(
+                        width: 300,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              spacing: 5,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: createFilterMenu(
+                                viewmodel,
+                                context,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: isWide,
+                      child: const VerticalDivider(
+                        thickness: .10,
+                        width: .10,
+                      ),
+                    ),
                     Expanded(
                       child: ProjectsList(
                         viewmodel: viewmodel,
@@ -56,6 +84,22 @@ class ProjectsScreen extends StatelessWidget {
                   ],
                 );
               },
+            ),
+          ),
+          endDrawer: Drawer(
+            shape: const RoundedRectangleBorder(),
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                width: double.maxFinite,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: createFilterMenu(
+                    viewmodel,
+                    context,
+                  ),
+                ),
+              ),
             ),
           ),
           floatingActionButton: FloatingActionButton(
@@ -105,34 +149,31 @@ class ProjectsList extends StatelessWidget {
                 ),
               ),
             ),
-            SearchField(searchFn: (term) {
-              viewmodel.searchTerm = term;
-            }),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  ...viewmodel.statusCriterias.map((s) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                        child: FilterChip(
-                          showCheckmark: false,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          label: Text(s.label),
-                          onSelected: (v) {
-                            viewmodel.addToFilter(status: s);
-                          },
-                          selected: !viewmodel.statusFilters.contains(s),
-                        ),
-                      ))
-                ],
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: SearchField(
+                      initText: viewmodel.searchTerm,
+                      searchFn: (term) {
+                        viewmodel.searchTerm = term;
+                      }),
+                ),
+                Visibility(
+                  visible: !isWide,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: IconButton(
+                      onPressed: () {
+                        Scaffold.of(context).openEndDrawer();
+                      },
+                      icon: const Icon(Icons.filter_list),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(
               height: 8,
-            ),
-            const TheDivider(
-              indent: 0,
             ),
             Expanded(child: Builder(builder: (_) {
               if (viewmodel.searchLoadingStatus == LoadingStatus.completed) {
@@ -185,4 +226,49 @@ class ProjectsList extends StatelessWidget {
       ),
     );
   }
+}
+
+List<Widget> createFilterMenu(
+  ProjectsViewmodel viewmodel,
+  BuildContext context,
+) {
+  return [
+    Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      child: Text(
+        AppLocalizations.of(context)!.filters,
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
+    ),
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Text(
+            AppLocalizations.of(context)!.status,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const Expanded(child: TheDivider()),
+        ],
+      ),
+    ),
+    Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      children: [
+        ...viewmodel.statusCriterias.toList().map((v) => FilterChip(
+            selected: !viewmodel.statusFilters.contains(v),
+            label: Text(v.label),
+            onSelected: (s) {
+              viewmodel.addToFilter(status: v);
+            }))
+      ],
+    )
+        .animate(delay: 50.ms)
+        .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
+        .fade(curve: Curves.easeInOut, duration: 100.ms),
+    const SizedBox(
+      height: 40,
+    )
+  ];
 }
