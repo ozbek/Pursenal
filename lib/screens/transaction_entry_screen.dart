@@ -36,13 +36,15 @@ class TransactionEntryScreen extends StatelessWidget {
       this.selectedFund,
       this.selectedAccount,
       this.voucherType,
-      this.dupeTransaction});
+      this.dupeTransaction,
+      this.amount = 0});
   final Transaction? transaction;
   final Profile profile;
   final Account? selectedFund;
   final Account? selectedAccount;
   final VoucherType? voucherType;
   final Transaction? dupeTransaction;
+  final int amount;
 
   @override
   Widget build(BuildContext context) {
@@ -59,18 +61,19 @@ class TransactionEntryScreen extends StatelessWidget {
 
     return ChangeNotifierProvider<TransactionEntryViewmodel>(
       create: (context) => TransactionEntryViewmodel(
-        accountsDriftRepository,
-        transactionsDriftRepository,
-        balancesDriftRepository,
-        accountTypesDriftRepository,
-        projectsDriftRepository,
-        transaction: transaction,
-        profile: profile,
-        selectedAccount: selectedAccount,
-        selectedFund: selectedFund,
-        vchType: voucherType,
-        dupeTransaction: dupeTransaction,
-      )..init(),
+          accountsDriftRepository,
+          transactionsDriftRepository,
+          balancesDriftRepository,
+          accountTypesDriftRepository,
+          projectsDriftRepository,
+          transaction: transaction,
+          profile: profile,
+          selectedAccount: selectedAccount,
+          selectedFund: selectedFund,
+          vchType: voucherType,
+          dupeTransaction: dupeTransaction,
+          amount: amount)
+        ..init(),
       child: Scaffold(
         appBar: AppBar(
           title: Consumer<TransactionEntryViewmodel>(

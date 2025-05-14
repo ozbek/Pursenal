@@ -9,6 +9,7 @@ import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart'
 import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/screens/accounts_screen.dart';
 import 'package:pursenal/screens/budgets_screen.dart';
+import 'package:pursenal/screens/payment_reminders_screen.dart';
 import 'package:pursenal/screens/projects_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/dashboard_viewmodel.dart';
@@ -120,7 +121,7 @@ class DashboardScreen extends StatelessWidget {
                                         children: [
                                           Text(
                                             AppLocalizations.of(context)!
-                                                .myBudgets,
+                                                .budgets,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge
@@ -180,6 +181,53 @@ class DashboardScreen extends StatelessWidget {
                                           ),
                                           Icon(
                                             Icons.assignment,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge
+                                                ?.color,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Card(
+                                  elevation: 1,
+                                  shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      borderRadius: BorderRadius.circular(14)),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(14),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PaymentRemindersScreen(
+                                                      profile: profile)));
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(16),
+                                      height: double.maxFinite,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text(
+                                            AppLocalizations.of(context)!
+                                                .reminders,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge
+                                                ?.copyWith(fontSize: 18),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Icon(
+                                            Icons.event_available,
                                             color: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge

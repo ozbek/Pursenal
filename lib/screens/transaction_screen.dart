@@ -1,7 +1,4 @@
-import 'dart:io';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/date_formats.dart';
 import 'package:pursenal/app/global/dimensions.dart';
@@ -16,6 +13,7 @@ import 'package:pursenal/core/repositories/drift/transactions_drift_repository.d
 import 'package:pursenal/screens/transaction_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/transaction_viewmodel.dart';
+import 'package:pursenal/widgets/shared/image_carousel.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -143,105 +141,8 @@ class TransactionScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           viewmodel.transaction.filePaths.isNotEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.all(14.0),
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      spacing: 8,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: viewmodel.transaction.filePaths
-                                          .mapIndexed((index, filePath) {
-                                        return Material(
-                                          elevation: 3,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(0),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) => Stack(
-                                                    children: [
-                                                      Dialog(
-                                                        backgroundColor:
-                                                            Colors.transparent,
-                                                        shape: Border.all(),
-                                                        child: SizedBox(
-                                                          child: Image.file(
-                                                            errorBuilder: (context,
-                                                                    error,
-                                                                    stackTrace) =>
-                                                                const Center(
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            8.0),
-                                                                child: Text(
-                                                                    "Media error"),
-                                                              ),
-                                                            ),
-                                                            File(filePath),
-                                                            fit:
-                                                                BoxFit.fitWidth,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        top: -5,
-                                                        right: -5,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(24.0),
-                                                          child: IconButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            icon: const Icon(
-                                                              Icons.close,
-                                                              color: Colors.red,
-                                                              size: 30,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                              child: ConstrainedBox(
-                                                constraints:
-                                                    const BoxConstraints(
-                                                        maxHeight: 400),
-                                                child: Image.file(
-                                                  errorBuilder: (context, error,
-                                                          stackTrace) =>
-                                                      const Center(
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.all(8.0),
-                                                      child:
-                                                          Text("Media error"),
-                                                    ),
-                                                  ),
-                                                  File(filePath),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              )
-                                                  .animate(
-                                                      delay: (index * 50).ms)
-                                                  .fade(duration: 250.ms),
-                                            ),
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
+                              ? ImageCarousel(
+                                  filePaths: viewmodel.transaction.filePaths,
                                 )
                               : const SizedBox(
                                   height: 100,

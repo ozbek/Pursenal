@@ -6559,6 +6559,12 @@ class $DriftPaymentRemindersTable extends DriftPaymentReminders
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES drift_profiles (id) ON DELETE CASCADE'));
+  static const VerificationMeta _detailsMeta =
+      const VerificationMeta('details');
+  @override
+  late final GeneratedColumn<String> details = GeneratedColumn<String>(
+      'details', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   late final GeneratedColumnWithTypeConverter<BudgetInterval?, int> interval =
       GeneratedColumn<int>('interval', aliasedName, true,
@@ -6602,17 +6608,25 @@ class $DriftPaymentRemindersTable extends DriftPaymentReminders
       requiredDuringInsert: false,
       clientDefault: () => DateTime.now());
   @override
+  late final GeneratedColumnWithTypeConverter<PaymentStatus, int> status =
+      GeneratedColumn<int>('status', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<PaymentStatus>(
+              $DriftPaymentRemindersTable.$converterstatus);
+  @override
   List<GeneratedColumn> get $columns => [
         id,
         account,
         fund,
         profile,
+        details,
         interval,
         day,
         amount,
         paymentDate,
         addedDate,
-        updateDate
+        updateDate,
+        status
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6641,6 +6655,12 @@ class $DriftPaymentRemindersTable extends DriftPaymentReminders
           profile.isAcceptableOrUnknown(data['profile']!, _profileMeta));
     } else if (isInserting) {
       context.missing(_profileMeta);
+    }
+    if (data.containsKey('details')) {
+      context.handle(_detailsMeta,
+          details.isAcceptableOrUnknown(data['details']!, _detailsMeta));
+    } else if (isInserting) {
+      context.missing(_detailsMeta);
     }
     if (data.containsKey('day')) {
       context.handle(
@@ -6683,6 +6703,8 @@ class $DriftPaymentRemindersTable extends DriftPaymentReminders
           .read(DriftSqlType.int, data['${effectivePrefix}fund']),
       profile: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}profile'])!,
+      details: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}details'])!,
       interval: $DriftPaymentRemindersTable.$converterintervaln.fromSql(
           attachedDatabase.typeMapping
               .read(DriftSqlType.int, data['${effectivePrefix}interval'])),
@@ -6696,6 +6718,9 @@ class $DriftPaymentRemindersTable extends DriftPaymentReminders
           .read(DriftSqlType.dateTime, data['${effectivePrefix}added_date'])!,
       updateDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}update_date'])!,
+      status: $DriftPaymentRemindersTable.$converterstatus.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.int, data['${effectivePrefix}status'])!),
     );
   }
 
@@ -6708,6 +6733,8 @@ class $DriftPaymentRemindersTable extends DriftPaymentReminders
       const EnumIndexConverter<BudgetInterval>(BudgetInterval.values);
   static JsonTypeConverter2<BudgetInterval?, int?, int?> $converterintervaln =
       JsonTypeConverter2.asNullable($converterinterval);
+  static JsonTypeConverter2<PaymentStatus, int, int> $converterstatus =
+      const EnumIndexConverter<PaymentStatus>(PaymentStatus.values);
 }
 
 class DriftPaymentReminder extends DataClass
@@ -6716,23 +6743,27 @@ class DriftPaymentReminder extends DataClass
   final int? account;
   final int? fund;
   final int profile;
+  final String details;
   final BudgetInterval? interval;
   final int day;
   final int amount;
   final DateTime? paymentDate;
   final DateTime addedDate;
   final DateTime updateDate;
+  final PaymentStatus status;
   const DriftPaymentReminder(
       {required this.id,
       this.account,
       this.fund,
       required this.profile,
+      required this.details,
       this.interval,
       required this.day,
       required this.amount,
       this.paymentDate,
       required this.addedDate,
-      required this.updateDate});
+      required this.updateDate,
+      required this.status});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -6744,6 +6775,7 @@ class DriftPaymentReminder extends DataClass
       map['fund'] = Variable<int>(fund);
     }
     map['profile'] = Variable<int>(profile);
+    map['details'] = Variable<String>(details);
     if (!nullToAbsent || interval != null) {
       map['interval'] = Variable<int>(
           $DriftPaymentRemindersTable.$converterintervaln.toSql(interval));
@@ -6755,6 +6787,10 @@ class DriftPaymentReminder extends DataClass
     }
     map['added_date'] = Variable<DateTime>(addedDate);
     map['update_date'] = Variable<DateTime>(updateDate);
+    {
+      map['status'] = Variable<int>(
+          $DriftPaymentRemindersTable.$converterstatus.toSql(status));
+    }
     return map;
   }
 
@@ -6766,6 +6802,7 @@ class DriftPaymentReminder extends DataClass
           : Value(account),
       fund: fund == null && nullToAbsent ? const Value.absent() : Value(fund),
       profile: Value(profile),
+      details: Value(details),
       interval: interval == null && nullToAbsent
           ? const Value.absent()
           : Value(interval),
@@ -6776,6 +6813,7 @@ class DriftPaymentReminder extends DataClass
           : Value(paymentDate),
       addedDate: Value(addedDate),
       updateDate: Value(updateDate),
+      status: Value(status),
     );
   }
 
@@ -6787,6 +6825,7 @@ class DriftPaymentReminder extends DataClass
       account: serializer.fromJson<int?>(json['account']),
       fund: serializer.fromJson<int?>(json['fund']),
       profile: serializer.fromJson<int>(json['profile']),
+      details: serializer.fromJson<String>(json['details']),
       interval: $DriftPaymentRemindersTable.$converterintervaln
           .fromJson(serializer.fromJson<int?>(json['interval'])),
       day: serializer.fromJson<int>(json['day']),
@@ -6794,6 +6833,8 @@ class DriftPaymentReminder extends DataClass
       paymentDate: serializer.fromJson<DateTime?>(json['paymentDate']),
       addedDate: serializer.fromJson<DateTime>(json['addedDate']),
       updateDate: serializer.fromJson<DateTime>(json['updateDate']),
+      status: $DriftPaymentRemindersTable.$converterstatus
+          .fromJson(serializer.fromJson<int>(json['status'])),
     );
   }
   @override
@@ -6804,6 +6845,7 @@ class DriftPaymentReminder extends DataClass
       'account': serializer.toJson<int?>(account),
       'fund': serializer.toJson<int?>(fund),
       'profile': serializer.toJson<int>(profile),
+      'details': serializer.toJson<String>(details),
       'interval': serializer.toJson<int?>(
           $DriftPaymentRemindersTable.$converterintervaln.toJson(interval)),
       'day': serializer.toJson<int>(day),
@@ -6811,6 +6853,8 @@ class DriftPaymentReminder extends DataClass
       'paymentDate': serializer.toJson<DateTime?>(paymentDate),
       'addedDate': serializer.toJson<DateTime>(addedDate),
       'updateDate': serializer.toJson<DateTime>(updateDate),
+      'status': serializer.toJson<int>(
+          $DriftPaymentRemindersTable.$converterstatus.toJson(status)),
     };
   }
 
@@ -6819,23 +6863,27 @@ class DriftPaymentReminder extends DataClass
           Value<int?> account = const Value.absent(),
           Value<int?> fund = const Value.absent(),
           int? profile,
+          String? details,
           Value<BudgetInterval?> interval = const Value.absent(),
           int? day,
           int? amount,
           Value<DateTime?> paymentDate = const Value.absent(),
           DateTime? addedDate,
-          DateTime? updateDate}) =>
+          DateTime? updateDate,
+          PaymentStatus? status}) =>
       DriftPaymentReminder(
         id: id ?? this.id,
         account: account.present ? account.value : this.account,
         fund: fund.present ? fund.value : this.fund,
         profile: profile ?? this.profile,
+        details: details ?? this.details,
         interval: interval.present ? interval.value : this.interval,
         day: day ?? this.day,
         amount: amount ?? this.amount,
         paymentDate: paymentDate.present ? paymentDate.value : this.paymentDate,
         addedDate: addedDate ?? this.addedDate,
         updateDate: updateDate ?? this.updateDate,
+        status: status ?? this.status,
       );
   DriftPaymentReminder copyWithCompanion(DriftPaymentRemindersCompanion data) {
     return DriftPaymentReminder(
@@ -6843,6 +6891,7 @@ class DriftPaymentReminder extends DataClass
       account: data.account.present ? data.account.value : this.account,
       fund: data.fund.present ? data.fund.value : this.fund,
       profile: data.profile.present ? data.profile.value : this.profile,
+      details: data.details.present ? data.details.value : this.details,
       interval: data.interval.present ? data.interval.value : this.interval,
       day: data.day.present ? data.day.value : this.day,
       amount: data.amount.present ? data.amount.value : this.amount,
@@ -6851,6 +6900,7 @@ class DriftPaymentReminder extends DataClass
       addedDate: data.addedDate.present ? data.addedDate.value : this.addedDate,
       updateDate:
           data.updateDate.present ? data.updateDate.value : this.updateDate,
+      status: data.status.present ? data.status.value : this.status,
     );
   }
 
@@ -6861,19 +6911,21 @@ class DriftPaymentReminder extends DataClass
           ..write('account: $account, ')
           ..write('fund: $fund, ')
           ..write('profile: $profile, ')
+          ..write('details: $details, ')
           ..write('interval: $interval, ')
           ..write('day: $day, ')
           ..write('amount: $amount, ')
           ..write('paymentDate: $paymentDate, ')
           ..write('addedDate: $addedDate, ')
-          ..write('updateDate: $updateDate')
+          ..write('updateDate: $updateDate, ')
+          ..write('status: $status')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, account, fund, profile, interval, day,
-      amount, paymentDate, addedDate, updateDate);
+  int get hashCode => Object.hash(id, account, fund, profile, details, interval,
+      day, amount, paymentDate, addedDate, updateDate, status);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -6882,12 +6934,14 @@ class DriftPaymentReminder extends DataClass
           other.account == this.account &&
           other.fund == this.fund &&
           other.profile == this.profile &&
+          other.details == this.details &&
           other.interval == this.interval &&
           other.day == this.day &&
           other.amount == this.amount &&
           other.paymentDate == this.paymentDate &&
           other.addedDate == this.addedDate &&
-          other.updateDate == this.updateDate);
+          other.updateDate == this.updateDate &&
+          other.status == this.status);
 }
 
 class DriftPaymentRemindersCompanion
@@ -6896,59 +6950,71 @@ class DriftPaymentRemindersCompanion
   final Value<int?> account;
   final Value<int?> fund;
   final Value<int> profile;
+  final Value<String> details;
   final Value<BudgetInterval?> interval;
   final Value<int> day;
   final Value<int> amount;
   final Value<DateTime?> paymentDate;
   final Value<DateTime> addedDate;
   final Value<DateTime> updateDate;
+  final Value<PaymentStatus> status;
   const DriftPaymentRemindersCompanion({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
     this.fund = const Value.absent(),
     this.profile = const Value.absent(),
+    this.details = const Value.absent(),
     this.interval = const Value.absent(),
     this.day = const Value.absent(),
     this.amount = const Value.absent(),
     this.paymentDate = const Value.absent(),
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
+    this.status = const Value.absent(),
   });
   DriftPaymentRemindersCompanion.insert({
     this.id = const Value.absent(),
     this.account = const Value.absent(),
     this.fund = const Value.absent(),
     required int profile,
+    required String details,
     this.interval = const Value.absent(),
     this.day = const Value.absent(),
     this.amount = const Value.absent(),
     this.paymentDate = const Value.absent(),
     this.addedDate = const Value.absent(),
     this.updateDate = const Value.absent(),
-  }) : profile = Value(profile);
+    required PaymentStatus status,
+  })  : profile = Value(profile),
+        details = Value(details),
+        status = Value(status);
   static Insertable<DriftPaymentReminder> custom({
     Expression<int>? id,
     Expression<int>? account,
     Expression<int>? fund,
     Expression<int>? profile,
+    Expression<String>? details,
     Expression<int>? interval,
     Expression<int>? day,
     Expression<int>? amount,
     Expression<DateTime>? paymentDate,
     Expression<DateTime>? addedDate,
     Expression<DateTime>? updateDate,
+    Expression<int>? status,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (account != null) 'account': account,
       if (fund != null) 'fund': fund,
       if (profile != null) 'profile': profile,
+      if (details != null) 'details': details,
       if (interval != null) 'interval': interval,
       if (day != null) 'day': day,
       if (amount != null) 'amount': amount,
       if (paymentDate != null) 'payment_date': paymentDate,
       if (addedDate != null) 'added_date': addedDate,
       if (updateDate != null) 'update_date': updateDate,
+      if (status != null) 'status': status,
     });
   }
 
@@ -6957,23 +7023,27 @@ class DriftPaymentRemindersCompanion
       Value<int?>? account,
       Value<int?>? fund,
       Value<int>? profile,
+      Value<String>? details,
       Value<BudgetInterval?>? interval,
       Value<int>? day,
       Value<int>? amount,
       Value<DateTime?>? paymentDate,
       Value<DateTime>? addedDate,
-      Value<DateTime>? updateDate}) {
+      Value<DateTime>? updateDate,
+      Value<PaymentStatus>? status}) {
     return DriftPaymentRemindersCompanion(
       id: id ?? this.id,
       account: account ?? this.account,
       fund: fund ?? this.fund,
       profile: profile ?? this.profile,
+      details: details ?? this.details,
       interval: interval ?? this.interval,
       day: day ?? this.day,
       amount: amount ?? this.amount,
       paymentDate: paymentDate ?? this.paymentDate,
       addedDate: addedDate ?? this.addedDate,
       updateDate: updateDate ?? this.updateDate,
+      status: status ?? this.status,
     );
   }
 
@@ -6991,6 +7061,9 @@ class DriftPaymentRemindersCompanion
     }
     if (profile.present) {
       map['profile'] = Variable<int>(profile.value);
+    }
+    if (details.present) {
+      map['details'] = Variable<String>(details.value);
     }
     if (interval.present) {
       map['interval'] = Variable<int>($DriftPaymentRemindersTable
@@ -7012,6 +7085,10 @@ class DriftPaymentRemindersCompanion
     if (updateDate.present) {
       map['update_date'] = Variable<DateTime>(updateDate.value);
     }
+    if (status.present) {
+      map['status'] = Variable<int>(
+          $DriftPaymentRemindersTable.$converterstatus.toSql(status.value));
+    }
     return map;
   }
 
@@ -7022,12 +7099,280 @@ class DriftPaymentRemindersCompanion
           ..write('account: $account, ')
           ..write('fund: $fund, ')
           ..write('profile: $profile, ')
+          ..write('details: $details, ')
           ..write('interval: $interval, ')
           ..write('day: $day, ')
           ..write('amount: $amount, ')
           ..write('paymentDate: $paymentDate, ')
           ..write('addedDate: $addedDate, ')
-          ..write('updateDate: $updateDate')
+          ..write('updateDate: $updateDate, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DriftFilePathsTable extends DriftFilePaths
+    with TableInfo<$DriftFilePathsTable, DriftFilePath> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DriftFilePathsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  @override
+  late final GeneratedColumnWithTypeConverter<DBTableType, int> tableType =
+      GeneratedColumn<int>('table_type', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<DBTableType>($DriftFilePathsTable.$convertertableType);
+  static const VerificationMeta _parentTableMeta =
+      const VerificationMeta('parentTable');
+  @override
+  late final GeneratedColumn<int> parentTable = GeneratedColumn<int>(
+      'parent_table', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _pathMeta = const VerificationMeta('path');
+  @override
+  late final GeneratedColumn<String> path = GeneratedColumn<String>(
+      'path', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 512),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, tableType, parentTable, path];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'drift_file_paths';
+  @override
+  VerificationContext validateIntegrity(Insertable<DriftFilePath> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('parent_table')) {
+      context.handle(
+          _parentTableMeta,
+          parentTable.isAcceptableOrUnknown(
+              data['parent_table']!, _parentTableMeta));
+    } else if (isInserting) {
+      context.missing(_parentTableMeta);
+    }
+    if (data.containsKey('path')) {
+      context.handle(
+          _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
+    } else if (isInserting) {
+      context.missing(_pathMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DriftFilePath map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftFilePath(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      tableType: $DriftFilePathsTable.$convertertableType.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.int, data['${effectivePrefix}table_type'])!),
+      parentTable: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}parent_table'])!,
+      path: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
+    );
+  }
+
+  @override
+  $DriftFilePathsTable createAlias(String alias) {
+    return $DriftFilePathsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<DBTableType, int, int> $convertertableType =
+      const EnumIndexConverter<DBTableType>(DBTableType.values);
+}
+
+class DriftFilePath extends DataClass implements Insertable<DriftFilePath> {
+  final int id;
+  final DBTableType tableType;
+  final int parentTable;
+  final String path;
+  const DriftFilePath(
+      {required this.id,
+      required this.tableType,
+      required this.parentTable,
+      required this.path});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    {
+      map['table_type'] = Variable<int>(
+          $DriftFilePathsTable.$convertertableType.toSql(tableType));
+    }
+    map['parent_table'] = Variable<int>(parentTable);
+    map['path'] = Variable<String>(path);
+    return map;
+  }
+
+  DriftFilePathsCompanion toCompanion(bool nullToAbsent) {
+    return DriftFilePathsCompanion(
+      id: Value(id),
+      tableType: Value(tableType),
+      parentTable: Value(parentTable),
+      path: Value(path),
+    );
+  }
+
+  factory DriftFilePath.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftFilePath(
+      id: serializer.fromJson<int>(json['id']),
+      tableType: $DriftFilePathsTable.$convertertableType
+          .fromJson(serializer.fromJson<int>(json['tableType'])),
+      parentTable: serializer.fromJson<int>(json['parentTable']),
+      path: serializer.fromJson<String>(json['path']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'tableType': serializer.toJson<int>(
+          $DriftFilePathsTable.$convertertableType.toJson(tableType)),
+      'parentTable': serializer.toJson<int>(parentTable),
+      'path': serializer.toJson<String>(path),
+    };
+  }
+
+  DriftFilePath copyWith(
+          {int? id, DBTableType? tableType, int? parentTable, String? path}) =>
+      DriftFilePath(
+        id: id ?? this.id,
+        tableType: tableType ?? this.tableType,
+        parentTable: parentTable ?? this.parentTable,
+        path: path ?? this.path,
+      );
+  DriftFilePath copyWithCompanion(DriftFilePathsCompanion data) {
+    return DriftFilePath(
+      id: data.id.present ? data.id.value : this.id,
+      tableType: data.tableType.present ? data.tableType.value : this.tableType,
+      parentTable:
+          data.parentTable.present ? data.parentTable.value : this.parentTable,
+      path: data.path.present ? data.path.value : this.path,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftFilePath(')
+          ..write('id: $id, ')
+          ..write('tableType: $tableType, ')
+          ..write('parentTable: $parentTable, ')
+          ..write('path: $path')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, tableType, parentTable, path);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftFilePath &&
+          other.id == this.id &&
+          other.tableType == this.tableType &&
+          other.parentTable == this.parentTable &&
+          other.path == this.path);
+}
+
+class DriftFilePathsCompanion extends UpdateCompanion<DriftFilePath> {
+  final Value<int> id;
+  final Value<DBTableType> tableType;
+  final Value<int> parentTable;
+  final Value<String> path;
+  const DriftFilePathsCompanion({
+    this.id = const Value.absent(),
+    this.tableType = const Value.absent(),
+    this.parentTable = const Value.absent(),
+    this.path = const Value.absent(),
+  });
+  DriftFilePathsCompanion.insert({
+    this.id = const Value.absent(),
+    required DBTableType tableType,
+    required int parentTable,
+    required String path,
+  })  : tableType = Value(tableType),
+        parentTable = Value(parentTable),
+        path = Value(path);
+  static Insertable<DriftFilePath> custom({
+    Expression<int>? id,
+    Expression<int>? tableType,
+    Expression<int>? parentTable,
+    Expression<String>? path,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (tableType != null) 'table_type': tableType,
+      if (parentTable != null) 'parent_table': parentTable,
+      if (path != null) 'path': path,
+    });
+  }
+
+  DriftFilePathsCompanion copyWith(
+      {Value<int>? id,
+      Value<DBTableType>? tableType,
+      Value<int>? parentTable,
+      Value<String>? path}) {
+    return DriftFilePathsCompanion(
+      id: id ?? this.id,
+      tableType: tableType ?? this.tableType,
+      parentTable: parentTable ?? this.parentTable,
+      path: path ?? this.path,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (tableType.present) {
+      map['table_type'] = Variable<int>(
+          $DriftFilePathsTable.$convertertableType.toSql(tableType.value));
+    }
+    if (parentTable.present) {
+      map['parent_table'] = Variable<int>(parentTable.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(path.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftFilePathsCompanion(')
+          ..write('id: $id, ')
+          ..write('tableType: $tableType, ')
+          ..write('parentTable: $parentTable, ')
+          ..write('path: $path')
           ..write(')'))
         .toString();
   }
@@ -7062,6 +7407,7 @@ abstract class _$AppDriftDatabase extends GeneratedDatabase {
   late final $DriftPeopleTable driftPeople = $DriftPeopleTable(this);
   late final $DriftPaymentRemindersTable driftPaymentReminders =
       $DriftPaymentRemindersTable(this);
+  late final $DriftFilePathsTable driftFilePaths = $DriftFilePathsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7085,7 +7431,8 @@ abstract class _$AppDriftDatabase extends GeneratedDatabase {
         driftProjectPhotos,
         driftReceivables,
         driftPeople,
-        driftPaymentReminders
+        driftPaymentReminders,
+        driftFilePaths
       ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
@@ -8472,6 +8819,40 @@ final class $$DriftAccountsTableReferences extends BaseReferences<
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$DriftPaymentRemindersTable,
+      List<DriftPaymentReminder>> _accountTable(
+          _$AppDriftDatabase db) =>
+      MultiTypedResultKey.fromTable(db.driftPaymentReminders,
+          aliasName: $_aliasNameGenerator(
+              db.driftAccounts.id, db.driftPaymentReminders.account));
+
+  $$DriftPaymentRemindersTableProcessedTableManager get account {
+    final manager = $$DriftPaymentRemindersTableTableManager(
+            $_db, $_db.driftPaymentReminders)
+        .filter((f) => f.account.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_accountTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DriftPaymentRemindersTable,
+      List<DriftPaymentReminder>> _fundTable(
+          _$AppDriftDatabase db) =>
+      MultiTypedResultKey.fromTable(db.driftPaymentReminders,
+          aliasName: $_aliasNameGenerator(
+              db.driftAccounts.id, db.driftPaymentReminders.fund));
+
+  $$DriftPaymentRemindersTableProcessedTableManager get fund {
+    final manager = $$DriftPaymentRemindersTableTableManager(
+            $_db, $_db.driftPaymentReminders)
+        .filter((f) => f.fund.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_fundTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$DriftAccountsTableFilterComposer
@@ -8772,6 +9153,52 @@ class $$DriftAccountsTableFilterComposer
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
+    return f(composer);
+  }
+
+  Expression<bool> account(
+      Expression<bool> Function($$DriftPaymentRemindersTableFilterComposer f)
+          f) {
+    final $$DriftPaymentRemindersTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftPaymentReminders,
+            getReferencedColumn: (t) => t.account,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftPaymentRemindersTableFilterComposer(
+                  $db: $db,
+                  $table: $db.driftPaymentReminders,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<bool> fund(
+      Expression<bool> Function($$DriftPaymentRemindersTableFilterComposer f)
+          f) {
+    final $$DriftPaymentRemindersTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftPaymentReminders,
+            getReferencedColumn: (t) => t.fund,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftPaymentRemindersTableFilterComposer(
+                  $db: $db,
+                  $table: $db.driftPaymentReminders,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
@@ -9151,6 +9578,52 @@ class $$DriftAccountsTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> account<T extends Object>(
+      Expression<T> Function($$DriftPaymentRemindersTableAnnotationComposer a)
+          f) {
+    final $$DriftPaymentRemindersTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftPaymentReminders,
+            getReferencedColumn: (t) => t.account,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftPaymentRemindersTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftPaymentReminders,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<T> fund<T extends Object>(
+      Expression<T> Function($$DriftPaymentRemindersTableAnnotationComposer a)
+          f) {
+    final $$DriftPaymentRemindersTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftPaymentReminders,
+            getReferencedColumn: (t) => t.fund,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftPaymentRemindersTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftPaymentReminders,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$DriftAccountsTableTableManager extends RootTableManager<
@@ -9177,7 +9650,9 @@ class $$DriftAccountsTableTableManager extends RootTableManager<
         bool driftBudgetAccountsRefs,
         bool driftBudgetFundsRefs,
         bool driftReceivablesRefs,
-        bool driftPeopleRefs})> {
+        bool driftPeopleRefs,
+        bool account,
+        bool fund})> {
   $$DriftAccountsTableTableManager(
       _$AppDriftDatabase db, $DriftAccountsTable table)
       : super(TableManagerState(
@@ -9252,7 +9727,9 @@ class $$DriftAccountsTableTableManager extends RootTableManager<
               driftBudgetAccountsRefs = false,
               driftBudgetFundsRefs = false,
               driftReceivablesRefs = false,
-              driftPeopleRefs = false}) {
+              driftPeopleRefs = false,
+              account = false,
+              fund = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -9266,7 +9743,9 @@ class $$DriftAccountsTableTableManager extends RootTableManager<
                 if (driftBudgetAccountsRefs) db.driftBudgetAccounts,
                 if (driftBudgetFundsRefs) db.driftBudgetFunds,
                 if (driftReceivablesRefs) db.driftReceivables,
-                if (driftPeopleRefs) db.driftPeople
+                if (driftPeopleRefs) db.driftPeople,
+                if (account) db.driftPaymentReminders,
+                if (fund) db.driftPaymentReminders
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -9448,6 +9927,31 @@ class $$DriftAccountsTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.accountId == item.id),
+                        typedResults: items),
+                  if (account)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftPaymentReminder>(
+                        currentTable: table,
+                        referencedTable:
+                            $$DriftAccountsTableReferences._accountTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$DriftAccountsTableReferences(db, table, p0)
+                                .account,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.account == item.id),
+                        typedResults: items),
+                  if (fund)
+                    await $_getPrefetchedData<DriftAccount, $DriftAccountsTable,
+                            DriftPaymentReminder>(
+                        currentTable: table,
+                        referencedTable:
+                            $$DriftAccountsTableReferences._fundTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$DriftAccountsTableReferences(db, table, p0).fund,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) =>
+                                referencedItems.where((e) => e.fund == item.id),
                         typedResults: items)
                 ];
               },
@@ -9480,7 +9984,9 @@ typedef $$DriftAccountsTableProcessedTableManager = ProcessedTableManager<
         bool driftBudgetAccountsRefs,
         bool driftBudgetFundsRefs,
         bool driftReceivablesRefs,
-        bool driftPeopleRefs})>;
+        bool driftPeopleRefs,
+        bool account,
+        bool fund})>;
 typedef $$DriftBudgetsTableCreateCompanionBuilder = DriftBudgetsCompanion
     Function({
   Value<int> id,
@@ -14553,12 +15059,14 @@ typedef $$DriftPaymentRemindersTableCreateCompanionBuilder
   Value<int?> account,
   Value<int?> fund,
   required int profile,
+  required String details,
   Value<BudgetInterval?> interval,
   Value<int> day,
   Value<int> amount,
   Value<DateTime?> paymentDate,
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
+  required PaymentStatus status,
 });
 typedef $$DriftPaymentRemindersTableUpdateCompanionBuilder
     = DriftPaymentRemindersCompanion Function({
@@ -14566,12 +15074,14 @@ typedef $$DriftPaymentRemindersTableUpdateCompanionBuilder
   Value<int?> account,
   Value<int?> fund,
   Value<int> profile,
+  Value<String> details,
   Value<BudgetInterval?> interval,
   Value<int> day,
   Value<int> amount,
   Value<DateTime?> paymentDate,
   Value<DateTime> addedDate,
   Value<DateTime> updateDate,
+  Value<PaymentStatus> status,
 });
 
 final class $$DriftPaymentRemindersTableReferences extends BaseReferences<
@@ -14637,6 +15147,9 @@ class $$DriftPaymentRemindersTableFilterComposer
   ColumnFilters<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<String> get details => $composableBuilder(
+      column: $table.details, builder: (column) => ColumnFilters(column));
+
   ColumnWithTypeConverterFilters<BudgetInterval?, BudgetInterval, int>
       get interval => $composableBuilder(
           column: $table.interval,
@@ -14656,6 +15169,11 @@ class $$DriftPaymentRemindersTableFilterComposer
 
   ColumnFilters<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<PaymentStatus, PaymentStatus, int>
+      get status => $composableBuilder(
+          column: $table.status,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   $$DriftAccountsTableFilterComposer get account {
     final $$DriftAccountsTableFilterComposer composer = $composerBuilder(
@@ -14730,6 +15248,9 @@ class $$DriftPaymentRemindersTableOrderingComposer
   ColumnOrderings<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get details => $composableBuilder(
+      column: $table.details, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<int> get interval => $composableBuilder(
       column: $table.interval, builder: (column) => ColumnOrderings(column));
 
@@ -14747,6 +15268,9 @@ class $$DriftPaymentRemindersTableOrderingComposer
 
   ColumnOrderings<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnOrderings(column));
 
   $$DriftAccountsTableOrderingComposer get account {
     final $$DriftAccountsTableOrderingComposer composer = $composerBuilder(
@@ -14821,6 +15345,9 @@ class $$DriftPaymentRemindersTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<String> get details =>
+      $composableBuilder(column: $table.details, builder: (column) => column);
+
   GeneratedColumnWithTypeConverter<BudgetInterval?, int> get interval =>
       $composableBuilder(column: $table.interval, builder: (column) => column);
 
@@ -14838,6 +15365,9 @@ class $$DriftPaymentRemindersTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updateDate => $composableBuilder(
       column: $table.updateDate, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<PaymentStatus, int> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
 
   $$DriftAccountsTableAnnotationComposer get account {
     final $$DriftAccountsTableAnnotationComposer composer = $composerBuilder(
@@ -14931,48 +15461,56 @@ class $$DriftPaymentRemindersTableTableManager extends RootTableManager<
             Value<int?> account = const Value.absent(),
             Value<int?> fund = const Value.absent(),
             Value<int> profile = const Value.absent(),
+            Value<String> details = const Value.absent(),
             Value<BudgetInterval?> interval = const Value.absent(),
             Value<int> day = const Value.absent(),
             Value<int> amount = const Value.absent(),
             Value<DateTime?> paymentDate = const Value.absent(),
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
+            Value<PaymentStatus> status = const Value.absent(),
           }) =>
               DriftPaymentRemindersCompanion(
             id: id,
             account: account,
             fund: fund,
             profile: profile,
+            details: details,
             interval: interval,
             day: day,
             amount: amount,
             paymentDate: paymentDate,
             addedDate: addedDate,
             updateDate: updateDate,
+            status: status,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int?> account = const Value.absent(),
             Value<int?> fund = const Value.absent(),
             required int profile,
+            required String details,
             Value<BudgetInterval?> interval = const Value.absent(),
             Value<int> day = const Value.absent(),
             Value<int> amount = const Value.absent(),
             Value<DateTime?> paymentDate = const Value.absent(),
             Value<DateTime> addedDate = const Value.absent(),
             Value<DateTime> updateDate = const Value.absent(),
+            required PaymentStatus status,
           }) =>
               DriftPaymentRemindersCompanion.insert(
             id: id,
             account: account,
             fund: fund,
             profile: profile,
+            details: details,
             interval: interval,
             day: day,
             amount: amount,
             paymentDate: paymentDate,
             addedDate: addedDate,
             updateDate: updateDate,
+            status: status,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
@@ -15055,6 +15593,161 @@ typedef $$DriftPaymentRemindersTableProcessedTableManager
         (DriftPaymentReminder, $$DriftPaymentRemindersTableReferences),
         DriftPaymentReminder,
         PrefetchHooks Function({bool account, bool fund, bool profile})>;
+typedef $$DriftFilePathsTableCreateCompanionBuilder = DriftFilePathsCompanion
+    Function({
+  Value<int> id,
+  required DBTableType tableType,
+  required int parentTable,
+  required String path,
+});
+typedef $$DriftFilePathsTableUpdateCompanionBuilder = DriftFilePathsCompanion
+    Function({
+  Value<int> id,
+  Value<DBTableType> tableType,
+  Value<int> parentTable,
+  Value<String> path,
+});
+
+class $$DriftFilePathsTableFilterComposer
+    extends Composer<_$AppDriftDatabase, $DriftFilePathsTable> {
+  $$DriftFilePathsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<DBTableType, DBTableType, int> get tableType =>
+      $composableBuilder(
+          column: $table.tableType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get parentTable => $composableBuilder(
+      column: $table.parentTable, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get path => $composableBuilder(
+      column: $table.path, builder: (column) => ColumnFilters(column));
+}
+
+class $$DriftFilePathsTableOrderingComposer
+    extends Composer<_$AppDriftDatabase, $DriftFilePathsTable> {
+  $$DriftFilePathsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get tableType => $composableBuilder(
+      column: $table.tableType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get parentTable => $composableBuilder(
+      column: $table.parentTable, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get path => $composableBuilder(
+      column: $table.path, builder: (column) => ColumnOrderings(column));
+}
+
+class $$DriftFilePathsTableAnnotationComposer
+    extends Composer<_$AppDriftDatabase, $DriftFilePathsTable> {
+  $$DriftFilePathsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DBTableType, int> get tableType =>
+      $composableBuilder(column: $table.tableType, builder: (column) => column);
+
+  GeneratedColumn<int> get parentTable => $composableBuilder(
+      column: $table.parentTable, builder: (column) => column);
+
+  GeneratedColumn<String> get path =>
+      $composableBuilder(column: $table.path, builder: (column) => column);
+}
+
+class $$DriftFilePathsTableTableManager extends RootTableManager<
+    _$AppDriftDatabase,
+    $DriftFilePathsTable,
+    DriftFilePath,
+    $$DriftFilePathsTableFilterComposer,
+    $$DriftFilePathsTableOrderingComposer,
+    $$DriftFilePathsTableAnnotationComposer,
+    $$DriftFilePathsTableCreateCompanionBuilder,
+    $$DriftFilePathsTableUpdateCompanionBuilder,
+    (
+      DriftFilePath,
+      BaseReferences<_$AppDriftDatabase, $DriftFilePathsTable, DriftFilePath>
+    ),
+    DriftFilePath,
+    PrefetchHooks Function()> {
+  $$DriftFilePathsTableTableManager(
+      _$AppDriftDatabase db, $DriftFilePathsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DriftFilePathsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DriftFilePathsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DriftFilePathsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DBTableType> tableType = const Value.absent(),
+            Value<int> parentTable = const Value.absent(),
+            Value<String> path = const Value.absent(),
+          }) =>
+              DriftFilePathsCompanion(
+            id: id,
+            tableType: tableType,
+            parentTable: parentTable,
+            path: path,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required DBTableType tableType,
+            required int parentTable,
+            required String path,
+          }) =>
+              DriftFilePathsCompanion.insert(
+            id: id,
+            tableType: tableType,
+            parentTable: parentTable,
+            path: path,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$DriftFilePathsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDriftDatabase,
+    $DriftFilePathsTable,
+    DriftFilePath,
+    $$DriftFilePathsTableFilterComposer,
+    $$DriftFilePathsTableOrderingComposer,
+    $$DriftFilePathsTableAnnotationComposer,
+    $$DriftFilePathsTableCreateCompanionBuilder,
+    $$DriftFilePathsTableUpdateCompanionBuilder,
+    (
+      DriftFilePath,
+      BaseReferences<_$AppDriftDatabase, $DriftFilePathsTable, DriftFilePath>
+    ),
+    DriftFilePath,
+    PrefetchHooks Function()>;
 
 class $AppDriftDatabaseManager {
   final _$AppDriftDatabase _db;
@@ -15098,4 +15791,6 @@ class $AppDriftDatabaseManager {
       $$DriftPeopleTableTableManager(_db, _db.driftPeople);
   $$DriftPaymentRemindersTableTableManager get driftPaymentReminders =>
       $$DriftPaymentRemindersTableTableManager(_db, _db.driftPaymentReminders);
+  $$DriftFilePathsTableTableManager get driftFilePaths =>
+      $$DriftFilePathsTableTableManager(_db, _db.driftFilePaths);
 }

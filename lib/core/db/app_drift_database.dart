@@ -4,6 +4,8 @@ import 'package:drift/drift.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/currency.dart';
+import 'package:pursenal/core/enums/db_table_type.dart';
+import 'package:pursenal/core/enums/payment_status.dart';
 import 'package:pursenal/core/enums/primary_type.dart';
 import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
@@ -35,6 +37,7 @@ part 'app_drift_database.g.dart';
   DriftReceivables,
   DriftPeople,
   DriftPaymentReminders,
+  DriftFilePaths,
 ])
 class AppDriftDatabase extends _$AppDriftDatabase {
   // we tell the database where to store the data with this constructor
@@ -86,6 +89,7 @@ class AppDriftDatabase extends _$AppDriftDatabase {
       if (from == 1) {
         await m.deleteTable('drift_subscriptions');
         await m.createTable(driftPaymentReminders);
+        await m.createTable(driftFilePaths);
       }
     });
   }
@@ -1310,4 +1314,104 @@ class AppDriftDatabase extends _$AppDriftDatabase {
   Future<DriftPaymentReminder> getPaymentReminderById(int id) =>
       (select(driftPaymentReminders)..where((t) => t.id.equals(id)))
           .getSingle();
+
+  Future<
+      List<
+          Tuple4<DriftPaymentReminder, DriftAccount?, DriftAccount?,
+              List<DriftFilePath>>>> getReminders(int profileID) async {
+    final reminderAlias = alias(driftPaymentReminders, 'reminder');
+    final accountAlias = alias(driftAccounts, 'account');
+    final fundAlias = alias(driftAccounts, 'fund');
+
+    // 1. Fetch all reminders with their related accounts (nullable joins)
+    final rows = await (select(reminderAlias)
+          ..where((r) => r.profile.equals(profileID))
+          ..orderBy([
+            (r) =>
+                OrderingTerm(expression: r.paymentDate, mode: OrderingMode.desc)
+          ]))
+        .join([
+      leftOuterJoin(
+          accountAlias, accountAlias.id.equalsExp(reminderAlias.account)),
+      leftOuterJoin(fundAlias, fundAlias.id.equalsExp(reminderAlias.fund)),
+    ]).get();
+
+    final List<
+        Tuple4<DriftPaymentReminder, DriftAccount?, DriftAccount?,
+            List<DriftFilePath>>> result = [];
+
+    for (final row in rows) {
+      final reminder = row.readTable(reminderAlias);
+      final account = row.readTableOrNull(accountAlias);
+      final fund = row.readTableOrNull(fundAlias);
+
+      // 2. Fetch the list of file paths for this reminder
+      final filePaths = await (select(driftFilePaths)
+            ..where((fp) =>
+                fp.tableType.equals(DBTableType.paymentReminder.index) &
+                fp.parentTable.equals(reminder.id)))
+          .get();
+
+      result.add(Tuple4(reminder, account, fund, filePaths));
+    }
+
+    return result;
+  }
+
+  Future<
+      Tuple4<DriftPaymentReminder, DriftAccount?, DriftAccount?,
+          List<DriftFilePath>>> getReminder(int id) async {
+    final reminderAlias = alias(driftPaymentReminders, 'reminder');
+    final accountAlias = alias(driftAccounts, 'account');
+    final fundAlias = alias(driftAccounts, 'fund');
+
+    // 1. Fetch all reminders with their related accounts (nullable joins)
+    final row = await (select(reminderAlias)
+          ..where((r) => r.id.equals(id))
+          ..orderBy([
+            (r) =>
+                OrderingTerm(expression: r.paymentDate, mode: OrderingMode.desc)
+          ]))
+        .join([
+      leftOuterJoin(
+          accountAlias, accountAlias.id.equalsExp(reminderAlias.account)),
+      leftOuterJoin(fundAlias, fundAlias.id.equalsExp(reminderAlias.fund)),
+    ]).getSingle();
+
+    final List<
+        Tuple4<DriftPaymentReminder, DriftAccount?, DriftAccount?,
+            List<DriftFilePath>>> result = [];
+
+    final reminder = row.readTable(reminderAlias);
+    final account = row.readTableOrNull(accountAlias);
+    final fund = row.readTableOrNull(fundAlias);
+
+    // 2. Fetch the list of file paths for this reminder
+    final filePaths = await (select(driftFilePaths)
+          ..where((fp) =>
+              fp.tableType.equals(DBTableType.paymentReminder.index) &
+              fp.parentTable.equals(reminder.id)))
+        .get();
+
+    result.add(Tuple4(reminder, account, fund, filePaths));
+
+    return Tuple4(reminder, account, fund, filePaths);
+  }
+
+  Future<int> insertFilePath(DriftFilePathsCompanion filePath) =>
+      into(driftFilePaths).insert(filePath);
+  Future<bool> updateFilePath(DriftFilePathsCompanion filePath) =>
+      update(driftFilePaths).replace(filePath);
+  Future<int> deleteFilePath(int id) =>
+      (delete(driftFilePaths)..where((t) => t.id.equals(id))).go();
+  Future<DriftFilePath> getFilePathById(int id) =>
+      (select(driftFilePaths)..where((t) => t.id.equals(id))).getSingle();
+
+  Future<int> deleteFilePathByParentID(int id) async {
+    return (delete(driftFilePaths)..where((t) => t.parentTable.equals(id)))
+        .go();
+  }
+
+  Future<List<DriftFilePath>> getFilePathByParentId(int id) =>
+      (select(driftFilePaths)..where((t) => t.parentTable.equals(id))).get();
 }

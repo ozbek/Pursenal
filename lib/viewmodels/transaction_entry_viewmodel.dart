@@ -37,11 +37,13 @@ class TransactionEntryViewmodel extends ChangeNotifier {
     Account? selectedAccount,
     Account? selectedFund,
     VoucherType? vchType,
+    int amount = 0,
   })  : _profile = profile,
         _transaction = transaction,
         _dupeTransaction = dupeTransaction,
         _selectedAccount = selectedAccount,
         _selectedFund = selectedFund,
+        _amount = amount,
         _vchType = vchType ?? VoucherType.payment;
 
   LoadingStatus loadingStatus = LoadingStatus.idle;

@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/currency.dart';
+import 'package:pursenal/core/enums/db_table_type.dart';
+import 'package:pursenal/core/enums/payment_status.dart';
 import 'package:pursenal/core/enums/primary_type.dart';
 import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/enums/voucher_type.dart';
@@ -268,14 +270,17 @@ class DriftPeople extends Table {
 // Reminder for one time and recurring payments
 class DriftPaymentReminders extends Table {
   IntColumn get id => integer().autoIncrement()();
+  @ReferenceName('account')
   IntColumn get account => integer()
       .nullable()
       .references(DriftAccounts, #id, onDelete: KeyAction.cascade)();
+  @ReferenceName('fund')
   IntColumn get fund => integer()
       .nullable()
       .references(DriftAccounts, #id, onDelete: KeyAction.setNull)();
   IntColumn get profile => integer().references(DriftProfiles, #id,
       onDelete: KeyAction.cascade)(); // Profile association
+  TextColumn get details => text()();
   IntColumn get interval => intEnum<BudgetInterval>()
       .nullable()(); // The interval for the subscription
   IntColumn get day => integer().withDefault(const Constant(1))();
@@ -285,4 +290,12 @@ class DriftPaymentReminders extends Table {
       dateTime().clientDefault(() => DateTime.now())(); // Date added
   DateTimeColumn get updateDate =>
       dateTime().clientDefault(() => DateTime.now())(); // Last update date
+  IntColumn get status => intEnum<PaymentStatus>()();
+}
+
+class DriftFilePaths extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get tableType => intEnum<DBTableType>()();
+  IntColumn get parentTable => integer()();
+  TextColumn get path => text().withLength(min: 0, max: 512)(); // File path
 }

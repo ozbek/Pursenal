@@ -338,18 +338,21 @@ extension PeopleEntityMapper on People {
 }
 
 extension PaymentReminderMapper on DriftPaymentReminder {
-  PaymentReminder toDomain(Account account, Account fund) {
+  PaymentReminder toDomain(
+      Account? account, Account? fund, List<String> filePaths) {
     return PaymentReminder(
-      dbID: id,
-      account: account,
-      fund: fund,
-      profile: profile,
-      interval: interval,
-      day: day,
-      amount: amount,
-      addedDate: addedDate,
-      updateDate: updateDate,
-    );
+        dbID: id,
+        account: account,
+        fund: fund,
+        details: details,
+        profile: profile,
+        interval: interval,
+        paymentStatus: status,
+        day: day,
+        amount: amount,
+        addedDate: addedDate,
+        updateDate: updateDate,
+        filePaths: filePaths);
   }
 }
 
@@ -360,10 +363,12 @@ extension PaymentReminderEntityMapper on PaymentReminder {
       account: Value(account?.dbID),
       fund: Value(fund?.dbID),
       profile: Value(profile),
+      details: Value(details),
       interval: Value(interval),
       day: Value(day ?? 1),
       amount: Value(amount),
       addedDate: Value(addedDate),
+      status: Value(paymentStatus),
       updateDate: Value(updateDate),
     );
   }

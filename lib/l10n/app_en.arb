@@ -395,6 +395,10 @@
   "@deleteBudgetWarning": {
     "description": "Budget deletion warning"
   },
+  "deleteThisReminderQn": "Delete this Reminder?",
+  "@deleteThisReminderQn": {
+    "description": "Query to confirm deletion of current payment reminder."
+  },
   "unknownCurrency": "Unknown Currency",
   "@unknownCurrency": {
     "description": "Displayed when the currency type is not recognized."
@@ -627,9 +631,21 @@
   "@projectName": {
     "description": "Project"
   },
+  "reminders": "Reminders",
+  "@reminders": {
+    "description": "Payment reminders"
+  },
+  "budgets": "Budgets",
+  "@budgets": {
+    "description": "Budgets"
+  },
   "projectStatus": "Project status",
   "@projectStatus": {
     "description": "Project status"
+  },
+  "status": "Status",
+  "@status": {
+    "description": "General status for reminders, projects etc"
   },
   "projectForm": "Project form",
   "@projectForm": {
@@ -638,6 +654,18 @@
   "myProjects": "My Projects",
   "@myProjects": {
     "description": "Projects"
+  },
+  "myPaymentReminders": "My Payment Reminders",
+  "@myPaymentReminders": {
+    "description": "Payment Reminders"
+  },
+  "pay": "Pay",
+  "@pay": {
+    "description": "Proceed with payment"
+  },
+  "oneTime": "One-time",
+  "@oneTime": {
+    "description": "To note a payment is not recurring"
   },
   "budgetPerformance": "Budget Performance",
   "@budgetPerformance": {

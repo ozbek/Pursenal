@@ -225,7 +225,7 @@ class ThemeProvider extends ChangeNotifier {
       // Color Scheme
       colorScheme: ColorScheme.light(
         primary: primary700,
-        secondary: blueGrey50,
+        secondary: blueGrey200,
         surface: white,
       ),
       drawerTheme: DrawerThemeData(
