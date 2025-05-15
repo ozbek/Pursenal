@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
@@ -17,6 +18,7 @@ import 'package:pursenal/widgets/dashboard/add_new_account_card.dart';
 import 'package:pursenal/widgets/dashboard/add_transaction_card.dart';
 import 'package:pursenal/widgets/dashboard/my_balance_card.dart';
 import 'package:pursenal/widgets/dashboard/transactions_card.dart';
+import 'package:pursenal/widgets/dashboard/nav_button1.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -48,60 +50,57 @@ class DashboardScreen extends StatelessWidget {
           profile: profile)
         ..init(),
       builder: (context, child) => Consumer<DashboardViewmodel>(
-        builder: (context, viewmodel, child) => Scaffold(
-          body: LoadingBody(
-            loadingStatus: viewmodel.loadingStatus,
-            errorText: viewmodel.errorText,
-            widget: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: Text(
-                        AppLocalizations.of(context)!.myDashboard,
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                    ),
-                  ),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    runAlignment: WrapAlignment.center,
-                    children: [
-                      MyBalanceCard(
-                        profile: profile,
-                        viewmodel: viewmodel,
-                      ),
-                      Visibility(
-                        visible: viewmodel.canAddTransaction,
-                        child: AddTransactionCard(
-                          appViewmodel: appViewmodel,
-                          profile: profile,
-                          viewmodel: viewmodel,
+        builder: (context, viewmodel, child) =>
+            LayoutBuilder(builder: (context, constraints) {
+          final isWide = constraints.maxWidth > cardWidth;
+          final isVeryWide = constraints.maxWidth > cardWidth * 2;
+          return Scaffold(
+            body: LoadingBody(
+              loadingStatus: viewmodel.loadingStatus,
+              errorText: viewmodel.errorText,
+              widget: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: Text(
+                          AppLocalizations.of(context)!.myDashboard,
+                          style: Theme.of(context).textTheme.headlineMedium,
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        width: double.infinity,
-                        height: 92,
-                        child: Center(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Card(
-                                  elevation: 1,
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      borderRadius: BorderRadius.circular(14)),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(14),
+                    ),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      runAlignment: WrapAlignment.center,
+                      children: [
+                        MyBalanceCard(
+                          profile: profile,
+                          viewmodel: viewmodel,
+                          isWide: isVeryWide,
+                        ),
+                        Visibility(
+                          visible: viewmodel.canAddTransaction & !isVeryWide,
+                          child: AddTransactionCard(
+                            appViewmodel: appViewmodel,
+                            profile: profile,
+                            viewmodel: viewmodel,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          width: double.infinity,
+                          height: 80,
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  NavButton1(
                                     onTap: () {
                                       Navigator.push(
                                           context,
@@ -112,45 +111,11 @@ class DashboardScreen extends StatelessWidget {
                                             ),
                                           ));
                                     },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16),
-                                      height: double.maxFinite,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(context)!
-                                                .budgets,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.copyWith(fontSize: 18),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Icon(
-                                            Icons.calculate,
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.color,
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                                    title:
+                                        AppLocalizations.of(context)!.budgets,
+                                    icon: Icons.calculate,
                                   ),
-                                ),
-                                Card(
-                                  elevation: 1,
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      borderRadius: BorderRadius.circular(14)),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(14),
+                                  NavButton1(
                                     onTap: () {
                                       Navigator.push(
                                           context,
@@ -162,44 +127,11 @@ class DashboardScreen extends StatelessWidget {
                                             ),
                                           ));
                                     },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16),
-                                      height: double.maxFinite,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(
-                                            "Projects",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.copyWith(fontSize: 18),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Icon(
-                                            Icons.assignment,
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.color,
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                                    title:
+                                        AppLocalizations.of(context)!.projects,
+                                    icon: Icons.assignment,
                                   ),
-                                ),
-                                Card(
-                                  elevation: 1,
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      borderRadius: BorderRadius.circular(14)),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(14),
+                                  NavButton1(
                                     onTap: () {
                                       Navigator.push(
                                           context,
@@ -208,45 +140,11 @@ class DashboardScreen extends StatelessWidget {
                                                   PaymentRemindersScreen(
                                                       profile: profile)));
                                     },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16),
-                                      height: double.maxFinite,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(context)!
-                                                .reminders,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.copyWith(fontSize: 18),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Icon(
-                                            Icons.event_available,
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.color,
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                                    title:
+                                        AppLocalizations.of(context)!.reminders,
+                                    icon: Icons.event_available,
                                   ),
-                                ),
-                                Card(
-                                  elevation: 1,
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      borderRadius: BorderRadius.circular(14)),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(14),
+                                  NavButton1(
                                     onTap: () {
                                       Navigator.push(
                                           context,
@@ -258,65 +156,42 @@ class DashboardScreen extends StatelessWidget {
                                             ),
                                           ));
                                     },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16),
-                                      height: double.maxFinite,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(
-                                            "${AppLocalizations.of(context)!.expenses} & ${AppLocalizations.of(context)!.incomes}",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.copyWith(fontSize: 18),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Icon(
-                                            Icons.table_chart_outlined,
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.color,
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                                    title:
+                                        "${AppLocalizations.of(context)!.expenses} & ${AppLocalizations.of(context)!.incomes}",
+                                    icon: Icons.table_chart_outlined,
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                          .animate(delay: 100.ms)
-                          .scale(
-                              begin: const Offset(1.02, 1.02), duration: 100.ms)
-                          .fade(curve: Curves.easeInOut, duration: 100.ms),
-                      Visibility(
-                          visible: viewmodel.recentTransactions.isNotEmpty,
-                          child: TransactionsCard(
-                            viewmodel: viewmodel,
-                          )),
-                      Visibility(
-                          visible: viewmodel.fAccountTypes.isNotEmpty,
-                          child: AddNewAccountCard(
-                            viewmodel: viewmodel,
-                          )),
-                      const SizedBox(
-                        height: 300,
-                      )
-                    ],
-                  ),
-                ],
+                        )
+                            .animate(delay: 100.ms)
+                            .scale(
+                                begin: const Offset(1.02, 1.02),
+                                duration: 100.ms)
+                            .fade(curve: Curves.easeInOut, duration: 100.ms),
+                        Visibility(
+                            visible: viewmodel.recentTransactions.isNotEmpty,
+                            child: TransactionsCard(
+                              viewmodel: viewmodel,
+                            )),
+                        Visibility(
+                            visible: viewmodel.fAccountTypes.isNotEmpty,
+                            child: AddNewAccountCard(
+                              viewmodel: viewmodel,
+                            )),
+                        const SizedBox(
+                          height: 300,
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
+              resetErrorTextFn: () => viewmodel.resetErrorText(),
             ),
-            resetErrorTextFn: () => viewmodel.resetErrorText(),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

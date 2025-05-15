@@ -99,6 +99,9 @@ class _TransactionOptionsDialogState extends State<TransactionOptionsDialog> {
             child: Text(AppLocalizations.of(context)!.select(titles[pageNo]),
                 style: Theme.of(context).textTheme.titleLarge),
           ),
+          SizedBox(
+            height: 24,
+          ),
           Visibility(
             visible: pageNo == 2,
             child: SizedBox(
@@ -205,6 +208,8 @@ class _TransactionOptionsDialogState extends State<TransactionOptionsDialog> {
           itemCount: fOtherAccounts.length,
           itemBuilder: (context, index) => Material(
             child: ListTile(
+              minVerticalPadding: 2,
+              minTileHeight: 10,
               shape: Border(
                   bottom: BorderSide(
                       color: Theme.of(context).shadowColor, width: 0.10)),

@@ -639,6 +639,10 @@
   "@budgets": {
     "description": "Budgets"
   },
+  "projects": "Projects",
+  "@projects": {
+    "description": "Projects"
+  },
   "projectStatus": "Project status",
   "@projectStatus": {
     "description": "Project status"
@@ -666,6 +670,14 @@
   "oneTime": "One-time",
   "@oneTime": {
     "description": "To note a payment is not recurring"
+  },
+  "totalAdvancePaid": "Total advance paid",
+  "@totalAdvancePaid": {
+    "description": "Advance amount paid to a 'receivable' in total"
+  },
+  "paidDate": "Paid date",
+  "@paidDate": {
+    "description": "Date of payment"
   },
   "budgetPerformance": "Budget Performance",
   "@budgetPerformance": {

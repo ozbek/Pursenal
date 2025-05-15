@@ -115,50 +115,6 @@ class AccountsDriftRepository implements AccountsRepository {
   }
 
   @override
-  Future<Wallet> getWalletByAccount(int id) async {
-    try {
-      final account = await getById(id);
-      return (await db.getWalletByAccount(id)).toDomain(account);
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Wallet. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Bank> getBankByAccount(int id) async {
-    try {
-      final account = await getById(id);
-      return (await db.getBankByAccount(id)).toDomain(account);
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Bank. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Loan> getLoanByAccount(int id) async {
-    try {
-      final account = await getById(id);
-      return (await db.getLoanByAccount(id)).toDomain(account);
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Loan. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<CreditCard> getCCardByAccount(int id) async {
-    try {
-      final account = await getById(id);
-      return (await db.getCCardByAccount(id)).toDomain(account);
-    } catch (e) {
-      AppLogger.instance.error("Failed to get Credit Card. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  @override
   Future<List<Account>> getAccountsByAccType(int profileId, int accType) async {
     try {
       return (await db.getAccountsByAccType(profileId, accType))
@@ -237,30 +193,6 @@ class AccountsDriftRepository implements AccountsRepository {
           .toList();
     } catch (e) {
       AppLogger.instance.error("Failed to get accounts list. ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<People> getPeopleByAccount(int id) async {
-    try {
-      final account = await getById(id);
-      return (await db.getPeopleByAccount(id)).toDomain(account);
-    } catch (e, stackTrace) {
-      AppLogger.instance.error(
-          "Failed to get People by Account. ${e.toString()}", [stackTrace]);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Receivable> getReceivableByAccount(int id) async {
-    try {
-      final account = await getById(id);
-      return (await db.getReceivableByAccount(id)).toDomain(account);
-    } catch (e, stackTrace) {
-      AppLogger.instance.error(
-          "Failed to get Receivable by Account. ${e.toString()}", [stackTrace]);
       rethrow;
     }
   }

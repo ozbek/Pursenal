@@ -5,6 +5,7 @@ import 'package:pursenal/core/enums/voucher_type.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/dashboard_viewmodel.dart';
+import 'package:pursenal/widgets/dashboard/add_transaction_button_group.dart';
 import 'package:pursenal/widgets/shared/transaction_options_dialog.dart';
 import 'package:pursenal/widgets/shared/the_divider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -48,118 +49,10 @@ class AddTransactionCard extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: SizedBox(
-                  width: double.maxFinite,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          WidgetStatePropertyAll(appViewmodel.receiptColor),
-                      shape: WidgetStateProperty.all(
-                        const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(10),
-                            topLeft: Radius.circular(10),
-                          ),
-                        ),
-                      ),
-                    ),
-                    onPressed: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (context) => TransactionOptionsDialog(
-                          currency: profile.currency,
-                          ledgers: viewmodel.allLedgers,
-                          profile: profile,
-                          vType: VoucherType.receipt,
-                          reloadFn: () async {
-                            await viewmodel.init();
-                          },
-                        ),
-                      );
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.receipt,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        const Icon(
-                          Icons.arrow_drop_up,
-                          size: 30,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: SizedBox(
-                  width: double.maxFinite,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          WidgetStatePropertyAll(appViewmodel.paymentColor),
-                      shape: WidgetStateProperty.all(
-                        const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10),
-                          ),
-                        ),
-                      ),
-                    ),
-                    onPressed: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (context) => TransactionOptionsDialog(
-                          currency: profile.currency,
-                          ledgers: viewmodel.allLedgers,
-                          profile: profile,
-                          vType: VoucherType.payment,
-                          reloadFn: () async {
-                            await viewmodel.init();
-                          },
-                        ),
-                      );
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.payment,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        const Icon(
-                          Icons.arrow_drop_down,
-                          size: 30,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              AddTransactionButtonGroup(
+                  appViewmodel: appViewmodel,
+                  profile: profile,
+                  viewmodel: viewmodel)
             ],
           ),
         ),

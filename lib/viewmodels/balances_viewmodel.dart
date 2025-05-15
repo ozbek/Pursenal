@@ -1,5 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:pursenal/app/global/values.dart';
+import 'package:pursenal/core/abstracts/banks_repository.dart';
+import 'package:pursenal/core/abstracts/credit_cards_repository.dart';
+import 'package:pursenal/core/abstracts/loans_repository.dart';
+import 'package:pursenal/core/abstracts/people_repository.dart';
+import 'package:pursenal/core/abstracts/receivables_repository.dart';
+import 'package:pursenal/core/abstracts/wallets_repository.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/bank.dart';
@@ -15,8 +21,22 @@ import 'package:pursenal/utils/app_logger.dart';
 class BalancesViewmodel extends ChangeNotifier {
   final AccountsRepository _accountsRepository;
   final AccountTypesRepository _accountTypesRepository;
+  final WalletsRepository _walletsRepository;
+  final BanksRepository _banksRepository;
+  final CreditCardsRepository _cardsRepository;
+  final LoansRepository _loansRepository;
+  final PeopleRepository _peopleRepository;
+  final ReceivablesRepository _receivablesRepository;
 
-  BalancesViewmodel(this._accountsRepository, this._accountTypesRepository,
+  BalancesViewmodel(
+      this._accountsRepository,
+      this._accountTypesRepository,
+      this._banksRepository,
+      this._cardsRepository,
+      this._loansRepository,
+      this._peopleRepository,
+      this._receivablesRepository,
+      this._walletsRepository,
       {required Profile profile})
       : _profile = profile;
 
@@ -110,7 +130,7 @@ class BalancesViewmodel extends ChangeNotifier {
 
   Future<Wallet> getWalletByAccount(int id) async {
     try {
-      return await _accountsRepository.getWalletByAccount(id);
+      return await _walletsRepository.getByAccount(id);
     } catch (e) {
       AppLogger.instance.error("Failed to get Wallet. ${e.toString()}");
       loadingStatus = LoadingStatus.error;
@@ -121,7 +141,7 @@ class BalancesViewmodel extends ChangeNotifier {
 
   Future<Bank> getBankByAccount(int id) async {
     try {
-      return await _accountsRepository.getBankByAccount(id);
+      return await _banksRepository.getByAccount(id);
     } catch (e) {
       AppLogger.instance.error("Failed to get Bank. ${e.toString()}");
       loadingStatus = LoadingStatus.error;
@@ -132,7 +152,7 @@ class BalancesViewmodel extends ChangeNotifier {
 
   Future<Loan> getLoanByAccount(int id) async {
     try {
-      return await _accountsRepository.getLoanByAccount(id);
+      return await _loansRepository.getByAccount(id);
     } catch (e) {
       AppLogger.instance.error("Failed to get Loan. ${e.toString()}");
       loadingStatus = LoadingStatus.error;
@@ -143,7 +163,7 @@ class BalancesViewmodel extends ChangeNotifier {
 
   Future<CreditCard> getCCardByAccount(int id) async {
     try {
-      return await _accountsRepository.getCCardByAccount(id);
+      return await _cardsRepository.getByAccount(id);
     } catch (e) {
       AppLogger.instance.error("Failed to get Credit Card. ${e.toString()}");
       loadingStatus = LoadingStatus.error;

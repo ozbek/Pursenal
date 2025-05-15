@@ -20,4 +20,5 @@ abstract class LoansRepository {
       required DateTime? endDate});
   Future<int> delete(int id);
   Future<Loan> getById(int id);
+  Future<Loan> getByAccount(int id);
 }

@@ -1,8 +1,19 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pursenal/app/extensions/datetime.dart';
+import 'package:pursenal/app/global/values.dart';
+import 'package:pursenal/core/abstracts/banks_repository.dart';
+import 'package:pursenal/core/abstracts/credit_cards_repository.dart';
+import 'package:pursenal/core/abstracts/loans_repository.dart';
+import 'package:pursenal/core/abstracts/people_repository.dart';
+import 'package:pursenal/core/abstracts/receivables_repository.dart';
 import 'package:pursenal/core/models/domain/account.dart';
+import 'package:pursenal/core/models/domain/bank.dart';
+import 'package:pursenal/core/models/domain/credit_card.dart';
+import 'package:pursenal/core/models/domain/loan.dart';
+import 'package:pursenal/core/models/domain/people.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/receivable.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/utils/exporter.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
@@ -19,10 +30,21 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
 
   final AccountsRepository _accountsRepository;
 
+  final BanksRepository _banksRepository;
+  final CreditCardsRepository _cardsRepository;
+  final LoansRepository _loansRepository;
+  final PeopleRepository _peopleRepository;
+  final ReceivablesRepository _receivablesRepository;
+
   BalanceAccountViewmodel(
     this._transactionsRepository,
     this._balancesRepository,
-    this._accountsRepository, {
+    this._accountsRepository,
+    this._banksRepository,
+    this._cardsRepository,
+    this._loansRepository,
+    this._peopleRepository,
+    this._receivablesRepository, {
     required Profile profile,
     required Account account,
   })  : _profile = profile,
@@ -30,6 +52,12 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
 
   Account _account;
   Account get account => _account;
+
+  Bank? bank;
+  CreditCard? card;
+  Loan? loan;
+  People? people;
+  Receivable? receivable;
 
   int openBal = 0;
   int closeBal = 0;
@@ -82,6 +110,7 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
       }
       scrollController.addListener(updateHeaderVisibility);
       await _getAccount();
+      await _getBalanceAccount();
       await _getTransactions();
       filterTransactions();
       _populateVoucherTypes();
@@ -105,6 +134,35 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
       AppLogger.instance.info("Fund loaded from database");
     } catch (e) {
       AppLogger.instance.error("Error loading Fund ${e.toString()}");
+    }
+    notifyListeners();
+  }
+
+  Future<void> _getBalanceAccount() async {
+    try {
+      switch (account.accountType) {
+        case bankTypeID:
+          bank = await _banksRepository.getByAccount(_account.dbID);
+          break;
+        case cCardTypeID:
+          card = await _cardsRepository.getByAccount(_account.dbID);
+          break;
+        case loanTypeID:
+          loan = await _loansRepository.getByAccount(_account.dbID);
+          break;
+        case peopleTypeID:
+          people = await _peopleRepository.getByAccount(_account.dbID);
+          break;
+        case advanceTypeID:
+          receivable = await _receivablesRepository.getByAccount(_account.dbID);
+          break;
+        default:
+          break;
+      }
+
+      AppLogger.instance.info("Balance account loaded from database");
+    } catch (e) {
+      AppLogger.instance.error("Error loading account ${e.toString()}");
     }
     notifyListeners();
   }

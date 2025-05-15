@@ -192,25 +192,23 @@ class AccountEntryViewModel extends ChangeNotifier {
 
         switch (_account?.accountType) {
           case walletTypeID:
-            _wallet =
-                await _accountsRepository.getWalletByAccount(_account!.dbID);
+            _wallet = await _walletsRepository.getByAccount(_account!.dbID);
             break;
           case bankTypeID:
-            _bank = await _accountsRepository.getBankByAccount(_account!.dbID);
+            _bank = await _banksRepository.getByAccount(_account!.dbID);
             break;
           case cCardTypeID:
-            _card = await _accountsRepository.getCCardByAccount(_account!.dbID);
+            _card = await _cCardsRepository.getByAccount(_account!.dbID);
             break;
           case loanTypeID:
-            _loan = await _accountsRepository.getLoanByAccount(_account!.dbID);
+            _loan = await _loansRepository.getByAccount(_account!.dbID);
             break;
           case peopleTypeID:
-            _people =
-                await _accountsRepository.getPeopleByAccount(_account!.dbID);
+            _people = await _peopleRepository.getByAccount(_account!.dbID);
             break;
           case advanceTypeID:
-            _receivable = await _accountsRepository
-                .getReceivableByAccount(_account!.dbID);
+            _receivable =
+                await _receivablesRepository.getByAccount(_account!.dbID);
             break;
           default:
             break;

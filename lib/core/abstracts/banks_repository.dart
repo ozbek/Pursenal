@@ -22,4 +22,5 @@ abstract class BanksRepository {
 
   Future<int> delete(int id);
   Future<Bank> getById(int id);
+  Future<Bank> getByAccount(int id);
 }

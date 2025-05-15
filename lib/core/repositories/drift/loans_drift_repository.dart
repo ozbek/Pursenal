@@ -82,4 +82,15 @@ class LoansDriftRepository implements LoansRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<Loan> getByAccount(int id) async {
+    try {
+      final account = (await db.getAccountbyId(id)).toDomain();
+      return (await db.getLoanByAccount(id)).toDomain(account);
+    } catch (e) {
+      AppLogger.instance.error("Failed to get Bank. ${e.toString()}");
+      rethrow;
+    }
+  }
 }

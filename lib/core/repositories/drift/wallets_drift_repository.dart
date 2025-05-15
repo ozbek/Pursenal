@@ -56,4 +56,15 @@ class WalletsDriftRepository implements WalletsRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<Wallet> getByAccount(int id) async {
+    try {
+      final account = (await db.getAccountbyId(id)).toDomain();
+      return (await db.getWalletByAccount(id)).toDomain(account);
+    } catch (e) {
+      AppLogger.instance.error("Failed to get Bank. ${e.toString()}");
+      rethrow;
+    }
+  }
 }

@@ -559,7 +559,8 @@ class AccountForm extends StatelessWidget {
                                   viewmodel.totalAmount = (d * 1000).toInt();
                                 }
                               },
-                              label: "Total Amount Paid",
+                              label: AppLocalizations.of(context)!
+                                  .totalAdvancePaid,
                               currency: viewmodel.profile.currency,
                               amount: viewmodel.totalAmount?.toCurrency(),
                             )),
@@ -571,7 +572,7 @@ class AccountForm extends StatelessWidget {
                             onChanged: (d) {
                               viewmodel.paidDate = d;
                             },
-                            label: "Paid Date",
+                            label: AppLocalizations.of(context)!.paidDate,
                             needTime: false,
                             datePattern: appViewmodel.dateFormat.pattern ??
                                 AppDateFormat.date1.pattern,

@@ -136,7 +136,7 @@ class NotificationService {
 
       String channelID = 'pursenal_payment_reminder_$id';
 
-      final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+      // final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
       tz.TZDateTime scheduled;
 
       if (isWeekly && weekday != null) {
@@ -180,7 +180,7 @@ class NotificationService {
     );
 
     while (scheduledDate.weekday != weekday) {
-      scheduledDate = scheduledDate.add(Duration(days: 1));
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
 
     if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {

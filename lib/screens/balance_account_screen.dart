@@ -9,10 +9,16 @@ import 'package:pursenal/core/models/domain/account.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/banks_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/ccards_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/loans_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/people_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/receivables_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/balance_account_viewmodel.dart';
+import 'package:pursenal/widgets/shared/labeled_text.dart';
 import 'package:pursenal/widgets/shared/transaction_options_dialog.dart';
 import 'package:pursenal/widgets/shared/acc_type_icon.dart';
 import 'package:pursenal/widgets/shared/export_button.dart';
@@ -41,17 +47,216 @@ class BalanceAccountScreen extends StatelessWidget {
         Provider.of<BalancesDriftRepository>(context, listen: false);
     final accountsDriftRepository =
         Provider.of<AccountsDriftRepository>(context, listen: false);
+    final banksDriftRepository =
+        Provider.of<BanksDriftRepository>(context, listen: false);
+    final cCardsDriftRepository =
+        Provider.of<CCardsDriftRepository>(context, listen: false);
+    final loansDriftRepository =
+        Provider.of<LoansDriftRepository>(context, listen: false);
+    final receivablesDriftRepository =
+        Provider.of<ReceivablesDriftRepository>(context, listen: false);
+    final peopleDriftRepository =
+        Provider.of<PeopleDriftRepository>(context, listen: false);
 
     final appViewmodel = Provider.of<AppViewmodel>(context);
     return ChangeNotifierProvider<BalanceAccountViewmodel>(
-      create: (context) => BalanceAccountViewmodel(transactionsDriftRepository,
-          balancesDriftRepository, accountsDriftRepository,
-          profile: profile, account: account)
+      create: (context) => BalanceAccountViewmodel(
+          transactionsDriftRepository,
+          balancesDriftRepository,
+          accountsDriftRepository,
+          banksDriftRepository,
+          cCardsDriftRepository,
+          loansDriftRepository,
+          peopleDriftRepository,
+          receivablesDriftRepository,
+          profile: profile,
+          account: account)
         ..init(),
       builder: (context, child) => Consumer<BalanceAccountViewmodel>(
         builder: (context, viewmodel, child) => Scaffold(
           appBar: AppBar(
             actions: [
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: IconButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        clipBehavior: Clip.hardEdge,
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        constraints: const BoxConstraints(maxWidth: smallWidth),
+                        builder: (context) => SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 16,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    child: Text(
+                                      viewmodel.account.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    child: Text(
+                                      AppLocalizations.of(context)!.details,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                  ),
+                                  if (account.accountType == bankTypeID &&
+                                      viewmodel.bank != null) ...[
+                                    // Show Bank specific fields
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .accountNo,
+                                        text: viewmodel.bank!.accountNo),
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .holderName,
+                                        text: viewmodel.bank!.holderName),
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .institution,
+                                        text: viewmodel.bank!.institution),
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .branch,
+                                        text: viewmodel.bank!.branch),
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .branchCode,
+                                        text: viewmodel.bank!.branchCode),
+                                  ],
+                                  if (account.accountType == cCardTypeID &&
+                                      viewmodel.card != null) ...[
+                                    // Show Card specific fields
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .cardNo,
+                                        text: viewmodel.card!.cardNo),
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .institution,
+                                        text: viewmodel.card!.institution),
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .cardNetwork,
+                                        text: viewmodel.card!.cardNetwork),
+
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .statementDate,
+                                        text: viewmodel.card!.statementDate
+                                            .toString()),
+                                  ],
+                                  if (account.accountType == loanTypeID &&
+                                      viewmodel.loan != null) ...[
+                                    // Show Loan specific fields
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .accountNo,
+                                        text: viewmodel.loan!.accountNo),
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .institution,
+                                        text: viewmodel.loan!.institution),
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .agreementNo,
+                                        text: viewmodel.loan!.agreementNo),
+
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .interestRate,
+                                        text:
+                                            "${viewmodel.loan!.interestRate.toString()}%"),
+
+                                    Visibility(
+                                      visible:
+                                          viewmodel.loan!.startDate != null,
+                                      child: LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .startDate,
+                                        text: appViewmodel.dateFormat
+                                            .format(viewmodel.loan!.startDate!),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: viewmodel.loan!.endDate != null,
+                                      child: LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .endDate,
+                                        text: appViewmodel.dateFormat
+                                            .format(viewmodel.loan!.endDate!),
+                                      ),
+                                    ),
+                                  ],
+                                  if (account.accountType == advanceTypeID &&
+                                      viewmodel.receivable != null) ...[
+                                    // Show Receivable specific fields
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .totalAdvancePaid,
+                                        text: viewmodel.receivable!.totalAmount
+                                            ?.toCurrencyString(
+                                                profile.currency)),
+                                    Visibility(
+                                      visible: viewmodel.receivable!.paidDate !=
+                                          null,
+                                      child: LabeledText(
+                                          label: AppLocalizations.of(context)!
+                                              .paidDate,
+                                          text: appViewmodel.dateFormat.format(
+                                              viewmodel.receivable!.paidDate!)),
+                                    ),
+                                  ],
+                                  if (account.accountType == peopleTypeID &&
+                                      viewmodel.people != null) ...[
+                                    // Show People specific fields
+                                    LabeledText(
+                                        label: AppLocalizations.of(context)!
+                                            .address,
+                                        text: viewmodel.people!.address),
+
+                                    LabeledText(
+                                        label:
+                                            AppLocalizations.of(context)!.zip,
+                                        text: viewmodel.people!.zip),
+                                    LabeledText(
+                                        label:
+                                            AppLocalizations.of(context)!.email,
+                                        text: viewmodel.people!.email),
+                                    LabeledText(
+                                        label:
+                                            AppLocalizations.of(context)!.phone,
+                                        text: viewmodel.people!.phone),
+                                    LabeledText(
+                                        label: "ID",
+                                        text: viewmodel.people!.tin),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.info_outline)),
+              ),
               Padding(
                 padding: const EdgeInsets.all(2.0),
                 child: IconButton(

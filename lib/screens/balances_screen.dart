@@ -8,9 +8,16 @@ import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/banks_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/ccards_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/loans_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/people_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/receivables_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/wallets_drift_repository.dart';
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/screens/balance_account_screen.dart';
 import 'package:pursenal/viewmodels/balances_viewmodel.dart';
+import 'package:pursenal/widgets/dashboard/my_balance_card.dart';
 import 'package:pursenal/widgets/shared/acc_type_dialog.dart';
 import 'package:pursenal/widgets/shared/acc_type_icon.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
@@ -30,9 +37,29 @@ class BalancesScreen extends StatelessWidget {
         Provider.of<AccountTypesDriftRepository>(context, listen: false);
     final accountsDriftRepository =
         Provider.of<AccountsDriftRepository>(context, listen: false);
+    final banksDriftRepository =
+        Provider.of<BanksDriftRepository>(context, listen: false);
+    final cCardsDriftRepository =
+        Provider.of<CCardsDriftRepository>(context, listen: false);
+    final loansDriftRepository =
+        Provider.of<LoansDriftRepository>(context, listen: false);
+    final receivablesDriftRepository =
+        Provider.of<ReceivablesDriftRepository>(context, listen: false);
+    final peopleDriftRepository =
+        Provider.of<PeopleDriftRepository>(context, listen: false);
+    final walletsDriftRepository =
+        Provider.of<WalletsDriftRepository>(context, listen: false);
+
     return ChangeNotifierProvider<BalancesViewmodel>(
       create: (context) => BalancesViewmodel(
-          accountsDriftRepository, accountTypesDriftRepository,
+          accountsDriftRepository,
+          accountTypesDriftRepository,
+          banksDriftRepository,
+          cCardsDriftRepository,
+          loansDriftRepository,
+          peopleDriftRepository,
+          receivablesDriftRepository,
+          walletsDriftRepository,
           profile: profile)
         ..init(),
       builder: (context, child) => Consumer<BalancesViewmodel>(

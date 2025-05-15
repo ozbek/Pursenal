@@ -18,4 +18,5 @@ abstract class CreditCardsRepository {
   });
   Future<int> delete(int id);
   Future<CreditCard> getById(int id);
+  Future<CreditCard> getByAccount(int id);
 }

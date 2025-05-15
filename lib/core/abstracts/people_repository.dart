@@ -20,4 +20,5 @@ abstract class PeopleRepository {
   });
   Future<int> delete(int id);
   Future<People> getById(int id);
+  Future<People> getByAccount(int id);
 }

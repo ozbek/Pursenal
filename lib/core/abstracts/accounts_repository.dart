@@ -36,13 +36,6 @@ abstract class AccountsRepository {
   Future<List<Ledger>> getLedgersByCategory(
       {required int profileId, required List<int> accTypeIDs});
 
-  Future<Wallet> getWalletByAccount(int id);
-  Future<Bank> getBankByAccount(int id);
-  Future<Loan> getLoanByAccount(int id);
-  Future<CreditCard> getCCardByAccount(int id);
-  Future<People> getPeopleByAccount(int id);
-  Future<Receivable> getReceivableByAccount(int id);
-
   Future<List<Account>> getAccountsByAccType(int profileId, int accType);
 
   Future<void> insertAccountsBulk(

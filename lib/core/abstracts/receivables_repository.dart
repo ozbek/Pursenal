@@ -14,4 +14,5 @@ abstract class ReceivablesRepository {
   });
   Future<int> delete(int id);
   Future<Receivable> getById(int id);
+  Future<Receivable> getByAccount(int id);
 }
