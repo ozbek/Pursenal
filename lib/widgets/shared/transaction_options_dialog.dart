@@ -99,13 +99,13 @@ class _TransactionOptionsDialogState extends State<TransactionOptionsDialog> {
             child: Text(AppLocalizations.of(context)!.select(titles[pageNo]),
                 style: Theme.of(context).textTheme.titleLarge),
           ),
-          SizedBox(
+          const SizedBox(
             height: 24,
           ),
           Visibility(
             visible: pageNo == 2,
             child: SizedBox(
-                width: cardWidth,
+                width: smallWidth,
                 child: SearchField(searchFn: (f) {
                   setState(() {
                     fOtherAccounts = otherAccounts

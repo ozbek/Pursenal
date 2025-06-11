@@ -26,22 +26,22 @@ class LabeledText extends StatelessWidget {
                 style: TextStyle(fontSize: fontSize),
               ),
               IconButton(
-                padding: EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
                 onPressed: () async {
                   await Clipboard.setData(ClipboardData(text: text ?? ""));
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("$label copied to clipboard"),
-                        duration: Duration(microseconds: 500),
+                        duration: const Duration(microseconds: 500),
                       ),
                     );
                   });
                   // copied successfully
                 },
-                constraints: BoxConstraints(maxHeight: 36),
+                constraints: const BoxConstraints(maxHeight: 36),
                 splashRadius: 52,
-                icon: Icon(Icons.copy),
+                icon: const Icon(Icons.copy),
                 iconSize: 24,
               )
             ],

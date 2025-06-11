@@ -213,17 +213,23 @@ class PaymentRemindersList extends StatelessWidget {
                                         const SizedBox(
                                           height: 12,
                                         ),
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 6, horizontal: 12),
-                                            child: Text(
-                                              textAlign: TextAlign.start,
-                                              p.details,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleLarge,
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 16),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 6,
+                                                      horizontal: 12),
+                                              child: Text(
+                                                textAlign: TextAlign.start,
+                                                p.details,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge,
+                                              ),
                                             ),
                                           ),
                                         ),

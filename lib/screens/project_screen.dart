@@ -12,6 +12,7 @@ import 'package:pursenal/core/repositories/drift/transactions_drift_repository.d
 import 'package:pursenal/screens/project_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/project_viewmodel.dart';
+import 'package:pursenal/widgets/shared/export_button.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pursenal/widgets/shared/the_divider.dart';
@@ -43,6 +44,10 @@ class ProjectScreen extends StatelessWidget {
         builder: (context, viewmodel, child) {
           return Scaffold(
             appBar: AppBar(
+              title: Text(
+                viewmodel.project?.name ?? "",
+                overflow: TextOverflow.ellipsis,
+              ),
               actions: [
                 IconButton(
                     onPressed: () {
@@ -130,6 +135,7 @@ class ProjectScreen extends StatelessWidget {
               ],
             ),
             body: LoadingBody(
+                feedbackText: viewmodel.feedbackText,
                 loadingStatus: viewmodel.loadingStatus,
                 errorText: viewmodel.errorText,
                 widget: LayoutBuilder(
@@ -152,108 +158,6 @@ class ProjectScreen extends StatelessWidget {
                                     Expanded(
                                       child: Column(
                                         children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 2, horizontal: 16),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    viewmodel.project!.name,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headlineMedium,
-                                                  ),
-                                                ),
-                                                Visibility(
-                                                  visible:
-                                                      viewmodel.project != null,
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: ActionChip(
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          12)),
-                                                          avatar: const Icon(
-                                                            Icons.edit,
-                                                            color: Colors.white,
-                                                          ),
-                                                          onPressed: () {
-                                                            showDialog(
-                                                              context: context,
-                                                              builder: (context) =>
-                                                                  SimpleDialog(
-                                                                title: Text(AppLocalizations.of(
-                                                                        context)!
-                                                                    .select(AppLocalizations.of(
-                                                                            context)!
-                                                                        .projectStatus)),
-                                                                children: [
-                                                                  ...ProjectStatus
-                                                                      .values
-                                                                      .map((p) =>
-                                                                          ListTile(
-                                                                            title:
-                                                                                Text(p.label),
-                                                                            onTap:
-                                                                                () async {
-                                                                              final bool ss = await viewmodel.changeProjectStatus(p);
-                                                                              if (ss) {
-                                                                                viewmodel.refetchProject();
-                                                                              }
-                                                                              if (context.mounted) {
-                                                                                Navigator.pop(context);
-                                                                              }
-                                                                            },
-                                                                          )),
-                                                                  const SizedBox(
-                                                                    height: 12,
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            );
-                                                          },
-                                                          color: WidgetStatePropertyAll(
-                                                              Theme.of(context)
-                                                                  .primaryColor),
-                                                          label: Text(
-                                                            viewmodel.project!
-                                                                .status.label,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          )),
-                                                    ),
-                                                  ),
-                                                )
-                                                    .animate(delay: 150.ms)
-                                                    .scale(
-                                                        begin: const Offset(
-                                                            1.02, 1.02),
-                                                        duration: 100.ms)
-                                                    .fade(
-                                                        curve: Curves.easeInOut,
-                                                        duration: 100.ms),
-                                              ],
-                                            ),
-                                          )
-                                              .animate()
-                                              .scale(
-                                                  begin:
-                                                      const Offset(1.02, 1.02),
-                                                  duration: 100.ms)
-                                              .fade(
-                                                  curve: Curves.easeInOut,
-                                                  duration: 100.ms),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 2, horizontal: 16),
@@ -286,7 +190,7 @@ class ProjectScreen extends StatelessWidget {
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
-                                                  "${AppLocalizations.of(context)!.startDate} ${appViewmodel.dateFormat.format(project.startDate ?? DateTime.now())}",
+                                                  "${AppLocalizations.of(context)!.startDate} : ${appViewmodel.dateFormat.format(project.startDate ?? DateTime.now())}",
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: Theme.of(context)
@@ -314,7 +218,7 @@ class ProjectScreen extends StatelessWidget {
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
-                                                  "${AppLocalizations.of(context)!.endDate} ${appViewmodel.dateFormat.format(project.endDate ?? DateTime.now())}",
+                                                  "${AppLocalizations.of(context)!.endDate} : ${appViewmodel.dateFormat.format(project.endDate ?? DateTime.now())}",
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: Theme.of(context)
@@ -332,146 +236,136 @@ class ProjectScreen extends StatelessWidget {
                                               .fade(
                                                   curve: Curves.easeInOut,
                                                   duration: 100.ms),
+                                          Visibility(
+                                                  visible: project
+                                                      .photoPaths.isNotEmpty,
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    child: Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 4,
+                                                                horizontal: 16),
+                                                        child: Row(
+                                                          spacing: 8,
+                                                          children: project
+                                                              .photoPaths
+                                                              .mapIndexed((index,
+                                                                  filePath) {
+                                                            return Material(
+                                                              elevation: 3,
+                                                              child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            0),
+                                                                child:
+                                                                    GestureDetector(
+                                                                  onTap: () {
+                                                                    showDialog(
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (context) =>
+                                                                              Stack(
+                                                                        children: [
+                                                                          Dialog(
+                                                                            backgroundColor:
+                                                                                Colors.transparent,
+                                                                            shape:
+                                                                                Border.all(),
+                                                                            child:
+                                                                                SizedBox(
+                                                                              child: Image.file(
+                                                                                errorBuilder: (context, error, stackTrace) => const Center(
+                                                                                  child: Padding(
+                                                                                    padding: EdgeInsets.all(8.0),
+                                                                                    child: Text("Media error"),
+                                                                                  ),
+                                                                                ),
+                                                                                File(filePath),
+                                                                                fit: BoxFit.fitWidth,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          Positioned(
+                                                                            top:
+                                                                                -5,
+                                                                            right:
+                                                                                -5,
+                                                                            child:
+                                                                                Padding(
+                                                                              padding: const EdgeInsets.all(24.0),
+                                                                              child: IconButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                icon: const Icon(
+                                                                                  Icons.close,
+                                                                                  color: Colors.red,
+                                                                                  size: 30,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                  child:
+                                                                      ConstrainedBox(
+                                                                    constraints: const BoxConstraints(
+                                                                        maxWidth:
+                                                                            50,
+                                                                        maxHeight:
+                                                                            50),
+                                                                    child: Image
+                                                                        .file(
+                                                                      errorBuilder: (context,
+                                                                              error,
+                                                                              stackTrace) =>
+                                                                          const Center(
+                                                                        child:
+                                                                            Padding(
+                                                                          padding:
+                                                                              EdgeInsets.all(8.0),
+                                                                          child:
+                                                                              Text("Media error"),
+                                                                        ),
+                                                                      ),
+                                                                      File(
+                                                                          filePath),
+                                                                      width: 50,
+                                                                      fit: BoxFit
+                                                                          .fill,
+                                                                    ),
+                                                                  ).animate(delay: (index * 50).ms).fade(
+                                                                          duration:
+                                                                              250.ms),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }).toList(),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ))
+                                              .animate(delay: 200.ms)
+                                              .scale(
+                                                  begin:
+                                                      const Offset(1.02, 1.02),
+                                                  duration: 100.ms)
+                                              .fade(
+                                                  curve: Curves.easeInOut,
+                                                  duration: 100.ms),
                                         ],
                                       ),
                                     ),
-                                    Visibility(
-                                            visible: project.photoPaths.isNotEmpty,
-                                            child: Container(
-                                              height: 150,
-                                              padding:
-                                                  const EdgeInsets.all(14.0),
-                                              child: SingleChildScrollView(
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  spacing: 8,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: project.photoPaths
-                                                      .mapIndexed(
-                                                          (index, filePath) {
-                                                    return Material(
-                                                      elevation: 3,
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(0),
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (context) =>
-                                                                      Stack(
-                                                                children: [
-                                                                  Dialog(
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    shape: Border
-                                                                        .all(),
-                                                                    child:
-                                                                        SizedBox(
-                                                                      child: Image
-                                                                          .file(
-                                                                        errorBuilder: (context,
-                                                                                error,
-                                                                                stackTrace) =>
-                                                                            const Center(
-                                                                          child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                EdgeInsets.all(8.0),
-                                                                            child:
-                                                                                Text("Media error"),
-                                                                          ),
-                                                                        ),
-                                                                        File(
-                                                                            filePath),
-                                                                        fit: BoxFit
-                                                                            .fitWidth,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  Positioned(
-                                                                    top: -5,
-                                                                    right: -5,
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .all(
-                                                                          24.0),
-                                                                      child:
-                                                                          IconButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        icon:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .close,
-                                                                          color:
-                                                                              Colors.red,
-                                                                          size:
-                                                                              30,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          },
-                                                          child: ConstrainedBox(
-                                                            constraints:
-                                                                const BoxConstraints(
-                                                                    maxWidth:
-                                                                        50,
-                                                                    maxHeight:
-                                                                        50),
-                                                            child: Image.file(
-                                                              errorBuilder: (context,
-                                                                      error,
-                                                                      stackTrace) =>
-                                                                  const Center(
-                                                                child: Padding(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              8.0),
-                                                                  child: Text(
-                                                                      "Media error"),
-                                                                ),
-                                                              ),
-                                                              File(filePath),
-                                                              width: 50,
-                                                              fit: BoxFit.fill,
-                                                            ),
-                                                          )
-                                                              .animate(
-                                                                  delay: (index *
-                                                                          50)
-                                                                      .ms)
-                                                              .fade(
-                                                                  duration:
-                                                                      250.ms),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              ),
-                                            ))
-                                        .animate(delay: 200.ms)
-                                        .scale(
-                                            begin: const Offset(1.02, 1.02),
-                                            duration: 100.ms)
-                                        .fade(
-                                            curve: Curves.easeInOut,
-                                            duration: 100.ms),
                                   ],
                                 ),
                               ),
@@ -485,13 +379,25 @@ class ProjectScreen extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 2, horizontal: 16),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  AppLocalizations.of(context)!.transactions,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.transactions,
+                                    overflow: TextOverflow.ellipsis,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  ExportButton(
+                                    pdfExportFn: () async {
+                                      await viewmodel.exportPDF();
+                                    },
+                                    xlsxExportFn: () async {
+                                      await viewmodel.exportXLSX();
+                                    },
+                                  )
+                                ],
                               ),
                             ),
                           ),
@@ -524,6 +430,52 @@ class ProjectScreen extends StatelessWidget {
                 resetErrorTextFn: () {
                   viewmodel.resetErrorText();
                 }),
+            floatingActionButton: FloatingActionButton.extended(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => SimpleDialog(
+                    title: Text(AppLocalizations.of(context)!
+                        .select(AppLocalizations.of(context)!.projectStatus)),
+                    children: [
+                      ...ProjectStatus.values.map((p) => ListTile(
+                            title: Text(p.label),
+                            onTap: () async {
+                              final bool ss =
+                                  await viewmodel.changeProjectStatus(p);
+                              if (ss) {
+                                viewmodel.refetchProject();
+                              }
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
+                            },
+                          )),
+                      const SizedBox(
+                        height: 12,
+                      )
+                    ],
+                  ),
+                );
+              },
+              icon: const Icon(Icons.edit),
+              label: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    viewmodel.project!.status.label,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.status}",
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelSmall
+                        ?.copyWith(fontSize: 8),
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),

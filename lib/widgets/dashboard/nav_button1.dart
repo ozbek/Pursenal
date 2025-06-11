@@ -34,6 +34,8 @@ class NavButton1 extends StatelessWidget {
             children: [
               Text(
                 title,
+                maxLines: 2,
+                overflow: TextOverflow.fade,
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge

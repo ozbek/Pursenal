@@ -8,6 +8,7 @@ import 'package:pursenal/core/models/domain/transaction.dart';
 import 'package:pursenal/core/abstracts/projects_repository.dart';
 import 'package:pursenal/core/abstracts/transactions_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
+import 'package:pursenal/utils/exporter.dart';
 
 class ProjectViewmodel extends ChangeNotifier {
   final ProjectsRepository _projectsRepository;
@@ -35,6 +36,8 @@ class ProjectViewmodel extends ChangeNotifier {
   bool isHidden = false;
   final ScrollController scrollController = ScrollController();
   bool _deleteTransactionsWithProject = false;
+
+  String feedbackText = "";
 
   ProjectViewmodel(
     this._projectsRepository,
@@ -112,6 +115,9 @@ class ProjectViewmodel extends ChangeNotifier {
             id: p.dbID,
             name: p.name,
             profile: _profile.dbID,
+            description: p.description,
+            endDate: p.endDate,
+            startDate: p.startDate,
             projectStatus: status);
         return true;
       }
@@ -125,16 +131,14 @@ class ProjectViewmodel extends ChangeNotifier {
 
   void resetErrorText() {
     errorText = "";
+    feedbackText = "";
     notifyListeners();
   }
 
   Future<void> refetchProject() async {
     try {
-      loadingStatus = LoadingStatus.loading;
       _project = await _projectsRepository.getProjectByID(projectID);
       if (_project != null && _project?.budget != null) {}
-
-      loadingStatus = LoadingStatus.completed;
     } catch (e) {
       errorText = "Failed to fetch project";
       loadingStatus = LoadingStatus.error;
@@ -158,6 +162,50 @@ class ProjectViewmodel extends ChangeNotifier {
         notifyListeners();
       }
     }
+  }
+
+  Future<void> exportPDF() async {
+    try {
+      if (transactions.isNotEmpty) {
+        DateTime sDate = transactions.last.voucherDate;
+        DateTime eDate = transactions.first.voucherDate;
+        feedbackText = await Exporter.genTransactionsPDF(
+          title: "${project?.name} transactions",
+          transactions: transactions.reversed.toList(),
+          currency: _profile.currency,
+          startDate: sDate,
+          endDate: eDate,
+        );
+      } else {
+        errorText = 'Error: No transactions to export';
+      }
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: Failed to export PDF';
+    }
+    notifyListeners();
+  }
+
+  Future<void> exportXLSX() async {
+    try {
+      if (transactions.isNotEmpty) {
+        DateTime sDate = transactions.last.voucherDate;
+        DateTime eDate = transactions.first.voucherDate;
+        feedbackText = await Exporter.genTransactionsXLSX(
+          title: "${project?.name} transactions",
+          transactions: transactions.reversed.toList(),
+          currency: _profile.currency,
+          startDate: sDate,
+          endDate: eDate,
+        );
+      } else {
+        errorText = 'Error: No transactions to export';
+      }
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: Failed to export PDF';
+    }
+    notifyListeners();
   }
 
   @override

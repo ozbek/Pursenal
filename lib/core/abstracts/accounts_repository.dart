@@ -1,11 +1,5 @@
 import 'package:pursenal/core/models/domain/account.dart';
-import 'package:pursenal/core/models/domain/bank.dart';
-import 'package:pursenal/core/models/domain/credit_card.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
-import 'package:pursenal/core/models/domain/loan.dart';
-import 'package:pursenal/core/models/domain/people.dart';
-import 'package:pursenal/core/models/domain/receivable.dart';
-import 'package:pursenal/core/models/domain/wallet.dart';
 
 abstract class AccountsRepository {
   Future<int> insertAccount({

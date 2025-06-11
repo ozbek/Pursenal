@@ -79,6 +79,7 @@ class AppViewmodel extends ChangeNotifier {
       reminderTime = await getReminderTime();
       dateFormat =
           DateFormat(await getAppDateFormat() ?? AppDateFormat.date1.pattern);
+      await _resetTransactionsFilterStartDate();
       notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.instance.error(' ${e.toString()}', [stackTrace]);
@@ -241,6 +242,17 @@ class AppViewmodel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       AppLogger.instance.error("Error setting date format ${e.toString()}");
+    }
+  }
+
+  Future<void> _resetTransactionsFilterStartDate() async {
+    try {
+      await _prefs?.remove(
+        'filterStartDate',
+      );
+    } catch (e) {
+      AppLogger.instance
+          .error("Error setting Last updated timestamp ${e.toString()}");
     }
   }
 }

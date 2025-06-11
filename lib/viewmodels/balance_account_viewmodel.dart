@@ -112,6 +112,18 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
       await _getAccount();
       await _getBalanceAccount();
       await _getTransactions();
+      if (_transactions.isEmpty) {
+        _startDate = _startDate.subtract(const Duration(days: 50));
+        await _getTransactions();
+      }
+      if (_transactions.isEmpty) {
+        _startDate = _startDate.subtract(const Duration(days: 100));
+        await _getTransactions();
+      }
+      if (_transactions.isEmpty) {
+        _startDate = _account.openDate;
+        await _getTransactions();
+      }
       filterTransactions();
       _populateVoucherTypes();
       _populateAccounts();
@@ -253,6 +265,7 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
     if (transactionsFetchNeeded) {
       await _getTransactions();
       _populateVoucherTypes();
+      _populateAccounts();
     }
 
     notifyListeners();
@@ -297,7 +310,8 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
   }
 
   _populateAccounts() {
-    // _otherAccountFilters = {};
+    _otherAccountFilters.clear();
+    otherAccounts.clear();
 
     for (var t in _transactions) {
       if (t.drAccount.dbID != _account.dbID) {
@@ -333,7 +347,7 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
   Future<void> exportPDF() async {
     try {
       feedbackText = await Exporter.genLTransactionsPDF(
-          transactions: _fTransactions.reversed.toList(),
+          transactions: _fTransactions,
           currency: _profile.currency,
           startDate: _startDate,
           openingBalance: openBal,
@@ -351,7 +365,7 @@ class BalanceAccountViewmodel extends ChangeNotifier with Exporter {
   Future<void> exportXLSX() async {
     try {
       feedbackText = await Exporter.genLTransactionsXLSX(
-          transactions: _fTransactions.reversed.toList(),
+          transactions: _fTransactions,
           currency: _profile.currency,
           startDate: _startDate,
           openingBalance: openBal,

@@ -87,6 +87,10 @@ void main() async {
         create: (context) =>
             ProfilesDriftRepository(context.read<AppDriftDatabase>()),
       ),
+      ChangeNotifierProvider<AppViewmodel>(
+        create: (context) =>
+            AppViewmodel(context.read<ProfilesDriftRepository>())..init(),
+      ),
       Provider<AccountTypesDriftRepository>(
         create: (context) =>
             AccountTypesDriftRepository(context.read<AppDriftDatabase>()),
@@ -142,10 +146,6 @@ void main() async {
       Provider<FilePathsDriftRepository>(
         create: (context) =>
             FilePathsDriftRepository(context.read<AppDriftDatabase>()),
-      ),
-      ChangeNotifierProvider<AppViewmodel>(
-        create: (context) =>
-            AppViewmodel(context.read<ProfilesDriftRepository>())..init(),
       ),
       ChangeNotifierProvider<ThemeProvider>.value(
         value: themeProvider,

@@ -30,6 +30,7 @@ mixin Exporter {
     required DateTime startDate,
     required DateTime endDate,
     required Currency currency,
+    String? title,
     bool openFileByDefault = true,
   }) async {
     try {
@@ -46,8 +47,8 @@ mixin Exporter {
       final ttf = pw.Font.ttf(fontData);
 
       // Get the date range for subtitle
-      String fromDate = defaultDate.format(startDate);
-      String toDate = defaultDate.format(endDate);
+      String fromDate = defaultDate2.format(startDate);
+      String toDate = defaultDate2.format(endDate);
       Uint8List appIconData =
           (await rootBundle.load('assets/icons/app_icon_rounded.png'))
               .buffer
@@ -61,7 +62,7 @@ mixin Exporter {
             return [
               // Title
               pw.Text(
-                'Transactions',
+                title ?? 'Transactions',
                 style: pw.TextStyle(
                   font: ttf,
                   fontSize: 18,
@@ -134,7 +135,7 @@ mixin Exporter {
                           padding: const pw.EdgeInsets.all(8.0),
                           child: pw.Text(
                               textAlign: pw.TextAlign.center,
-                              defaultDate.format(t.voucherDate),
+                              defaultDate2.format(t.voucherDate),
                               style: pw.TextStyle(font: ttf)),
                         ),
                         pw.Padding(
@@ -238,9 +239,9 @@ mixin Exporter {
 
       // Save the PDF file
       final output = await _getDefaultExportFolder();
-      final file =
-          await File(path.join(output.path, appName, "Transactions.pdf"))
-              .create(recursive: true);
+      final file = await File(
+              path.join(output.path, appName, "${title ?? "Transactions"}.pdf"))
+          .create(recursive: true);
       await file.writeAsBytes(await pdf.save());
       if (openFileByDefault) openFile(file.path);
       AppLogger.instance.info(
@@ -280,8 +281,8 @@ mixin Exporter {
               .buffer
               .asUint8List();
       // Get the date range for subtitle
-      String fromDate = defaultDate.format(startDate);
-      String toDate = defaultDate.format(endDate);
+      String fromDate = defaultDate2.format(startDate);
+      String toDate = defaultDate2.format(endDate);
       pdf.addPage(
         pw.MultiPage(
           maxPages: 1200,
@@ -368,7 +369,7 @@ mixin Exporter {
                       pw.Padding(
                         padding: const pw.EdgeInsets.all(8.0),
                         child: pw.Text(
-                          defaultDate.format(openDate),
+                          defaultDate2.format(openDate),
                           textAlign: pw.TextAlign.center,
                           style: pw.TextStyle(font: ttf),
                         ),
@@ -404,7 +405,7 @@ mixin Exporter {
                           padding: const pw.EdgeInsets.all(8.0),
                           child: pw.Text(
                               textAlign: pw.TextAlign.center,
-                              defaultDate.format(t.voucherDate),
+                              defaultDate2.format(t.voucherDate),
                               style: pw.TextStyle(font: ttf)),
                         ),
                         pw.Padding(
@@ -468,7 +469,7 @@ mixin Exporter {
                       pw.Padding(
                         padding: const pw.EdgeInsets.all(8.0),
                         child: pw.Text(
-                          defaultDate.format(endDate),
+                          defaultDate2.format(endDate),
                           textAlign: pw.TextAlign.center,
                           style: pw.TextStyle(font: ttf),
                         ),
@@ -555,10 +556,11 @@ mixin Exporter {
     required DateTime startDate,
     required DateTime endDate,
     required Currency currency,
+    String? title,
     bool openFileByDefault = true,
   }) async {
-    String fromDate = defaultDate.format(startDate);
-    String toDate = defaultDate.format(endDate);
+    String fromDate = defaultDate2.format(startDate);
+    String toDate = defaultDate2.format(endDate);
     try {
       var excel = Excel.createExcel();
       Sheet sheet = excel['Transactions'];
@@ -566,7 +568,7 @@ mixin Exporter {
 
       // Set A1 = "Transactions" and A2 = "Table"
       sheet.cell(CellIndex.indexByString("A1"))
-        ..value = TextCellValue("Transactions")
+        ..value = TextCellValue(title ?? "Transactions")
         ..cellStyle = CellStyle(
           bold: true,
           fontSize: 18,
@@ -669,7 +671,8 @@ mixin Exporter {
 
       // Save the PDF file
       Directory directory = await _getDefaultExportFolder();
-      String filePath = path.join(directory.path, appName, 'Transactions.xlsx');
+      String filePath =
+          path.join(directory.path, appName, '${title ?? "Transactions"}.xlsx');
 
       // Save file
       List<int>? encodedExcel = excel.encode();
@@ -703,8 +706,8 @@ mixin Exporter {
     required Account account,
     bool openFileByDefault = true,
   }) async {
-    String fromDate = defaultDate.format(startDate);
-    String toDate = defaultDate.format(endDate);
+    String fromDate = defaultDate2.format(startDate);
+    String toDate = defaultDate2.format(endDate);
     try {
       var excel = Excel.createExcel();
       Sheet sheet = excel['Transactions'];

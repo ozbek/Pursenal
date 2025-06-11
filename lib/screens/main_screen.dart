@@ -9,7 +9,6 @@ import 'package:pursenal/screens/dashboard_screen.dart';
 import 'package:pursenal/screens/balances_screen.dart';
 import 'package:pursenal/screens/insights_screen.dart';
 import 'package:pursenal/screens/transactions_screen.dart';
-import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/main_viewmodel.dart';
 import 'package:pursenal/widgets/main/the_drawer.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
@@ -248,7 +247,6 @@ class MainScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appViewmodel = Provider.of<AppViewmodel>(context);
     // print(viewmodel.pageController.page);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (viewmodel.pageController.page?.round() != viewmodel.currentIndex) {

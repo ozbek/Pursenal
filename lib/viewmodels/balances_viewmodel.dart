@@ -3,8 +3,6 @@ import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/abstracts/banks_repository.dart';
 import 'package:pursenal/core/abstracts/credit_cards_repository.dart';
 import 'package:pursenal/core/abstracts/loans_repository.dart';
-import 'package:pursenal/core/abstracts/people_repository.dart';
-import 'package:pursenal/core/abstracts/receivables_repository.dart';
 import 'package:pursenal/core/abstracts/wallets_repository.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/account_type.dart';
@@ -25,17 +23,12 @@ class BalancesViewmodel extends ChangeNotifier {
   final BanksRepository _banksRepository;
   final CreditCardsRepository _cardsRepository;
   final LoansRepository _loansRepository;
-  final PeopleRepository _peopleRepository;
-  final ReceivablesRepository _receivablesRepository;
-
   BalancesViewmodel(
       this._accountsRepository,
       this._accountTypesRepository,
       this._banksRepository,
       this._cardsRepository,
       this._loansRepository,
-      this._peopleRepository,
-      this._receivablesRepository,
       this._walletsRepository,
       {required Profile profile})
       : _profile = profile;

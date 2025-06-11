@@ -3,13 +3,7 @@ import 'package:pursenal/app/extensions/drift_models.dart';
 import 'package:pursenal/core/abstracts/accounts_repository.dart';
 import 'package:pursenal/core/db/app_drift_database.dart';
 import 'package:pursenal/core/models/domain/account.dart';
-import 'package:pursenal/core/models/domain/bank.dart';
-import 'package:pursenal/core/models/domain/credit_card.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
-import 'package:pursenal/core/models/domain/loan.dart';
-import 'package:pursenal/core/models/domain/people.dart';
-import 'package:pursenal/core/models/domain/receivable.dart';
-import 'package:pursenal/core/models/domain/wallet.dart';
 import 'package:pursenal/utils/app_logger.dart';
 
 class AccountsDriftRepository implements AccountsRepository {

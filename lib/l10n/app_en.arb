@@ -45,6 +45,10 @@
   "@transactionDate": {
     "description": "The current transaction date."
   },
+  "paymentDate": "Payment Date",
+  "@paymentDate": {
+    "description": "The date of payment."
+  },
   "myXAccounts": "My {account} Accounts",
   "@myXAccounts": {
     "description": "Generic label for account lists.",

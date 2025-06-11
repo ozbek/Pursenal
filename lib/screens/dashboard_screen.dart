@@ -52,7 +52,7 @@ class DashboardScreen extends StatelessWidget {
       builder: (context, child) => Consumer<DashboardViewmodel>(
         builder: (context, viewmodel, child) =>
             LayoutBuilder(builder: (context, constraints) {
-          final isWide = constraints.maxWidth > cardWidth;
+          final isWide = constraints.maxWidth > smallWidth;
           final isVeryWide = constraints.maxWidth > cardWidth * 2;
           return Scaffold(
             body: LoadingBody(
@@ -89,87 +89,202 @@ class DashboardScreen extends StatelessWidget {
                             viewmodel: viewmodel,
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          width: double.infinity,
-                          height: 80,
-                          child: Center(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
+                        Visibility(
+                          visible: isWide,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            width: double.infinity,
+                            height: 80,
+                            child: Center(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    NavButton1(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BudgetsScreen(
+                                                profile:
+                                                    viewmodel.selectedProfile,
+                                              ),
+                                            ));
+                                      },
+                                      title:
+                                          AppLocalizations.of(context)!.budgets,
+                                      icon: Icons.calculate,
+                                    ),
+                                    NavButton1(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProjectsScreen(
+                                                profile:
+                                                    viewmodel.selectedProfile,
+                                              ),
+                                            ));
+                                      },
+                                      title: AppLocalizations.of(context)!
+                                          .projects,
+                                      icon: Icons.assignment,
+                                    ),
+                                    NavButton1(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PaymentRemindersScreen(
+                                                        profile: profile)));
+                                      },
+                                      title: AppLocalizations.of(context)!
+                                          .reminders,
+                                      icon: Icons.event_available,
+                                    ),
+                                    NavButton1(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AccountsScreen(
+                                                profile:
+                                                    viewmodel.selectedProfile,
+                                              ),
+                                            ));
+                                      },
+                                      title:
+                                          "${AppLocalizations.of(context)!.expenses} & ${AppLocalizations.of(context)!.incomes}",
+                                      icon: Icons.table_chart_outlined,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                              .animate(delay: 100.ms)
+                              .scale(
+                                  begin: const Offset(1.02, 1.02),
+                                  duration: 100.ms)
+                              .fade(curve: Curves.easeInOut, duration: 100.ms),
+                        ),
+                        Visibility(
+                          visible: !isWide,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            width: double.infinity,
+                            height: 80,
+                            child: Center(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  NavButton1(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => BudgetsScreen(
-                                              profile:
-                                                  viewmodel.selectedProfile,
-                                            ),
-                                          ));
-                                    },
-                                    title:
-                                        AppLocalizations.of(context)!.budgets,
-                                    icon: Icons.calculate,
-                                  ),
-                                  NavButton1(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProjectsScreen(
-                                              profile:
-                                                  viewmodel.selectedProfile,
-                                            ),
-                                          ));
-                                    },
-                                    title:
-                                        AppLocalizations.of(context)!.projects,
-                                    icon: Icons.assignment,
-                                  ),
-                                  NavButton1(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
+                                  Expanded(
+                                    child: NavButton1(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
                                               builder: (context) =>
-                                                  PaymentRemindersScreen(
-                                                      profile: profile)));
-                                    },
-                                    title:
-                                        AppLocalizations.of(context)!.reminders,
-                                    icon: Icons.event_available,
+                                                  BudgetsScreen(
+                                                profile:
+                                                    viewmodel.selectedProfile,
+                                              ),
+                                            ));
+                                      },
+                                      title:
+                                          AppLocalizations.of(context)!.budgets,
+                                      icon: Icons.calculate,
+                                    ),
                                   ),
-                                  NavButton1(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                AccountsScreen(
-                                              profile:
-                                                  viewmodel.selectedProfile,
-                                            ),
-                                          ));
-                                    },
-                                    title:
-                                        "${AppLocalizations.of(context)!.expenses} & ${AppLocalizations.of(context)!.incomes}",
-                                    icon: Icons.table_chart_outlined,
+                                  Expanded(
+                                    child: NavButton1(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProjectsScreen(
+                                                profile:
+                                                    viewmodel.selectedProfile,
+                                              ),
+                                            ));
+                                      },
+                                      title: AppLocalizations.of(context)!
+                                          .projects,
+                                      icon: Icons.assignment,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                        )
-                            .animate(delay: 100.ms)
-                            .scale(
-                                begin: const Offset(1.02, 1.02),
-                                duration: 100.ms)
-                            .fade(curve: Curves.easeInOut, duration: 100.ms),
+                          )
+                              .animate(delay: 100.ms)
+                              .scale(
+                                  begin: const Offset(1.02, 1.02),
+                                  duration: 100.ms)
+                              .fade(curve: Curves.easeInOut, duration: 100.ms),
+                        ),
+                        Visibility(
+                          visible: !isWide,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            width: double.infinity,
+                            height: 80,
+                            child: Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: NavButton1(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PaymentRemindersScreen(
+                                                        profile: profile)));
+                                      },
+                                      title: AppLocalizations.of(context)!
+                                          .reminders,
+                                      icon: Icons.event_available,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: NavButton1(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AccountsScreen(
+                                                profile:
+                                                    viewmodel.selectedProfile,
+                                              ),
+                                            ));
+                                      },
+                                      title: AppLocalizations.of(context)!
+                                          .accounts,
+                                      icon: Icons.table_chart_outlined,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                              .animate(delay: 100.ms)
+                              .scale(
+                                  begin: const Offset(1.02, 1.02),
+                                  duration: 100.ms)
+                              .fade(curve: Curves.easeInOut, duration: 100.ms),
+                        ),
                         Visibility(
                             visible: viewmodel.recentTransactions.isNotEmpty,
                             child: TransactionsCard(

@@ -213,6 +213,7 @@ class AccountViewmodel extends ChangeNotifier {
       if (transactionsFetchNeeded) {
         await getTransactions();
         _populateVoucherTypes();
+        _populateAccounts();
       }
 
       notifyListeners();
@@ -271,7 +272,8 @@ class AccountViewmodel extends ChangeNotifier {
 
   _populateAccounts() {
     try {
-      // _otherAccountFilters = {};
+      _otherAccountFilters.clear();
+      otherAccounts.clear();
 
       for (var t in _transactions) {
         if (t.drAccount.dbID != _account.dbID) {
@@ -308,7 +310,7 @@ class AccountViewmodel extends ChangeNotifier {
   Future<void> exportPDF() async {
     try {
       feedbackText = await Exporter.genLTransactionsPDF(
-          transactions: _fTransactions.reversed.toList(),
+          transactions: _fTransactions,
           currency: _profile.currency,
           startDate: _startDate,
           openingBalance: openBal,
@@ -326,7 +328,7 @@ class AccountViewmodel extends ChangeNotifier {
   Future<void> exportXLSX() async {
     try {
       feedbackText = await Exporter.genLTransactionsXLSX(
-          transactions: _fTransactions.reversed.toList(),
+          transactions: _fTransactions,
           currency: _profile.currency,
           startDate: _startDate,
           openingBalance: openBal,

@@ -402,58 +402,68 @@ class TransactionForm extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              viewmodel.selectedFund?.name ??
-                                                  AppLocalizations.of(context)!
-                                                      .select(
-                                                          AppLocalizations.of(
-                                                                  context)!
-                                                              .fund),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleMedium,
+                                            const SizedBox(
+                                              width: 14,
                                             ),
-                                            const Icon(Icons.arrow_drop_down)
+                                            Expanded(
+                                              child: Text(
+                                                viewmodel.selectedFund?.name ??
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .select(
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .fund),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium,
+                                              ),
+                                            ),
+                                            const Icon(Icons.arrow_drop_down),
+                                            const SizedBox(
+                                              width: 14,
+                                            ),
+                                            InkWell(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AccountTypeDialog(
+                                                          profile: profile,
+                                                          initFn: () {
+                                                            viewmodel
+                                                                .getAccounts();
+                                                          },
+                                                          accountTypes:
+                                                              viewmodel
+                                                                  .accountTypes
+                                                                  .where((a) {
+                                                            return fundingAccountIDs
+                                                                .contains(
+                                                                    a.dbID);
+                                                          }).toList()),
+                                                );
+                                              },
+                                              child: Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8)),
+                                                child: const Center(
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                           ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4.0),
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(12),
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) =>
-                                              AccountTypeDialog(
-                                                  profile: profile,
-                                                  initFn: () {
-                                                    viewmodel.getAccounts();
-                                                  },
-                                                  accountTypes: viewmodel
-                                                      .accountTypes
-                                                      .where((a) {
-                                                    return fundingAccountIDs
-                                                        .contains(a.dbID);
-                                                  }).toList()),
-                                        );
-                                      },
-                                      child: Container(
-                                        width: 52,
-                                        height: 52,
-                                        decoration: BoxDecoration(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.add,
-                                            color: Colors.white,
-                                          ),
                                         ),
                                       ),
                                     ),
@@ -529,59 +539,66 @@ class TransactionForm extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                viewmodel.selectedAccount
-                                                        ?.name ??
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .select(
-                                                            AppLocalizations.of(
-                                                                    context)!
-                                                                .account),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge
-                                                    ?.copyWith(fontSize: 24),
+                                              const SizedBox(
+                                                width: 14,
                                               ),
-                                              const Icon(Icons.arrow_drop_down)
+                                              Expanded(
+                                                child: Text(
+                                                  viewmodel.selectedAccount
+                                                          ?.name ??
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .select(
+                                                              AppLocalizations.of(
+                                                                      context)!
+                                                                  .account),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge
+                                                      ?.copyWith(fontSize: 24),
+                                                ),
+                                              ),
+                                              const Icon(Icons.arrow_drop_down),
+                                              const SizedBox(
+                                                width: 14,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AccountTypeDialog(
+                                                            profile: profile,
+                                                            initFn: () {
+                                                              viewmodel
+                                                                  .getAccounts();
+                                                            },
+                                                            accountTypes: viewmodel
+                                                                .accountTypes),
+                                                  );
+                                                },
+                                                child: MouseRegion(
+                                                  cursor:
+                                                      SystemMouseCursors.click,
+                                                  child: Container(
+                                                    width: 40,
+                                                    height: 40,
+                                                    decoration: BoxDecoration(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8)),
+                                                    child: const Center(
+                                                      child: Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4.0),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) =>
-                                              AccountTypeDialog(
-                                                  profile: profile,
-                                                  initFn: () {
-                                                    viewmodel.getAccounts();
-                                                  },
-                                                  accountTypes:
-                                                      viewmodel.accountTypes),
-                                        );
-                                      },
-                                      child: MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: Container(
-                                          width: 56,
-                                          height: 56,
-                                          decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          child: const Center(
-                                            child: Icon(
-                                              Icons.add,
-                                              color: Colors.white,
-                                            ),
                                           ),
                                         ),
                                       ),

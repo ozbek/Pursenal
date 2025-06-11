@@ -189,16 +189,19 @@ List<Widget> createFilterMenu(
         .animate()
         .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
         .fade(curve: Curves.easeInOut, duration: 100.ms),
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Text(
-            AppLocalizations.of(context)!.transactionTypes,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const Expanded(child: TheDivider()),
-        ],
+    Visibility(
+      visible: viewmodel.transactions.isNotEmpty,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Text(
+              AppLocalizations.of(context)!.transactionTypes,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const Expanded(child: TheDivider()),
+          ],
+        ),
       ),
     ),
     Wrap(
@@ -216,16 +219,19 @@ List<Widget> createFilterMenu(
         .animate(delay: 50.ms)
         .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
         .fade(curve: Curves.easeInOut, duration: 100.ms),
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Text(
-            AppLocalizations.of(context)!.funds,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const Expanded(child: TheDivider()),
-        ],
+    Visibility(
+      visible: viewmodel.transactions.isNotEmpty,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Text(
+              AppLocalizations.of(context)!.funds,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const Expanded(child: TheDivider()),
+          ],
+        ),
       ),
     ),
     Wrap(
@@ -243,16 +249,19 @@ List<Widget> createFilterMenu(
         .animate(delay: 100.ms)
         .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
         .fade(curve: Curves.easeInOut, duration: 100.ms),
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Text(
-            AppLocalizations.of(context)!.accounts,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const Expanded(child: TheDivider()),
-        ],
+    Visibility(
+      visible: viewmodel.transactions.isNotEmpty,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Text(
+              AppLocalizations.of(context)!.accounts,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const Expanded(child: TheDivider()),
+          ],
+        ),
       ),
     ),
     Wrap(
