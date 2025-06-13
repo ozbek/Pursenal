@@ -463,7 +463,7 @@ class ProjectScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    viewmodel.project!.status.label,
+                    viewmodel.project?.status.label ?? "",
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
@@ -471,7 +471,7 @@ class ProjectScreen extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .labelSmall
-                        ?.copyWith(fontSize: 8),
+                        ?.copyWith(fontSize: 8, color: Colors.white),
                   ),
                 ],
               ),

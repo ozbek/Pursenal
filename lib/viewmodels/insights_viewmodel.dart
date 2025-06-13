@@ -213,7 +213,7 @@ class InsightsViewmodel extends ChangeNotifier {
         trySetBudget();
       }
 
-      addToFilter(eDate: eDate, sDate: sDate, shouldGetData: false);
+      addToFilter(eDate: eDate, sDate: sDate);
       notifyListeners();
     }
   }
