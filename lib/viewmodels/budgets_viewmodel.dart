@@ -17,6 +17,8 @@ class BudgetsViewmodel extends ChangeNotifier {
   Profile get profile => _profile;
 
   List<Budget> _budgets = [];
+  get budgets => _budgets;
+
   List<Budget> _fBudgets = [];
 
   LoadingStatus loadingStatus = LoadingStatus.idle;

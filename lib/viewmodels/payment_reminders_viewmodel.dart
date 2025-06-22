@@ -20,6 +20,8 @@ class PaymentRemindersViewmodel extends ChangeNotifier {
   Profile get profile => _profile;
 
   List<PaymentReminder> _paymentReminders = [];
+  List<PaymentReminder> get paymentReminders => _paymentReminders;
+
   List<PaymentReminder> _fPaymentReminders = [];
 
   LoadingStatus loadingStatus = LoadingStatus.idle;

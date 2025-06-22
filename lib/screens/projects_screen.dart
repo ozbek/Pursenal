@@ -3,12 +3,14 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
+import 'package:pursenal/core/enums/project_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/repositories/drift/account_types_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
 import 'package:pursenal/screens/project_entry_screen.dart';
 import 'package:pursenal/screens/project_screen.dart';
 import 'package:pursenal/viewmodels/projects_viewmodel.dart';
+import 'package:pursenal/widgets/shared/empty_list.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
 import 'package:pursenal/widgets/shared/search_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -175,52 +177,117 @@ class ProjectsList extends StatelessWidget {
             const SizedBox(
               height: 8,
             ),
-            Expanded(child: Builder(builder: (_) {
-              if (viewmodel.searchLoadingStatus == LoadingStatus.completed) {
-                return ListView.builder(
-                  itemCount: viewmodel.fProjects.length,
-                  padding: const EdgeInsets.only(bottom: 50),
-                  itemBuilder: (context, index) {
-                    final p = viewmodel.fProjects[index];
-
-                    return ListTile(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProjectScreen(
-                                profile: viewmodel.profile,
-                                projectID: p.dbID,
-                              ),
-                            )).then((_) {
-                          viewmodel.init();
-                        });
-                      },
-                      shape: Border(
-                          bottom: BorderSide(
-                              color: Theme.of(context).shadowColor,
-                              width: 0.10)),
-                      title: Text(p.name,
-                          style: Theme.of(context).textTheme.titleMedium),
-                      trailing: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            p.status.label,
-                            overflow: TextOverflow.ellipsis,
-                          )),
-                      subtitle: Text(p.description),
-                    );
+            Visibility(
+              visible: viewmodel.fProjects.isEmpty,
+              child: Expanded(
+                child: EmptyList(
+                  items: AppLocalizations.of(context)!.projects,
+                  addFn: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProjectEntryScreen(profile: viewmodel.profile),
+                        )).then((_) {
+                      viewmodel.init();
+                    });
                   },
-                )
-                    .animate(delay: 100.ms)
-                    .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
-                    .fade(curve: Curves.easeInOut, duration: 100.ms);
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }))
+                  isListFiltered: viewmodel.projects.isNotEmpty ||
+                      (viewmodel.projects.isNotEmpty &&
+                          viewmodel.fProjects.length ==
+                              viewmodel.projects.length),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: viewmodel.fProjects.isNotEmpty,
+              child: Expanded(child: Builder(builder: (_) {
+                if (viewmodel.searchLoadingStatus == LoadingStatus.completed) {
+                  return ListView.builder(
+                    itemCount: viewmodel.fProjects.length,
+                    padding: const EdgeInsets.only(bottom: 50),
+                    itemBuilder: (context, index) {
+                      final p = viewmodel.fProjects[index];
+
+                      return Card(
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Checkbox(
+                                value: p.status == ProjectStatus.completed,
+                                onChanged: p.status == ProjectStatus.completed
+                                    ? null
+                                    : (s) {
+                                        if (s != null) {
+                                          viewmodel.changeProjectStatus(
+                                              p, ProjectStatus.completed);
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(
+                                                    "${p.name} status set to : Completed")),
+                                          );
+                                        }
+                                      },
+                              ),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProjectScreen(
+                                          profile: viewmodel.profile,
+                                          projectID: p.dbID,
+                                        ),
+                                      )).then((_) {
+                                    viewmodel.init();
+                                  });
+                                },
+                                borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(14),
+                                    bottomRight: Radius.circular(14)),
+                                child: ListTile(
+                                  shape: Border(
+                                      bottom: BorderSide(
+                                          color: Theme.of(context).shadowColor,
+                                          width: 0.10)),
+                                  title: Text(p.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium),
+                                  trailing: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        p.status.label,
+                                        overflow: TextOverflow.ellipsis,
+                                      )),
+                                  subtitle: Text(
+                                    p.description,
+                                    maxLines: 4,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  )
+                      .animate(delay: 100.ms)
+                      .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
+                      .fade(curve: Curves.easeInOut, duration: 100.ms);
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              })),
+            )
           ],
         ),
       ),
@@ -240,33 +307,39 @@ List<Widget> createFilterMenu(
         style: Theme.of(context).textTheme.titleLarge,
       ),
     ),
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Text(
-            AppLocalizations.of(context)!.status,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const Expanded(child: TheDivider()),
-        ],
+    Visibility(
+      visible: viewmodel.projects.isNotEmpty,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Text(
+              AppLocalizations.of(context)!.status,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const Expanded(child: TheDivider()),
+          ],
+        ),
       ),
     ),
-    Wrap(
-      spacing: 4,
-      runSpacing: 4,
-      children: [
-        ...viewmodel.statusCriterias.toList().map((v) => FilterChip(
-            selected: !viewmodel.statusFilters.contains(v),
-            label: Text(v.label),
-            onSelected: (s) {
-              viewmodel.addToFilter(status: v);
-            }))
-      ],
-    )
-        .animate(delay: 50.ms)
-        .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
-        .fade(curve: Curves.easeInOut, duration: 100.ms),
+    Visibility(
+      visible: viewmodel.projects.isNotEmpty,
+      child: Wrap(
+        spacing: 4,
+        runSpacing: 4,
+        children: [
+          ...viewmodel.statusCriterias.toList().map((v) => FilterChip(
+              selected: !viewmodel.statusFilters.contains(v),
+              label: Text(v.label),
+              onSelected: (s) {
+                viewmodel.addToFilter(status: v);
+              }))
+        ],
+      )
+          .animate(delay: 50.ms)
+          .scale(begin: const Offset(1.02, 1.02), duration: 100.ms)
+          .fade(curve: Curves.easeInOut, duration: 100.ms),
+    ),
     const SizedBox(
       height: 40,
     )

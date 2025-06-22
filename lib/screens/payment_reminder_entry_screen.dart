@@ -186,6 +186,7 @@ class PaymentReminderForm extends StatelessWidget {
                           onChanged: (d) {
                             viewmodel.paymentDate = d;
                           },
+                          firstDate: DateTime.now(),
                           label: AppLocalizations.of(context)!.paymentDate,
                           datePattern: appViewmodel.dateFormat.pattern ??
                               AppDateFormat.date1.pattern,

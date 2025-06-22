@@ -18,6 +18,7 @@ import 'package:pursenal/core/repositories/drift/transactions_drift_repository.d
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/viewmodels/account_viewmodel.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
+import 'package:pursenal/widgets/shared/empty_list.dart';
 import 'package:pursenal/widgets/shared/transaction_options_dialog.dart';
 import 'package:pursenal/widgets/shared/acc_type_icon.dart';
 import 'package:pursenal/widgets/shared/export_button.dart';
@@ -413,36 +414,65 @@ class TransactionsSection extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
-            Expanded(
-              child: Builder(builder: (_) {
-                if (viewmodel.searchLoadingStatus == LoadingStatus.completed) {
-                  if (!appViewmodel.isPhone) {
-                    return TransactionsListWide(
+            Visibility(
+              visible: viewmodel.fTransactions.isEmpty,
+              child: Expanded(
+                child: EmptyList(
+                    items: AppLocalizations.of(context)!.transactions,
+                    addFn: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => TransactionOptionsDialog(
+                          currency: viewmodel.profile.currency,
+                          ledgers: viewmodel.allLedgers,
+                          profile: viewmodel.profile,
+                          vType: viewmodel.account.accountType == 5
+                              ? VoucherType.payment
+                              : VoucherType.receipt,
+                          oAcc: viewmodel.account,
+                          reloadFn: () async {
+                            await viewmodel.init();
+                          },
+                        ),
+                      );
+                    },
+                    isListFiltered: true),
+              ),
+            ),
+            Visibility(
+              visible: viewmodel.fTransactions.isNotEmpty,
+              child: Expanded(
+                child: Builder(builder: (_) {
+                  if (viewmodel.searchLoadingStatus ==
+                      LoadingStatus.completed) {
+                    if (!appViewmodel.isPhone) {
+                      return TransactionsListWide(
+                          scrollController: viewmodel.scrollController,
+                          fTransactions: viewmodel.fTransactions,
+                          profile: viewmodel.profile,
+                          account: viewmodel.account,
+                          initFn: () {
+                            viewmodel.init();
+                          });
+                    }
+                    return TransactionsList(
                         scrollController: viewmodel.scrollController,
+                        fDates: viewmodel.fDates,
                         fTransactions: viewmodel.fTransactions,
                         profile: viewmodel.profile,
                         account: viewmodel.account,
                         initFn: () {
                           viewmodel.init();
                         });
+                  } else {
+                    return const Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
                   }
-                  return TransactionsList(
-                      scrollController: viewmodel.scrollController,
-                      fDates: viewmodel.fDates,
-                      fTransactions: viewmodel.fTransactions,
-                      profile: viewmodel.profile,
-                      account: viewmodel.account,
-                      initFn: () {
-                        viewmodel.init();
-                      });
-                } else {
-                  return const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-              }),
+                }),
+              ),
             ),
             ListTile(
               shape: Border(

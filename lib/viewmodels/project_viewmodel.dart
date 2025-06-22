@@ -95,7 +95,7 @@ class ProjectViewmodel extends ChangeNotifier {
   deleteProject({deleteTransactions = false}) async {
     try {
       if (_project != null) {
-        _projectsRepository.deleteProject(_project!.dbID,
+        await _projectsRepository.deleteProject(_project!.dbID,
             deleteTransactions: _deleteTransactionsWithProject);
         return true;
       }

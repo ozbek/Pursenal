@@ -18,6 +18,7 @@ import 'package:pursenal/core/repositories/drift/transactions_drift_repository.d
 import 'package:pursenal/screens/account_entry_screen.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/balance_account_viewmodel.dart';
+import 'package:pursenal/widgets/shared/empty_list.dart';
 import 'package:pursenal/widgets/shared/labeled_text.dart';
 import 'package:pursenal/widgets/shared/transaction_options_dialog.dart';
 import 'package:pursenal/widgets/shared/acc_type_icon.dart';
@@ -621,28 +622,62 @@ class TransactionsSection extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
-            Expanded(
-              child: Builder(builder: (_) {
-                if (!appViewmodel.isPhone) {
-                  return TransactionsListWide(
+            Visibility(
+              visible: viewmodel.fTransactions.isEmpty,
+              child: Expanded(
+                child: EmptyList(
+                    items: AppLocalizations.of(context)!.transactions,
+                    addFn: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => TransactionOptionsDialog(
+                          currency: viewmodel.profile.currency,
+                          ledgers: viewmodel.allLedgers,
+                          profile: viewmodel.profile,
+                          oAcc:
+                              (viewmodel.account.accountType == peopleTypeID ||
+                                      viewmodel.account.accountType ==
+                                          advanceTypeID)
+                                  ? viewmodel.account
+                                  : null,
+                          fAcc: fundingAccountIDs
+                                  .contains(viewmodel.account.accountType)
+                              ? viewmodel.account
+                              : null,
+                          reloadFn: () async {
+                            await viewmodel.init();
+                          },
+                        ),
+                      );
+                    },
+                    isListFiltered: true),
+              ),
+            ),
+            Visibility(
+              visible: viewmodel.fTransactions.isNotEmpty,
+              child: Expanded(
+                child: Builder(builder: (_) {
+                  if (!appViewmodel.isPhone) {
+                    return TransactionsListWide(
+                        scrollController: viewmodel.scrollController,
+                        account: viewmodel.account,
+                        fTransactions: viewmodel.fTransactions,
+                        profile: viewmodel.profile,
+                        initFn: () {
+                          viewmodel.init();
+                        });
+                  }
+                  return TransactionsList(
                       scrollController: viewmodel.scrollController,
+                      fDates: viewmodel.fDates,
                       account: viewmodel.account,
                       fTransactions: viewmodel.fTransactions,
                       profile: viewmodel.profile,
                       initFn: () {
                         viewmodel.init();
                       });
-                }
-                return TransactionsList(
-                    scrollController: viewmodel.scrollController,
-                    fDates: viewmodel.fDates,
-                    account: viewmodel.account,
-                    fTransactions: viewmodel.fTransactions,
-                    profile: viewmodel.profile,
-                    initFn: () {
-                      viewmodel.init();
-                    });
-              }),
+                }),
+              ),
             ),
             ListTile(
               shape: Border(

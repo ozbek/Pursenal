@@ -9,6 +9,7 @@ import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart'
 import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/transactions_viewmodel.dart';
+import 'package:pursenal/widgets/shared/empty_list.dart';
 import 'package:pursenal/widgets/shared/transaction_options_dialog.dart';
 import 'package:pursenal/widgets/shared/export_button.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
@@ -379,34 +380,60 @@ class TransactionsSection extends StatelessWidget {
                     ),
                   ],
                 )),
-            Expanded(
-              child: Builder(builder: (_) {
-                if (viewmodel.searchLoadingStatus == LoadingStatus.completed) {
-                  if (!appViewmodel.isPhone) {
-                    return TransactionsListWide(
+            Visibility(
+                visible: viewmodel.fTransactions.isEmpty,
+                child: Expanded(
+                  child: EmptyList(
+                      items: AppLocalizations.of(context)!.transactions,
+                      addFn: () {
+                        final vm = Provider.of<TransactionsViewmodel>(context,
+                            listen: false);
+                        showDialog(
+                          context: context,
+                          builder: (_) => TransactionOptionsDialog(
+                            currency: viewmodel.profile.currency,
+                            ledgers: viewmodel.allLedgers,
+                            profile: viewmodel.profile,
+                            reloadFn: () {
+                              vm.init();
+                            },
+                          ),
+                        );
+                      },
+                      isListFiltered: true),
+                )),
+            Visibility(
+              visible: viewmodel.fTransactions.isNotEmpty,
+              child: Expanded(
+                child: Builder(builder: (_) {
+                  if (viewmodel.searchLoadingStatus ==
+                      LoadingStatus.completed) {
+                    if (!appViewmodel.isPhone) {
+                      return TransactionsListWide(
+                          scrollController: viewmodel.scrollController,
+                          fTransactions: viewmodel.fTransactions,
+                          profile: viewmodel.profile,
+                          initFn: () {
+                            viewmodel.init();
+                          });
+                    }
+                    return TransactionsList(
                         scrollController: viewmodel.scrollController,
+                        fDates: viewmodel.fDates,
                         fTransactions: viewmodel.fTransactions,
                         profile: viewmodel.profile,
                         initFn: () {
                           viewmodel.init();
                         });
+                  } else {
+                    return const Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
                   }
-                  return TransactionsList(
-                      scrollController: viewmodel.scrollController,
-                      fDates: viewmodel.fDates,
-                      fTransactions: viewmodel.fTransactions,
-                      profile: viewmodel.profile,
-                      initFn: () {
-                        viewmodel.init();
-                      });
-                } else {
-                  return const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-              }),
+                }),
+              ),
             ),
           ],
         ),

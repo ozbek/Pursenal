@@ -27,6 +27,7 @@ class ProjectsViewmodel extends ChangeNotifier {
   Profile get profile => _profile;
 
   List<Project> _projects = [];
+
   List<Project> _fProjects = [];
 
   AccountType? _accType;
@@ -46,6 +47,8 @@ class ProjectsViewmodel extends ChangeNotifier {
 
   Set<ProjectStatus> statusCriterias = {};
   Set<ProjectStatus> statusFilters = {};
+
+  List<Project> get projects => _projects;
 
   Future<void> init() async {
     loadingStatus = LoadingStatus.loading;
@@ -85,6 +88,26 @@ class ProjectsViewmodel extends ChangeNotifier {
       AppLogger.instance.error("Error loading projects ${e.toString()}");
     }
     notifyListeners();
+  }
+
+  Future<bool> changeProjectStatus(Project p, ProjectStatus status) async {
+    try {
+      _projectsRepository.updateProjectStatus(
+          id: p.dbID,
+          name: p.name,
+          profile: _profile.dbID,
+          description: p.description,
+          endDate: p.endDate,
+          startDate: p.startDate,
+          projectStatus: status);
+
+      init();
+      return true;
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: ';
+      return false;
+    }
   }
 
   _filterProjects() {
