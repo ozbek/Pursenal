@@ -68,3 +68,13 @@ build_apk.sh
 windows-setup-script.iss
 installers
 out.sql
+
+
+# WIP
+lib/widgets/dashboard/notifications_card.dart
+
+
+
+# Dev
+lib/core/models/drift/drift_to_dbml.sh
+details.xlsx
