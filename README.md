@@ -1,8 +1,9 @@
 # Pursenal
 
+**Pursenal** is a free and open source money management app built using Flutter. Designed for both personal and business finance management, Pursenal helps you track expenses, income, and budgets with ease—across multiple profiles, currencies, and platforms.
+
 <img alt="Screenshot 1" src="promo-images/1.png" width="500px">
 
-**Pursenal** is a free and open source money management app built using Flutter. Designed for both personal and business finance management, Pursenal helps you track expenses, income, and budgets with ease—across multiple profiles, currencies, and platforms.
 
 ## Features
 
@@ -30,10 +31,19 @@
 - **Projects:**  
   Assign expenses and incomes to a specific project.
 
+### Releases
+
+- **[GitHub](https://github.com/Kaashier-Dev/Pursenal/releases)**
+
+
+
 ## Screenshots
 
-<img alt="Screenshot 2" src="promo-images/2.png" width="500px"> <img alt="Screenshot 3" src="promo-images/3.png" width="500px">
-<img alt="Screenshot 4" src="promo-images/4.png" width="500px"> <img alt="Screenshot 5" src="promo-images/5.png" width="500px">
+<img alt="Screenshot 2" src="promo-images/2.png" width="400px"> <img alt="Screenshot 3" src="promo-images/3.png" width="400px">
+<img alt="Screenshot 4" src="promo-images/4.png" width="400px"> <img alt="Screenshot 5" src="promo-images/5.png" width="400px">
+<img alt="Screenshot 6" src="promo-images/6.png" width="400px"> <img alt="Screenshot 7" src="promo-images/7.png" width="400px">
+<img alt="Screenshot 8" src="promo-images/8.png" width="1200px">
+<img alt="Screenshot 9" src="promo-images/9.png" width="1200px">
 
 ## Getting Started
 
