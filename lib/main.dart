@@ -195,6 +195,7 @@ class MyApp extends StatelessWidget {
             resetErrorTextFn: () {
               viewmodel.resetErrorText();
             },
+            isFirstScreen: true,
           ),
         ),
       ),

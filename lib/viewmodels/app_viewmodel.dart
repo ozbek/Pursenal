@@ -83,7 +83,7 @@ class AppViewmodel extends ChangeNotifier {
       notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.instance.error(' ${e.toString()}', [stackTrace]);
-      errorText = 'Error: Failed to initialise App.';
+      errorText = 'Error: Failed to initialise App.\n $e';
       loadingStatus = LoadingStatus.error;
       notifyListeners();
     }

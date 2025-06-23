@@ -9,7 +9,8 @@ class LoadingBody extends StatelessWidget {
       required this.errorText,
       required this.widget,
       this.feedbackText = "",
-      required this.resetErrorTextFn});
+      required this.resetErrorTextFn,
+      this.isFirstScreen = false});
 
   /// LoadingStatus variable that determines the database fetch status
   final LoadingStatus loadingStatus;
@@ -25,6 +26,9 @@ class LoadingBody extends StatelessWidget {
 
   /// Viewmodel function that will reset the error to empty.
   final Function resetErrorTextFn;
+
+  /// Check to not show the back button on screen
+  final bool isFirstScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +55,14 @@ class LoadingBody extends StatelessWidget {
             const SizedBox(
               height: 50,
             ),
-            IconButton.filled(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back))
+            Visibility(
+              visible: !isFirstScreen,
+              child: IconButton.filled(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back)),
+            )
           ],
         ),
       );
