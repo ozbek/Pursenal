@@ -38,6 +38,8 @@ class AppViewmodel extends ChangeNotifier {
 
   bool reminderStatus = false;
   String reminderTime = "";
+  String paymentReminderTime = "";
+  TimeOfDay paymentReminderTimeStamp = const TimeOfDay(hour: 8, minute: 0);
 
   DateFormat dateFormat = DateFormat(AppDateFormat.date1.pattern);
 
@@ -77,6 +79,11 @@ class AppViewmodel extends ChangeNotifier {
       _receiptColor = (await getReceiptColor())?.hexToColor() ?? Colors.green;
       reminderStatus = await getReminderStatus();
       reminderTime = await getReminderTime();
+      paymentReminderTime = await getPaymentReminderTime();
+      if (paymentReminderTime.isEmpty) {
+        await setPaymentReminderTime(paymentReminderTimeStamp);
+      }
+
       dateFormat =
           DateFormat(await getAppDateFormat() ?? AppDateFormat.date1.pattern);
       await _resetTransactionsFilterStartDate();
@@ -221,6 +228,34 @@ class AppViewmodel extends ChangeNotifier {
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
       errorText = 'Error: Cannot get reminder time';
+      return "";
+    }
+  }
+
+  Future<void> setPaymentReminderTime(TimeOfDay time) async {
+    try {
+      await _prefs?.setInt('paymentReminderHour', time.hour);
+      await _prefs?.setInt('paymentReminderMinute', time.minute);
+      final dt = DateTime(0, 0, 0, time.hour, time.minute);
+      paymentReminderTime = timeFormat.format(dt);
+      paymentReminderTimeStamp = time;
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: Cannot set reminder time';
+    }
+    notifyListeners();
+  }
+
+  Future<String> getPaymentReminderTime() async {
+    try {
+      final hr = _prefs?.getInt('paymentReminderHour') ?? 00;
+      final mi = _prefs?.getInt('paymentReminderMinute') ?? 00;
+      final dt = DateTime(0, 0, 0, hr, mi);
+      paymentReminderTimeStamp = TimeOfDay(hour: hr, minute: mi);
+      return timeFormat.format(dt);
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: Cannot get payment reminder time';
       return "";
     }
   }

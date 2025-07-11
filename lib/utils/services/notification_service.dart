@@ -48,6 +48,14 @@ class NotificationService {
     }
   }
 
+  static Future<List<PendingNotificationRequest>>
+      getPendingNotifications() async {
+    final List<PendingNotificationRequest> pendingNotificationRequests =
+        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+
+    return pendingNotificationRequests;
+  }
+
   static Future<void> cancelAllNotifications() async {
     try {
       await flutterLocalNotificationsPlugin.cancelAll();
@@ -128,6 +136,7 @@ class NotificationService {
     required bool isWeekly,
     int? weekday, // 1-7 (Mon-Sun)
     int? monthDay, // 1-31
+    DateTime? paymentDate,
   }) async {
     try {
       if (Platform.isLinux) {
@@ -138,14 +147,18 @@ class NotificationService {
 
       // final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
       tz.TZDateTime scheduled;
-
-      if (isWeekly && weekday != null) {
+      if (!isWeekly && paymentDate != null) {
+        // ✅ Schedule one-time specific date
+        scheduled = tz.TZDateTime.from(paymentDate, tz.local);
+      } else if (isWeekly && weekday != null) {
         scheduled = _nextInstanceOfWeekday(startDateTime, weekday);
       } else if (!isWeekly && monthDay != null) {
         scheduled = _nextInstanceOfMonthDay(startDateTime, monthDay);
       } else {
+        AppLogger.instance.error("No valid schedule time provided");
         return;
       }
+      AppLogger.instance.info("Scheduling for: ${scheduled.toString()}");
 
       await flutterLocalNotificationsPlugin.zonedSchedule(
         id,
@@ -160,9 +173,11 @@ class NotificationService {
             priority: Priority.high,
           ),
         ),
-        matchDateTimeComponents: isWeekly
-            ? DateTimeComponents.dayOfWeekAndTime
-            : DateTimeComponents.dayOfMonthAndTime,
+        matchDateTimeComponents: (!isWeekly && paymentDate != null)
+            ? null // Don't repeat
+            : isWeekly
+                ? DateTimeComponents.dayOfWeekAndTime
+                : DateTimeComponents.dayOfMonthAndTime,
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       );
     } catch (e) {
@@ -186,7 +201,7 @@ class NotificationService {
     if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
       scheduledDate = scheduledDate.add(const Duration(days: 7));
     }
-
+    AppLogger.instance.info("Next weekday schedule: $scheduledDate");
     return scheduledDate;
   }
 

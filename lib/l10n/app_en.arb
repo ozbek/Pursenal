@@ -667,6 +667,10 @@
   "@myPaymentReminders": {
     "description": "Payment Reminders"
   },
+  "paymentReminderTime": "Payment reminder time",
+  "@paymentReminderTime": {
+    "description": "Payment Reminder time"
+  },
   "pay": "Pay",
   "@pay": {
     "description": "Proceed with payment"
@@ -696,9 +700,9 @@
       }
     }
   },
-  "setDailyReminder": "Set Daily Reminder?",
+  "setDailyReminder": "Set Daily Entry Reminder?",
   "@setDailyReminder": {
-    "description": "Prompt to ask for daily reminder."
+    "description": "Prompt to ask for daily reminder to enter transactions."
   },
   "@@locale": "en",
   "@@last_modified": "2025-02-05T11:02:11.946484"

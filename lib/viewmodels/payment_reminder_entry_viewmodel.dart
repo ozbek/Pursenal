@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:pursenal/app/extensions/currency.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/abstracts/account_types_repository.dart';
@@ -14,7 +14,9 @@ import 'package:pursenal/core/models/domain/account_type.dart';
 import 'package:pursenal/core/models/domain/ledger.dart';
 import 'package:pursenal/core/models/domain/payment_reminder.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/utils/app_logger.dart';
 import 'package:pursenal/utils/services/notification_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PaymentReminderEntryViewmodel extends ChangeNotifier {
   final PaymentRemindersRepository _paymentRemindersRepository;
@@ -83,6 +85,10 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
   List<Ledger> get fAccounts => _ledgers;
 
   List<AccountType> accountTypes = [];
+
+  SharedPreferences? _prefs;
+
+  TimeOfDay prTime = const TimeOfDay(hour: 8, minute: 0);
 
   // Setters with notifyListeners
   set account(Account? value) {
@@ -166,36 +172,50 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
   void init() async {
     loadingStatus = LoadingStatus.loading;
     notifyListeners();
-    await getAccounts();
+    try {
+      await getAccounts();
 
-    if (_reminder != null) {
-      _account = _reminder!.account;
-      _fund = _reminder!.fund;
-      _interval = _reminder!.interval;
-      _amount = _reminder!.amount;
-      _day = _reminder!.day;
-      _paymentDate = _reminder!.paymentDate;
-      _paymentStatus = _reminder!.paymentStatus;
-      _filePaths = List.from(_reminder!.filePaths);
-      _details = _reminder!.details;
-      if (_reminder?.paymentDate == null) {
-        _doesRepeat = true;
-        _interval = _reminder?.interval;
+      _prefs = await SharedPreferences.getInstance();
+
+      if (_reminder != null) {
+        _account = _reminder!.account;
+        _fund = _reminder!.fund;
+        _interval = _reminder!.interval;
+        _amount = _reminder!.amount;
+        _day = _reminder!.day;
+        _paymentDate = _reminder!.paymentDate;
+        _paymentStatus = _reminder!.paymentStatus;
+        _filePaths = List.from(_reminder!.filePaths);
+        _details = _reminder!.details;
+        if (_reminder?.paymentDate == null) {
+          _doesRepeat = true;
+          _interval = _reminder?.interval;
+        }
       }
-    }
 
-    loadingStatus = LoadingStatus.completed;
+      prTime = await getPaymentReminderTime();
+      loadingStatus = LoadingStatus.completed;
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      loadingStatus = LoadingStatus.error;
+      errorText = 'Error: failed to initialise payment reminder entry $e';
+    }
     notifyListeners();
   }
 
   Future<void> getAccounts() async {
-    _ledgers = await _accountsRepository.getLedgers(profileId: _profile.dbID);
-    _funds = await _accountsRepository.getLedgersByCategory(
-        profileId: _profile.dbID, accTypeIDs: fundingAccountIDs);
+    try {
+      _ledgers = await _accountsRepository.getLedgers(profileId: _profile.dbID);
+      _funds = await _accountsRepository.getLedgersByCategory(
+          profileId: _profile.dbID, accTypeIDs: fundingAccountIDs);
 
-    accountTypes = await _accountTypesRepository.getAll();
+      accountTypes = await _accountTypesRepository.getAll();
 
-    // _ledgers.where((a) => a.accType.dbID <= 3).toList();
+      // _ledgers.where((a) => a.accType.dbID <= 3).toList();
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: Failed to load accounts';
+    }
     notifyListeners();
   }
 
@@ -210,45 +230,52 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
     weekDayError = "";
     monthDayError = "";
 
-    if (_amount <= 0) {
-      amountError = "Amount must be greater than 0";
-      isValid = false;
-    }
+    try {
+      if (_amount <= 0) {
+        amountError = "Amount must be greater than 0";
+        isValid = false;
+      }
 
-    if (_details.length > 200) {
-      detailsError = "Details too long";
-      isValid = false;
-    }
+      if (_details.length > 200) {
+        detailsError = "Details too long";
+        isValid = false;
+      }
 
-    if (_details.isEmpty) {
-      detailsError = "Enter details";
-      isValid = false;
-    }
+      if (_details.isEmpty) {
+        detailsError = "Enter details";
+        isValid = false;
+      }
 
-    if (_doesRepeat) {
-      if (_interval == BudgetInterval.monthly) {
-        if ((_day == null || _day! > 31)) {
-          monthDayError = "Enter a valid day";
-          isValid = false;
-        }
-      } else if (_interval == BudgetInterval.weekly) {
-        if (_day == null || _day! > 7) {
-          weekDayError = "Select a valid day";
+      if (_doesRepeat) {
+        if (_interval == BudgetInterval.monthly) {
+          if ((_day == null || _day! > 31)) {
+            monthDayError = "Enter a valid day";
+            isValid = false;
+          }
+        } else if (_interval == BudgetInterval.weekly) {
+          if (_day == null || _day! > 7) {
+            weekDayError = "Select a valid day";
+            isValid = false;
+          }
+        } else {
+          intervalError = "Select a valid interval";
           isValid = false;
         }
       } else {
-        intervalError = "Select a valid interval";
-        isValid = false;
+        if (_paymentDate == null) {
+          paymentDateError = "Enter a valid date";
+          isValid = false;
+        }
       }
-    } else {
-      if (_paymentDate == null) {
-        paymentDateError = "Enter a valid date";
-        isValid = false;
-      }
-    }
 
-    notifyListeners();
-    return isValid;
+      notifyListeners();
+      return isValid;
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: failed to validate input ';
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<bool> save() async {
@@ -258,40 +285,25 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      if (_reminder == null) {
-        final newId = await _paymentRemindersRepository.insertPaymentReminder(
-          profile: _profile.dbID,
-          account: _account,
-          fund: _fund,
-          interval: _interval,
-          day: _day ?? 0,
-          amount: _amount,
-          paymentDate: _paymentDate,
-          status: _paymentStatus,
-          details: _details,
-        );
-        for (var p in filePaths) {
-          await _filePathsRepository.insertFilePath(
-              path: p,
-              parentTableID: newId,
-              tableType: DBTableType.paymentReminder);
-        }
-        NotificationService.schedulePaymentReminder(
-          id: newId,
-          title:
-              "Today's payment reminder : ${amount.toCurrencyStringWSymbol(_profile.currency)}",
-          body: "Towards $details",
-          isWeekly: _interval == BudgetInterval.weekly,
-          startDateTime: DateTime.now().copyWith(hour: 8, minute: 0, second: 0),
-          monthDay: _interval == BudgetInterval.monthly ? day : null,
-          weekday: _interval == BudgetInterval.weekly ? day : null,
-        );
-        _reminder =
-            await _paymentRemindersRepository.getPaymentReminderByID(newId);
-      } else {
-        await _filePathsRepository.deleteFilePathByParentID(_reminder!.dbID);
+      final isNew = _reminder == null;
+      final reminderId = isNew
+          ? await _paymentRemindersRepository.insertPaymentReminder(
+              profile: _profile.dbID,
+              account: _account,
+              fund: _fund,
+              interval: _interval,
+              day: _day ?? 0,
+              amount: _amount,
+              paymentDate: _paymentDate,
+              status: _paymentStatus,
+              details: _details,
+            )
+          : _reminder!.dbID;
+
+      if (!isNew) {
+        await _filePathsRepository.deleteFilePathByParentID(reminderId);
         await _paymentRemindersRepository.updatePaymentReminder(
-          id: _reminder!.dbID,
+          id: reminderId,
           profile: _profile.dbID,
           account: _account,
           fund: _fund,
@@ -302,23 +314,33 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
           status: _paymentStatus,
           details: _details,
         );
-        for (var p in filePaths) {
-          await _filePathsRepository.insertFilePath(
-              path: p,
-              parentTableID: _reminder!.dbID,
-              tableType: DBTableType.paymentReminder);
-        }
-        NotificationService.cancelReminder(id: _reminder!.dbID);
-        NotificationService.schedulePaymentReminder(
-          id: _reminder!.dbID,
-          title:
-              "Today's payment reminder : ${amount.toCurrencyStringWSymbol(_profile.currency)}",
-          body: "Towards $details",
-          isWeekly: _interval == BudgetInterval.weekly,
-          startDateTime: DateTime.now().copyWith(hour: 8, minute: 0, second: 0),
-          monthDay: _interval == BudgetInterval.monthly ? day : null,
-          weekday: _interval == BudgetInterval.weekly ? day : null,
+        await NotificationService.cancelReminder(id: reminderId);
+      }
+
+      for (var p in filePaths) {
+        await _filePathsRepository.insertFilePath(
+          path: p,
+          parentTableID: reminderId,
+          tableType: DBTableType.paymentReminder,
         );
+      }
+
+      await NotificationService.schedulePaymentReminder(
+        id: reminderId,
+        title:
+            "Today's payment reminder : ${amount.toCurrencyStringWSymbol(_profile.currency)}",
+        body: "Towards $details",
+        isWeekly: _interval == BudgetInterval.weekly,
+        startDateTime: DateTime.now()
+            .copyWith(hour: prTime.hour, minute: prTime.minute, second: 0),
+        monthDay: _interval == BudgetInterval.monthly ? day : null,
+        weekday: _interval == BudgetInterval.weekly ? day : null,
+        paymentDate: !_doesRepeat ? _paymentDate : null,
+      );
+
+      if (isNew) {
+        _reminder = await _paymentRemindersRepository
+            .getPaymentReminderByID(reminderId);
       }
 
       loadingStatus = LoadingStatus.submitted;
@@ -329,6 +351,19 @@ class PaymentReminderEntryViewmodel extends ChangeNotifier {
       loadingStatus = LoadingStatus.error;
       notifyListeners();
       return false;
+    }
+  }
+
+  Future<TimeOfDay> getPaymentReminderTime() async {
+    try {
+      final hr = _prefs?.getInt('paymentReminderHour') ?? 08;
+      final mi = _prefs?.getInt('paymentReminderMinute') ?? 00;
+      final time = TimeOfDay(hour: hr, minute: mi);
+      return time;
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: Cannot get payment reminder time';
+      return const TimeOfDay(hour: 08, minute: 00);
     }
   }
 }

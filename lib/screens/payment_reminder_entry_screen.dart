@@ -224,7 +224,7 @@ class PaymentReminderForm extends StatelessWidget {
                             ),
                           ],
                           onSelected: (d) {
-                            viewmodel.day = d?.index;
+                            viewmodel.day = d?.weekday;
                           },
                         ),
                       )

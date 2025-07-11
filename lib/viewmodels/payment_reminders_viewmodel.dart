@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pursenal/core/abstracts/payment_reminders_repository.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/enums/payment_status.dart';
 import 'package:pursenal/core/models/domain/payment_reminder.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/utils/app_logger.dart';
+import 'package:pursenal/utils/services/notification_service.dart';
 
 class PaymentRemindersViewmodel extends ChangeNotifier {
   final PaymentRemindersRepository _paymentRemindersRepository;
@@ -41,6 +43,14 @@ class PaymentRemindersViewmodel extends ChangeNotifier {
       await getPaymentReminders();
       _filterPaymentReminders();
       loadingStatus = LoadingStatus.completed;
+
+      List<PendingNotificationRequest> pending =
+          await NotificationService.getPendingNotifications();
+
+      for (var p in pending) {
+        AppLogger.instance.info(
+            '🔔 ID: ${p.id}, Title: ${p.title}, Body: ${p.body}, Payload: ${p.payload}');
+      }
     } catch (e) {
       AppLogger.instance.error(' ${e.toString()}');
       loadingStatus = LoadingStatus.error;

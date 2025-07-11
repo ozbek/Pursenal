@@ -203,7 +203,7 @@ class SettingsScreen extends StatelessWidget {
                       if (Platform.isAndroid || Platform.isIOS) ...[
                         Row(
                           children: [
-                            Text(AppLocalizations.of(context)!.reminder),
+                            Text(AppLocalizations.of(context)!.reminders),
                             const Expanded(child: TheDivider()),
                           ],
                         ),
@@ -244,6 +244,33 @@ class SettingsScreen extends StatelessWidget {
                                 }
                               }
                             }),
+                        ListTile(
+                          onTap: () async {
+                            if (context.mounted) {
+                              showTimePicker(
+                                context: context,
+                                initialTime: viewmodel.paymentReminderTimeStamp,
+                              ).then((t) {
+                                if (t != null) {
+                                  viewmodel.setPaymentReminderTime(t);
+                                }
+                              });
+                            }
+                          },
+                          title: Text(
+                            AppLocalizations.of(context)!.paymentReminderTime,
+                          ),
+                          trailing: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).cardColor,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Text(
+                              viewmodel.paymentReminderTime,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ),
                         const SizedBox(
                           height: 16,
                         ),

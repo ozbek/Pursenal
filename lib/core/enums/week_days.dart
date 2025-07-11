@@ -15,4 +15,6 @@ enum WeekDays {
     required this.label,
     required this.short,
   });
+
+  int get weekday => index + 1;
 }
