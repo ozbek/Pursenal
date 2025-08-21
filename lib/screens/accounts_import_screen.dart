@@ -123,6 +123,7 @@ class AccountsImportList extends StatelessWidget {
                             vertical: 2, horizontal: 16),
                         width: 200,
                         child: CalculatedField(
+                            amount: viewmodel.cashOpenBalance.toCurrency(),
                             onChanged: (v) {
                               viewmodel.cashOpenBalance =
                                   v?.toIntCurrency() ?? 0;

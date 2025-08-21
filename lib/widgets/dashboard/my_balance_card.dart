@@ -39,7 +39,7 @@ class MyBalanceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: cardWidth - 50,
+                width: cardWidth - 78,
                 child: Column(
                   children: [
                     Padding(
