@@ -162,40 +162,42 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Provider.of<AppViewmodel>(context);
     final ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
-    return AdaptiveTheme(
-      light: themeProvider.getLightTheme(),
-      dark: themeProvider.getDarkTheme(),
-      initial: AdaptiveThemeMode.light,
-      builder: (light, dark) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        navigatorKey: navigatorKey,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en'), // English
-        ],
-        routes: {"/profiles": (context) => const ProfileSelectionScreen()},
-        theme: light,
-        darkTheme: dark,
-        title: AppLocalizations.of(context)?.pursenal ?? appName,
-        home: Consumer<AppViewmodel>(
-          builder: (context, viewmodel, child) => LoadingBody(
-            loadingStatus: viewmodel.loadingStatus,
-            errorText: viewmodel.errorText,
-            widget: viewmodel.selectedProfile == null
-                // If the user hasn't yet created a profile, they are forwarded to WelcomeScreen
-                ? const WelcomeScreen()
-                : MainScreen(
-                    profile: viewmodel.selectedProfile!,
-                  ),
-            resetErrorTextFn: () {
-              viewmodel.resetErrorText();
-            },
-            isFirstScreen: true,
+    return SafeArea(
+      child: AdaptiveTheme(
+        light: themeProvider.getLightTheme(),
+        dark: themeProvider.getDarkTheme(),
+        initial: AdaptiveThemeMode.light,
+        builder: (light, dark) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          navigatorKey: navigatorKey,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'), // English
+          ],
+          routes: {"/profiles": (context) => const ProfileSelectionScreen()},
+          theme: light,
+          darkTheme: dark,
+          title: AppLocalizations.of(context)?.pursenal ?? appName,
+          home: Consumer<AppViewmodel>(
+            builder: (context, viewmodel, child) => LoadingBody(
+              loadingStatus: viewmodel.loadingStatus,
+              errorText: viewmodel.errorText,
+              widget: viewmodel.selectedProfile == null
+                  // If the user hasn't yet created a profile, they are forwarded to WelcomeScreen
+                  ? const WelcomeScreen()
+                  : MainScreen(
+                      profile: viewmodel.selectedProfile!,
+                    ),
+              resetErrorTextFn: () {
+                viewmodel.resetErrorText();
+              },
+              isFirstScreen: true,
+            ),
           ),
         ),
       ),
