@@ -13,6 +13,7 @@ import 'package:pursenal/core/repositories/drift/balances_drift_repository.dart'
 import 'package:pursenal/core/repositories/drift/banks_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/budgets_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/ccards_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/database_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/file_paths_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/loans_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/payment_reminders_drift_repository.dart';
@@ -83,13 +84,19 @@ void main() async {
         create: (context) => AppDriftDatabase(connection, "b"),
         dispose: (context, db) => db.close(),
       ),
+      Provider<DatabaseDriftRepository>(
+        create: (context) =>
+            DatabaseDriftRepository(context.read<AppDriftDatabase>()),
+      ),
       Provider<ProfilesDriftRepository>(
         create: (context) =>
             ProfilesDriftRepository(context.read<AppDriftDatabase>()),
       ),
       ChangeNotifierProvider<AppViewmodel>(
-        create: (context) =>
-            AppViewmodel(context.read<ProfilesDriftRepository>())..init(),
+        create: (context) => AppViewmodel(
+            context.read<ProfilesDriftRepository>(),
+            context.read<DatabaseDriftRepository>())
+          ..init(),
       ),
       Provider<AccountTypesDriftRepository>(
         create: (context) =>

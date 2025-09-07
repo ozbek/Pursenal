@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
@@ -24,6 +25,14 @@ class MainScreen extends StatelessWidget {
     final accountsDriftRepository =
         Provider.of<AccountsDriftRepository>(context, listen: false);
     const double barIconSize = 24.00;
+
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Theme.of(context).primaryColor,
+        systemNavigationBarColor:
+            Theme.of(context).navigationBarTheme.backgroundColor,
+      ),
+    );
 
     return ChangeNotifierProvider<MainViewmodel>(
       create: (context) => MainViewmodel(

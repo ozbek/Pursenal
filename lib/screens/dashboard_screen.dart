@@ -94,7 +94,7 @@ class DashboardScreen extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.all(2),
                             width: double.infinity,
-                            height: 80,
+                            height: 60,
                             child: Center(
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
@@ -177,9 +177,10 @@ class DashboardScreen extends StatelessWidget {
                         Visibility(
                           visible: !isWide,
                           child: Container(
-                            padding: const EdgeInsets.all(2),
+                            padding: const EdgeInsets.only(
+                                top: 2, left: 2, right: 2),
                             width: double.infinity,
-                            height: 80,
+                            height: 60,
                             child: Center(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -236,7 +237,7 @@ class DashboardScreen extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.all(2),
                             width: double.infinity,
-                            height: 80,
+                            height: 60,
                             child: Center(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,

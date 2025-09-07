@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pursenal/app/extensions/color.dart';
 import 'package:pursenal/app/global/date_formats.dart';
+import 'package:pursenal/core/abstracts/database_repository.dart';
 import 'package:pursenal/core/enums/app_date_format.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/utils/services/notification_service.dart';
@@ -13,8 +14,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AppViewmodel extends ChangeNotifier {
   final ProfilesRepository _profilesRepository;
+  final DatabaseRepository _databaseRepository;
 
-  AppViewmodel(this._profilesRepository);
+  AppViewmodel(this._profilesRepository, this._databaseRepository);
 
   Profile? _selectedProfile;
 
@@ -288,6 +290,26 @@ class AppViewmodel extends ChangeNotifier {
     } catch (e) {
       AppLogger.instance
           .error("Error setting Last updated timestamp ${e.toString()}");
+    }
+  }
+
+  Future<String> exportDatabase(File destination) async {
+    try {
+      await _databaseRepository.exportDatabase(destination);
+      return "Database exported successfully to ${destination.path}";
+    } catch (e) {
+      AppLogger.instance.error("Error exporting database ${e.toString()}");
+      return "Error exporting database";
+    }
+  }
+
+  Future<String> importDatabase(File backupFile) async {
+    try {
+      await _databaseRepository.restoreDatabase(backupFile);
+      return "Database imported successfully";
+    } catch (e) {
+      AppLogger.instance.error("Error importing database ${e.toString()}");
+      return "Error imrporting database";
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pursenal/app/global/values.dart';
 import 'package:pursenal/core/enums/budget_interval.dart';
 import 'package:pursenal/core/enums/currency.dart';
@@ -14,6 +15,7 @@ import 'package:pursenal/utils/app_logger.dart';
 import 'package:pursenal/utils/db_utils.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
+import 'package:path/path.dart' as p;
 
 part 'app_drift_database.g.dart';
 
@@ -1416,4 +1418,32 @@ class AppDriftDatabase extends _$AppDriftDatabase {
 
   Future<List<DriftFilePath>> getFilePathByParentId(int id) =>
       (select(driftFilePaths)..where((t) => t.parentTable.equals(id))).get();
+
+  Future<void> exportDatabase(File destination) async {
+    if (await destination.exists()) {
+      await destination.delete(); // Delete the existing file
+    }
+    try {
+      await exclusively(() async {
+        await customStatement('VACUUM INTO ?', [destination.path]);
+      });
+    } catch (e) {
+      AppLogger.instance.error("Cannot export database. $e");
+    }
+  }
+
+  Future<void> importDatabase(File backupFile) async {
+    try {
+      await close();
+      await File(await _getDatabasePath())
+          .writeAsBytes(await backupFile.readAsBytes(), flush: true);
+    } catch (e) {
+      AppLogger.instance.error("Cannot import database. $e");
+    }
+  }
+}
+
+Future<String> _getDatabasePath() async {
+  final appDir = await getApplicationSupportDirectory();
+  return p.join(appDir.path, 'db', 'app_drift_database.sqlite');
 }
