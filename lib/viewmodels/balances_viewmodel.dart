@@ -171,10 +171,20 @@ class BalancesViewmodel extends ChangeNotifier {
   }
 
   int getBalanceByAccountType(int id) {
-    int balance = funds
-        .where((a) => a.accountType.dbID == id)
-        .fold<int>(0, (sum, item) => sum + item.balance);
-
+    int balance = 0;
+    if (fundIDs.contains(id)) {
+      balance = funds
+          .where((a) => a.accountType.dbID == id)
+          .fold<int>(0, (sum, item) => sum + item.balance);
+    } else if (creditIDs.contains(id)) {
+      balance = credits
+          .where((a) => a.accountType.dbID == id)
+          .fold<int>(0, (sum, item) => sum + item.balance);
+    } else if ([advanceTypeID, peopleTypeID].contains(id)) {
+      balance = otherAccounts
+          .where((a) => a.accountType.dbID == id)
+          .fold<int>(0, (sum, item) => sum + item.balance);
+    }
     return balance;
   }
 }

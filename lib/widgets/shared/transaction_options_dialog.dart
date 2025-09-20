@@ -71,7 +71,9 @@ class _TransactionOptionsDialogState extends State<TransactionOptionsDialog> {
     selectedAccount = widget.oAcc;
 
     funds = widget.ledgers
-        .where((a) => fundIDs.contains(a.accountType.dbID))
+        .where((a) =>
+            fundIDs.contains(a.accountType.dbID) ||
+            cCardTypeID == a.accountType.dbID)
         .toList();
     if (voucherType != null) {
       pageNo = 1;
@@ -120,7 +122,7 @@ class _TransactionOptionsDialogState extends State<TransactionOptionsDialog> {
         ],
       ),
       content: SizedBox(
-        width: cardWidth,
+        width: smallWidth,
         child: buildList(appViewmodel.paymentColor, appViewmodel.receiptColor),
       ),
       contentPadding: const EdgeInsets.only(top: 2, bottom: 6),

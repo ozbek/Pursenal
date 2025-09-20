@@ -50,6 +50,9 @@ class NotificationService {
 
   static Future<List<PendingNotificationRequest>>
       getPendingNotifications() async {
+    if (Platform.isLinux) {
+      return [];
+    }
     final List<PendingNotificationRequest> pendingNotificationRequests =
         await flutterLocalNotificationsPlugin.pendingNotificationRequests();
 

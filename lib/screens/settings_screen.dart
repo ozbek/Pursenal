@@ -42,8 +42,7 @@ class SettingsScreen extends StatelessWidget {
               height: double.maxFinite,
               width: smallWidth,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -341,9 +340,10 @@ class SettingsScreen extends StatelessWidget {
                                   await viewmodel.exportDatabase(File(p.join(
                                       selectedDirectory,
                                       'pursenal_db.sqlite')));
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(exportStatus)));
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(exportStatus)));
+                              }
                             }
                           } catch (e) {
                             Directory dir = await getDownloadsDirectory() ??
@@ -352,9 +352,10 @@ class SettingsScreen extends StatelessWidget {
                             String exportStatus =
                                 await viewmodel.exportDatabase(File(
                                     p.join(exportPath, 'pursenal_db.sqlite')));
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(exportStatus)));
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(exportStatus)));
+                            }
                           }
                         },
                       ),
@@ -364,18 +365,16 @@ class SettingsScreen extends StatelessWidget {
                           FilePickerResult? result =
                               await FilePicker.platform.pickFiles();
 
-                          try {
-                            FilePickerResult? result =
-                                await FilePicker.platform.pickFiles();
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'File picker is not available on this system.')));
+                          try {} catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'File picker is not available on this system.')));
+                            }
                           }
 
                           if (result != null) {
-                            File file = File(result.files.single.path!);
                           } else {
                             // User canceled the picker
                           }

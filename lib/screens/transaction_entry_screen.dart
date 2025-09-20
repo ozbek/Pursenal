@@ -211,10 +211,10 @@ class TransactionForm extends StatelessWidget {
                                                 ? null
                                                 : LinearGradient(colors: [
                                                     Theme.of(context)
-                                                        .cardColor
+                                                        .scaffoldBackgroundColor
                                                         .withValues(alpha: .5),
                                                     Theme.of(context)
-                                                        .cardColor
+                                                        .scaffoldBackgroundColor
                                                         .withValues(alpha: 0),
                                                   ]),
                                           ),
@@ -224,10 +224,11 @@ class TransactionForm extends StatelessWidget {
                                               style: viewmodel.isPayment
                                                   ? Theme.of(context)
                                                       .textTheme
-                                                      .titleMedium
+                                                      .bodyLarge
                                                   : Theme.of(context)
                                                       .textTheme
-                                                      .titleLarge),
+                                                      .titleMedium
+                                                      ?.copyWith(fontSize: 20)),
                                         )),
                                       ),
                                     ),
@@ -338,21 +339,22 @@ class TransactionForm extends StatelessWidget {
                                                         .cardColor
                                                         .withValues(alpha: 0),
                                                     Theme.of(context)
-                                                        .cardColor
+                                                        .scaffoldBackgroundColor
                                                         .withValues(alpha: .5),
                                                   ]),
                                           ),
                                           child: Text(
-                                            AppLocalizations.of(context)!
-                                                .payment,
-                                            style: !viewmodel.isPayment
-                                                ? Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium
-                                                : Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge,
-                                          ),
+                                              AppLocalizations.of(context)!
+                                                  .payment,
+                                              textAlign: TextAlign.center,
+                                              style: !viewmodel.isPayment
+                                                  ? Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge
+                                                  : Theme.of(context)
+                                                      .textTheme
+                                                      .titleMedium
+                                                      ?.copyWith(fontSize: 20)),
                                         )),
                                         onTap: () {
                                           viewmodel.isPayment = true;
@@ -491,6 +493,7 @@ class TransactionForm extends StatelessWidget {
                                     ? viewmodel.vchDateError
                                     : null,
                                 firstDate: viewmodel.startDate,
+                                lastDate: DateTime.now(),
                                 datePattern: appViewmodel.dateFormat.pattern ??
                                     AppDateFormat.date1.pattern,
                               ),
