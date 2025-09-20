@@ -1,5 +1,5 @@
 const appName = "Pursenal";
-const appVersion = "v1.3.1";
+const appVersion = "v1.4.0";
 const notoSansFontPath = "assets/fonts/NotoSans-Regular.ttf";
 const gitHubURL = "https://github.com/Kaashier-Dev/Pursenal";
 const appURL = "https://github.com/Kaashier-Dev/Pursenal";
