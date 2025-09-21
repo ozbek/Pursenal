@@ -12,6 +12,7 @@ import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/models/domain/project.dart';
 import 'package:pursenal/core/models/domain/receivable.dart';
 import 'package:pursenal/core/models/domain/transaction.dart';
+import 'package:pursenal/core/models/domain/user.dart';
 import 'package:pursenal/core/models/domain/wallet.dart';
 
 extension AccountMapper on DriftAccount {
@@ -370,6 +371,28 @@ extension PaymentReminderEntityMapper on PaymentReminder {
       addedDate: Value(addedDate),
       status: Value(paymentStatus),
       updateDate: Value(updateDate),
+    );
+  }
+}
+
+extension UserMapper on DriftUser {
+  User toDomain(Account account) {
+    return User(
+      dbID: id,
+      name: name,
+      deviceID: deviceID,
+      photoPath: photoPath,
+    );
+  }
+}
+
+extension UserEntityMapper on User {
+  DriftUsersCompanion toDrift() {
+    return DriftUsersCompanion(
+      id: Value(dbID),
+      name: Value(name),
+      deviceID: Value(deviceID),
+      photoPath: Value(photoPath),
     );
   }
 }
