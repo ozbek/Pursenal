@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:pursenal/core/abstracts/user_repository.dart';
 import 'package:pursenal/core/enums/loading_status.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
 import 'package:pursenal/core/abstracts/accounts_repository.dart';
 import 'package:pursenal/core/abstracts/profiles_repository.dart';
+import 'package:pursenal/core/models/domain/user.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainViewmodel extends ChangeNotifier {
   final ProfilesRepository _profilesRepository;
   final AccountsRepository _accountsRepository;
+  final UserRepository _userRepository;
 
   MainViewmodel(
     this._profilesRepository,
-    this._accountsRepository, {
+    this._accountsRepository,
+    this._userRepository, {
     required selectedProfile,
   }) : _selectedProfile = selectedProfile;
 
@@ -35,6 +39,8 @@ class MainViewmodel extends ChangeNotifier {
 
   int cashCountinProfile = 0;
   int bankCountinProfile = 0;
+
+  User? user;
 
   void setIndex(int index) {
     if (index != _currentIndex) {
@@ -67,6 +73,7 @@ class MainViewmodel extends ChangeNotifier {
       _prefs = await SharedPreferences.getInstance();
       notifyListeners();
       _profiles = await _profilesRepository.getAll();
+      getUser();
       try {
         _selectedProfile =
             _profiles.firstWhere((p) => p.dbID == _selectedProfile.dbID);
@@ -105,6 +112,17 @@ class MainViewmodel extends ChangeNotifier {
   void resetErrorText() {
     errorText = "";
     notifyListeners();
+  }
+
+  void getUser() async {
+    try {
+      user = await _userRepository.getById(1);
+      notifyListeners();
+    } catch (e) {
+      AppLogger.instance.error(' ${e.toString()}');
+      errorText = 'Error: Failed to fetch user.';
+      notifyListeners();
+    }
   }
 
   Future<void> setLastUpdatedTimeStamp() async {

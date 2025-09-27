@@ -45,7 +45,7 @@ class AppDriftDatabase extends _$AppDriftDatabase {
 
   final String dbName;
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -85,6 +85,11 @@ class AppDriftDatabase extends _$AppDriftDatabase {
           id: Value(peopleTypeID),
           name: Value("People"),
           primary: Value(PrimaryType.asset)));
+
+      await insertUser(DriftUsersCompanion(
+          name: const Value("User"),
+          photoPath: const Value(""),
+          deviceID: Value(const Uuid().v4())));
     }, onUpgrade: (Migrator m, int from, int to) async {
       if (from == 1) {
         await m.deleteTable('drift_subscriptions');
@@ -107,6 +112,15 @@ class AppDriftDatabase extends _$AppDriftDatabase {
         // 4. Drop the old tables
         await m.deleteTable('drift_project_photos');
         await m.deleteTable('drift_transaction_photos');
+      }
+
+      if (from < 4) {
+        if ((await select(driftUsers).get()).isEmpty) {
+          await insertUser(DriftUsersCompanion(
+              name: const Value("User"),
+              photoPath: const Value(""),
+              deviceID: Value(const Uuid().v4())));
+        }
       }
     });
   }

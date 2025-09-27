@@ -3086,10 +3086,7 @@ class $DriftUsersTable extends DriftUsers
   @override
   late final GeneratedColumn<String> deviceID = GeneratedColumn<String>(
       'device_i_d', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 32),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _photoPathMeta =
       const VerificationMeta('photoPath');
   @override

@@ -1,15 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/models/domain/profile.dart';
+import 'package:pursenal/core/models/domain/user.dart';
 import 'package:pursenal/core/repositories/drift/accounts_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/user_drift_repository.dart';
 import 'package:pursenal/screens/dashboard_screen.dart';
 import 'package:pursenal/screens/balances_screen.dart';
 import 'package:pursenal/screens/insights_screen.dart';
 import 'package:pursenal/screens/transactions_screen.dart';
+import 'package:pursenal/screens/user_edit_screen.dart';
 import 'package:pursenal/viewmodels/main_viewmodel.dart';
 import 'package:pursenal/widgets/main/the_drawer.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
@@ -24,6 +29,8 @@ class MainScreen extends StatelessWidget {
         Provider.of<ProfilesDriftRepository>(context, listen: false);
     final accountsDriftRepository =
         Provider.of<AccountsDriftRepository>(context, listen: false);
+    final userRepository =
+        Provider.of<UserDriftRepository>(context, listen: false);
     const double barIconSize = 24.00;
 
     SystemChrome.setSystemUIOverlayStyle(
@@ -36,7 +43,7 @@ class MainScreen extends StatelessWidget {
 
     return ChangeNotifierProvider<MainViewmodel>(
       create: (context) => MainViewmodel(
-          profilesDriftRepository, accountsDriftRepository,
+          profilesDriftRepository, accountsDriftRepository, userRepository,
           selectedProfile: profile)
         ..init(),
       builder: (context, child) => Consumer<MainViewmodel>(
@@ -44,9 +51,58 @@ class MainScreen extends StatelessWidget {
           builder: (context, constraints) {
             final isWide = constraints.maxWidth > smallWidth;
             final isVeryWide = constraints.maxWidth > mediumWidth;
+            User? user =
+                Provider.of<MainViewmodel>(context, listen: false).user;
             return Scaffold(
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.pursenal),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 2.0),
+                    child: SizedBox(
+                        width: 36,
+                        height: 36,
+                        child: Hero(
+                          tag: "user_photo",
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(4),
+                            customBorder: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4)),
+                            onTap: () {
+                              if (user != null) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UserEditScreen(
+                                        user: user,
+                                      ),
+                                    )).then((_) {
+                                  viewmodel.init();
+                                });
+                              }
+                            },
+                            child: user != null &&
+                                    user.photoPath.isNotEmpty &&
+                                    user.photoPath != "" &&
+                                    File(user.photoPath).existsSync()
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: Image.file(
+                                      File(user.photoPath),
+                                      width: 36,
+                                      height: 36,
+                                      fit: BoxFit.cover,
+                                      opacity: const AlwaysStoppedAnimation(.9),
+                                    ),
+                                  )
+                                : const Icon(Icons.person),
+                          ),
+                        )),
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  )
+                ],
               ),
               body: Builder(builder: (context) {
                 return LoadingBody(

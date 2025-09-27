@@ -13,8 +13,7 @@ import 'package:uuid/uuid.dart';
 class DriftUsers extends Table {
   IntColumn get id => integer().autoIncrement()(); // Unique user ID
   TextColumn get name => text().withLength(min: 0, max: 32)(); // User's name
-  TextColumn get deviceID =>
-      text().withLength(min: 0, max: 32)(); // Unique device identifier
+  TextColumn get deviceID => text()(); // Unique device identifier
   TextColumn get photoPath => text()(); // User photo path
 }
 

@@ -22,6 +22,7 @@ import 'package:pursenal/core/repositories/drift/profiles_drift_repository.dart'
 import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/receivables_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
+import 'package:pursenal/core/repositories/drift/user_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/wallets_drift_repository.dart';
 import 'package:pursenal/screens/welcome_screen.dart';
 import 'package:pursenal/utils/services/notification_service.dart';
@@ -153,6 +154,10 @@ void main() async {
       Provider<FilePathsDriftRepository>(
         create: (context) =>
             FilePathsDriftRepository(context.read<AppDriftDatabase>()),
+      ),
+      Provider<UserDriftRepository>(
+        create: (context) =>
+            UserDriftRepository(context.read<AppDriftDatabase>()),
       ),
       ChangeNotifierProvider<ThemeProvider>.value(
         value: themeProvider,
