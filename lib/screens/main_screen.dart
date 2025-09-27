@@ -15,9 +15,11 @@ import 'package:pursenal/screens/balances_screen.dart';
 import 'package:pursenal/screens/insights_screen.dart';
 import 'package:pursenal/screens/transactions_screen.dart';
 import 'package:pursenal/screens/user_edit_screen.dart';
+import 'package:pursenal/utils/app_paths.dart';
 import 'package:pursenal/viewmodels/main_viewmodel.dart';
 import 'package:pursenal/widgets/main/the_drawer.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
+import 'package:path/path.dart' as p;
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key, required this.profile});
@@ -53,6 +55,9 @@ class MainScreen extends StatelessWidget {
             final isVeryWide = constraints.maxWidth > mediumWidth;
             User? user =
                 Provider.of<MainViewmodel>(context, listen: false).user;
+            final String securePath = AppPaths.imagesDir;
+            final String userPhotoPath =
+                p.join(securePath, p.basename(user?.photoPath ?? ""));
             return Scaffold(
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.pursenal),
@@ -82,13 +87,13 @@ class MainScreen extends StatelessWidget {
                               }
                             },
                             child: user != null &&
-                                    user.photoPath.isNotEmpty &&
-                                    user.photoPath != "" &&
-                                    File(user.photoPath).existsSync()
+                                    userPhotoPath.isNotEmpty &&
+                                    userPhotoPath != "" &&
+                                    File(userPhotoPath).existsSync()
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(4),
                                     child: Image.file(
-                                      File(user.photoPath),
+                                      File(userPhotoPath),
                                       width: 36,
                                       height: 36,
                                       fit: BoxFit.cover,

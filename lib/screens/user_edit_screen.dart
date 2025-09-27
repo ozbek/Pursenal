@@ -1,13 +1,12 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pursenal/app/global/dimensions.dart';
 import 'package:pursenal/core/models/domain/user.dart';
 import 'package:pursenal/core/repositories/drift/user_drift_repository.dart';
 import 'package:pursenal/utils/app_logger.dart';
+import 'package:pursenal/utils/app_paths.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/user_viewmodel.dart';
 import 'package:pursenal/widgets/shared/loading_body.dart';
@@ -31,26 +30,22 @@ class UserEditScreen extends StatelessWidget {
       create: (context) => UserViewmodel(user, userRepository)..init(),
       child: Consumer<UserViewmodel>(
         builder: (context, viewmodel, child) {
+          final String securePath = AppPaths.imagesDir;
           Future<void> pickImage(ImageSource imgSource) async {
             final ImagePicker picker = ImagePicker();
             final XFile? file = await picker.pickImage(source: imgSource);
             if (file != null) {
-              final Directory appDir = await getApplicationSupportDirectory();
-              final String securePath = p.join(appDir.path, "images");
-              await Directory(securePath).create(recursive: true);
               String fileName = file.name;
               try {
-                final String extension = fileName.split(".").last;
-                fileName =
-                    "${Random().nextInt(80000000) + 10000000}.$extension";
+                fileName = AppPaths.uniqueFileName(fileName);
               } catch (e) {
                 AppLogger.instance
-                    .error("Cannot rename image ${file.name}", e.toString());
+                    .error("Cannot rename image $fileName", e.toString());
               }
               // Move the selected image to a secure directory
-              final File newImage =
-                  await File(file.path).copy(p.join(securePath, fileName));
-              viewmodel.photoPath = newImage.path;
+
+              await File(file.path).copy(p.join(securePath, fileName));
+              viewmodel.photoPath = fileName;
             }
           }
 
@@ -107,14 +102,27 @@ class UserEditScreen extends StatelessWidget {
                                 radius: 60,
                                 backgroundImage: viewmodel
                                             .photoPath.isNotEmpty &&
-                                        File(viewmodel.photoPath).existsSync()
+                                        File(p.join(
+                                                securePath,
+                                                p.basename(
+                                                    viewmodel.photoPath)))
+                                            .existsSync()
                                     ? Image.file(
-                                        File(viewmodel.photoPath),
-                                        key: ValueKey(viewmodel.photoPath),
+                                        File(p.join(securePath,
+                                            p.basename(viewmodel.photoPath))),
+                                        key: ValueKey(p.join(securePath,
+                                            p.basename(viewmodel.photoPath))),
                                       ).image
                                     : null,
-                                child: viewmodel.photoPath.isEmpty ||
-                                        !File(viewmodel.photoPath).existsSync()
+                                child: p
+                                            .join(securePath,
+                                                p.basename(viewmodel.photoPath))
+                                            .isEmpty ||
+                                        !File(p.join(
+                                                securePath,
+                                                p.basename(
+                                                    viewmodel.photoPath)))
+                                            .existsSync()
                                     ? const Center(
                                         child: Icon(
                                           Icons.person,

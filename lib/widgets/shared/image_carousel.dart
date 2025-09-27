@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:pursenal/utils/app_paths.dart';
+import 'package:path/path.dart' as p;
 
 class ImageCarousel extends StatelessWidget {
   const ImageCarousel({
@@ -15,6 +17,7 @@ class ImageCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String securePath = AppPaths.imagesDir;
     return Padding(
       padding: const EdgeInsets.all(14.0),
       child: SingleChildScrollView(
@@ -24,11 +27,12 @@ class ImageCarousel extends StatelessWidget {
           spacing: 8,
           mainAxisAlignment: MainAxisAlignment.center,
           children: filePaths.mapIndexed((index, filePath) {
+            final String path = p.join(securePath, p.basename(filePath));
             return ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: GestureDetector(
                 onTap: () {
-                  if (!File(filePath).existsSync()) return;
+                  if (!File(path).existsSync()) return;
                   showDialog(
                     context: context,
                     builder: (context) => Stack(
@@ -45,7 +49,7 @@ class ImageCarousel extends StatelessWidget {
                                   child: Text("Media error"),
                                 ),
                               ),
-                              File(filePath),
+                              File(path),
                               fit: BoxFit.fitWidth,
                             ),
                           ),
@@ -96,7 +100,7 @@ class ImageCarousel extends StatelessWidget {
                         ),
                       ),
                     ),
-                    File(filePath),
+                    File(path),
                     fit: BoxFit.cover,
                   ),
                 ).animate(delay: (index * 50).ms).fade(duration: 250.ms),

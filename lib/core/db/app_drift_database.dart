@@ -45,7 +45,7 @@ class AppDriftDatabase extends _$AppDriftDatabase {
 
   final String dbName;
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
@@ -120,6 +120,15 @@ class AppDriftDatabase extends _$AppDriftDatabase {
               name: const Value("User"),
               photoPath: const Value(""),
               deviceID: Value(const Uuid().v4())));
+        }
+      }
+
+      if (from < 6) {
+        final rows = await select(driftFilePaths).get();
+        for (final row in rows) {
+          final filename = p.basename(row.path);
+          await (update(driftFilePaths)..where((tbl) => tbl.id.equals(row.id)))
+              .write(DriftFilePathsCompanion(path: Value(filename)));
         }
       }
     });

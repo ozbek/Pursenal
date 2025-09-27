@@ -10,6 +10,7 @@ import 'package:pursenal/core/models/domain/project.dart';
 import 'package:pursenal/core/repositories/drift/projects_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/transactions_drift_repository.dart';
 import 'package:pursenal/screens/project_entry_screen.dart';
+import 'package:pursenal/utils/app_paths.dart';
 import 'package:pursenal/viewmodels/app_viewmodel.dart';
 import 'package:pursenal/viewmodels/project_viewmodel.dart';
 import 'package:pursenal/widgets/shared/export_button.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pursenal/widgets/shared/the_divider.dart';
 import 'package:pursenal/widgets/shared/transactions_list.dart';
 import 'package:pursenal/widgets/shared/transactions_list_wide.dart';
+import 'package:path/path.dart' as p;
 
 class ProjectScreen extends StatelessWidget {
   const ProjectScreen({
@@ -142,6 +144,7 @@ class ProjectScreen extends StatelessWidget {
                   builder: (context, constraints) {
                     bool isWide = constraints.maxWidth > 800;
                     if (viewmodel.project != null) {
+                      final String securePath = AppPaths.imagesDir;
                       Project project = viewmodel.project!;
                       return Column(
                         mainAxisSize: MainAxisSize.min,
@@ -257,97 +260,114 @@ class ProjectScreen extends StatelessWidget {
                                                               .photoPaths
                                                               .mapIndexed((index,
                                                                   filePath) {
-                                                            return Material(
-                                                              elevation: 3,
-                                                              child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            0),
+                                                            final String path =
+                                                                p.join(
+                                                                    securePath,
+                                                                    p.basename(
+                                                                        filePath));
+                                                            return ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () {
+                                                                  if (!File(
+                                                                          path)
+                                                                      .existsSync()) {
+                                                                    return;
+                                                                  }
+                                                                  showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) =>
+                                                                            Stack(
+                                                                      children: [
+                                                                        Dialog(
+                                                                          backgroundColor:
+                                                                              Colors.transparent,
+                                                                          shape:
+                                                                              Border.all(),
+                                                                          child:
+                                                                              SizedBox(
+                                                                            child:
+                                                                                Image.file(
+                                                                              errorBuilder: (context, error, stackTrace) => const Center(
+                                                                                child: Padding(
+                                                                                  padding: EdgeInsets.all(8.0),
+                                                                                  child: Text("Media error"),
+                                                                                ),
+                                                                              ),
+                                                                              File(path),
+                                                                              fit: BoxFit.fitWidth,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Positioned(
+                                                                          top:
+                                                                              -5,
+                                                                          right:
+                                                                              -5,
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.all(24.0),
+                                                                            child:
+                                                                                IconButton(
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              icon: const Icon(
+                                                                                Icons.close,
+                                                                                color: Colors.red,
+                                                                                size: 30,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                },
                                                                 child:
-                                                                    GestureDetector(
-                                                                  onTap: () {
-                                                                    showDialog(
-                                                                      context:
-                                                                          context,
-                                                                      builder:
-                                                                          (context) =>
-                                                                              Stack(
-                                                                        children: [
-                                                                          Dialog(
-                                                                            backgroundColor:
-                                                                                Colors.transparent,
-                                                                            shape:
-                                                                                Border.all(),
-                                                                            child:
-                                                                                SizedBox(
-                                                                              child: Image.file(
-                                                                                errorBuilder: (context, error, stackTrace) => const Center(
-                                                                                  child: Padding(
-                                                                                    padding: EdgeInsets.all(8.0),
-                                                                                    child: Text("Media error"),
-                                                                                  ),
-                                                                                ),
-                                                                                File(filePath),
-                                                                                fit: BoxFit.fitWidth,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          Positioned(
-                                                                            top:
-                                                                                -5,
-                                                                            right:
-                                                                                -5,
-                                                                            child:
-                                                                                Padding(
-                                                                              padding: const EdgeInsets.all(24.0),
-                                                                              child: IconButton(
-                                                                                onPressed: () {
-                                                                                  Navigator.pop(context);
-                                                                                },
-                                                                                icon: const Icon(
-                                                                                  Icons.close,
-                                                                                  color: Colors.red,
-                                                                                  size: 30,
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
+                                                                    ConstrainedBox(
+                                                                  constraints: const BoxConstraints(
+                                                                      maxWidth:
+                                                                          50,
+                                                                      maxHeight:
+                                                                          50),
+                                                                  child: Image
+                                                                      .file(
+                                                                    File(path),
+                                                                    width: 50,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    errorBuilder: (context,
+                                                                            error,
+                                                                            stackTrace) =>
+                                                                        Card(
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(5),
                                                                       ),
-                                                                    );
-                                                                  },
-                                                                  child:
-                                                                      ConstrainedBox(
-                                                                    constraints: const BoxConstraints(
-                                                                        maxWidth:
-                                                                            50,
-                                                                        maxHeight:
-                                                                            50),
-                                                                    child: Image
-                                                                        .file(
-                                                                      errorBuilder: (context,
-                                                                              error,
-                                                                              stackTrace) =>
+                                                                      child:
                                                                           const Center(
                                                                         child:
                                                                             Padding(
                                                                           padding:
                                                                               EdgeInsets.all(8.0),
                                                                           child:
-                                                                              Text("Media error"),
+                                                                              Icon(Icons.broken_image),
                                                                         ),
                                                                       ),
-                                                                      File(
-                                                                          filePath),
-                                                                      width: 50,
-                                                                      fit: BoxFit
-                                                                          .fill,
                                                                     ),
-                                                                  ).animate(delay: (index * 50).ms).fade(
-                                                                          duration:
-                                                                              250.ms),
-                                                                ),
+                                                                  ),
+                                                                ).animate(delay: (index * 50).ms).fade(
+                                                                        duration:
+                                                                            250.ms),
                                                               ),
                                                             );
                                                           }).toList(),

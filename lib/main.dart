@@ -25,6 +25,7 @@ import 'package:pursenal/core/repositories/drift/transactions_drift_repository.d
 import 'package:pursenal/core/repositories/drift/user_drift_repository.dart';
 import 'package:pursenal/core/repositories/drift/wallets_drift_repository.dart';
 import 'package:pursenal/screens/welcome_screen.dart';
+import 'package:pursenal/utils/app_paths.dart';
 import 'package:pursenal/utils/services/notification_service.dart';
 import 'package:pursenal/providers/theme_provider.dart';
 import 'package:pursenal/screens/main_screen.dart';
@@ -55,6 +56,8 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AppLogger.instance.info("Application started");
+
+  await AppPaths.init(); // prepare directories before runApp()
 
   await requestNotificationPermission();
 

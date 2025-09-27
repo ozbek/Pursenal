@@ -1,11 +1,10 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pursenal/utils/app_logger.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart' as p;
+import 'package:pursenal/utils/app_paths.dart';
 
 class ImagesSelector extends StatelessWidget {
   /// Field to select multiple images from the system
@@ -27,34 +26,30 @@ class ImagesSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String securePath = AppPaths.imagesDir;
     Future<void> pickImages() async {
       final ImagePicker picker = ImagePicker();
       final List<XFile> pickedFiles = await picker.pickMultiImage();
 
       if (pickedFiles.isNotEmpty) {
         for (XFile file in pickedFiles) {
-          // Create a secure directory path based on the platform
-          final Directory appDir = await getApplicationSupportDirectory();
-          final String securePath = p.join(appDir.path, "images");
-          await Directory(securePath).create(recursive: true);
           String fileName = file.name;
           try {
-            final String extension = fileName.split(".").last;
-            fileName = "${Random().nextInt(80000000) + 10000000}.$extension";
+            fileName = AppPaths.uniqueFileName(fileName);
           } catch (e) {
             AppLogger.instance
-                .error("Cannot rename image ${file.name}", e.toString());
+                .error("Cannot rename image $fileName", e.toString());
           }
-          // Move the selected image to a secure directory
-          final File newImage =
-              await File(file.path).copy(p.join(securePath, fileName));
-          addPathFn(newImage.path);
+
+          await File(file.path).copy(p.join(securePath, fileName));
+          addPathFn(fileName);
         }
       }
     }
 
     Future<void> deleteImage(String path) async {
       try {
+        path = p.join(securePath, p.basename(path));
         final File file = File(path);
         if (await file.exists()) {
           await file.delete();
@@ -79,6 +74,7 @@ class ImagesSelector extends StatelessWidget {
               runAlignment: WrapAlignment.center,
               children: [
                 ...paths.map((i) {
+                  final String path = p.join(securePath, p.basename(i));
                   return Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: SizedBox(
@@ -93,7 +89,7 @@ class ImagesSelector extends StatelessWidget {
                               width: 60,
                               height: 60,
                               child: Image.file(
-                                File(i),
+                                File(path),
                                 fit: BoxFit.cover,
                               ),
                             ),
