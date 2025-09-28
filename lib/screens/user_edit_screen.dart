@@ -31,6 +31,18 @@ class UserEditScreen extends StatelessWidget {
       child: Consumer<UserViewmodel>(
         builder: (context, viewmodel, child) {
           final String securePath = AppPaths.imagesDir;
+          Future<void> deleteImage(String path) async {
+            try {
+              path = p.join(securePath, p.basename(path));
+              final File file = File(path);
+              if (await file.exists()) {
+                await file.delete();
+              }
+            } catch (e) {
+              AppLogger.instance.error('Error deleting image: $e');
+            }
+          }
+
           Future<void> pickImage(ImageSource imgSource) async {
             final ImagePicker picker = ImagePicker();
             final XFile? file = await picker.pickImage(source: imgSource);
@@ -43,7 +55,7 @@ class UserEditScreen extends StatelessWidget {
                     .error("Cannot rename image $fileName", e.toString());
               }
               // Move the selected image to a secure directory
-
+              deleteImage(p.join(securePath, p.basename(viewmodel.photoPath)));
               await File(file.path).copy(p.join(securePath, fileName));
               viewmodel.photoPath = fileName;
             }
